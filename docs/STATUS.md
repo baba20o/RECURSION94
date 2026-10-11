@@ -5,8 +5,8 @@
   cartridge; 2 — hardware foundation; 3 — deterministic engine core; 4 —
   echo vertical slice. The M4 automated evidence freeze is complete; literal
   human hands-on play and subjective listening are not claimed by it.
-- **Current M5 candidate:** bounded CRC/projection optimization is built, but
-  native timing and replay parity are not yet measured. The word CRC uses a
+- **Current M5 candidate:** bounded CRC/projection optimization has measured
+  checkpoint gains and sampled replay parity. The word CRC uses a
   generated big-endian index and an internal halfword-byte-swapped state,
   restoring the ordinary raw-CRC ABI at every exit. Four-word unrolling,
   layout-asserted contiguous copies, monotonic projection scan bounds, and a
@@ -34,8 +34,32 @@
   `host-render-crc-projection-20261010.json` under `artifacts/reports/`.
   The additive diagnostic profile passes 70/70 focused native tests; all
   older profiles and non-breakpoint marker programs remain unchanged.
-  Current-ROM emulator measurements, full replays, Windows All, and M5
-  aggregate validation remain required; no timing improvement is claimed yet.
+  Native Windows All now passes 1,011/1,011, with zero failures, errors, or
+  skips (`artifacts/reports/host-tests-crc-projection-20261010.json`). Its
+  release gate remains false: save, full campaign replays, and live release
+  validation are still pending. Independent review clears the exact probe
+  boundaries and scripts for this ROM.
+  The regular native probe passes: tick60 simulation falls from 80,828 to
+  65,866 cycles, projection from 52,890 to 37,928, with exact sampled CRC
+  parity and unchanged renderer spans. Its report SHA-256 is
+  `86e340fdd89a88f8e144ababced0d145b5de61e854112511a739574583ee2e44`.
+  The natural 1,681-step prefix passes protocol/input/replay checks. Its four
+  IRQ-free three-actor checkpoint spans are 82,096 / 77,000 / 76,908 / 80,778,
+  all below 83,203, with all four projection CRCs unchanged. Both 5,120-byte
+  replay snapshots match. Reset lower-bound intervals fall to 205,945 and
+  215,195 cycles with one service VBlank each; these are not complete reset
+  acceptance measurements. The prefix still reports 66 ordinary-frame,
+  cadence, queue, or blank-budget violations and five cumulative overruns.
+  Final frame is 1,683 with token zero. Report SHA-256:
+  `5fe84910c9c19905d2916cad41983e0e0fbca665328cde2613bdccdac1ae3148`.
+  The first extended-reset probe stops prematurely at frame721/attempt1/tick720:
+  its ISR completion condition mistakes transitional reconstruction state for
+  a finished attempt. The failed raw report is preserved (SHA-256
+  `7718fa6566c8f31e9df4d2f289fec35887255b85f09e537232b4c4da4b77fd10`).
+  A candidate-only collector repair is in progress; no reset-window pass is
+  claimed. All three raw pairs are under `artifacts/diagnostics/m5-budget/`
+  with the `crc-projection-8b69d4bf` stems. Complete reset/graphics parity,
+  ordinary timing repair, full current-ROM replays, and M5 aggregate remain required.
 - **Preceding renderer-HWM candidate:** seven read-only campaign renderer scans use
   clamped, zero-guarded historical pool bounds; legacy renderer paths and
   gameplay are unchanged. All images are 1,048,576 bytes. Canonical Debug

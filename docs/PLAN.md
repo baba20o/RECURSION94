@@ -36,11 +36,15 @@ with all 6,240 buffer bytes unchanged. Its natural prefix preserves exact input,
 replay, and projection CRCs, but still fails checkpoint, second-reset, and
 ordinary-frame budgets. The bounded CRC/projection package now builds in all
 three configurations with passing static validation and 77 focused native tests.
-Remeasure all four IRQ-free checkpoint baselines and reset work; continue
-the separate ordinary-frame/blank repair. Preserve raw projection/SAT/HUD parity without removing
+All four IRQ-free multi-echo checkpoint samples now fit the simulation limit
+with identical CRCs. The prefix still fails ordinary-frame/blank timing.
+Repair the extended-reset collector's premature transitional-state stop, then
+complete reset/graphics parity measurement and the separate ordinary-frame
+repair. Preserve raw projection/SAT/HUD parity without removing
 required mechanics or reducing echo counts.
-The fresh native All-suite rerun passes 982/982 without skips after the reviewed
-source-pin, frozen-fixture, and project-local dependency repairs. The prefix
+The fresh CRC/projection candidate native All-suite rerun passes 1,011/1,011
+without failures, errors, or skips. The preceding high-water run passed
+982/982 after reviewed source-pin, frozen-fixture, and local dependency repairs. The prefix
 collector and offline repair are independently reviewed and 61 focused native
 tests pass; the first capture uses the unchanged high-water ROM/symbol pair. Every optimized
 candidate needs fresh measured parity and timing, not the preceding image's pass.

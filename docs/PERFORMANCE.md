@@ -270,7 +270,7 @@ Ordinary-frame/blank failures also require repair. The older late-entry
 detector limitation remains open, so its counter alone cannot certify all
 blank deadlines.
 
-## CRC/projection candidate: built, timing unmeasured
+## CRC/projection candidate: measured checkpoint gains
 
 B03 `8b69d4bf` retains the renderer improvement and adds a transformed-state
 CRC word loop with four-word unrolling, exact contiguous projection copies,
@@ -283,12 +283,33 @@ An independent code review covers the zero/odd/even/max-length paths,
 full-width table indexing, every copied field, source-pointer advancement,
 and the allocator/reset invariant required for omitted zero suffixes.
 
-These are correctness/build checks, not performance acceptance. Short CRC
-calls can become slower, so only native whole-frame measurements can show
-the net result. No estimated savings are credited toward the simulation or
-reset limits. Next measurements must preserve the renderer-HWM baseline's
-input, replay bytes, renderer bytes, and projection CRCs, while measuring
-all four later-attempt checkpoints, both reset windows, and ordinary frames.
+Short CRC calls can become slower, so only native whole-frame measurements
+establish the net result. The first regular capture passes, with tick60
+simulation 65,866 versus 80,828 cycles and projection 37,928 versus 52,890.
+Base projection falls by 10,570, raw tail CRC by 3,732, and vocabulary copy by
+662 cycles: 14,962 total. Sampled CRCs are equal and renderer spans unchanged.
+Report `checkpoint-crc-projection-8b69d4bf-tick59-tick61-20261010.json` has
+SHA-256 `86e340fdd89a88f8e144ababced0d145b5de61e854112511a739574583ee2e44`.
+
+The natural 1,681-step prefix passes the input/replay protocol and all four
+projection CRC comparisons. IRQ-free simulation at ticks60/120/180/240 is
+82,096 / 77,000 / 76,908 / 80,778, all below 83,203. Reset lower-bound spans
+are 205,945 / 215,195 with one service token each instead of two; the two
+5,120-byte replay snapshots are unchanged. The report remains budget FAIL:
+66 ordinary/cadence/queue/blank violations, five cumulative overruns, final
+frame1,683/token0. This is not an ordinary-frame or full M5 pass. Prefix report
+SHA-256: `5fe84910c9c19905d2916cad41983e0e0fbca665328cde2613bdccdac1ae3148`.
+
+The first extended-reset capture is an immutable diagnostic failure. Faster
+work exposes an existing stop-condition race: at ISR return frame721 the
+attempt has incremented to1 but reconstruction has not yet cleared old tick720.
+The old attempt>=1/tick>=5 condition emits COMPLETE before the reset returns.
+No reset-window result is inferred from its missing records. The separately
+reviewed candidate-only correction will retain the physical frame730 failure
+stop and require exact attempt1/tick4 at main return for normal completion.
+The original failed report SHA-256 is
+`7718fa6566c8f31e9df4d2f289fec35887255b85f09e537232b4c4da4b77fd10`.
+Full reset/renderer parity remains required on the unchanged candidate.
 The immutable candidate ROMs and symbols are in
 `artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
 
