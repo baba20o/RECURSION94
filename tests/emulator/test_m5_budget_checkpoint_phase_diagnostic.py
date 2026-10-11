@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import shutil
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -15,6 +16,7 @@ from tools.m2_evidence import parse_vasm_symbols, sha256_file
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE_BUILD = ROOT / "artifacts/archive/m5-pre-timing-140039e3-20261010/level-B03"
 LOOKUP_BUILD = ROOT / "artifacts/archive/m5-lookup-only-9a741642-20261010/level-B03"
+CAPTURED_SOURCES = ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/captured-sources"
 REPORT = (
     ROOT
     / "artifacts/diagnostics/m5-budget/"
@@ -219,22 +221,63 @@ class M5BudgetCheckpointPhaseDiagnosticTests(unittest.TestCase):
             diagnostic.repair_pc_contract(rom, symbols, profile="highwater")
 
     def test_renderer_hwm_candidate_source_and_full_rom_drift_stop_before_launch(self) -> None:
-        sources = diagnostic.renderer_hwm_source_contract(ROOT)
-        self.assertEqual({key: value["sha256"] for key, value in sources.items()}, diagnostic.RENDERER_HWM_SOURCE_PINS)
-        self.assertEqual(len(sources), 2)
+        self._assert_frozen_profile_preflight("renderer_hwm")
+
+    def _assert_frozen_profile_preflight(self, profile: str) -> None:
+        # These historical profiles must be exercised against their real frozen
+        # bytes, not whatever source/build happens to be current. A preceding
+        # stale source failure must not mask the selected ROM/symbol mutation.
+        pins = (diagnostic.RENDERER_HWM_SOURCE_PINS if profile == "renderer_hwm"
+                else diagnostic.CRC_PROJECTION_SOURCE_PINS)
+        source_contract = (diagnostic.renderer_hwm_source_contract if profile == "renderer_hwm"
+                           else diagnostic.crc_projection_source_contract)
+        archive_name = {"renderer_hwm": "m5-renderer-hwm-e6778f90-20261010",
+                        "crc_projection": "m5-crc-projection-8b69d4bf-20261010"}[profile]
+        archived_build = ROOT / "artifacts/archive" / archive_name / "level-B03"
         with tempfile.TemporaryDirectory() as directory:
+            fixture = Path(directory).resolve()
+            inputs = {relative: CAPTURED_SOURCES / relative for relative in pins}
+            inputs.update({
+                diagnostic.ROM_RELATIVE_PATH: archived_build / "recursion94-debug.bin",
+                diagnostic.SYMBOL_RELATIVE_PATH: archived_build / "recursion94-debug.sym",
+            })
+            for relative in (".toolcache/blastem/blastem.exe", ".toolcache/blastem/default.cfg",
+                             diagnostic.COLLECTOR_RELATIVE_PATH, diagnostic.CONSOLE_HELPER_RELATIVE_PATH):
+                inputs[relative] = ROOT / relative
+            for relative, source in inputs.items():
+                destination = fixture / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+            sources = source_contract(fixture)
+            self.assertEqual({key: value["sha256"] for key, value in sources.items()}, pins)
+            self.assertEqual(len(sources), 2 if profile == "renderer_hwm" else 6)
+            self.assertEqual(sha256_file(fixture / diagnostic.ROM_RELATIVE_PATH), diagnostic.PROFILE_ROM_PINS[profile])
+            self.assertEqual(sha256_file(fixture / diagnostic.SYMBOL_RELATIVE_PATH), diagnostic.PROFILE_SYMBOL_PINS[profile])
+            report, trace = fixture / "unused.json", fixture / "unused.log"
             args = diagnostic._parser().parse_args([
-                "--root", str(ROOT), "--profile", "renderer_hwm",
-                "--report", str(Path(directory) / "unused.json"), "--trace", str(Path(directory) / "unused.log")])
-            for relative in (*diagnostic.RENDERER_HWM_SOURCE_PINS, diagnostic.ROM_RELATIVE_PATH, diagnostic.SYMBOL_RELATIVE_PATH):
+                "--root", str(fixture), "--profile", profile,
+                "--report", str(report), "--trace", str(trace)])
+            for relative in (*pins, diagnostic.ROM_RELATIVE_PATH, diagnostic.SYMBOL_RELATIVE_PATH):
+                observed: list[Path] = []
+
                 def changed_hash(path: Path) -> str:
-                    return "0" * 64 if path == ROOT / relative else sha256_file(path)
-                with self.subTest(path=relative), patch.object(diagnostic, "os", SimpleNamespace(name="nt")), \
+                    observed.append(path)
+                    return "0" * 64 if path == fixture / relative else sha256_file(path)
+
+                with self.subTest(profile=profile, path=relative), \
+                        patch.object(diagnostic, "os", SimpleNamespace(name="nt")), \
                         patch.object(diagnostic, "sha256_file", side_effect=changed_hash), \
                         patch.object(diagnostic.subprocess, "Popen", side_effect=AssertionError("drift must stop before launch")):
-                    with self.assertRaisesRegex(diagnostic.EvidenceFailure, "hash drift"):
+                    with self.assertRaises(diagnostic.EvidenceFailure) as caught:
                         diagnostic.collect(args)
-            self.assertEqual(list(Path(directory).iterdir()), [])
+                    expected = ("pinned ROM hash drift" if relative == diagnostic.ROM_RELATIVE_PATH
+                                else "pinned symbols hash drift" if relative == diagnostic.SYMBOL_RELATIVE_PATH
+                                else ("renderer-HWM approved runtime source hash drift: " if profile == "renderer_hwm"
+                                      else "CRC/projection approved source hash drift: ") + relative)
+                    self.assertEqual(str(caught.exception), expected)
+                    self.assertIn(fixture / relative, observed)
+            self.assertFalse(report.exists())
+            self.assertFalse(trace.exists())
 
     def test_crc_projection_profile_binds_archived_boundaries_and_all_changed_windows(self) -> None:
         archive = ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/level-B03"
@@ -272,22 +315,7 @@ class M5BudgetCheckpointPhaseDiagnosticTests(unittest.TestCase):
         self.assertEqual(diagnostic._parser().parse_args(["--profile", "crc_projection"]).profile, "crc_projection")
 
     def test_crc_projection_six_source_and_full_build_pins_stop_drift_before_launch(self) -> None:
-        sources = diagnostic.crc_projection_source_contract(ROOT)
-        self.assertEqual({key: value["sha256"] for key, value in sources.items()}, diagnostic.CRC_PROJECTION_SOURCE_PINS)
-        self.assertEqual(len(sources), 6)
-        with tempfile.TemporaryDirectory() as directory:
-            args = diagnostic._parser().parse_args([
-                "--root", str(ROOT), "--profile", "crc_projection",
-                "--report", str(Path(directory) / "unused.json"), "--trace", str(Path(directory) / "unused.log")])
-            for relative in (*diagnostic.CRC_PROJECTION_SOURCE_PINS, diagnostic.ROM_RELATIVE_PATH, diagnostic.SYMBOL_RELATIVE_PATH):
-                def changed_hash(path: Path) -> str:
-                    return "0" * 64 if path == ROOT / relative else sha256_file(path)
-                with self.subTest(path=relative), patch.object(diagnostic, "os", SimpleNamespace(name="nt")), \
-                        patch.object(diagnostic, "sha256_file", side_effect=changed_hash), \
-                        patch.object(diagnostic.subprocess, "Popen", side_effect=AssertionError("drift must stop before launch")):
-                    with self.assertRaisesRegex(diagnostic.EvidenceFailure, "hash drift"):
-                        diagnostic.collect(args)
-            self.assertEqual(list(Path(directory).iterdir()), [])
+        self._assert_frozen_profile_preflight("crc_projection")
 
 
 class M5BudgetCheckpointRepairPhaseDiagnosticTests(unittest.TestCase):
