@@ -305,11 +305,21 @@ work exposes an existing stop-condition race: at ISR return frame721 the
 attempt has incremented to1 but reconstruction has not yet cleared old tick720.
 The old attempt>=1/tick>=5 condition emits COMPLETE before the reset returns.
 No reset-window result is inferred from its missing records. The separately
-reviewed candidate-only correction will retain the physical frame730 failure
-stop and require exact attempt1/tick4 at main return for normal completion.
+reviewed candidate-only correction retains the physical frame730 failure
+stop and requires exact attempt1/tick4 at main return for normal completion.
 The original failed report SHA-256 is
 `7718fa6566c8f31e9df4d2f289fec35887255b85f09e537232b4c4da4b77fd10`.
-Full reset/renderer parity remains required on the unchanged candidate.
+The corrected collector passes 72 focused native tests. Its complete capture
+`reset-overlay-crc-projection-8b69d4bf-stopfix-total719-total724-20261010.json`
+(SHA-256 `f06d2ba8bd9b7829609a8f23b2c8218e01943ef4f8e28068eeebede3e45c0a6c`)
+ends at main return frame725/attempt1/tick4, token zero. The measured full
+token-to-caller reset interval is 207,439 cycles (43,005 saved versus the
+preceding renderer candidate). All six stored renderer snapshots contain the
+same 6,240 bytes. One service token is coalesced at frame721; after an explicit
+wait, frame722 supplies the next authoritative step. The raw report remains
+FAIL because its analyzer still requires the old two-service cadence. A
+separate hash-bound, raw-protocol derivation is required before treating this
+sample as accepted; the original failed report will not be overwritten.
 The immutable candidate ROMs and symbols are in
 `artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
 

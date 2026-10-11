@@ -56,9 +56,17 @@
   its ISR completion condition mistakes transitional reconstruction state for
   a finished attempt. The failed raw report is preserved (SHA-256
   `7718fa6566c8f31e9df4d2f289fec35887255b85f09e537232b4c4da4b77fd10`).
-  A candidate-only collector repair is in progress; no reset-window pass is
-  claimed. All three raw pairs are under `artifacts/diagnostics/m5-budget/`
-  with the `crc-projection-8b69d4bf` stems. Complete reset/graphics parity,
+  The candidate-only collector repair passes 72 focused native tests. Its new
+  complete capture reaches attempt1/tick4 at frame725 with no console-policy
+  errors. The full token-to-caller reset interval is 207,439 cycles versus
+  250,444, and all six stored graphics snapshots (6,240 bytes) match the
+  preceding renderer candidate. The raw report remains FAIL: its old analyzer
+  requires two reset-service VBlanks, while the measured candidate uses one.
+  Strict candidate-specific raw-protocol reanalysis is pending; no reset-window
+  acceptance pass is claimed. The new report SHA-256 is
+  `f06d2ba8bd9b7829609a8f23b2c8218e01943ef4f8e28068eeebede3e45c0a6c`.
+  All raw pairs are under `artifacts/diagnostics/m5-budget/`
+  with the `crc-projection-8b69d4bf` stems. Complete reset/graphics validation,
   ordinary timing repair, full current-ROM replays, and M5 aggregate remain required.
 - **Preceding renderer-HWM candidate:** seven read-only campaign renderer scans use
   clamped, zero-guarded historical pool bounds; legacy renderer paths and

@@ -38,9 +38,12 @@ ordinary-frame budgets. The bounded CRC/projection package now builds in all
 three configurations with passing static validation and 77 focused native tests.
 All four IRQ-free multi-echo checkpoint samples now fit the simulation limit
 with identical CRCs. The prefix still fails ordinary-frame/blank timing.
-Repair the extended-reset collector's premature transitional-state stop, then
-complete reset/graphics parity measurement and the separate ordinary-frame
-repair. Preserve raw projection/SAT/HUD parity without removing
+The extended-reset collector's transitional-state stop is repaired and a
+complete capture now exists: reset main interval 207,439 cycles and all 6,240
+stored graphics bytes unchanged. Finish strict raw-protocol reanalysis for its
+one-service-VBlank cadence (the immutable raw report's old two-service checker
+still fails), then proceed with the separate ordinary-frame repair.
+Preserve raw projection/SAT/HUD parity without removing
 required mechanics or reducing echo counts.
 The fresh CRC/projection candidate native All-suite rerun passes 1,011/1,011
 without failures, errors, or skips. The preceding high-water run passed
