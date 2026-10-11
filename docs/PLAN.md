@@ -25,15 +25,18 @@ may be authored in parallel only against frozen interfaces.
 The pre-timing B01/B03 runtime recaptures pass on archived hashes. Lookup,
 sprite, indexed-CRC, whole-empty projection, and bounded gameplay scans now
 have measured gains and sampled parity. The high-water candidate passes the
-first-attempt checkpoint and extended reset timing samples. Next measure the
-natural later-attempt prefix with three actors, all four early checkpoints,
-and projectile/node interactions; a passing one-actor sample is not a full
-M5 cycle pass. Preserve raw projection/SAT/HUD parity and repair any measured
-remaining cause without removing required mechanics or reducing echo counts.
+first-attempt checkpoint and extended reset timing samples. The first natural
+later-attempt prefix completes its input/replay proofs but exposes real
+three-actor checkpoint, ordinary-frame, and second-reset budget failures.
+Repair the two analyzer domain assumptions offline without changing the raw
+failed capture or suppressing budget failures; then profile and optimize the
+measured hot paths. Preserve raw projection/SAT/HUD parity without removing
+required mechanics or reducing echo counts.
 The fresh native All-suite rerun passes 982/982 without skips after the reviewed
 source-pin, frozen-fixture, and project-local dependency repairs. The prefix
-collector is independently reviewed and 55 focused native tests pass; perform
-its first live capture only against the unchanged high-water ROM/symbol pair.
+collector is independently reviewed and 55 focused native tests pass; its
+first capture uses the unchanged high-water ROM/symbol pair. Every optimized
+candidate needs fresh measured parity and timing, not the preceding image's pass.
 Harden the late-entry VBlank detector. Refresh changed-ROM replay, counter,
 cycle, and five-state visual evidence before independent image review.
 Run Windows All and the fail-closed

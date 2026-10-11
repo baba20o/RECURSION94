@@ -218,6 +218,36 @@ This is a bounded sampled pass, not the canonical M5 cycle gate. Later
 three-actor checkpoints, projectile interactions, full budget/replay routes,
 and objective visual recapture remain required before M5 freeze.
 
+## Natural third-attempt prefix: timing failure
+
+The first high-water prefix capture naturally executes 1,681 authoritative
+steps, proves every held input and both 5,120-byte reset replay snapshots, and
+ends at attempt 2/tick 241 on physical frame 1,697. No guest writes or retries
+were used. The immutable raw files are
+`artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-attempt2-tick241-20261010.{json,log}`.
+
+The stored protocol result is FAIL: its analyzer incorrectly requires IRQs
+that happened before the observed window and expects a renderer publication
+to be committed twice when two IRQs interrupt the same engine tick. Separate
+hash-bound offline reanalysis is pending; the captured report is not rewritten.
+These issues do not remove the observed budget failures:
+
+| Third-attempt checkpoint | Raw GameplayStep CPU cycles | Limit |
+|---|---:|---:|
+| 60 | 107,055 | 83,203 |
+| 120 | 91,960 | 83,203 |
+| 180 | 101,956 | 83,203 |
+| 240 | 105,827 | 83,203 |
+
+Raw spans include any intervening IRQs; checkpoint 120 has none, so at least
+8,757 cycles of its excess are simulation work, not interrupt accounting.
+Each sampled checkpoint projection remains 52,890 cycles. The second reset
+uses 258,196 cycles from GameplayStep entry to token coalescing, already above
+the 256,010 allowance before adding its main-loop prelude. Maximum sampled
+ordinary main span is 157,060 cycles (tick 195), and the last observed IRQ has
+22 overruns and 12 queued tokens. These are diagnostics for the next repair,
+not a full M5 performance pass.
+
 ## Uninterrupted M4 renderer/VBlank and cross-clock gate
 
 Run the dedicated gate only after the final Debug ROM hash is fixed:

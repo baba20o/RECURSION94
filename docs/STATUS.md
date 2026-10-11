@@ -95,7 +95,16 @@
   Its release gate remains false: save, full campaign replays, and live release
   evidence are unfinished. The new 1,681-step later-attempt timing diagnostic
   has independent review and 55 focused native tests; its first live capture is
-  the next measurement, not an already-passing performance gate.
+  now has its first live capture. All 1,681 PRE/POST input proofs and both
+  5,120-byte reset replay snapshots match; final attempt 2/tick 241 is physical
+  frame 1,697. The stored report remains protocol FAIL and budget FAIL:
+  two IRQ-boundary/publication-consumption assumptions require separate offline
+  analyzer repair, and real timing overruns remain. Checkpoint 120 alone takes
+  91,960 CPU cycles with no intervening IRQ, above the 83,203 limit. Reset 2
+  takes at least 258,196 cycles versus its 256,010 allowance. Original report
+  and console are immutable at
+  `artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-attempt2-tick241-20261010.{json,log}`.
+  No retry, guest writes, or current-ROM performance pass is claimed.
   Its first reset capture timed out before gameplay because READY was followed
   by a nonempty debugger prompt (`>  y`). The exact 40-line failure tail is
   preserved as `reset-overlay-pool-25a74bd2-ready-timeout-20261010.txt` in the
