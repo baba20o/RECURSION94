@@ -1,0 +1,2831 @@
+{
+  "canonical_replay": {
+    "bytes": 176,
+    "classification": "canonical B01 acceptance replay verified against two live real-pad simulations; file outcome fields remain assertions",
+    "compatibility_ids": {
+      "content_id": {
+        "content_report_path": "build/content-report.json",
+        "content_report_sha256": "ad0f40970e1947cf2d4c7bc4d23dc71fcc30ded06cf83f13660641dad8c8f3a4",
+        "derivation": "big-endian first 64 bits of the compiled campaign canonical source SHA-256",
+        "id": 15483215645447117546,
+        "id_hex": "D6DF6E988FA55AEA",
+        "source_sha256": "d6df6e988fa55aea11ff46efe65930eecf521de84bf5db0bef55e596581a3089"
+      },
+      "engine_compat_id": {
+        "bundle_sha256": "542a649365cc88026a070fa8766b61efd58cd36f40b9b54b7cad15d0f5fdfd6f",
+        "derivation": "big-endian first 32 bits of SHA-256 over the canonical path-to-source-SHA-256 JSON map",
+        "id": 1412064403,
+        "id_hex": "542A6493",
+        "sources": {
+          "src/boot/startup.asm": "3ca2f70abe74c9b9f05cb7995e3a98ec6bde79f1b4b40e0eb42fcd2e485b1200",
+          "src/game/collision.asm": "f926c4878409fa101d01274b77b41e63f3e946ebbf83a1c16d1e398f9904041f",
+          "src/game/crc32.asm": "c99fbe1689e8448ca9b86ede56049aa5b7ca548665b8c02625d11b12823777e4",
+          "src/game/encounters.asm": "f6c2d528ef928a10e4fe442d6347d5e2624a875f4d659a7b8f33b60c8841fc44",
+          "src/game/engine.asm": "13088a9830d31671ff8b2cf15f05d44670052bfbd0dfc8a7ff76488ec0604d90",
+          "src/game/engine_core.asm": "7d0b9a2daf017b514c81842985bcf205ded4689054cf57212f13bfce0d7afd05",
+          "src/game/engine_layout.asm": "40e2876cc36a02057a9a2254d4c381e9a00bad4939c9fd5426d890cc70f409be",
+          "src/game/object_pool.asm": "360e47bab4a3b25008e6aff6489e5fc61ed053c614b63ee6cd161e2ed5d72d2c",
+          "src/game/projection.asm": "f863d0ea4730da3767144c6b5336c7b012754fb56adf4efb0651734f9663ee64",
+          "src/gameplay/actor_sim.asm": "9726a1add2796e0e16bf07478e83aa1cf0877ae869aeaf4a179ad7c5ceabcf53",
+          "src/gameplay/gameplay.asm": "e8b48b999d924d6162cf0da46e7a051eba72f046efb970c26957bb2e62b49fd9",
+          "src/gameplay/gameplay_core.asm": "b211c6a529ff13c3a34cbd4fca8132e7fd8fffd8c9614b134174517c4feb089d",
+          "src/gameplay/gameplay_layout.asm": "41c23b178e425fa723a5889a31e4a6fa6c89477f2b1d94a77f26d471d7fdeaa7",
+          "src/gameplay/replay.asm": "e56a1b52c6828fbb614f9d6248d06637d5e6c01dd48cdefb37d842e9da39e9ae",
+          "src/gameplay/vertical_slice.asm": "38fc69f2d214dcaa700defb677093adfdb1aea6228d97f5b7b99edc052514090",
+          "src/hardware/controllers.asm": "8ef2c1781b65c4817f976f77f94bd7e4fe697f2769afa705cc22363530fea479",
+          "src/ui/timeline_control.asm": "9d266cd0693f53b9918ee664eff2eb79fc544e7ed4520f715c21ce50c461ab8c"
+        }
+      },
+      "state_schema_id": {
+        "bundle_sha256": "3efe4cb4ded241a8df1164e7018b13ddb16e84873bd6f217e717bb8a29e450ac",
+        "derivation": "big-endian first 32 bits of SHA-256 over the canonical path-to-source-SHA-256 JSON map",
+        "id": 1056853172,
+        "id_hex": "3EFE4CB4",
+        "sources": {
+          "src/game/engine_layout.asm": "40e2876cc36a02057a9a2254d4c381e9a00bad4939c9fd5426d890cc70f409be",
+          "src/game/projection.asm": "f863d0ea4730da3767144c6b5336c7b012754fb56adf4efb0651734f9663ee64",
+          "src/gameplay/gameplay_layout.asm": "41c23b178e425fa723a5889a31e4a6fa6c89477f2b1d94a77f26d471d7fdeaa7"
+        }
+      }
+    },
+    "completion_signature": {
+      "derivation": "CRC-32/ISO-HDLC of big-endian stage, attempt count, terminal ticks/reason, active echoes, gameplay result, state CRC, and concatenated live-input history CRC",
+      "runtime_assertion_source": "observed terminal RAM fields",
+      "value_hex": "3076DE37"
+    },
+    "decoded_validation": {
+      "anchor_capacity": 0,
+      "anchors": [],
+      "attempts": [
+        {
+          "encoding": "RLE",
+          "frames": 40,
+          "natural_end_reason": "MANUAL_ABORT",
+          "operation": "APPEND",
+          "ordinal": 0,
+          "target_slot": null,
+          "uncompressed_crc32": "96501ab7"
+        },
+        {
+          "encoding": "RLE",
+          "frames": 166,
+          "natural_end_reason": "SOLVED",
+          "operation": "APPEND",
+          "ordinal": 1,
+          "target_slot": null,
+          "uncompressed_crc32": "492d6ac0"
+        }
+      ],
+      "checkpoints": [
+        {
+          "attempt": 1,
+          "completed_ticks": 166,
+          "state_crc32": "8762e745"
+        }
+      ],
+      "compatibility": {
+        "content_id": "d6df6e988fa55aea",
+        "engine_compat_id": "542a6493",
+        "state_schema_id": "3efe4cb4"
+      },
+      "counts": {
+        "anchors": 0,
+        "attempts": 2,
+        "checkpoints": 1,
+        "chunks": 4,
+        "timeline_decisions": 0
+      },
+      "expected_completion_signature": "3076de37",
+      "expected_final_state_crc32": "8762e745",
+      "file": {
+        "bytes": 176,
+        "header_crc32": "79d46d7c",
+        "payload_crc32": "7fa25079",
+        "sha256": "2bdc8d142bce88625ea6970c635fcd53deaae75e8fffe57c43bbcd6613c1705e"
+      },
+      "fixture_classification": "unverified replay assertions; not a canonical gameplay result",
+      "format": {
+        "byte_order": "big",
+        "header_bytes": 64,
+        "magic": "R94R",
+        "maximum_file_bytes": 65536,
+        "version": 1
+      },
+      "initial_echo_count": 0,
+      "initial_persistent_crc32": "2eee6043",
+      "maximum_active_echoes": 6,
+      "mode": "FULL_HISTORY",
+      "outcome_assertion": {
+        "active_echoes": 1,
+        "anchors_used": 0,
+        "assertion_only": true,
+        "attempts_used": 2,
+        "completion_signature": "3076de37",
+        "score": 0,
+        "simulation_performed": false,
+        "state_crc32": "8762e745",
+        "terminal_reason": "SOLVED",
+        "terminal_ticks": 166
+      },
+      "schema": "recursion94.replay_report",
+      "schema_version": 1,
+      "stage_id": 101,
+      "status": "pass",
+      "timeline": [],
+      "timing_mode": "NTSC_60"
+    },
+    "history_crc32": "91BE5C18",
+    "initial_persistent_crc32": "2EEE6043",
+    "mode": "FULL_HISTORY",
+    "path": "artifacts/replays/B01.r94r",
+    "sha256": "2bdc8d142bce88625ea6970c635fcd53deaae75e8fffe57c43bbcd6613c1705e",
+    "source": "attempt bytes copied from live guest replay banks after two byte-identical emulator runs"
+  },
+  "checks": [
+    {
+      "check": "two_fresh_independent_sessions",
+      "detail": "process IDs [172252, 159352]",
+      "status": "pass"
+    },
+    {
+      "check": "isolated_standard_three_button_real_pad",
+      "detail": "each temporary profile explicitly assigns port 1 gamepad3.1",
+      "status": "pass"
+    },
+    {
+      "check": "read_only_debugger_session",
+      "detail": "RAM/register write packets []",
+      "status": "pass"
+    },
+    {
+      "check": "symbol_bound_post_gameplay_observation",
+      "detail": "tick 0 captured at the stage-3 acknowledgment-only priming ISR entry; counters and controller polling begin on the next stage-4 RUNNING full VBlank, and all consumed/meta frames were captured after TimelineHandleMetaInput/GameplayStep",
+      "status": "pass"
+    },
+    {
+      "check": "attempt_1_input_staged_before_commit_reset",
+      "detail": "Start+C was already latched at TimelineHandleMetaInput; its releases and attempt 1's Right hold were staged before the long commit/reset could admit another VBlank",
+      "status": "pass"
+    },
+    {
+      "check": "actual_attempt_input_schedules",
+      "detail": "guest INPUT_HELD observations were Right x32 + neutral x8, then Right x165 + Right+B edge",
+      "status": "pass"
+    },
+    {
+      "check": "initial_zero_echo_current_bank_6",
+      "detail": "both fresh sessions began attempt 0/tick 0 with bank 6 current",
+      "status": "pass"
+    },
+    {
+      "check": "first_attempt_exactly_40_steps",
+      "detail": "pre-commit tick/attempt lengths [(40, 40), (40, 40)]",
+      "status": "pass"
+    },
+    {
+      "check": "staged_start_c_manual_commit",
+      "detail": "Start keydown preceded C keydown; the next pad poll latched Start+C at meta entry and no authoritative step was consumed",
+      "status": "pass"
+    },
+    {
+      "check": "bank_6_partial_length_crc_and_zero_tail",
+      "detail": "length/independent CRC/flags/generation [(40, '96501AB7', 3, 1), (40, '96501AB7', 3, 1)]",
+      "status": "pass"
+    },
+    {
+      "check": "real_commit_reset_rotation_and_reinstantiation",
+      "detail": "bank 6 became echo 1, bank 0 became current, attempt 1/tick 0 and canonical actors/device were rebuilt",
+      "status": "pass"
+    },
+    {
+      "check": "reset_projection_is_live_and_independently_checked",
+      "detail": "post-reset projection CRCs ['AA4ED7DF', 'AA4ED7DF']",
+      "status": "pass"
+    },
+    {
+      "check": "current_bank_0_records_actual_166_inputs",
+      "detail": "bank 0 length is 166 with Right x165 + Right+B and a zero tail",
+      "status": "pass"
+    },
+    {
+      "check": "program_stable_exactly_tick_166",
+      "detail": "terminal tick/state/reason [(166, 2, 256), (166, 2, 256)]",
+      "status": "pass"
+    },
+    {
+      "check": "terminal_b_edge_is_observed_not_inferred",
+      "detail": "live input/gameplay ABIs both show Right+B with a B edge",
+      "status": "pass"
+    },
+    {
+      "check": "echo_switch_causality_at_x_80",
+      "detail": "physical echo slot 0 alone occupies the switch at X=80",
+      "status": "pass"
+    },
+    {
+      "check": "current_actor_at_terminal_and_not_switch",
+      "detail": "current actor occupies the east terminal and bit 6 is absent from switch occupancy",
+      "status": "pass"
+    },
+    {
+      "check": "switch_door_and_device_program_stable",
+      "detail": "device state, gameplay mirror, and timeline stable flag agree",
+      "status": "pass"
+    },
+    {
+      "check": "independent_terminal_projection_crc_8762e745",
+      "detail": "bitwise host CRCs ['8762E745', '8762E745']",
+      "status": "pass"
+    },
+    {
+      "check": "two_runs_are_byte_identical",
+      "detail": "input histories, replay RAM, ordinary state, projections, and terminal control ABIs match byte-for-byte",
+      "status": "pass"
+    },
+    {
+      "check": "full_history_replay_from_actual_ram",
+      "detail": "R94R contains both live RAM streams and the observed one-echo PROGRAM_STABLE outcome",
+      "status": "pass"
+    },
+    {
+      "check": "r94r_validate_encode_decode_round_trip",
+      "detail": "encoded bytes 176, SHA-256 2bdc8d142bce88625ea6970c635fcd53deaae75e8fffe57c43bbcd6613c1705e",
+      "status": "pass"
+    },
+    {
+      "check": "hash_bound_dynamic_provenance",
+      "detail": "ROM/symbol/config/emulator/source manifests/session transcripts are SHA-256 bound; no ROM hash is hard-coded",
+      "status": "pass"
+    }
+  ],
+  "debugger_write_packets": [],
+  "evidence_limits": [
+    "BlastEm GDB is used only for breakpoint control and memory reads.",
+    "Keyboard messages exercise the emulator's configured standard three-button pad path; they are not guest-memory injection.",
+    "This report proves deterministic B01 gameplay/replay behavior; it makes no visual, audio, renderer, performance, or release-ROM equivalence claim.",
+    "The completion signature is a documented evidence-side digest of observed outcome fields; the runtime-published canonical state assertion is the independent projection CRC."
+  ],
+  "evidence_type": "blastem_gdb_m4_b01_full_history",
+  "provenance": {
+    "default_config": {
+      "bindings": {
+        "d": true,
+        "enter": true,
+        "right": true,
+        "s": true
+      },
+      "path": ".toolcache/blastem/default.cfg",
+      "required_buttons": [
+        "Right",
+        "Start",
+        "C",
+        "B"
+      ],
+      "required_keys": [
+        "Right",
+        "Enter",
+        "D",
+        "S"
+      ],
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "emulator": {
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "launch_flags": [
+      "-D",
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "lock": {
+      "acquired_utc": "2026-07-26T15:08:31.740527+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "rom": {
+      "hash_policy": "resolved at invocation and verified unchanged after capture",
+      "path": "build/recursion94-debug.bin",
+      "sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460"
+    },
+    "serialized_lock": ".toolcache/locks/blastem-gdb.lock",
+    "symbol_map": {
+      "path": "build/recursion94-debug.sym",
+      "sha256": "c22203503dbf3eda796005b0383bec972b37251d9378218b26e686e4683e77cf",
+      "symbols": {
+        "GameplayCommitAndReset": "000034E8",
+        "GameplayStep": "00003852",
+        "MainLoopPostGameplayStep": "00000308",
+        "TimelineHandleMetaInput": "0000578E",
+        "VBlankInterrupt": "00001648"
+      }
+    },
+    "transcript": {
+      "commands": 2068,
+      "path": "artifacts/traces/m4-runtime-gdb-transcript.log",
+      "sha256": "d2f1dbb414fd734cbcc26955a7cd35027225eebef671e7a4d5550a9f1bc1bb50"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+  "schema": "r94-m4-runtime-evidence-v1",
+  "scope": "Milestone4",
+  "sessions": [
+    {
+      "attempt_0_inputs": {
+        "bytes": 40,
+        "crc32_iso_hdlc": "96501AB7",
+        "hex": "08080808080808080808080808080808080808080808080808080808080808080000000000000000",
+        "reserved_bits_zero": true,
+        "sha256": "60438cd8c0f9baa6bb734a333336f2903da05ea171c5c782dcb6ab38e2c6947f"
+      },
+      "attempt_1_inputs": {
+        "bytes": 166,
+        "crc32_iso_hdlc": "492D6AC0",
+        "hex": "08080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080828",
+        "reserved_bits_zero": true,
+        "sha256": "1144ca025d0f5d8d0afc57520f43d8f1ad5440840849be4c7ae0f9df8c5a1405"
+      },
+      "initial": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 0
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 0,
+          "echo_actor_count": 0,
+          "flags": 1,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 0,
+          "switch_mask": 0,
+          "version": 1
+        },
+        "input": {
+          "connected": 0,
+          "held": 0,
+          "pressed": 0,
+          "raw_high": 0,
+          "raw_low": 0,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "initial_attempt_0_tick_0",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 0,
+            "flags": 0,
+            "half_height": 0,
+            "half_width": 0,
+            "health": 0,
+            "input": 0,
+            "logical_id": 0,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 0,
+            "y_16_8": 0
+          },
+          "sha256": "cfd9fc750bb7c49f7a479a72ba0b2882fa58b1e23b9c8bcd241ec0d140c197be"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "69A15117",
+          "header": {
+            "active_actor_count": 1,
+            "attempt": 0,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 1,
+            "terminal_reason": 0,
+            "tick": 0
+          },
+          "published_crc32_iso_hdlc": "69A15117",
+          "published_crc_matches": true,
+          "sha256": "63b95da540587df1215499b52202f71e9d508134ace3199f02b1ad4e03ace9e3"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 787374147,
+          "crc32_iso_hdlc_hex": "2EEE6043",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 0
+            }
+          ],
+          "sha256": "870de0d3352f076fbde9bbc0f1e8f37f16915608f2a0b07870142950d48adbe8",
+          "timeline": {
+            "attempt_length": 0,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "manual_commit_entry": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 40
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 3,
+          "echo_actor_count": 0,
+          "flags": 25,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 40,
+          "switch_mask": 64,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 64,
+          "pressed": 64,
+          "raw_high": 95,
+          "raw_low": 19,
+          "released": 0,
+          "start_held": 1
+        },
+        "label": "attempt_0_tick_40_start_c_meta_entry",
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 2632424699,
+          "crc32_iso_hdlc_hex": "9CE79CFB",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "37d623176ec9115e93b1a816a9d59a47252d8a348dc4437802a9d15a84d1249c",
+          "timeline": {
+            "attempt_length": 40,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "manual_commit_injection": {
+        "authoritative_frames_consumed": 0,
+        "buttons": [
+          "Start",
+          "C"
+        ],
+        "guest_ram_or_pc_writes": false,
+        "keys": [
+          "Enter",
+          "D"
+        ],
+        "method": "targeted PostMessageW key events; chord observed at TimelineHandleMetaInput entry before commit/reset",
+        "next_attempt_events_staged_at": "TimelineHandleMetaInput after ControllerPoll",
+        "staged_keydown_order": [
+          "Start",
+          "C"
+        ],
+        "status": "pass"
+      },
+      "metadata": {
+        "attempt_1_input_staging_breakpoint_symbol": "TimelineHandleMetaInput",
+        "attempt_1_input_staging_role": "after_controller_poll_before_commit_reset",
+        "authoritative_origin": "next_stage_4_running_full_vblank",
+        "controller_profile": {
+          "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+          "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+          "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem/blastem.cfg",
+          "port_1_assignment": "gamepad3.1",
+          "runtime_copy": {
+            "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem/blastem.cfg",
+            "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+            "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+            "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+            "status": "pass",
+            "temporary_copy_removed_after_session": true,
+            "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem"
+          },
+          "session_isolation": {
+            "config_in_exe_dir": true,
+            "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem/blastem.cfg",
+            "config_sha256": "e3b3fd3c6405e9329fb8b175b56a283a18d675a015a054eeaf7e282a0dcc412a",
+            "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/session-data/saves/$ROMNAME",
+            "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/session-data/screenshots",
+            "status": "pass",
+            "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/session-data/vgm"
+          },
+          "sha256": "e3b3fd3c6405e9329fb8b175b56a283a18d675a015a054eeaf7e282a0dcc412a",
+          "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "status": "pass"
+        },
+        "counters_and_controller_poll_begin": "next_stage_4_running_full_vblank",
+        "initial_breakpoint": "00001648",
+        "initial_breakpoint_role": "stage_3_ack_only_priming_isr",
+        "initial_breakpoint_symbol": "VBlankInterrupt",
+        "input_events": [
+          "Right:down",
+          "Right:up",
+          "Start:down",
+          "C:down",
+          "C:up",
+          "Start:up",
+          "Right:down",
+          "B:down",
+          "B:up",
+          "Right:up"
+        ],
+        "launch_flags": [
+          "-D",
+          "-g",
+          "-m",
+          "gen",
+          "-r",
+          "U"
+        ],
+        "process_id": 172252,
+        "runtime_copy": {
+          "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem/blastem.cfg",
+          "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+          "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+          "status": "pass",
+          "temporary_copy_removed_after_session": true,
+          "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_1-084qauku/blastem"
+        },
+        "step_breakpoint": "00000308",
+        "step_breakpoint_label": "MainLoopPostGameplayStep",
+        "step_breakpoint_source": "build/recursion94-debug.sym",
+        "transcript_sha256": "9bbdf9701aac8041596069e99bb4a832937ede29003da6d5c0774a5a56aae880"
+      },
+      "post_manual_commit": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 2,
+          "attempt": 1,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 2857293791,
+          "terminal_reason": 0,
+          "tick": 0
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 0,
+          "echo_actor_count": 1,
+          "flags": 1,
+          "last_bank_crc": 2521832119,
+          "last_bank_crc_hex": "96501AB7",
+          "last_commit_reason": 2,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 1,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 0,
+          "switch_mask": 0,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 8,
+          "pressed": 8,
+          "raw_high": 119,
+          "raw_low": 51,
+          "released": 64,
+          "start_held": 0
+        },
+        "label": "post_start_c_attempt_1_tick_0",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 0,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "sha256": "4c5fccaf5b08edb48746900b07b1331a676c2a1d1b6ff8b3b62941281b040d0f"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "AA4ED7DF",
+          "header": {
+            "active_actor_count": 2,
+            "attempt": 1,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 1,
+            "terminal_reason": 0,
+            "tick": 0
+          },
+          "published_crc32_iso_hdlc": "AA4ED7DF",
+          "published_crc_matches": true,
+          "sha256": "af3fb7164003aa073328f33c83d7dea78cdee8fa6dfa46ea0ea331f0a5601813"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 1711456899,
+          "crc32_iso_hdlc_hex": "6602C283",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 2521832119,
+              "crc32_iso_hdlc_hex": "96501AB7",
+              "flags": 3,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "8e0f58903fb22bec38f8347cedc11924e1748e98d3c8132fd36899a50f52c291",
+          "timeline": {
+            "attempt_length": 0,
+            "bytes": 24,
+            "current_bank": 0,
+            "echo_count": 1,
+            "echo_order": [
+              6,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "pre_manual_commit": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 40
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 3,
+          "echo_actor_count": 0,
+          "flags": 25,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 40,
+          "switch_mask": 64,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 0,
+          "pressed": 0,
+          "raw_high": 127,
+          "raw_low": 51,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "attempt_0_tick_40_pre_manual_commit",
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 2632424699,
+          "crc32_iso_hdlc_hex": "9CE79CFB",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "37d623176ec9115e93b1a816a9d59a47252d8a348dc4437802a9d15a84d1249c",
+          "timeline": {
+            "attempt_length": 40,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "session_id": "session_1",
+      "terminal": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 2,
+          "attempt": 1,
+          "checkpoint_count": 4,
+          "checkpoint_tick": 166,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 40,
+          "input_pressed": 32,
+          "input_previous": 8,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 2,
+          "state_crc": 2271405893,
+          "terminal_reason": 256,
+          "tick": 166
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 40,
+          "current_pressed": 32,
+          "current_previous": 8,
+          "current_released": 0,
+          "door_state": 7,
+          "echo_actor_count": 1,
+          "flags": 27,
+          "last_bank_crc": 2521832119,
+          "last_bank_crc_hex": "96501AB7",
+          "last_commit_reason": 2,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 1,
+          "result": 1,
+          "stable_tick": 166,
+          "step_count": 166,
+          "switch_mask": 1,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 40,
+          "pressed": 32,
+          "raw_high": 103,
+          "raw_low": 51,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "program_stable_attempt_1_tick_166",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 1,
+            "state": 7,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 40,
+            "logical_id": 0,
+            "previous_input": 8,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 384,
+            "vy_16_8": 0,
+            "x_16_8": 71936,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "sha256": "def2c2c93198cdf222c21690b92803e3fec28a3cfc9b9a0638c627632e82ab27"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "8762E745",
+          "header": {
+            "active_actor_count": 2,
+            "attempt": 1,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 40,
+            "input_pressed": 32,
+            "input_previous": 8,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 2,
+            "terminal_reason": 256,
+            "tick": 166
+          },
+          "published_crc32_iso_hdlc": "8762E745",
+          "published_crc_matches": true,
+          "sha256": "52c133d252115b230994564e385a9ff9c0925ed528233e4fe48c079cf6e3521a"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 1883647743,
+          "crc32_iso_hdlc_hex": "70462EFF",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "c457ed446f4989a354900de6767f338b8435ce590b27a4ef26fef511a01a715e",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 166
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 2521832119,
+              "crc32_iso_hdlc_hex": "96501AB7",
+              "flags": 3,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "ecf60a31577a1c041d4d170f639b65a2b55c20e9ec82b0341704a03b7fd86651",
+          "timeline": {
+            "attempt_length": 166,
+            "bytes": 24,
+            "current_bank": 0,
+            "echo_count": 1,
+            "echo_order": [
+              6,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 65,
+            "last_result": 1,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "attempt_0_inputs": {
+        "bytes": 40,
+        "crc32_iso_hdlc": "96501AB7",
+        "hex": "08080808080808080808080808080808080808080808080808080808080808080000000000000000",
+        "reserved_bits_zero": true,
+        "sha256": "60438cd8c0f9baa6bb734a333336f2903da05ea171c5c782dcb6ab38e2c6947f"
+      },
+      "attempt_1_inputs": {
+        "bytes": 166,
+        "crc32_iso_hdlc": "492D6AC0",
+        "hex": "08080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080808080828",
+        "reserved_bits_zero": true,
+        "sha256": "1144ca025d0f5d8d0afc57520f43d8f1ad5440840849be4c7ae0f9df8c5a1405"
+      },
+      "initial": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 0
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 0,
+          "echo_actor_count": 0,
+          "flags": 1,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 0,
+          "switch_mask": 0,
+          "version": 1
+        },
+        "input": {
+          "connected": 0,
+          "held": 0,
+          "pressed": 0,
+          "raw_high": 0,
+          "raw_low": 0,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "initial_attempt_0_tick_0",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 0,
+            "flags": 0,
+            "half_height": 0,
+            "half_width": 0,
+            "health": 0,
+            "input": 0,
+            "logical_id": 0,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 0,
+            "y_16_8": 0
+          },
+          "sha256": "cfd9fc750bb7c49f7a479a72ba0b2882fa58b1e23b9c8bcd241ec0d140c197be"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "69A15117",
+          "header": {
+            "active_actor_count": 1,
+            "attempt": 0,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 1,
+            "terminal_reason": 0,
+            "tick": 0
+          },
+          "published_crc32_iso_hdlc": "69A15117",
+          "published_crc_matches": true,
+          "sha256": "63b95da540587df1215499b52202f71e9d508134ace3199f02b1ad4e03ace9e3"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 787374147,
+          "crc32_iso_hdlc_hex": "2EEE6043",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 0
+            }
+          ],
+          "sha256": "870de0d3352f076fbde9bbc0f1e8f37f16915608f2a0b07870142950d48adbe8",
+          "timeline": {
+            "attempt_length": 0,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "manual_commit_entry": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 40
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 3,
+          "echo_actor_count": 0,
+          "flags": 25,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 40,
+          "switch_mask": 64,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 64,
+          "pressed": 64,
+          "raw_high": 95,
+          "raw_low": 19,
+          "released": 0,
+          "start_held": 1
+        },
+        "label": "attempt_0_tick_40_start_c_meta_entry",
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 2632424699,
+          "crc32_iso_hdlc_hex": "9CE79CFB",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "37d623176ec9115e93b1a816a9d59a47252d8a348dc4437802a9d15a84d1249c",
+          "timeline": {
+            "attempt_length": 40,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "manual_commit_injection": {
+        "authoritative_frames_consumed": 0,
+        "buttons": [
+          "Start",
+          "C"
+        ],
+        "guest_ram_or_pc_writes": false,
+        "keys": [
+          "Enter",
+          "D"
+        ],
+        "method": "targeted PostMessageW key events; chord observed at TimelineHandleMetaInput entry before commit/reset",
+        "next_attempt_events_staged_at": "TimelineHandleMetaInput after ControllerPoll",
+        "staged_keydown_order": [
+          "Start",
+          "C"
+        ],
+        "status": "pass"
+      },
+      "metadata": {
+        "attempt_1_input_staging_breakpoint_symbol": "TimelineHandleMetaInput",
+        "attempt_1_input_staging_role": "after_controller_poll_before_commit_reset",
+        "authoritative_origin": "next_stage_4_running_full_vblank",
+        "controller_profile": {
+          "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+          "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+          "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem/blastem.cfg",
+          "port_1_assignment": "gamepad3.1",
+          "runtime_copy": {
+            "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem/blastem.cfg",
+            "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+            "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+            "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+            "status": "pass",
+            "temporary_copy_removed_after_session": true,
+            "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem"
+          },
+          "session_isolation": {
+            "config_in_exe_dir": true,
+            "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem/blastem.cfg",
+            "config_sha256": "3c87c76343eedf467c385e9d9d1f96d107c2b67278fa6e91cd82a3fee63cccd9",
+            "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/session-data/saves/$ROMNAME",
+            "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/session-data/screenshots",
+            "status": "pass",
+            "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/session-data/vgm"
+          },
+          "sha256": "3c87c76343eedf467c385e9d9d1f96d107c2b67278fa6e91cd82a3fee63cccd9",
+          "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "status": "pass"
+        },
+        "counters_and_controller_poll_begin": "next_stage_4_running_full_vblank",
+        "initial_breakpoint": "00001648",
+        "initial_breakpoint_role": "stage_3_ack_only_priming_isr",
+        "initial_breakpoint_symbol": "VBlankInterrupt",
+        "input_events": [
+          "Right:down",
+          "Right:up",
+          "Start:down",
+          "C:down",
+          "C:up",
+          "Start:up",
+          "Right:down",
+          "B:down",
+          "B:up",
+          "Right:up"
+        ],
+        "launch_flags": [
+          "-D",
+          "-g",
+          "-m",
+          "gen",
+          "-r",
+          "U"
+        ],
+        "process_id": 159352,
+        "runtime_copy": {
+          "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem/blastem.cfg",
+          "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+          "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+          "status": "pass",
+          "temporary_copy_removed_after_session": true,
+          "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-session_2-b5m0dy8g/blastem"
+        },
+        "step_breakpoint": "00000308",
+        "step_breakpoint_label": "MainLoopPostGameplayStep",
+        "step_breakpoint_source": "build/recursion94-debug.sym",
+        "transcript_sha256": "ce9f61dd43e18c7424c3f9bd08bf3ede137349fe48bf57c33309a27847ec1b5d"
+      },
+      "post_manual_commit": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 2,
+          "attempt": 1,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 2857293791,
+          "terminal_reason": 0,
+          "tick": 0
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 0,
+          "echo_actor_count": 1,
+          "flags": 1,
+          "last_bank_crc": 2521832119,
+          "last_bank_crc_hex": "96501AB7",
+          "last_commit_reason": 2,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 1,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 0,
+          "switch_mask": 0,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 8,
+          "pressed": 8,
+          "raw_high": 119,
+          "raw_low": 51,
+          "released": 64,
+          "start_held": 0
+        },
+        "label": "post_start_c_attempt_1_tick_0",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 0,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 8192,
+            "y_16_8": 28672
+          },
+          "sha256": "4c5fccaf5b08edb48746900b07b1331a676c2a1d1b6ff8b3b62941281b040d0f"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "AA4ED7DF",
+          "header": {
+            "active_actor_count": 2,
+            "attempt": 1,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 1,
+            "terminal_reason": 0,
+            "tick": 0
+          },
+          "published_crc32_iso_hdlc": "AA4ED7DF",
+          "published_crc_matches": true,
+          "sha256": "af3fb7164003aa073328f33c83d7dea78cdee8fa6dfa46ea0ea331f0a5601813"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 1711456899,
+          "crc32_iso_hdlc_hex": "6602C283",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 2521832119,
+              "crc32_iso_hdlc_hex": "96501AB7",
+              "flags": 3,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "8e0f58903fb22bec38f8347cedc11924e1748e98d3c8132fd36899a50f52c291",
+          "timeline": {
+            "attempt_length": 0,
+            "bytes": 24,
+            "current_bank": 0,
+            "echo_count": 1,
+            "echo_order": [
+              6,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "pre_manual_commit": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 1,
+          "checkpoint_tick": 0,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 1,
+          "state_crc": 1772179735,
+          "terminal_reason": 0,
+          "tick": 40
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 0,
+          "current_pressed": 0,
+          "current_previous": 0,
+          "current_released": 0,
+          "door_state": 3,
+          "echo_actor_count": 0,
+          "flags": 25,
+          "last_bank_crc": 0,
+          "last_bank_crc_hex": "00000000",
+          "last_commit_reason": 0,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 0,
+          "result": 0,
+          "stable_tick": 0,
+          "step_count": 40,
+          "switch_mask": 64,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 0,
+          "pressed": 0,
+          "raw_high": 127,
+          "raw_low": 51,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "attempt_0_tick_40_pre_manual_commit",
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 2632424699,
+          "crc32_iso_hdlc_hex": "9CE79CFB",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "37d623176ec9115e93b1a816a9d59a47252d8a348dc4437802a9d15a84d1249c",
+          "timeline": {
+            "attempt_length": 40,
+            "bytes": 24,
+            "current_bank": 6,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      },
+      "session_id": "session_2",
+      "terminal": {
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 2,
+          "attempt": 1,
+          "checkpoint_count": 4,
+          "checkpoint_tick": 166,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 40,
+          "input_pressed": 32,
+          "input_previous": 8,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 2,
+          "state_crc": 2271405893,
+          "terminal_reason": 256,
+          "tick": 166
+        },
+        "gameplay": {
+          "bytes": 256,
+          "current_actor_index": 6,
+          "current_input": 40,
+          "current_pressed": 32,
+          "current_previous": 8,
+          "current_released": 0,
+          "door_state": 7,
+          "echo_actor_count": 1,
+          "flags": 27,
+          "last_bank_crc": 2521832119,
+          "last_bank_crc_hex": "96501AB7",
+          "last_commit_reason": 2,
+          "magic": 1379480647,
+          "magic_ascii": "R94G",
+          "phase": 0,
+          "replacement_flags": 1,
+          "result": 1,
+          "stable_tick": 166,
+          "step_count": 166,
+          "switch_mask": 1,
+          "version": 1
+        },
+        "input": {
+          "connected": 1,
+          "held": 40,
+          "pressed": 32,
+          "raw_high": 103,
+          "raw_low": 51,
+          "released": 0,
+          "start_held": 0
+        },
+        "label": "program_stable_attempt_1_tick_166",
+        "ordinary": {
+          "address": "00FF1800",
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 1,
+            "state": 7,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "bytes": 18432,
+          "current_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 40,
+            "logical_id": 0,
+            "previous_input": 8,
+            "reserved": 0,
+            "role": 6,
+            "slot": 6,
+            "vx_16_8": 384,
+            "vy_16_8": 0,
+            "x_16_8": 71936,
+            "y_16_8": 28672
+          },
+          "echo_actor": {
+            "active": 1,
+            "flags": 0,
+            "half_height": 4,
+            "half_width": 4,
+            "health": 1,
+            "input": 0,
+            "logical_id": 6,
+            "previous_input": 0,
+            "reserved": 0,
+            "role": 0,
+            "slot": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "sha256": "def2c2c93198cdf222c21690b92803e3fec28a3cfc9b9a0638c627632e82ab27"
+        },
+        "projection": {
+          "address": "00FF6000",
+          "bounds_valid": true,
+          "bytes": 3638,
+          "crc32_iso_hdlc": "8762E745",
+          "header": {
+            "active_actor_count": 2,
+            "attempt": 1,
+            "bytes": 3638,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 40,
+            "input_pressed": 32,
+            "input_previous": 8,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480656,
+            "magic_ascii": "R94P",
+            "overflow_flags": 0,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "schema_version": 1,
+            "state": 2,
+            "terminal_reason": 256,
+            "tick": 166
+          },
+          "published_crc32_iso_hdlc": "8762E745",
+          "published_crc_matches": true,
+          "sha256": "52c133d252115b230994564e385a9ff9c0925ed528233e4fe48c079cf6e3521a"
+        },
+        "replay_timeline": {
+          "bytes": 5120,
+          "crc32_iso_hdlc": 1883647743,
+          "crc32_iso_hdlc_hex": "70462EFF",
+          "descriptors": [
+            {
+              "bank": 0,
+              "bank_sha256": "c457ed446f4989a354900de6767f338b8435ce590b27a4ef26fef511a01a715e",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 166
+            },
+            {
+              "bank": 1,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 2,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 3,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 4,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 5,
+              "bank_sha256": "fe2f74a1e0b16a66452888eb4d734bc455cf1304481bb495d59afa8cf9cae93b",
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 0,
+              "generation": 0,
+              "length": 0
+            },
+            {
+              "bank": 6,
+              "bank_sha256": "420360eb9ac504ed6542896db9dc3ad1e9702e0aafad23a3c6835c0f49bb2211",
+              "crc32_iso_hdlc": 2521832119,
+              "crc32_iso_hdlc_hex": "96501AB7",
+              "flags": 3,
+              "generation": 1,
+              "length": 40
+            }
+          ],
+          "sha256": "ecf60a31577a1c041d4d170f639b65a2b55c20e9ec82b0341704a03b7fd86651",
+          "timeline": {
+            "attempt_length": 166,
+            "bytes": 24,
+            "current_bank": 0,
+            "echo_count": 1,
+            "echo_order": [
+              6,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 65,
+            "last_result": 1,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        }
+      }
+    }
+  ],
+  "status": "pass"
+}

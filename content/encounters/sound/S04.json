@@ -1,0 +1,242 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "S04",
+  "numeric_id": 304,
+  "name": "THE GARBAGE COLLECTOR",
+  "kind": "boss",
+  "campaign_order": 12,
+  "sector": {
+    "id": "SOUND",
+    "name": "SOUND",
+    "theme": "scrub chamber where the oldest waveform is visibly erased"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#......#....#......#",
+      "#..##..#....#..##..#",
+      "#..##..........##..#",
+      "#......######......#",
+      "#......#....#......#",
+      "#..................#",
+      "#......#....#......#",
+      "#......######......#",
+      "#..##..........##..#",
+      "#..##..#....#..##..#",
+      "#......#....#......#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 176}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [30, 60],
+    "reset_policy": "restore all recordings for the next attempt, collector phase, locks, shield, buffer, checksum port, and projectiles"
+  },
+  "echoes": {
+    "cap": 4,
+    "minimum": 4,
+    "first_clear_range": [4, 7],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_SOUND_COLLECTOR",
+    "music_id": "MUS_SOUND_COLLECTOR",
+    "tempo_bpm": 120,
+    "authoritative_phase_source": "68000 encounter frame",
+    "visual_layers": ["echo_wave_layers", "scrub_countdown", "collector_parts", "checksum_trace"]
+  },
+  "mechanics": ["oldest_echo_scrub", "known_schedule", "pre_scrub_work", "shield", "buffer", "checksum_upload", "non_damage_boss_objective"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "S04_BOOT_LOCK",
+        "type": "breakable_security_node",
+        "x": 80,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "damaged", "unlocked"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"health": 3, "must_complete_before_frame": 240}
+      },
+      {
+        "logical_id": "S04_SHIELD",
+        "type": "shield_emitter",
+        "x": 224,
+        "y": 48,
+        "state": {"initial": "off", "states": ["off", "charging", "active"]},
+        "reset_policy": "off",
+        "anchor_policy": "forbidden",
+        "parameters": {"charge_frames": 60, "active_frames": 210}
+      },
+      {
+        "logical_id": "S04_BUFFER",
+        "type": "echo_buffer_terminal",
+        "x": 80,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "recording", "sealed"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"record_frames": 90, "protects_progress_not_actor": true}
+      },
+      {
+        "logical_id": "S04_CHECKSUM_PORT",
+        "type": "boss_upload_port",
+        "x": 272,
+        "y": 176,
+        "state": {"initial": "sealed", "states": ["sealed", "ready", "uploading", "verified"]},
+        "reset_policy": "sealed",
+        "anchor_policy": "forbidden",
+        "parameters": {"upload_frames": 90, "non_damage_objective": true}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "S04_SCRUB_FIELD",
+        "type": "scheduled_echo_disable",
+        "x": 0,
+        "y": 0,
+        "state": {"initial": "counting", "states": ["counting", "warning", "scrubbing"]},
+        "reset_policy": "counting",
+        "anchor_policy": "forbidden",
+        "parameters": {"scrub_frames": [240, 480], "selection": "oldest enabled echo then lowest slot id", "disable_duration": "remainder of attempt"}
+      }
+    ],
+    "carryables": [],
+    "boss_components": [
+      {
+        "logical_id": "S04_COLLECTOR_CORE",
+        "type": "boss_core",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "collecting", "states": ["collecting", "checksum_exposed", "verified"]},
+        "reset_policy": "collecting",
+        "anchor_policy": "forbidden",
+        "parameters": {"damageable": false, "progress_source": "S04_CHECKSUM_PORT"}
+      },
+      {
+        "logical_id": "S04_SCRUB_ARM",
+        "type": "boss_scrubber",
+        "x": 160,
+        "y": 72,
+        "state": {"initial": "armed", "states": ["armed", "sweeping", "cooldown"]},
+        "reset_policy": "armed",
+        "anchor_policy": "forbidden",
+        "parameters": {"activation_frames": [240, 480], "target_policy": "oldest enabled echo"}
+      },
+      {
+        "logical_id": "S04_HASH_RING",
+        "type": "boss_checksum_ring",
+        "x": 160,
+        "y": 144,
+        "state": {"initial": "closed", "states": ["closed", "open", "matched"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"opens_after": ["S04_BOOT_LOCK", "S04_BUFFER", "S04_SHIELD"]}
+      }
+    ]
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "S04_O1_EARLY_UNLOCK", "type": "destroy", "depends_on": [], "condition": "echo_1 unlocks S04_BOOT_LOCK before first scrub", "deadline_frame": 239, "role": "echo_1"},
+      {"objective_id": "S04_O2_DECOY", "type": "distract", "depends_on": ["S04_O1_EARLY_UNLOCK"], "condition": "echo_2 draws collector fire before second scrub", "deadline_frame": 479, "role": "echo_2"},
+      {"objective_id": "S04_O3_SHIELD", "type": "maintain_state", "depends_on": [], "condition": "echo_3 activates S04_SHIELD over final route", "deadline_frame": 600, "role": "echo_3"},
+      {"objective_id": "S04_O4_BUFFER", "type": "interact", "depends_on": ["S04_O1_EARLY_UNLOCK"], "condition": "echo_4 seals S04_BUFFER before frame 540", "deadline_frame": 540, "role": "echo_4"},
+      {"objective_id": "S04_O5_UPLOAD", "type": "non_damage_boss_progress", "depends_on": ["S04_O1_EARLY_UNLOCK", "S04_O3_SHIELD", "S04_O4_BUFFER"], "condition": "current uploads and verifies checksum", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "S04_COLLECTOR_CORE state is verified"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "S04_ROLE_OLD_UNLOCK", "actor": "echo_1", "start_frame": 0, "end_frame": 239, "actions": [{"frame": 80, "action": "fire_burst", "target": "S04_BOOT_LOCK"}, {"frame": 190, "action": "confirm_unlock", "target": "S04_BOOT_LOCK"}]},
+    {"role_id": "S04_ROLE_DECOY", "actor": "echo_2", "start_frame": 0, "end_frame": 479, "actions": [{"frame": 260, "action": "fire_pattern", "target": "S04_SCRUB_ARM"}, {"frame": 410, "action": "hold_attention", "target": "S04_COLLECTOR_CORE"}]},
+    {"role_id": "S04_ROLE_SHIELD", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 430, "action": "interact", "target": "S04_SHIELD"}]},
+    {"role_id": "S04_ROLE_BUFFER", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 360, "action": "hold_interact", "target": "S04_BUFFER"}]},
+    {"role_id": "S04_ROLE_UPLOAD", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 560, "action": "interact", "target": "S04_CHECKSUM_PORT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "S04_ALT_PROTECT_UNLOCK",
+      "role_changes": "buffer protects early unlock progress while echo_4 becomes the post-scrub shield operator",
+      "constraints": ["S04_BOOT_LOCK still opens before frame 240", "buffer seals before its author is scrubbed"],
+      "echo_cost": 4
+    },
+    {
+      "id": "S04_ALT_REPLACE_DECOY",
+      "role_changes": "author a disposable second echo and move decoy work to echo_3",
+      "constraints": ["shield activation shifts to echo_4", "current upload window remains 90 frames"],
+      "echo_cost": 4
+    }
+  ],
+  "failure_signals": [
+    {"id": "S04_FAIL_OLD_WORK", "condition": "first scrub disables echo_1 before S04_BOOT_LOCK is unlocked", "visual": "oldest waveform erases and lock dependency flashes", "audio": "oldest echo layer mutes on schedule", "timeline": "marks scrub target and unfinished action"},
+    {"id": "S04_FAIL_SECOND_SCRUB", "condition": "second scrub removes the only active shield or buffer role", "visual": "downstream role graph previews the broken edge", "audio": "second deterministic scrub accent", "timeline": "names selected slot before disable"},
+    {"id": "S04_FAIL_UPLOAD", "condition": "checksum upload is interrupted before 90 frames", "visual": "progress ring freezes at exact byte fraction", "audio": "checksum cadence stops", "timeline": "marks interruption source"}
+  ],
+  "boss_phases": [
+    {
+      "phase_id": "S04_PHASE_OLDEST_MARK",
+      "entry_condition": "encounter frame equals 0",
+      "frame_window": [0, 239],
+      "attacks": [{"pattern": "visible oldest-slot marker", "period_frames": 60}, {"pattern": "single aimed cleanup pulse", "period_frames": 48}],
+      "required_progress": "unlock S04_BOOT_LOCK before frame 240",
+      "exit_condition": "frame 240 triggers deterministic oldest echo scrub"
+    },
+    {
+      "phase_id": "S04_PHASE_COMPACTION",
+      "entry_condition": "first scrub completes",
+      "frame_window": [240, 479],
+      "attacks": [{"pattern": "alternating scrub-arm sweeps", "period_frames": 60}, {"pattern": "buffer disruption pulse", "frames": [330, 420]}],
+      "required_progress": "seal S04_BUFFER and begin shield charge",
+      "exit_condition": "frame 480 triggers second deterministic oldest enabled echo scrub"
+    },
+    {
+      "phase_id": "S04_PHASE_CHECKSUM",
+      "entry_condition": "second scrub completes",
+      "frame_window": [480, 719],
+      "attacks": [{"pattern": "three checksum interruption pulses", "frames": [540, 600, 660]}, {"pattern": "radial cleanup sweep", "period_frames": 90}],
+      "required_progress": "maintain shield and complete 90-frame checksum upload",
+      "exit_condition": "S04_CHECKSUM_PORT reaches verified"
+    }
+  ],
+  "budgets": {
+    "cpu_percent": 60,
+    "dma_words": 1960,
+    "dma_queue_entries": 30,
+    "hardware_sprites": 62,
+    "sprites_per_scanline": 16,
+    "actors": 5,
+    "enemies": 0,
+    "projectiles": 24,
+    "devices": 4,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 3,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "S04_CANONICAL",
+    "failure": "S04_FAILURE_OLDEST_SCRUB",
+    "stress": "S04_STRESS_FULL_COLLECTOR",
+    "phase_regression": "S04_PHASE_BOUNDARIES"
+  },
+  "progression": {
+    "requires": ["S03"],
+    "unlocks": ["M01", "SECTOR_MEMORY", "ECHO_CAP_5", "ANCHOR_ACCESS"]
+  },
+  "narrative": {
+    "briefing": "THE OLDEST PROCESS WILL BE DELETED AT 240 AND 480.",
+    "success": "USEFUL WORK SURVIVED ITS AUTHOR.",
+    "failure": "THE SCRUB SCHEDULE NEVER HID ITS TARGET.",
+    "echo_hint": "FINISH OLD WORK EARLY. BUFFER WHAT MUST OUTLIVE IT."
+  }
+}

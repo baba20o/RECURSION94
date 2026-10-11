@@ -1,0 +1,156 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "I02",
+  "numeric_id": 502,
+  "name": "NON-MASKABLE",
+  "kind": "primary",
+  "campaign_order": 18,
+  "sector": {
+    "id": "INTERRUPT",
+    "name": "INTERRUPT",
+    "theme": "global raster-burst chamber with chained local protection"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#..##....##....##..#",
+      "#..##....##....##..#",
+      "#..................#",
+      "#....##......##....#",
+      "#....##......##....#",
+      "#..................#",
+      "#....##......##....#",
+      "#....##......##....#",
+      "#..................#",
+      "#..##....##....##..#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [18, 36],
+    "reset_policy": "restore global burst schedule, all shield charges, redirector, final gate, exit, and projectiles"
+  },
+  "echoes": {
+    "cap": 6,
+    "minimum": 6,
+    "first_clear_range": [6, 10],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_INTERRUPT_NMI_02",
+    "music_id": "MUS_INTERRUPT_NON_MASKABLE",
+    "tempo_bpm": 160,
+    "visual_layers": ["global_burst_countdown", "shield_coverage", "split_scroll", "uncovered_interval"]
+  },
+  "mechanics": ["unavoidable_global_burst", "local_shield_chain", "overlap_windows", "redirected_burst", "final_gate", "coverage_timeline"],
+  "entities": {
+    "devices": [
+      {"logical_id": "I02_SHIELD_A", "type": "local_shield_emitter", "x": 64, "y": 48, "state": {"initial": "idle", "states": ["idle", "charging", "active"]}, "reset_policy": "idle", "anchor_policy": "forbidden", "parameters": {"active_frames": 30, "coverage_rect": [32, 32, 96, 96]}},
+      {"logical_id": "I02_SHIELD_B", "type": "local_shield_emitter", "x": 128, "y": 176, "state": {"initial": "idle", "states": ["idle", "charging", "active"]}, "reset_policy": "idle", "anchor_policy": "forbidden", "parameters": {"active_frames": 30, "coverage_rect": [96, 128, 160, 208]}},
+      {"logical_id": "I02_SHIELD_C", "type": "local_shield_emitter", "x": 192, "y": 48, "state": {"initial": "idle", "states": ["idle", "charging", "active"]}, "reset_policy": "idle", "anchor_policy": "forbidden", "parameters": {"active_frames": 30, "coverage_rect": [160, 32, 224, 96]}},
+      {"logical_id": "I02_SHIELD_D", "type": "local_shield_emitter", "x": 240, "y": 176, "state": {"initial": "idle", "states": ["idle", "charging", "active"]}, "reset_policy": "idle", "anchor_policy": "forbidden", "parameters": {"active_frames": 30, "coverage_rect": [208, 128, 288, 208]}},
+      {"logical_id": "I02_REDIRECTOR", "type": "burst_reflector", "x": 224, "y": 80, "state": {"initial": "north", "states": ["north", "west"]}, "reset_policy": "north", "anchor_policy": "forbidden", "parameters": {"redirects_burst_frame": 540, "rotation_frames": 18}},
+      {"logical_id": "I02_FINAL_GATE", "type": "pressure_switch", "x": 256, "y": 112, "state": {"initial": "released", "states": ["released", "pressed"]}, "reset_policy": "released", "anchor_policy": "forbidden", "parameters": {"controls": ["I02_EXIT_DOOR"]}},
+      {"logical_id": "I02_EXIT_DOOR", "type": "door", "x": 272, "y": 96, "state": {"initial": "closed", "states": ["closed", "open"]}, "reset_policy": "closed", "anchor_policy": "forbidden", "parameters": {"opening_frames": 0}},
+      {"logical_id": "I02_EXIT", "type": "exit_terminal", "x": 288, "y": 112, "state": {"initial": "locked", "states": ["locked", "armed", "committed"]}, "reset_policy": "locked", "anchor_policy": "forbidden", "parameters": {"interact_frames": 18}}
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "I02_GLOBAL_BURST",
+        "type": "non_maskable_raster_burst",
+        "x": 0,
+        "y": 0,
+        "state": {"initial": "counting", "states": ["counting", "warning", "active"]},
+        "reset_policy": "counting",
+        "anchor_policy": "forbidden",
+        "parameters": {"burst_frames": [180, 300, 420, 540, 660], "warning_frames": 30, "duration_frames": 18, "unshielded_damage": 1}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "I02_O1_COVER_A", "type": "maintain_state", "depends_on": [], "condition": "echo_1 covers current at frame 180", "deadline_frame": 198, "role": "echo_1"},
+      {"objective_id": "I02_O2_COVER_B", "type": "maintain_state", "depends_on": ["I02_O1_COVER_A"], "condition": "echo_2 covers route at frame 300", "deadline_frame": 318, "role": "echo_2"},
+      {"objective_id": "I02_O3_COVER_C", "type": "maintain_state", "depends_on": ["I02_O2_COVER_B"], "condition": "echo_3 covers route at frame 420", "deadline_frame": 438, "role": "echo_3"},
+      {"objective_id": "I02_O4_COVER_D", "type": "maintain_state", "depends_on": ["I02_O3_COVER_C"], "condition": "echo_4 covers final corridor at frame 660", "deadline_frame": 678, "role": "echo_4"},
+      {"objective_id": "I02_O5_REDIRECT", "type": "redirect", "depends_on": ["I02_O3_COVER_C"], "condition": "echo_5 redirects penultimate frame-540 burst", "deadline_frame": 558, "role": "echo_5"},
+      {"objective_id": "I02_O6_GATE", "type": "maintain_state", "depends_on": ["I02_O5_REDIRECT"], "condition": "echo_6 holds I02_FINAL_GATE", "deadline_frame": 700, "role": "echo_6"},
+      {"objective_id": "I02_O7_EXIT", "type": "traverse_and_interact", "depends_on": ["I02_O4_COVER_D", "I02_O6_GATE"], "condition": "current crosses shield chain and commits I02_EXIT", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "I02_O7_EXIT complete"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "I02_ROLE_SHIELD_A", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 165, "action": "activate", "target": "I02_SHIELD_A"}]},
+    {"role_id": "I02_ROLE_SHIELD_B", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 285, "action": "activate", "target": "I02_SHIELD_B"}]},
+    {"role_id": "I02_ROLE_SHIELD_C", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 405, "action": "activate", "target": "I02_SHIELD_C"}]},
+    {"role_id": "I02_ROLE_SHIELD_D", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 645, "action": "activate", "target": "I02_SHIELD_D"}]},
+    {"role_id": "I02_ROLE_REDIRECT", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 510, "action": "rotate", "target": "I02_REDIRECTOR"}]},
+    {"role_id": "I02_ROLE_GATE", "actor": "echo_6", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 600, "action": "hold_position", "target": "I02_FINAL_GATE"}]},
+    {"role_id": "I02_ROLE_CURRENT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 120, "action": "begin_traverse", "target": "I02_SHIELD_A"}, {"frame": 684, "action": "interact", "target": "I02_EXIT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "I02_ALT_SHIFT_COVERAGE",
+      "role_changes": "echoes exchange adjacent shield emitters while preserving burst coverage",
+      "constraints": ["every burst intersects an active 30-frame shield window", "frame-540 burst remains redirected"],
+      "echo_cost": 6
+    },
+    {
+      "id": "I02_ALT_ANCHORED_RELAY",
+      "role_changes": "an approved prior shield relay upgrade extends one window, allowing echo_4 to take final gate duty",
+      "constraints": ["manifest does not anchor arbitrary shield state", "coverage table still has no uncovered burst frame"],
+      "echo_cost": 6
+    }
+  ],
+  "failure_signals": [
+    {"id": "I02_FAIL_GAP", "condition": "current or a required echo is outside all shield rectangles during a burst", "visual": "coverage timeline marks exact uncovered 18-frame interval", "audio": "global burst with high-contrast flash equivalent", "timeline": "shows emitter activation and coverage rectangles"},
+    {"id": "I02_FAIL_GATE", "condition": "I02_FINAL_GATE releases before current clears I02_EXIT_DOOR", "visual": "gate occupancy and door collision flash together", "audio": "door close warning", "timeline": "marks release frame"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 63,
+    "dma_words": 2030,
+    "dma_queue_entries": 32,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 0,
+    "projectiles": 18,
+    "devices": 8,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "I02_CANONICAL",
+    "failure": "I02_FAILURE_UNCOVERED_BURST",
+    "stress": "I02_STRESS_SEVEN_ACTORS_BURST",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["I01", "ECHO_CAP_6"],
+    "unlocks": ["I03", "SHIELD_COVERAGE_TIMELINE"]
+  },
+  "narrative": {
+    "briefing": "THE BURST CANNOT BE MASKED. IT CAN BE COVERED.",
+    "success": "LOCAL PROTECTION SURVIVED A GLOBAL EVENT.",
+    "failure": "THE TIMELINE SHOWS THE FIRST UNCOVERED INTERVAL.",
+    "echo_hint": "CHAIN FOUR THIRTY-FRAME SHIELDS AROUND FIVE FIXED BURSTS."
+  }
+}

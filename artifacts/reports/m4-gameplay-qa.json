@@ -1,0 +1,103 @@
+{
+  "checks": [
+    {
+      "check": "accurately_labeled_controller_driven_review",
+      "detail": "automated independent controller-driven playability review; not represented as literal human hands-on testing",
+      "status": "pass"
+    },
+    {
+      "check": "visual_gate_passed",
+      "detail": "m4-screenshot status pass",
+      "status": "pass"
+    },
+    {
+      "check": "startup_priming_boundary_preserved",
+      "detail": "{'initial_breakpoint_symbol': 'VBlankInterrupt', 'initial_breakpoint_role': 'stage_3_ack_only_priming_isr', 'authoritative_origin': 'next_stage_4_running_full_vblank', 'counters_and_controller_poll_begin': 'next_stage_4_running_full_vblank', 'detail': 'the stage-3 ISR acknowledges VDP status only; controller polling, frame counters, and token publication begin on the next stage-4 RUNNING full VBlank'}",
+      "status": "pass"
+    },
+    {
+      "check": "all_scoped_playability_observations_pass",
+      "detail": "[('controls', 'pass'), ('reset_speed_and_feedback', 'pass'), ('echo_meaning', 'pass'), ('failure_understandability', 'pass'), ('soft_lock_absence', 'pass'), ('timeline_behavior', 'pass')]",
+      "status": "pass"
+    },
+    {
+      "check": "movement_interaction_reset_are_guest_observed",
+      "detail": "live state covers movement, failed B, echo-door causality, successful B, and recovery",
+      "status": "pass"
+    },
+    {
+      "check": "no_fatal_or_renderer_drop_during_review",
+      "detail": "fatal/drop/reject counters remained zero in all reviewed states",
+      "status": "pass"
+    },
+    {
+      "check": "qa_provenance_bound_to_visual_session",
+      "detail": "QA report consumes the same ROM-bound sessions and transcript",
+      "status": "pass"
+    }
+  ],
+  "classification": "Independent automated controller-driven playability review. This is not literal human hands-on testing.",
+  "evidence_type": "independent_controller_driven_b01_playability_review",
+  "limitations": [
+    "The review exercises the scoped B01 Right/B/Start+C path; it does not claim full campaign controls, accessibility, or balance.",
+    "Input is automated through the real configured controller path; no person physically held a controller in these sessions.",
+    "Still screenshots support readability review but are not video.",
+    "Audio is assessed by the separate M4 audio gate."
+  ],
+  "observations": [
+    {
+      "area": "controls",
+      "evidence": "Owned window-key events reached a standard gamepad3.1: Right moved current from X=32 to X=108, B was observed as an edge, and Start+C performed the documented manual commit.",
+      "status": "pass"
+    },
+    {
+      "area": "reset_speed_and_feedback",
+      "evidence": "Start+C changed attempt 0/tick 40 directly to attempt 1/tick 0 without consuming an authoritative replay byte; the live renderer exposed RESET_ACTIVE with a visible RESET TRACE.",
+      "status": "pass"
+    },
+    {
+      "area": "echo_meaning",
+      "evidence": "The physical echo stopped at X=80 with occupancy bit 0 while current advanced to X=152; the door changed 0->3 and the frame said DOOR OPEN / ECHO HOLDS.",
+      "status": "pass"
+    },
+    {
+      "area": "failure_understandability",
+      "evidence": "In a fresh zero-echo run, Right+B left current colliding at X=108, engine active, result OK, door closed, and terminal unset; the HUD explicitly said DOOR CLOSED / NEED ECHO.",
+      "status": "pass"
+    },
+    {
+      "area": "soft_lock_absence",
+      "evidence": "The blocked run accepted Start+C and reconstructed attempt 1/tick 0 at canonical X=32 with one echo, no engine error, and a new current replay bank.",
+      "status": "pass"
+    },
+    {
+      "area": "timeline_behavior",
+      "evidence": "Right x32 + neutral x8 was read back from bank 6 with CRC 96501AB7; bank 6 became echo ordinal 1, bank 0 current, and the solution reached PROGRAM STABLE at tick 166.",
+      "status": "pass"
+    }
+  ],
+  "provenance": {
+    "source_binding_sha256": "67fdab40574e5d76e821ea8e0fe8b641d601bc092be8906a2a8267db095200c1",
+    "transcript_sha256": "66ab83526102cbda35c023d3084a7cd135ccee220954a8733911e57a5443822e",
+    "visual_report_schema": "r94-m4-visual-evidence-v1",
+    "visual_report_status": "pass"
+  },
+  "reviewed_screenshots": [
+    "artifacts/screenshots/m4-zero-echo.png",
+    "artifacts/screenshots/m4-reset-trace.png",
+    "artifacts/screenshots/m4-echo-door-open.png",
+    "artifacts/screenshots/m4-program-stable.png",
+    "artifacts/screenshots/m4-blocked-path.png"
+  ],
+  "rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+  "schema": "r94-m4-controller-playability-review-v1",
+  "scope": "Milestone4",
+  "startup_boundary": {
+    "authoritative_origin": "next_stage_4_running_full_vblank",
+    "counters_and_controller_poll_begin": "next_stage_4_running_full_vblank",
+    "detail": "the stage-3 ISR acknowledges VDP status only; controller polling, frame counters, and token publication begin on the next stage-4 RUNNING full VBlank",
+    "initial_breakpoint_role": "stage_3_ack_only_priming_isr",
+    "initial_breakpoint_symbol": "VBlankInterrupt"
+  },
+  "status": "pass"
+}

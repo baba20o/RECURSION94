@@ -1,0 +1,119 @@
+{
+  "schema": "recursion94.pixel_asset",
+  "schema_version": 1,
+  "asset_id": "boot_ui",
+  "kind": "ui",
+  "palette": "ui_devices",
+  "provenance_id": "original_project",
+  "frames": [
+    {
+      "id": "ui_void",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000", "00000000"]
+    },
+    {
+      "id": "ui_slot_empty",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["22222222", "2......2", "2.1111.2", "2.1..1.2", "2.1..1.2", "2.1111.2", "2......2", "22222222"]
+    },
+    {
+      "id": "ui_slot_live",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["bbbbbbbb", "bccccccb", "bc1111cb", "bc1ww1cb", "bc1ww1cb", "bc1111cb", "bccccccb", "bbbbbbbb"]
+    },
+    {
+      "id": "ui_slot_echo",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["33333333", "3pppppp3", "3p2222p3", "3p2xx2p3", "3p2xx2p3", "3p2222p3", "3pppppp3", "33333333"]
+    },
+    {
+      "id": "ui_slot_lock",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["33333333", "3yyyyyy3", "3y2222y3", "3y2yy2y3", "3y2yy2y3", "3y2222y3", "3yyyyyy3", "33333333"]
+    },
+    {
+      "id": "ui_node",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["...ww...", "..wbbw..", ".wb..bw.", "wb.cc.bw", "wb.cc.bw", ".wb..bw.", "..wbbw..", "...ww..."]
+    },
+    {
+      "id": "ui_arrow_r",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "...w....", "...ww...", ".wwwww..", ".wwwww..", "...ww...", "...w....", "........"]
+    },
+    {
+      "id": "ui_arrow_l",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "....w...", "...ww...", "..wwwww.", "..wwwww.", "...ww...", "....w...", "........"]
+    },
+    {
+      "id": "ui_cursor",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["y......y", ".y....y.", "..y..y..", "...yy...", "...yy...", "..y..y..", ".y....y.", "y......y"]
+    },
+    {
+      "id": "ui_meter_0",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["22222222", "2......2", "2......2", "2......2", "2......2", "2......2", "2......2", "22222222"]
+    },
+    {
+      "id": "ui_meter_1",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["bbbbbbbb", "bccccccb", "bccccccb", "bccccccb", "bccccccb", "bccccccb", "bccccccb", "bbbbbbbb"]
+    },
+    {
+      "id": "ui_warning",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["...o....", "..ooo...", "..o0o...", ".oo0oo..", ".oo0oo..", "ooo0ooo.", "oooyooo.", "oooooooo"]
+    }
+  ],
+  "animations": []
+}

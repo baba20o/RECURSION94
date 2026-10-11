@@ -1,0 +1,254 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "V02",
+  "numeric_id": 202,
+  "name": "RASTER RELAY",
+  "kind": "primary",
+  "campaign_order": 6,
+  "sector": {
+    "id": "VIDEO",
+    "name": "VIDEO",
+    "theme": "prismatic relay floor over cobalt parallax"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#.......#..........#",
+      "#.......#..........#",
+      "#..###..#..####....#",
+      "#..###.....####....#",
+      "#.......#..........#",
+      "#..................#",
+      "#..........#.......#",
+      "#..........#.......#",
+      "#....####..#..###..#",
+      "#....####.....###..#",
+      "#..........#.......#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [60, 96],
+    "reset_policy": "restore prism angle, beam path, cell position and charge, socket, gate, and all ordinary effects"
+  },
+  "echoes": {
+    "cap": 3,
+    "minimum": 2,
+    "first_clear_range": [2, 4],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_VIDEO_PRISM_02",
+    "music_id": "MUS_VIDEO_RELAY",
+    "tempo_bpm": 100,
+    "visual_layers": ["beam_segments", "prism_highlight", "cell_charge", "parallax_bus"]
+  },
+  "mechanics": ["redirectable_beam", "prism", "carryable_power_cell", "socket", "beam_safe_lane", "handoff"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "V02_BEAM_SOURCE",
+        "type": "beam_emitter",
+        "x": 48,
+        "y": 48,
+        "state": {"initial": "active_east", "states": ["active_east", "blocked"]},
+        "reset_policy": "active_east",
+        "anchor_policy": "forbidden",
+        "parameters": {"segment_limit": 12, "damage_period_frames": 12}
+      },
+      {
+        "logical_id": "V02_PRISM",
+        "type": "redirectable_prism",
+        "x": 144,
+        "y": 48,
+        "state": {"initial": "south", "states": ["south", "east", "west"]},
+        "reset_policy": "south",
+        "anchor_policy": "forbidden",
+        "parameters": {"rotation_frames": 18, "safe_direction": "east"}
+      },
+      {
+        "logical_id": "V02_SOCKET",
+        "type": "power_socket",
+        "x": 256,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "occupied", "powered"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"accepts": "V02_CELL", "charge_frames": 60}
+      },
+      {
+        "logical_id": "V02_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"unlock_source": "V02_SOCKET", "interact_frames": 20}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "V02_BEAM_FIELD",
+        "type": "redirected_laser",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "south_path", "states": ["south_path", "east_path", "west_path", "blocked"]},
+        "reset_policy": "south_path",
+        "anchor_policy": "forbidden",
+        "parameters": {"max_segments": 12, "segment_px": 16, "visual_lead_frames": 8}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "V02_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "dropped", "socketed"]},
+        "reset_policy": "grounded at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 80, "beam_charge_required_frames": 30}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "V02_O1_AIM_PRISM",
+        "type": "maintain_state",
+        "depends_on": [],
+        "condition": "V02_PRISM held on east path",
+        "deadline_frame": 560,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "V02_O2_DELIVER_CELL",
+        "type": "carry",
+        "depends_on": ["V02_O1_AIM_PRISM"],
+        "condition": "V02_CELL crosses the now-safe south lane and reaches V02_SOCKET",
+        "deadline_frame": 590,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "V02_O3_SOCKET",
+        "type": "interact",
+        "depends_on": ["V02_O2_DELIVER_CELL"],
+        "condition": "V02_SOCKET reaches powered",
+        "deadline_frame": 660,
+        "role": "current"
+      },
+      {
+        "objective_id": "V02_O4_COMMIT",
+        "type": "interact",
+        "depends_on": ["V02_O3_SOCKET"],
+        "condition": "current commits V02_EXIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "V02_O4_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "V02_ROLE_AIMER",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 86, "action": "interact", "target": "V02_PRISM"},
+        {"frame": 118, "action": "hold_interact", "target": "V02_PRISM"}
+      ]
+    },
+    {
+      "role_id": "V02_ROLE_CARRIER",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 112, "action": "pick_up", "target": "V02_CELL"},
+        {"frame": 246, "action": "carry_through", "target": "V02_BEAM_FIELD"},
+        {"frame": 430, "action": "drop", "target": "V02_SOCKET"}
+      ]
+    },
+    {
+      "role_id": "V02_ROLE_RECEIVER",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 448, "action": "interact", "target": "V02_SOCKET"},
+        {"frame": 594, "action": "interact", "target": "V02_EXIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "V02_ALT_CURRENT_CARRIER",
+      "role_changes": "current carries and sockets V02_CELL while echo_2 waits at V02_EXIT for the armed state",
+      "constraints": ["prism remains echo-controlled", "echo_2 interaction occurs after socket charge"],
+      "echo_cost": 2
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "V02_FAIL_BEAM_INTERRUPTION",
+      "condition": "V02_PRISM changes away from east while V02_CELL is in V02_BEAM_FIELD",
+      "visual": "broken beam segment and cell owner rune freeze",
+      "audio": "beam harmonic drops one interval",
+      "timeline": "marks prism state change and carrier position"
+    },
+    {
+      "id": "V02_FAIL_CELL_DROP",
+      "condition": "cell is dropped outside V02_SOCKET interaction radius after frame 560",
+      "visual": "cell path trace ends at exact drop coordinate",
+      "audio": "uncharged cell clack",
+      "timeline": "names the last carrier logical actor"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 35,
+    "dma_words": 1120,
+    "dma_queue_entries": 16,
+    "hardware_sprites": 30,
+    "sprites_per_scanline": 10,
+    "actors": 4,
+    "enemies": 0,
+    "projectiles": 0,
+    "devices": 4,
+    "carryables": 1,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 18
+  },
+  "replays": {
+    "canonical": "V02_CANONICAL",
+    "failure": "V02_FAILURE_BEAM_DROP",
+    "stress": "V02_STRESS_TWELVE_SEGMENTS",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["V01"],
+    "unlocks": ["V03", "BEAM_REDIRECTION", "POWER_CELL_CARRY"]
+  },
+  "narrative": {
+    "briefing": "ENERGY, AIM, AND DELIVERY ARE THREE DIFFERENT JOBS.",
+    "success": "THE RASTER REACHED ITS RECEIVER.",
+    "failure": "A RELAY FAILS AT THE FIRST BROKEN HANDOFF.",
+    "echo_hint": "KEEP THE PRISM STILL WHILE ANOTHER PROCESS CARRIES."
+  }
+}

@@ -1,0 +1,306 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "B03",
+  "numeric_id": 103,
+  "name": "TWO-PHASE COMMIT",
+  "kind": "primary",
+  "campaign_order": 3,
+  "sector": {
+    "id": "BOOT",
+    "name": "BOOT",
+    "theme": "split commit chamber with severe monochrome timing traces"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#........#.........#",
+      "#........#.........#",
+      "#..###...#...###...#",
+      "#..###.......###...#",
+      "#........#.........#",
+      "#........#.........#",
+      "#..................#",
+      "#........#.........#",
+      "#........#.........#",
+      "#...###......###...#",
+      "#...###..#...###...#",
+      "#........#.........#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [72, 108],
+    "reset_policy": "restore both switches, node health, timed latch, door, projectiles, and actor positions"
+  },
+  "echoes": {
+    "cap": 2,
+    "minimum": 2,
+    "first_clear_range": [2, 3],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_BOOT_BONE_03",
+    "music_id": "MUS_BOOT_PULSE",
+    "tempo_bpm": 80,
+    "visual_layers": ["dependency_trace", "door_countdown", "node_damage"]
+  },
+  "mechanics": ["dual_switches", "timed_switch", "breakable_security_node", "required_dash", "ordered_concurrency"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "B03_SWITCH_A",
+        "type": "pressure_switch",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "released", "states": ["released", "pressed"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"controls": ["B03_DOOR"], "must_remain_pressed": true}
+      },
+      {
+        "logical_id": "B03_SWITCH_B",
+        "type": "timed_switch",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "idle", "states": ["idle", "active"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_frames": 180, "controls": ["B03_NODE_ARM"]}
+      },
+      {
+        "logical_id": "B03_NODE",
+        "type": "breakable_security_node",
+        "x": 224,
+        "y": 176,
+        "state": {"initial": "shielded", "states": ["shielded", "exposed", "destroyed"]},
+        "reset_policy": "shielded",
+        "anchor_policy": "forbidden",
+        "parameters": {"health": 3, "exposed_by": "B03_SWITCH_B"}
+      },
+      {
+        "logical_id": "B03_DOOR",
+        "type": "timed_door",
+        "x": 160,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["B03_SWITCH_A", "B03_NODE"], "open_frames": 150}
+      },
+      {
+        "logical_id": "B03_COMMIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 112,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 20}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "B03_SHUTTER_FIELD",
+        "type": "closing_door_crush_zone",
+        "x": 152,
+        "y": 80,
+        "state": {"initial": "safe", "states": ["safe", "warning", "closing"]},
+        "reset_policy": "safe",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 16, "height": 64, "warning_frames": 20}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "B03_O1_HOLD_A",
+        "type": "maintain_state",
+        "depends_on": [],
+        "condition": "B03_SWITCH_A remains pressed",
+        "deadline_frame": 719,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "B03_O2_PULSE_B",
+        "type": "interact",
+        "depends_on": [],
+        "condition": "B03_SWITCH_B enters active state",
+        "deadline_frame": 310,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "B03_O3_BREAK_NODE",
+        "type": "destroy",
+        "depends_on": ["B03_O2_PULSE_B"],
+        "condition": "B03_NODE destroyed before B03_SWITCH_B expires",
+        "deadline_frame": 490,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "B03_O4_DASH_CROSS",
+        "type": "traverse",
+        "depends_on": ["B03_O1_HOLD_A", "B03_O3_BREAK_NODE"],
+        "condition": "current clears B03_SHUTTER_FIELD during door-open interval",
+        "deadline_frame": 650,
+        "role": "current"
+      },
+      {
+        "objective_id": "B03_O5_COMMIT",
+        "type": "interact",
+        "depends_on": ["B03_O4_DASH_CROSS"],
+        "condition": "current commits B03_COMMIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "B03_O5_COMMIT complete"
+  },
+  "stage_completion": {
+    "object": "B03_COMMIT",
+    "completion_state": {"field": "state", "mask": 4103, "value": 4103}
+  },
+  "dependency_policy": [
+    {
+      "consumer": "B03_NODE",
+      "policy": "ALL",
+      "conditions": [
+        {
+          "provider": "B03_SWITCH_B",
+          "completion_state": {"field": "state", "mask": 1, "value": 1}
+        }
+      ],
+      "completion_state": {"field": "state", "mask": 1, "value": 1},
+      "duration_frames": 0
+    },
+    {
+      "consumer": "B03_DOOR",
+      "policy": "ALL",
+      "conditions": [
+        {
+          "provider": "B03_SWITCH_A",
+          "completion_state": {"field": "state", "mask": 1, "value": 1}
+        },
+        {
+          "provider": "B03_NODE",
+          "completion_state": {"field": "health", "mask": 255, "value": 0}
+        }
+      ],
+      "completion_state": {"field": "state", "mask": 2, "value": 2},
+      "duration_frames": 150
+    },
+    {
+      "consumer": "B03_COMMIT",
+      "policy": "ALL",
+      "conditions": [
+        {
+          "provider": "B03_DOOR",
+          "completion_state": {"field": "state", "mask": 2, "value": 2}
+        }
+      ],
+      "completion_state": {"field": "state", "mask": 2, "value": 2},
+      "duration_frames": 0
+    }
+  ],
+  "canonical_role_schedule": [
+    {
+      "role_id": "B03_ROLE_HOLD_A",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 62, "action": "move_to", "target": "B03_SWITCH_A"},
+        {"frame": 110, "action": "hold_position", "target": "B03_SWITCH_A"}
+      ]
+    },
+    {
+      "role_id": "B03_ROLE_PULSE_BREAK",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 118, "action": "interact", "target": "B03_SWITCH_B"},
+        {"frame": 250, "action": "fire_burst", "target": "B03_NODE"}
+      ]
+    },
+    {
+      "role_id": "B03_ROLE_COMMIT",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 402, "action": "dash_through", "target": "B03_DOOR"},
+        {"frame": 560, "action": "interact", "target": "B03_COMMIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "B03_ALT_SWAP_SWITCHES",
+      "role_changes": "echo_1 pulses B and attacks the node while echo_2 takes the permanent A hold",
+      "constraints": ["node damage begins only after B activation", "current still owns the final dash"],
+      "echo_cost": 2
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "B03_FAIL_NODE_EARLY",
+      "condition": "B03_NODE is fired on while shielded",
+      "visual": "dependency trace highlights B03_SWITCH_B before the node",
+      "audio": "shielded shot ticks without damage tone",
+      "timeline": "labels B03_O2_PULSE_B as first unsatisfied dependency"
+    },
+    {
+      "id": "B03_FAIL_DOOR_TIMEOUT",
+      "condition": "current enters B03_SHUTTER_FIELD after open interval",
+      "visual": "door countdown freezes at zero and corridor flashes",
+      "audio": "descending three-step shutter warning",
+      "timeline": "marks current dash start against door close frame"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 29,
+    "dma_words": 690,
+    "dma_queue_entries": 10,
+    "hardware_sprites": 22,
+    "sprites_per_scanline": 8,
+    "actors": 3,
+    "enemies": 0,
+    "projectiles": 12,
+    "devices": 5,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 12
+  },
+  "replays": {
+    "canonical": "B03_CANONICAL",
+    "failure": "B03_FAILURE_ORDER",
+    "stress": "B03_STRESS_TWELVE_SHOTS",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["B02"],
+    "unlocks": ["B04", "ECHO_CAP_2", "DASH_REQUIRED"]
+  },
+  "narrative": {
+    "briefing": "SIMULTANEOUS DOES NOT MEAN UNORDERED.",
+    "success": "TWO PHASES BECAME ONE COMMIT.",
+    "failure": "THE FIRST UNSATISFIED EDGE IS THE ERROR.",
+    "echo_hint": "ONE PROCESS HOLDS. ONE PROCESS ARMS THEN BREAKS."
+  }
+}

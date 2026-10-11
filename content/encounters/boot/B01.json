@@ -1,0 +1,214 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "B01",
+  "numeric_id": 101,
+  "name": "POWER-ON SELF",
+  "kind": "primary",
+  "campaign_order": 1,
+  "sector": {
+    "id": "BOOT",
+    "name": "BOOT",
+    "theme": "restrained void and bone terminals"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#.........#........#",
+      "#.........#........#",
+      "#.........#........#",
+      "#.........#........#",
+      "#..................#",
+      "#.........#........#",
+      "#.........#........#",
+      "#.........#........#",
+      "#.........#........#",
+      "#..................#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [96, 120],
+    "reset_policy": "rebuild all ordinary entities from this manifest; retain replay slots only"
+  },
+  "echoes": {
+    "cap": 2,
+    "minimum": 1,
+    "first_clear_range": [1, 2],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_BOOT_BONE_01",
+    "music_id": "MUS_BOOT_PULSE",
+    "tempo_bpm": 80,
+    "visual_layers": ["void_plane", "terminal_runes", "reset_trace"]
+  },
+  "mechanics": ["movement", "twelve_second_reset", "pressure_switch", "door", "basic_interaction"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "B01_PLATE_A",
+        "type": "pressure_switch",
+        "x": 64,
+        "y": 112,
+        "state": {"initial": "released", "states": ["released", "pressed"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"occupancy_frames": 1, "controls": ["B01_DOOR_A"]}
+      },
+      {
+        "logical_id": "B01_DOOR_A",
+        "type": "door",
+        "x": 160,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"opening_frames": 0, "close_delay_frames": 0}
+      },
+      {
+        "logical_id": "B01_COMMIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 112,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 24}
+      }
+    ],
+    "enemies": [],
+    "hazards": [],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "B01_O1_HOLD_PLATE",
+        "type": "maintain_state",
+        "depends_on": [],
+        "condition": "B01_PLATE_A pressed continuously while crossing",
+        "deadline_frame": 540,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "B01_O2_CROSS_DOOR",
+        "type": "traverse",
+        "depends_on": ["B01_O1_HOLD_PLATE"],
+        "condition": "current actor reaches east side of B01_DOOR_A",
+        "deadline_frame": 650,
+        "role": "current"
+      },
+      {
+        "objective_id": "B01_O3_COMMIT",
+        "type": "interact",
+        "depends_on": ["B01_O2_CROSS_DOOR"],
+        "condition": "current completes B01_COMMIT interaction",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "B01_O3_COMMIT complete"
+  },
+  "stage_completion": {
+    "object": "B01_COMMIT",
+    "completion_state": {"field": "state", "mask": 5, "value": 5}
+  },
+  "dependency_policy": [
+    {
+      "consumer": "B01_DOOR_A",
+      "policy": "ALL",
+      "conditions": [
+        {
+          "provider": "B01_PLATE_A",
+          "completion_state": {"field": "state", "mask": 1, "value": 1}
+        }
+      ],
+      "completion_state": {"field": "state", "mask": 2, "value": 2},
+      "duration_frames": 0
+    }
+  ],
+  "canonical_role_schedule": [
+    {
+      "role_id": "B01_ROLE_HOLDER",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 54, "action": "move_to", "target": "B01_PLATE_A"},
+        {"frame": 112, "action": "hold_position", "target": "B01_PLATE_A"}
+      ]
+    },
+    {
+      "role_id": "B01_ROLE_COMMITTER",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 150, "action": "cross", "target": "B01_DOOR_A"},
+        {"frame": 430, "action": "interact", "target": "B01_COMMIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "B01_ALT_EDGE_TIMING",
+      "role_changes": "holder enters the plate from its north edge while current begins crossing as the plate opens the door",
+      "constraints": ["door must remain open until current collision box clears x=176", "solo completion remains impossible"],
+      "echo_cost": 1
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "B01_FAIL_DOOR_CLOSED",
+      "condition": "current contacts B01_DOOR_A while B01_PLATE_A is released",
+      "visual": "plate rune and blocked door flash with the same echo color",
+      "audio": "two-note rejected interaction cue",
+      "timeline": "marks the first frame plate occupancy was lost"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 18,
+    "dma_words": 420,
+    "dma_queue_entries": 5,
+    "hardware_sprites": 8,
+    "sprites_per_scanline": 4,
+    "actors": 3,
+    "enemies": 0,
+    "projectiles": 0,
+    "devices": 3,
+    "carryables": 0,
+    "hazards": 0,
+    "boss_components": 0,
+    "effects": 6
+  },
+  "replays": {
+    "canonical": "B01_CANONICAL",
+    "failure": "B01_FAILURE_PLATE_RELEASE",
+    "stress": "B01_STRESS_RESET_DISSOLVE",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": [],
+    "unlocks": ["B02", "TIMELINE_ONE_ECHO"]
+  },
+  "narrative": {
+    "briefing": "NO PROCESS SURVIVES TWELVE SECONDS.",
+    "success": "ONE PROCESS DID NOT NEED TO.",
+    "failure": "THE DOOR REMEMBERS ONLY OCCUPANCY.",
+    "echo_hint": "LEAVE A VERSION OF YOURSELF ON THE RUNE."
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "M01",
+  "numeric_id": 401,
+  "name": "WRITE ENABLE",
+  "kind": "primary",
+  "campaign_order": 13,
+  "sector": {
+    "id": "MEMORY",
+    "name": "MEMORY",
+    "theme": "amber branch lattice with a single persistent scar"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#.......#..........#",
+      "#..###..#....###...#",
+      "#..###.......###...#",
+      "#.......#..........#",
+      "#.......#..........#",
+      "#..................#",
+      "#..........#.......#",
+      "#..........#.......#",
+      "#...###....#..###..#",
+      "#...###.......###..#",
+      "#..........#.......#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [36, 66],
+    "reset_policy": "rebuild ordinary state, then apply at most one sorted whitelisted anchor record"
+  },
+  "echoes": {
+    "cap": 5,
+    "minimum": 3,
+    "first_clear_range": [4, 6],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_MEMORY_AMBER_01",
+    "music_id": "MUS_MEMORY_WRITE",
+    "tempo_bpm": 140,
+    "visual_layers": ["branch_lattice", "anchor_scar", "state_diff", "warden_aim"]
+  },
+  "mechanics": ["single_anchor", "power_cell", "persistent_socket", "repair_terminal", "warden_lure", "reset_state_diff"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "M01_SOCKET",
+        "type": "power_socket",
+        "x": 96,
+        "y": 48,
+        "state": {"initial": "empty", "states": ["empty", "occupied", "powered"]},
+        "reset_policy": "empty unless approved anchor record applies",
+        "anchor_policy": {"allowed": true, "record_type": "socket_powered", "max_records": 1, "idempotent_state": "powered"},
+        "parameters": {"accepts": "M01_CELL", "powers": ["M01_ROUTE_GATE"]}
+      },
+      {
+        "logical_id": "M01_ROUTE_GATE",
+        "type": "powered_door",
+        "x": 160,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "derive from M01_SOCKET after anchors",
+        "anchor_policy": "forbidden",
+        "parameters": {"power_source": "M01_SOCKET", "opening_frames": 16}
+      },
+      {
+        "logical_id": "M01_REPAIR",
+        "type": "repair_terminal",
+        "x": 224,
+        "y": 176,
+        "state": {"initial": "damaged", "states": ["damaged", "repairing", "repaired"]},
+        "reset_policy": "damaged unless approved anchor record applies",
+        "anchor_policy": {"allowed": true, "record_type": "terminal_repaired", "max_records": 1, "idempotent_state": "repaired"},
+        "parameters": {"repair_frames": 90, "alternative_anchor_target": true}
+      },
+      {
+        "logical_id": "M01_LURE_GATE",
+        "type": "pressure_switch",
+        "x": 64,
+        "y": 160,
+        "state": {"initial": "released", "states": ["released", "pressed"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"controls": ["M01_WARDEN_BARRIER"]}
+      },
+      {
+        "logical_id": "M01_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["M01_REPAIR", "M01_ROUTE_GATE"], "interact_frames": 24}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "M01_WARDEN",
+        "type": "warden",
+        "x": 208,
+        "y": 112,
+        "state": {"initial": "guarding", "states": ["guarding", "investigating", "chasing", "returning"]},
+        "reset_policy": "guarding at x=208 y=112",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "actor inside protected zone then nearest visible then oldest echo", "guard_target": "M01_REPAIR"}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "M01_WARDEN_BARRIER",
+        "type": "guard_barrier",
+        "x": 192,
+        "y": 144,
+        "state": {"initial": "active", "states": ["active", "suppressed"]},
+        "reset_policy": "active",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 64, "height": 16, "suppressed_by": "M01_LURE_GATE"}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "M01_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "socketed"]},
+        "reset_policy": "grounded unless M01_SOCKET powered anchor consumes its ordinary spawn",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 76}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "M01_O0_ANCHOR_PRELUDE", "type": "anchor", "depends_on": [], "condition": "one approved record anchors M01_SOCKET powered or M01_REPAIR repaired", "deadline_frame": 719, "role": "prelude_current"},
+      {"objective_id": "M01_O1_GATE", "type": "maintain_state", "depends_on": ["M01_O0_ANCHOR_PRELUDE"], "condition": "echo_1 controls M01_LURE_GATE", "deadline_frame": 600, "role": "echo_1"},
+      {"objective_id": "M01_O2_LURE", "type": "distract", "depends_on": ["M01_O1_GATE"], "condition": "echo_2 pulls M01_WARDEN away from repair zone", "deadline_frame": 610, "role": "echo_2"},
+      {"objective_id": "M01_O3_REPAIR", "type": "interact", "depends_on": ["M01_O2_LURE"], "condition": "echo_3 repairs M01_REPAIR if it was not anchored", "deadline_frame": 650, "role": "echo_3"},
+      {"objective_id": "M01_O4_EXIT", "type": "traverse_and_interact", "depends_on": ["M01_O0_ANCHOR_PRELUDE", "M01_O3_REPAIR"], "condition": "current crosses powered route and commits M01_EXIT", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "M01_O4_EXIT complete with exactly one whitelisted anchor record"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "M01_ROLE_ANCHOR", "actor": "prelude_current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 120, "action": "pick_up", "target": "M01_CELL"}, {"frame": 300, "action": "socket", "target": "M01_SOCKET"}, {"frame": 360, "action": "anchor_state", "target": "M01_SOCKET"}]},
+    {"role_id": "M01_ROLE_GATE", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 180, "action": "hold_position", "target": "M01_LURE_GATE"}]},
+    {"role_id": "M01_ROLE_LURE", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 240, "action": "fire_pattern", "target": "M01_WARDEN"}]},
+    {"role_id": "M01_ROLE_REPAIR", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "hold_interact", "target": "M01_REPAIR"}]},
+    {"role_id": "M01_ROLE_EXIT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 540, "action": "cross", "target": "M01_ROUTE_GATE"}, {"frame": 630, "action": "interact", "target": "M01_EXIT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "M01_ALT_REPAIR_ANCHOR",
+      "role_changes": "anchor M01_REPAIR repaired, then assign echo_3 to carry and socket M01_CELL during the clear attempt",
+      "constraints": ["only one anchor record", "M01_SOCKET and M01_REPAIR cannot both persist"],
+      "echo_cost": 4
+    }
+  ],
+  "failure_signals": [
+    {"id": "M01_FAIL_UNANCHORED", "condition": "required prelude state resets because no approved anchor record was committed", "visual": "reset diff labels ordinary versus anchored bytes", "audio": "anchor write rejected cue", "timeline": "names missing logical record"},
+    {"id": "M01_FAIL_WARDEN", "condition": "M01_WARDEN returns to repair zone before repair completes", "visual": "warden target line and repair progress freeze", "audio": "guard alert", "timeline": "marks lure loss"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 48,
+    "dma_words": 1580,
+    "dma_queue_entries": 23,
+    "hardware_sprites": 48,
+    "sprites_per_scanline": 14,
+    "actors": 6,
+    "enemies": 1,
+    "projectiles": 12,
+    "devices": 5,
+    "carryables": 1,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 20
+  },
+  "replays": {
+    "canonical": "M01_CANONICAL",
+    "failure": "M01_FAILURE_UNANCHORED",
+    "stress": "M01_STRESS_WARDEN_ANCHOR",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["S04", "ANCHOR_ACCESS"],
+    "unlocks": ["M02", "ANCHOR_CAP_1", "ANCHOR_STATE_DIFF"]
+  },
+  "narrative": {
+    "briefing": "ONE APPROVED STATE MAY SURVIVE RESET.",
+    "success": "THE SCAR REMOVED ONE SERIAL DEPENDENCY.",
+    "failure": "PERSISTENCE IS A RECORD, NOT A MEMORY DUMP.",
+    "echo_hint": "ANCHOR THE SOCKET OR THE REPAIR, NEVER BOTH."
+  }
+}

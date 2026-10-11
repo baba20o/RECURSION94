@@ -1,0 +1,110 @@
+{
+  "schema": "recursion94.campaign",
+  "schema_version": 1,
+  "campaign_id": "RECURSION94_MAIN",
+  "title": "RECURSION 94: THE LAST CARTRIDGE",
+  "start_encounter": "B01",
+  "terminal_encounter": "I04",
+  "declared_counts": {
+    "sectors": 5,
+    "primary_encounters": 15,
+    "boss_encounters": 5,
+    "total_encounters": 20
+  },
+  "sectors": [
+    {
+      "order": 1,
+      "id": "BOOT",
+      "theme": "awakening under severe audiovisual constraint",
+      "tempo_bpm": 80,
+      "echo_cap": 2,
+      "encounters": ["B01", "B02", "B03", "B04"],
+      "boss": "B04",
+      "entry_requires": [],
+      "completion_unlocks": ["SECTOR_VIDEO", "VDP_ACCESS", "ECHO_CAP_3"]
+    },
+    {
+      "order": 2,
+      "id": "VIDEO",
+      "theme": "VDP access, richer palettes, scrolling, beams, and transport",
+      "tempo_bpm": 100,
+      "echo_cap": 3,
+      "encounters": ["V01", "V02", "V03", "V04"],
+      "boss": "V04",
+      "entry_requires": ["B04", "SECTOR_VIDEO"],
+      "completion_unlocks": ["SECTOR_SOUND", "Z80_SOUND_ACCESS", "ECHO_CAP_4"]
+    },
+    {
+      "order": 3,
+      "id": "SOUND",
+      "theme": "visible-audio phase, audible lures, and layered role legibility",
+      "tempo_bpm": 120,
+      "echo_cap": 4,
+      "encounters": ["S01", "S02", "S03", "S04"],
+      "boss": "S04",
+      "entry_requires": ["V04", "SECTOR_SOUND"],
+      "completion_unlocks": ["SECTOR_MEMORY", "ANCHOR_ACCESS", "ECHO_CAP_5"]
+    },
+    {
+      "order": 4,
+      "id": "MEMORY",
+      "theme": "persistent typed records, replay repair, and branch optimization",
+      "tempo_bpm": 140,
+      "echo_cap": 5,
+      "encounters": ["M01", "M02", "M03", "M04"],
+      "boss": "M04",
+      "entry_requires": ["S04", "SECTOR_MEMORY", "ANCHOR_ACCESS"],
+      "completion_unlocks": ["SECTOR_INTERRUPT", "ECHO_CAP_6", "ANCHOR_SELECTED_STATE"]
+    },
+    {
+      "order": 5,
+      "id": "INTERRUPT",
+      "theme": "controlled hardware corruption and maximum authored concurrency",
+      "tempo_bpm": 160,
+      "echo_cap": 6,
+      "encounters": ["I01", "I02", "I03", "I04"],
+      "boss": "I04",
+      "entry_requires": ["M04", "SECTOR_INTERRUPT", "ECHO_CAP_6"],
+      "completion_unlocks": ["PROGRAM_STABLE", "SEED_TRANSMITTED", "ENDING"]
+    }
+  ],
+  "encounters": [
+    {"order": 1, "id": "B01", "numeric_id": 101, "name": "POWER-ON SELF", "kind": "primary", "file": "encounters/boot/B01.json", "requires_encounter": null, "unlocks_encounter": "B02"},
+    {"order": 2, "id": "B02", "numeric_id": 102, "name": "DEAD LETTER", "kind": "primary", "file": "encounters/boot/B02.json", "requires_encounter": "B01", "unlocks_encounter": "B03"},
+    {"order": 3, "id": "B03", "numeric_id": 103, "name": "TWO-PHASE COMMIT", "kind": "primary", "file": "encounters/boot/B03.json", "requires_encounter": "B02", "unlocks_encounter": "B04"},
+    {"order": 4, "id": "B04", "numeric_id": 104, "name": "THE WATCHDOG", "kind": "boss", "file": "encounters/boot/B04.json", "requires_encounter": "B03", "unlocks_encounter": "V01"},
+    {"order": 5, "id": "V01", "numeric_id": 201, "name": "BUS ARBITRATION", "kind": "primary", "file": "encounters/video/V01.json", "requires_encounter": "B04", "unlocks_encounter": "V02"},
+    {"order": 6, "id": "V02", "numeric_id": 202, "name": "RASTER RELAY", "kind": "primary", "file": "encounters/video/V02.json", "requires_encounter": "V01", "unlocks_encounter": "V03"},
+    {"order": 7, "id": "V03", "numeric_id": 203, "name": "DOUBLE BUFFER", "kind": "primary", "file": "encounters/video/V03.json", "requires_encounter": "V02", "unlocks_encounter": "V04"},
+    {"order": 8, "id": "V04", "numeric_id": 204, "name": "THE SCHEDULER", "kind": "boss", "file": "encounters/video/V04.json", "requires_encounter": "V03", "unlocks_encounter": "S01"},
+    {"order": 9, "id": "S01", "numeric_id": 301, "name": "NOISE FLOOR", "kind": "primary", "file": "encounters/sound/S01.json", "requires_encounter": "V04", "unlocks_encounter": "S02"},
+    {"order": 10, "id": "S02", "numeric_id": 302, "name": "PHASE LOCK", "kind": "primary", "file": "encounters/sound/S02.json", "requires_encounter": "S01", "unlocks_encounter": "S03"},
+    {"order": 11, "id": "S03", "numeric_id": 303, "name": "COUNTERPOINT", "kind": "primary", "file": "encounters/sound/S03.json", "requires_encounter": "S02", "unlocks_encounter": "S04"},
+    {"order": 12, "id": "S04", "numeric_id": 304, "name": "THE GARBAGE COLLECTOR", "kind": "boss", "file": "encounters/sound/S04.json", "requires_encounter": "S03", "unlocks_encounter": "M01"},
+    {"order": 13, "id": "M01", "numeric_id": 401, "name": "WRITE ENABLE", "kind": "primary", "file": "encounters/memory/M01.json", "requires_encounter": "S04", "unlocks_encounter": "M02"},
+    {"order": 14, "id": "M02", "numeric_id": 402, "name": "BAD SECTOR", "kind": "primary", "file": "encounters/memory/M02.json", "requires_encounter": "M01", "unlocks_encounter": "M03"},
+    {"order": 15, "id": "M03", "numeric_id": 403, "name": "COMPACTION", "kind": "primary", "file": "encounters/memory/M03.json", "requires_encounter": "M02", "unlocks_encounter": "M04"},
+    {"order": 16, "id": "M04", "numeric_id": 404, "name": "THE FORK BOMB", "kind": "boss", "file": "encounters/memory/M04.json", "requires_encounter": "M03", "unlocks_encounter": "I01"},
+    {"order": 17, "id": "I01", "numeric_id": 501, "name": "PRIORITY INVERSION", "kind": "primary", "file": "encounters/interrupt/I01.json", "requires_encounter": "M04", "unlocks_encounter": "I02"},
+    {"order": 18, "id": "I02", "numeric_id": 502, "name": "NON-MASKABLE", "kind": "primary", "file": "encounters/interrupt/I02.json", "requires_encounter": "I01", "unlocks_encounter": "I03"},
+    {"order": 19, "id": "I03", "numeric_id": 503, "name": "VECTOR TABLE", "kind": "primary", "file": "encounters/interrupt/I03.json", "requires_encounter": "I02", "unlocks_encounter": "I04"},
+    {"order": 20, "id": "I04", "numeric_id": 504, "name": "ORACLE", "kind": "boss", "file": "encounters/interrupt/I04.json", "requires_encounter": "I03", "unlocks_encounter": null}
+  ],
+  "reachability": {
+    "entry": "B01",
+    "terminal": "I04",
+    "linear_proof": ["B01", "B02", "B03", "B04", "V01", "V02", "V03", "V04", "S01", "S02", "S03", "S04", "M01", "M02", "M03", "M04", "I01", "I02", "I03", "I04"],
+    "edge_count": 19,
+    "all_encounters_reachable": true,
+    "cycles_permitted": false
+  },
+  "invariants": {
+    "authoritative_loop_frames": 720,
+    "encounters_per_sector": 4,
+    "primary_per_sector": 3,
+    "boss_per_sector": 1,
+    "runtime_outcomes_embedded": false,
+    "replay_ids_are_declarations_only": true
+  },
+  "completion_messages": ["PROGRAM STABLE", "SEED TRANSMITTED"]
+}

@@ -1,0 +1,2360 @@
+Sections:
+00: "org0001:0" (0-1158)
+
+
+Source: "src\main.asm"
+                            	     1: ; RECURSION 94: THE LAST CARTRIDGE
+                            	     2: ; Raw Sega Genesis / Mega Drive cartridge translation unit.
+                            	     3: 
+                            	     4:         include "hardware/memory_map.asm"
+
+Source: "hardware\memory_map.asm"
+                            	     1: ; Fixed hardware and Milestone 1 memory constants.
+                            	     2: 
+                            	     3: INITIAL_STACK                   equ     $00FFFFFC
+                            	     4: WORK_RAM_BASE                   equ     $00FF0000
+                            	     5: WORK_RAM_LONGS                  equ     $00004000
+                            	     6: 
+                            	     7: HW_VERSION                      equ     $00A10001
+                            	     8: IO_PORT1_DATA                   equ     $00A10003
+                            	     9: IO_PORT2_DATA                   equ     $00A10005
+                            	    10: IO_PORT1_CONTROL                equ     $00A10009
+                            	    11: IO_PORT2_CONTROL                equ     $00A1000B
+                            	    12: TMSS_REGISTER                   equ     $00A14000
+                            	    13: Z80_RAM                         equ     $00A00000
+                            	    14: Z80_BUS_REQUEST                 equ     $00A11100
+                            	    15: Z80_RESET                       equ     $00A11200
+                            	    16: 
+                            	    17: VDP_DATA                        equ     $00C00000
+                            	    18: VDP_CONTROL                     equ     $00C00004
+                            	    19: PSG_PORT                        equ     $00C00011
+                            	    20: 
+                            	    21: SAT_SHADOW                      equ     $00FF8000
+                            	    22: SAT_SHADOW_BYTES                equ     $0280
+                            	    23: SAT_SHADOW_WORDS                equ     SAT_SHADOW_BYTES/2
+                            	    24: DMA_QUEUE_BASE                  equ     $00FF9000
+                            	    25: DMA_QUEUE_CAPACITY              equ     32
+                            	    26: INPUT_STATE_BASE                equ     $00FF9800
+                            	    27: INPUT_HELD                      equ     INPUT_STATE_BASE+$00
+                            	    28: INPUT_PRESSED                   equ     INPUT_STATE_BASE+$01
+                            	    29: INPUT_RELEASED                  equ     INPUT_STATE_BASE+$02
+                            	    30: INPUT_RAW_HIGH                  equ     INPUT_STATE_BASE+$03
+                            	    31: INPUT_RAW_LOW                   equ     INPUT_STATE_BASE+$04
+                            	    32: INPUT_CONNECTED                 equ     INPUT_STATE_BASE+$05
+                            	    33: INPUT_START_HELD                equ     INPUT_STATE_BASE+$06
+                            	    34: INPUT_PREVIOUS                  equ     INPUT_STATE_BASE+$07
+                            	    35: INPUT_SAMPLE_COUNT              equ     INPUT_STATE_BASE+$08
+                            	    36: AUDIO_SHADOW_BASE               equ     $00FF9900
+                            	    37: 
+                            	    38: VRAM_PLANE_A                    equ     $C000
+                            	    39: VRAM_WINDOW                     equ     $D000
+                            	    40: VRAM_PLANE_B                    equ     $E000
+                            	    41: VRAM_SAT                        equ     $F000
+                            	    42: VRAM_HSCROLL                    equ     $FC00
+                            	    43: 
+                            	    44: PLANE_WIDTH_CELLS               equ     64
+                            	    45: VISIBLE_WIDTH_CELLS             equ     40
+                            	    46: VISIBLE_HEIGHT_CELLS            equ     28
+                            	    47: PLANE_ROW_BYTES                 equ     PLANE_WIDTH_CELLS*2
+                            	    48: 
+                            	    49: DEBUG_BASE                      equ     $00FFF000
+                            	    50: DEBUG_MAGIC                     equ     DEBUG_BASE+$000
+                            	    51: DEBUG_ABI_VERSION               equ     DEBUG_BASE+$004
+                            	    52: DEBUG_ABI_SIZE                  equ     DEBUG_BASE+$006
+                            	    53: DEBUG_SEQUENCE                  equ     DEBUG_BASE+$008
+                            	    54: DEBUG_HEARTBEAT                 equ     DEBUG_BASE+$00C
+                            	    55: DEBUG_FRAME_COUNTER             equ     DEBUG_BASE+$010
+                            	    56: DEBUG_FRAME_TOKEN               equ     DEBUG_BASE+$014
+                            	    57: DEBUG_FATAL_CODE                equ     DEBUG_BASE+$016
+                            	    58: DEBUG_BOOT_STAGE                equ     DEBUG_BASE+$018
+                            	    59: DEBUG_HARDWARE_FLAGS            equ     DEBUG_BASE+$01A
+                            	    60: DEBUG_LAST_VDP_STATUS           equ     DEBUG_BASE+$01C
+                            	    61: DEBUG_INPUT_HELD                equ     DEBUG_BASE+$01E
+                            	    62: DEBUG_INPUT_PRESSED             equ     DEBUG_BASE+$01F
+                            	    63: DEBUG_INPUT_RELEASED            equ     DEBUG_BASE+$020
+                            	    64: DEBUG_INPUT_CONNECTED           equ     DEBUG_BASE+$021
+                            	    65: DEBUG_INPUT_START_HELD          equ     DEBUG_BASE+$022
+                            	    66: DEBUG_SPRITE_COUNT              equ     DEBUG_BASE+$024
+                            	    67: DEBUG_SPRITE_SCANLINE_MAX       equ     DEBUG_BASE+$026
+                            	    68: DEBUG_DMA_WORDS_FRAME           equ     DEBUG_BASE+$028
+                            	    69: DEBUG_DMA_WORDS_MAX             equ     DEBUG_BASE+$02A
+                            	    70: DEBUG_DMA_QUEUE_DEPTH           equ     DEBUG_BASE+$02C
+                            	    71: DEBUG_DMA_QUEUE_HIGH_WATER      equ     DEBUG_BASE+$02E
+                            	    72: DEBUG_DMA_OVERFLOW_COUNT        equ     DEBUG_BASE+$030
+                            	    73: DEBUG_VBLANK_OVERRUN_COUNT      equ     DEBUG_BASE+$032
+                            	    74: DEBUG_AUDIO_STATE               equ     DEBUG_BASE+$034
+                            	    75: DEBUG_Z80_HEARTBEAT             equ     DEBUG_BASE+$036
+                            	    76: DEBUG_AUDIO_COMMAND_COUNT       equ     DEBUG_BASE+$038
+                            	    77: DEBUG_M2_FLAGS                  equ     DEBUG_BASE+$03A
+                            	    78: DEBUG_CONTROLLER_SAMPLES        equ     DEBUG_BASE+$03C
+                            	    79: DEBUG_Z80_TIMEOUT_COUNT         equ     DEBUG_BASE+$040
+                            	    80: DEBUG_DMA_DEFERRED_COUNT        equ     DEBUG_BASE+$042
+                            	    81: DEBUG_DMA_REQUIRED_DROP_COUNT   equ     DEBUG_BASE+$044
+                            	    82: DEBUG_DMA_INVALID_COUNT         equ     DEBUG_BASE+$046
+                            	    83: 
+                            	    84: DEBUG_MAGIC_R94D                equ     $52393444
+                            	    85: DEBUG_ABI_VERSION_VALUE         equ     $0001
+                            	    86: DEBUG_ABI_SIZE_VALUE            equ     $0400
+                            	    87: 
+                            	    88: BOOT_STAGE_RAM_READY            equ     $0001
+                            	    89: BOOT_STAGE_Z80_SAFE             equ     $0002
+                            	    90: BOOT_STAGE_VIDEO_READY          equ     $0003
+                            	    91: BOOT_STAGE_RUNNING              equ     $0004
+                            	    92: 
+                            	    93: HARDWARE_FLAG_Z80_TIMEOUT       equ     $0001
+                            	    94: 
+                            	    95: M2_FLAG_INPUT_ACTIVE            equ     $0001
+                            	    96: M2_FLAG_SPRITE_ACTIVE           equ     $0002
+                            	    97: M2_FLAG_DMA_ACTIVE              equ     $0004
+                            	    98: M2_FLAG_Z80_UPLOADED            equ     $0008
+                            	    99: M2_FLAG_YM2612_ACTIVE           equ     $0010
+                            	   100: M2_FLAG_PSG_ACTIVE              equ     $0020
+                            	   101: 
+                            	   102: FATAL_UNEXPECTED_EXCEPTION      equ     $0001
+                            	   103: 
+                            	   104: VDP_COMMAND_VRAM_WRITE_0        equ     $40000000
+                            	   105: VDP_COMMAND_CRAM_WRITE_0        equ     $C0000000
+                            	   106: VDP_COMMAND_VSRAM_WRITE_0       equ     $40000010
+                            	   107: VDP_COMMAND_FONT_WRITE          equ     $40200000
+                            	   108: VDP_COMMAND_PULSE_CRAM_WRITE    equ     $C07C0000
+                            	   109: 
+                            	   110: VDP_REGISTER_DISPLAY_OFF        equ     $8104
+                            	   111: VDP_REGISTER_DISPLAY_ON         equ     $8164
+                            	   112: 
+                            	   113: DIAGNOSTIC_PALETTE_BITS         equ     $6000
+                            	   114: DIAGNOSTIC_DIGIT_ZERO_TILE      equ     1
+                            	   115: DIAGNOSTIC_LETTER_A_TILE        equ     11
+                            	   116: DIAGNOSTIC_PULSE_TILE           equ     37
+                            	   117: DIAGNOSTIC_GRID_TILE            equ     38
+                            	   118: DIAGNOSTIC_FONT_GLYPHS          equ     36
+                            	   119: 
+
+Source: "src\main.asm"
+                            	     5: 
+                            	     6:         org     $000000
+                            	     7: 
+                            	     8:         include "boot/vectors.asm"
+
+Source: "boot\vectors.asm"
+                            	     1: ; The cartridge header begins at $100, so all 64 base 68000 vectors are
+                            	     2: ; explicitly covered here. Unexpected exceptions enter a bounded safe halt.
+                            	     3: 
+                            	     4: VectorTable:
+00:00000000 00FFFFFC        	     5:         dc.l    INITIAL_STACK
+00:00000004 00000200        	     6:         dc.l    ResetEntry
+00:00000008 000002C0        	     7:         dcb.l   28,SafeException
+00:0000000C *
+00:00000078 00000D2A        	     8:         dc.l    VBlankInterrupt
+00:0000007C 000002C0        	     9:         dc.l    SafeException
+00:00000080 000002C0        	    10:         dcb.l   32,SafeException
+00:00000084 *
+                            	    11: VectorTableEnd:
+                            	    12: 
+                            	    13:         assert  VectorTable=$000000,"vector table must start at ROM offset $000000"
+                            	    14:         assert  VectorTableEnd=$000100,"vector table must contain exactly 64 entries"
+                            	    15: 
+
+Source: "src\main.asm"
+                            	     9:         include "boot/header.asm"
+
+Source: "boot\header.asm"
+                            	     1: ; Standard 256-byte Sega Genesis / Mega Drive cartridge header.
+                            	     2: 
+                            	     3: CartridgeHeader:
+                            	     4: HeaderConsole:
+00:00000100 53454741204D4547	     5:         dc.b    "SEGA MEGA DRIVE "
+00:00000108 4120445249564520
+                            	     6:         assert  *-HeaderConsole=16,"console field must be 16 bytes"
+                            	     7: 
+                            	     8: HeaderCopyright:
+00:00000110 2843295239342032	     9:         dc.b    "(C)R94 2026.JUL "
+00:00000118 3032362E4A554C20
+                            	    10:         assert  *-HeaderCopyright=16,"copyright field must be 16 bytes"
+                            	    11: 
+                            	    12: HeaderDomestic:
+00:00000120 524543555253494F	    13:         dc.b    "RECURSION 94: THE LAST CARTRIDGE"
+00:00000128 4E2039343A205448
+00:00000130 45204C4153542043
+00:00000138 4152545249444745
+00:00000140 20              	    14:         dcb.b   48-(*-HeaderDomestic),$20
+00:00000141 *
+                            	    15:         assert  *-HeaderDomestic=48,"domestic title field must be 48 bytes"
+                            	    16: 
+                            	    17: HeaderOverseas:
+00:00000150 524543555253494F	    18:         dc.b    "RECURSION 94: THE LAST CARTRIDGE"
+00:00000158 4E2039343A205448
+00:00000160 45204C4153542043
+00:00000168 4152545249444745
+00:00000170 20              	    19:         dcb.b   48-(*-HeaderOverseas),$20
+00:00000171 *
+                            	    20:         assert  *-HeaderOverseas=48,"overseas title field must be 48 bytes"
+                            	    21: 
+                            	    22: HeaderSerial:
+00:00000180 474D205239344D31	    23:         dc.b    "GM R94M1000-00"
+00:00000188 3030302D3030
+                            	    24:         assert  *-HeaderSerial=14,"serial field must be 14 bytes"
+                            	    25: 
+                            	    26: HeaderChecksum:
+00:0000018E 0000            	    27:         dc.w    $0000
+                            	    28: 
+                            	    29: HeaderIoSupport:
+00:00000190 4A              	    30:         dc.b    "J"
+00:00000191 20              	    31:         dcb.b   15,$20
+00:00000192 *
+                            	    32: 
+00:000001A0 00000000        	    33:         dc.l    $00000000
+00:000001A4 000FFFFF        	    34:         dc.l    $000FFFFF
+00:000001A8 00FF0000        	    35:         dc.l    $00FF0000
+00:000001AC 00FFFFFF        	    36:         dc.l    $00FFFFFF
+                            	    37: 
+                            	    38: ; RA, $F820 declares byte-wide backup RAM on odd addresses.
+00:000001B0 5241            	    39:         dc.b    "RA"
+00:000001B2 F820            	    40:         dc.w    $F820
+00:000001B4 00200001        	    41:         dc.l    $00200001
+00:000001B8 00203FFF        	    42:         dc.l    $00203FFF
+                            	    43: 
+                            	    44: HeaderModem:
+00:000001BC 20              	    45:         dcb.b   12,$20
+00:000001BD *
+                            	    46: 
+                            	    47: HeaderMemo:
+00:000001C8 4F524947494E414C	    48:         dc.b    "ORIGINAL PROGRAMMATIC ART AND CODE"
+00:000001D0 2050524F4752414D
+00:000001D8 4D41544943204152
+00:000001E0 5420414E4420434F
+00:000001E8 4445
+00:000001EA 20              	    49:         dcb.b   40-(*-HeaderMemo),$20
+00:000001EB *
+                            	    50: 
+                            	    51: HeaderRegions:
+00:000001F0 4A5545          	    52:         dc.b    "JUE"
+00:000001F3 20              	    53:         dcb.b   13,$20
+00:000001F4 *
+                            	    54: 
+                            	    55: CartridgeHeaderEnd:
+                            	    56: 
+                            	    57:         assert  CartridgeHeader=$000100,"cartridge header must start at ROM offset $000100"
+                            	    58:         assert  HeaderChecksum=$00018E,"checksum word must be at ROM offset $00018E"
+                            	    59:         assert  CartridgeHeaderEnd=$000200,"cartridge header must end at ROM offset $000200"
+                            	    60: 
+                            	    61: 
+
+Source: "src\main.asm"
+                            	    10:         include "boot/startup.asm"
+
+Source: "boot\startup.asm"
+                            	     1: ; Reset owns initialization. Interrupts remain masked and the display remains
+                            	     2: ; disabled until all RAM and video state is deterministic.
+                            	     3: 
+                            	     4: ResetEntry:
+00:00000200 46FC2700        	     5:         move.w  #$2700,sr
+00:00000204 2E7C00FFFFFC    	     6:         move.l  #INITIAL_STACK,a7
+                            	     7: 
+                            	     8: ; Clear all 64 KiB without using the stack. The reset entry has no stack frame.
+00:0000020A 207C00FF0000    	     9:         move.l  #WORK_RAM_BASE,a0
+00:00000210 7000            	    10:         moveq   #0,d0
+00:00000212 323C3FFF        	    11:         move.w  #WORK_RAM_LONGS-1,d1
+                            	    12: .clear_work_ram:
+00:00000216 20C0            	    13:         move.l  d0,(a0)+
+00:00000218 51C9FFFC        	    14:         dbf     d1,.clear_work_ram
+00:0000021C 2E7C00FFFFFC    	    15:         move.l  #INITIAL_STACK,a7
+                            	    16: 
+                            	    17: ; Publish the minimum stable debug ABI before calling any hardware routine.
+00:00000222 23FC5239344400FF	    18:         move.l  #DEBUG_MAGIC_R94D,(DEBUG_MAGIC).l
+00:0000022A F000
+00:0000022C 33FC000100FFF004	    19:         move.w  #DEBUG_ABI_VERSION_VALUE,(DEBUG_ABI_VERSION).l
+00:00000234 33FC040000FFF006	    20:         move.w  #DEBUG_ABI_SIZE_VALUE,(DEBUG_ABI_SIZE).l
+00:0000023C 33FC000100FFF018	    21:         move.w  #BOOT_STAGE_RAM_READY,(DEBUG_BOOT_STAGE).l
+                            	    22: 
+                            	    23: ; TMSS-equipped hardware exposes a nonzero low version nibble.
+00:00000244 7000            	    24:         moveq   #0,d0
+00:00000246 103900A10001    	    25:         move.b  (HW_VERSION).l,d0
+00:0000024C 0200000F        	    26:         andi.b  #$0F,d0
+00:00000250 670A            	    27:         beq.s   .tmss_complete
+00:00000252 23FC5345474100A1	    28:         move.l  #$53454741,(TMSS_REGISTER).l
+00:0000025A 4000
+                            	    29: .tmss_complete:
+                            	    30: 
+00:0000025C 610000C4        	    31:         bsr.w   Z80EnterSafeState
+00:00000260 33FC000200FFF018	    32:         move.w  #BOOT_STAGE_Z80_SAFE,(DEBUG_BOOT_STAGE).l
+                            	    33: 
+00:00000268 610000FE        	    34:         bsr.w   ControllerInitialize
+00:0000026C 61000280        	    35:         bsr.w   VdpInitialize
+00:00000270 61000B5A        	    36:         bsr.w   VdpLoadDiagnostic
+00:00000274 610003E8        	    37:         bsr.w   DmaInitialize
+00:00000278 61000946        	    38:         bsr.w   SpriteInitialize
+00:0000027C 33FC000300FFF018	    39:         move.w  #BOOT_STAGE_VIDEO_READY,(DEBUG_BOOT_STAGE).l
+                            	    40: 
+                            	    41: ; Clear a possibly pending VDP interrupt, then enable display/V-int and lower
+                            	    42: ; the CPU mask only far enough to admit the level-6 VBlank interrupt.
+00:00000284 303900C00004    	    43:         move.w  (VDP_CONTROL).l,d0
+00:0000028A 33FC816400C00004	    44:         move.w  #VDP_REGISTER_DISPLAY_ON,(VDP_CONTROL).l
+00:00000292 33FC000400FFF018	    45:         move.w  #BOOT_STAGE_RUNNING,(DEBUG_BOOT_STAGE).l
+00:0000029A 46FC2500        	    46:         move.w  #$2500,sr
+                            	    47: 
+                            	    48: MainLoop:
+                            	    49: ; Mask VBlank only while testing/decrementing the shared token. STOP lowers the
+                            	    50: ; mask and sleeps atomically, so an interrupt can never be lost between the
+                            	    51: ; empty-token test and sleep.
+00:0000029E 46FC2700        	    52:         move.w  #$2700,sr
+00:000002A2 4A7900FFF014    	    53:         tst.w   (DEBUG_FRAME_TOKEN).l
+00:000002A8 6710            	    54:         beq.s   .wait_for_vblank
+00:000002AA 537900FFF014    	    55:         subq.w  #1,(DEBUG_FRAME_TOKEN).l
+00:000002B0 61000A4A        	    56:         bsr.w   M2DebugFatalFixture
+00:000002B4 6100096C        	    57:         bsr.w   SpriteUpdateAndQueue
+00:000002B8 60E4            	    58:         bra.s   MainLoop
+                            	    59: .wait_for_vblank:
+00:000002BA 4E722500        	    60:         stop    #$2500
+00:000002BE 60DE            	    61:         bra.s   MainLoop
+                            	    62: 
+
+Source: "src\main.asm"
+                            	    11:         include "boot/exceptions.asm"
+
+Source: "boot\exceptions.asm"
+                            	     1: ; Common fatal sink for every exception and interrupt not explicitly owned.
+                            	     2: ; It is safe before VDP initialization and never returns into damaged state.
+                            	     3: 
+                            	     4: SafeException:
+00:000002C0 46FC2700        	     5:         move.w  #$2700,sr
+00:000002C4 7000            	     6:         moveq   #0,d0
+00:000002C6 0CB95239344400FF	     7:         cmpi.l  #DEBUG_MAGIC_R94D,(DEBUG_MAGIC).l
+00:000002CE F000
+00:000002D0 6620            	     8:         bne.s   .publish_fatal
+00:000002D2 0C79000100FFF004	     9:         cmpi.w  #DEBUG_ABI_VERSION_VALUE,(DEBUG_ABI_VERSION).l
+00:000002DA 6616            	    10:         bne.s   .publish_fatal
+00:000002DC 0C79040000FFF006	    11:         cmpi.w  #DEBUG_ABI_SIZE_VALUE,(DEBUG_ABI_SIZE).l
+00:000002E4 660C            	    12:         bne.s   .publish_fatal
+00:000002E6 0C79000300FFF018	    13:         cmpi.w  #BOOT_STAGE_VIDEO_READY,(DEBUG_BOOT_STAGE).l
+00:000002EE 6502            	    14:         blo.s   .publish_fatal
+00:000002F0 7001            	    15:         moveq   #1,d0
+                            	    16: 
+                            	    17: .publish_fatal:
+00:000002F2 23FC5239344400FF	    18:         move.l  #DEBUG_MAGIC_R94D,(DEBUG_MAGIC).l
+00:000002FA F000
+00:000002FC 33FC000100FFF004	    19:         move.w  #DEBUG_ABI_VERSION_VALUE,(DEBUG_ABI_VERSION).l
+00:00000304 33FC040000FFF006	    20:         move.w  #DEBUG_ABI_SIZE_VALUE,(DEBUG_ABI_SIZE).l
+00:0000030C 33FC000100FFF016	    21:         move.w  #FATAL_UNEXPECTED_EXCEPTION,(DEBUG_FATAL_CODE).l
+00:00000314 4A00            	    22:         tst.b   d0
+00:00000316 6704            	    23:         beq.s   SafeExceptionHalt
+00:00000318 6100025A        	    24:         bsr.w   VdpShowFatalScreen
+                            	    25: 
+                            	    26: SafeExceptionHalt:
+00:0000031C 4E722700        	    27:         stop    #$2700
+00:00000320 60FA            	    28:         bra.s   SafeExceptionHalt
+                            	    29: 
+
+Source: "src\main.asm"
+                            	    12:         include "hardware/z80_bus.asm"
+
+Source: "hardware\z80_bus.asm"
+                            	     1: ; Leave the sound CPU held in reset for Milestone 1. The bus request is bounded,
+                            	     2: ; and a timeout is published rather than permitting an unbounded boot hang.
+                            	     3: 
+                            	     4: Z80_BUS_TIMEOUT                 equ     $3FFF
+                            	     5: 
+                            	     6: Z80EnterSafeState:
+00:00000322 33FC010000A11100	     7:         move.w  #$0100,(Z80_BUS_REQUEST).l
+                            	     8: ; Power-on reset must be cancelled for the BUSREQ acknowledge circuit to run.
+                            	     9: ; BUSREQ is already asserted, so the Z80 cannot execute unowned sound code.
+00:0000032A 33FC010000A11200	    10:         move.w  #$0100,(Z80_RESET).l
+00:00000332 303C3FFE        	    11:         move.w  #Z80_BUS_TIMEOUT-1,d0
+                            	    12: .wait_for_bus:
+00:00000336 7200            	    13:         moveq   #0,d1
+00:00000338 123900A11100    	    14:         move.b  (Z80_BUS_REQUEST).l,d1
+00:0000033E 02010001        	    15:         andi.b  #$01,d1
+00:00000342 6710            	    16:         beq.s   .bus_owned
+00:00000344 51C8FFF0        	    17:         dbf     d0,.wait_for_bus
+00:00000348 0079000100FFF01A	    18:         ori.w   #HARDWARE_FLAG_Z80_TIMEOUT,(DEBUG_HARDWARE_FLAGS).l
+00:00000350 7001            	    19:         moveq   #1,d0
+00:00000352 6002            	    20:         bra.s   .release_bus
+                            	    21: .bus_owned:
+00:00000354 7000            	    22:         moveq   #0,d0
+                            	    23: .release_bus:
+00:00000356 33FC000000A11200	    24:         move.w  #$0000,(Z80_RESET).l
+00:0000035E 33FC000000A11100	    25:         move.w  #$0000,(Z80_BUS_REQUEST).l
+00:00000366 4E75            	    26:         rts
+                            	    27: 
+
+Source: "src\main.asm"
+                            	    13:         include "hardware/controllers.asm"
+
+Source: "hardware\controllers.asm"
+                            	     1: ; Standard three-button controller port 1 support. The bounded VBlank handler
+                            	     2: ; calls ControllerPoll exactly once after acknowledging the VDP.
+                            	     3: 
+                            	     4: CONTROLLER_TH_OUTPUT            equ     $40
+                            	     5: CONTROLLER_PHASE_HIGH           equ     $40
+                            	     6: CONTROLLER_PHASE_LOW            equ     $00
+                            	     7: 
+                            	     8: INPUT_BIT_UP                    equ     $01
+                            	     9: INPUT_BIT_DOWN                  equ     $02
+                            	    10: INPUT_BIT_LEFT                  equ     $04
+                            	    11: INPUT_BIT_RIGHT                 equ     $08
+                            	    12: INPUT_BIT_A                     equ     $10
+                            	    13: INPUT_BIT_B                     equ     $20
+                            	    14: INPUT_BIT_C                     equ     $40
+                            	    15: 
+                            	    16: ControllerInitialize:
+00:00000368 13FC004000A10009	    17:         move.b  #CONTROLLER_TH_OUTPUT,(IO_PORT1_CONTROL).l
+00:00000370 13FC004000A10003	    18:         move.b  #CONTROLLER_PHASE_HIGH,(IO_PORT1_DATA).l
+00:00000378 423900FF9800    	    19:         clr.b   (INPUT_HELD).l
+00:0000037E 423900FF9801    	    20:         clr.b   (INPUT_PRESSED).l
+00:00000384 423900FF9802    	    21:         clr.b   (INPUT_RELEASED).l
+00:0000038A 423900FF9803    	    22:         clr.b   (INPUT_RAW_HIGH).l
+00:00000390 423900FF9804    	    23:         clr.b   (INPUT_RAW_LOW).l
+00:00000396 423900FF9805    	    24:         clr.b   (INPUT_CONNECTED).l
+00:0000039C 423900FF9806    	    25:         clr.b   (INPUT_START_HELD).l
+00:000003A2 423900FF9807    	    26:         clr.b   (INPUT_PREVIOUS).l
+00:000003A8 42B900FF9808    	    27:         clr.l   (INPUT_SAMPLE_COUNT).l
+00:000003AE 0079000100FFF03A	    28:         ori.w   #M2_FLAG_INPUT_ACTIVE,(DEBUG_M2_FLAGS).l
+00:000003B6 4E75            	    29:         rts
+                            	    30: 
+                            	    31: ; VBlank-only hardware routine. Clobbers d0-d2. TH is returned high after
+                            	    32: ; every bounded two-phase sample.
+                            	    33: ControllerPoll:
+00:000003B8 13FC004000A10003	    34:         move.b  #CONTROLLER_PHASE_HIGH,(IO_PORT1_DATA).l
+00:000003C0 4E71            	    35:         nop
+00:000003C2 4E71            	    36:         nop
+00:000003C4 4E71            	    37:         nop
+00:000003C6 4E71            	    38:         nop
+00:000003C8 7000            	    39:         moveq   #0,d0
+00:000003CA 103900A10003    	    40:         move.b  (IO_PORT1_DATA).l,d0
+00:000003D0 13C000FF9803    	    41:         move.b  d0,(INPUT_RAW_HIGH).l
+                            	    42: 
+00:000003D6 13FC000000A10003	    43:         move.b  #CONTROLLER_PHASE_LOW,(IO_PORT1_DATA).l
+00:000003DE 4E71            	    44:         nop
+00:000003E0 4E71            	    45:         nop
+00:000003E2 4E71            	    46:         nop
+00:000003E4 4E71            	    47:         nop
+00:000003E6 7200            	    48:         moveq   #0,d1
+00:000003E8 123900A10003    	    49:         move.b  (IO_PORT1_DATA).l,d1
+00:000003EE 13C100FF9804    	    50:         move.b  d1,(INPUT_RAW_LOW).l
+                            	    51: 
+00:000003F4 13FC004000A10003	    52:         move.b  #CONTROLLER_PHASE_HIGH,(IO_PORT1_DATA).l
+00:000003FC 4E71            	    53:         nop
+00:000003FE 4E71            	    54:         nop
+00:00000400 4E71            	    55:         nop
+00:00000402 4E71            	    56:         nop
+                            	    57: 
+                            	    58: ; During the low-TH phase a three-button pad drives left/right low. Both lines
+                            	    59: ; floating high is the disconnected-port signature.
+00:00000404 0201000C        	    60:         andi.b  #$0C,d1
+00:00000408 664A            	    61:         bne.s   .disconnected
+00:0000040A 13FC000100FF9805	    62:         move.b  #$01,(INPUT_CONNECTED).l
+                            	    63: 
+                            	    64: ; U/D/L/R and B/C arrive in the high-TH phase, all active low.
+00:00000412 4600            	    65:         not.b   d0
+00:00000414 0200003F        	    66:         andi.b  #$3F,d0
+00:00000418 1400            	    67:         move.b  d0,d2
+00:0000041A 0202000F        	    68:         andi.b  #$0F,d2
+00:0000041E 08000004        	    69:         btst    #4,d0
+00:00000422 6704            	    70:         beq.s   .no_b
+00:00000424 00020020        	    71:         ori.b   #INPUT_BIT_B,d2
+                            	    72: .no_b:
+00:00000428 08000005        	    73:         btst    #5,d0
+00:0000042C 6704            	    74:         beq.s   .no_c
+00:0000042E 00020040        	    75:         ori.b   #INPUT_BIT_C,d2
+                            	    76: .no_c:
+                            	    77: 
+                            	    78: ; A and Start arrive in bits 4 and 5 of the low-TH phase.
+00:00000432 7200            	    79:         moveq   #0,d1
+00:00000434 123900FF9804    	    80:         move.b  (INPUT_RAW_LOW).l,d1
+00:0000043A 4601            	    81:         not.b   d1
+00:0000043C 08010004        	    82:         btst    #4,d1
+00:00000440 6704            	    83:         beq.s   .no_a
+00:00000442 00020010        	    84:         ori.b   #INPUT_BIT_A,d2
+                            	    85: .no_a:
+00:00000446 02010020        	    86:         andi.b  #$20,d1
+00:0000044A EA09            	    87:         lsr.b   #5,d1
+00:0000044C 13C100FF9806    	    88:         move.b  d1,(INPUT_START_HELD).l
+00:00000452 600E            	    89:         bra.s   .sanitize_axes
+                            	    90: 
+                            	    91: .disconnected:
+00:00000454 423900FF9805    	    92:         clr.b   (INPUT_CONNECTED).l
+00:0000045A 423900FF9806    	    93:         clr.b   (INPUT_START_HELD).l
+00:00000460 7400            	    94:         moveq   #0,d2
+                            	    95: 
+                            	    96: ; Opposite directions are deterministic neutral, never an arbitrary winner.
+                            	    97: .sanitize_axes:
+00:00000462 1002            	    98:         move.b  d2,d0
+00:00000464 02000003        	    99:         andi.b  #INPUT_BIT_UP+INPUT_BIT_DOWN,d0
+00:00000468 0C000003        	   100:         cmpi.b  #INPUT_BIT_UP+INPUT_BIT_DOWN,d0
+00:0000046C 6604            	   101:         bne.s   .horizontal
+00:0000046E 020200FC        	   102:         andi.b  #$FC,d2
+                            	   103: .horizontal:
+00:00000472 1002            	   104:         move.b  d2,d0
+00:00000474 0200000C        	   105:         andi.b  #INPUT_BIT_LEFT+INPUT_BIT_RIGHT,d0
+00:00000478 0C00000C        	   106:         cmpi.b  #INPUT_BIT_LEFT+INPUT_BIT_RIGHT,d0
+00:0000047C 6604            	   107:         bne.s   .derive_edges
+00:0000047E 020200F3        	   108:         andi.b  #$F3,d2
+                            	   109: 
+                            	   110: .derive_edges:
+00:00000482 7000            	   111:         moveq   #0,d0
+00:00000484 103900FF9807    	   112:         move.b  (INPUT_PREVIOUS).l,d0
+                            	   113: 
+00:0000048A 1200            	   114:         move.b  d0,d1
+00:0000048C 4601            	   115:         not.b   d1
+00:0000048E C202            	   116:         and.b   d2,d1
+00:00000490 13C100FF9801    	   117:         move.b  d1,(INPUT_PRESSED).l
+                            	   118: 
+00:00000496 1202            	   119:         move.b  d2,d1
+00:00000498 4601            	   120:         not.b   d1
+00:0000049A C200            	   121:         and.b   d0,d1
+00:0000049C 13C100FF9802    	   122:         move.b  d1,(INPUT_RELEASED).l
+                            	   123: 
+00:000004A2 13C200FF9800    	   124:         move.b  d2,(INPUT_HELD).l
+00:000004A8 13C200FF9807    	   125:         move.b  d2,(INPUT_PREVIOUS).l
+00:000004AE 52B900FF9808    	   126:         addq.l  #1,(INPUT_SAMPLE_COUNT).l
+                            	   127: 
+                            	   128: ; Mirror the live input ABI for emulator automation.
+00:000004B4 13C200FFF01E    	   129:         move.b  d2,(DEBUG_INPUT_HELD).l
+00:000004BA 13F900FF980100FF	   130:         move.b  (INPUT_PRESSED).l,(DEBUG_INPUT_PRESSED).l
+00:000004C2 F01F
+00:000004C4 13F900FF980200FF	   131:         move.b  (INPUT_RELEASED).l,(DEBUG_INPUT_RELEASED).l
+00:000004CC F020
+00:000004CE 13F900FF980500FF	   132:         move.b  (INPUT_CONNECTED).l,(DEBUG_INPUT_CONNECTED).l
+00:000004D6 F021
+00:000004D8 13F900FF980600FF	   133:         move.b  (INPUT_START_HELD).l,(DEBUG_INPUT_START_HELD).l
+00:000004E0 F022
+00:000004E2 23F900FF980800FF	   134:         move.l  (INPUT_SAMPLE_COUNT).l,(DEBUG_CONTROLLER_SAMPLES).l
+00:000004EA F03C
+00:000004EC 4E75            	   135:         rts
+                            	   136: 
+
+Source: "src\main.asm"
+                            	    14:         include "hardware/vdp.asm"
+
+Source: "hardware\vdp.asm"
+                            	     1: ; Bounded CPU-port VDP bring-up. Runtime DMA is enabled only around VBlank
+                            	     2: ; queue commits.
+                            	     3: 
+                            	     4: VDP_REGISTER_FATAL_DISPLAY     equ     $8144
+                            	     5: VDP_COMMAND_FATAL_TEXT_COLOR   equ     $C0620000
+                            	     6: VDP_FATAL_WAIT                 equ     $1FFF
+                            	     7: VDP_PLANE_TABLE_WORDS          equ     PLANE_WIDTH_CELLS*32
+                            	     8: 
+                            	     9: VdpInitialize:
+                            	    10: ; Reset the control-port command latch, then establish all registers 0-18
+                            	    11: ; while display and interrupts are disabled.
+00:000004EE 303900C00004    	    12:         move.w  (VDP_CONTROL).l,d0
+00:000004F4 41FA0128        	    13:         lea     VdpInitialRegisters(pc),a0
+00:000004F8 303C0012        	    14:         move.w  #18,d0
+                            	    15: .write_registers:
+00:000004FC 33D800C00004    	    16:         move.w  (a0)+,(VDP_CONTROL).l
+00:00000502 51C8FFF8        	    17:         dbf     d0,.write_registers
+                            	    18: 
+                            	    19: ; Clear all 64 KiB VRAM.
+00:00000506 23FC4000000000C0	    20:         move.l  #VDP_COMMAND_VRAM_WRITE_0,(VDP_CONTROL).l
+00:0000050E 0004
+00:00000510 7000            	    21:         moveq   #0,d0
+00:00000512 323C7FFF        	    22:         move.w  #$7FFF,d1
+                            	    23: .clear_vram:
+00:00000516 33C000C00000    	    24:         move.w  d0,(VDP_DATA).l
+00:0000051C 51C9FFF8        	    25:         dbf     d1,.clear_vram
+                            	    26: 
+                            	    27: ; Clear all 128 bytes CRAM.
+00:00000520 23FCC000000000C0	    28:         move.l  #VDP_COMMAND_CRAM_WRITE_0,(VDP_CONTROL).l
+00:00000528 0004
+00:0000052A 723F            	    29:         moveq   #63,d1
+                            	    30: .clear_cram:
+00:0000052C 33C000C00000    	    31:         move.w  d0,(VDP_DATA).l
+00:00000532 51C9FFF8        	    32:         dbf     d1,.clear_cram
+                            	    33: 
+                            	    34: ; Clear all 80 bytes VSRAM.
+00:00000536 23FC4000001000C0	    35:         move.l  #VDP_COMMAND_VSRAM_WRITE_0,(VDP_CONTROL).l
+00:0000053E 0004
+00:00000540 7227            	    36:         moveq   #39,d1
+                            	    37: .clear_vsram:
+00:00000542 33C000C00000    	    38:         move.w  d0,(VDP_DATA).l
+00:00000548 51C9FFF8        	    39:         dbf     d1,.clear_vsram
+00:0000054C 4E75            	    40:         rts
+                            	    41: 
+                            	    42: ; d0.w: even VRAM byte address. Clobbers d0-d1.
+                            	    43: VdpSetVramWriteAddress:
+00:0000054E 7200            	    44:         moveq   #0,d1
+00:00000550 3200            	    45:         move.w  d0,d1
+00:00000552 028000003FFF    	    46:         andi.l  #$00003FFF,d0
+00:00000558 008000004000    	    47:         ori.l   #$00004000,d0
+00:0000055E 4840            	    48:         swap    d0
+00:00000560 E089            	    49:         lsr.l   #8,d1
+00:00000562 EC89            	    50:         lsr.l   #6,d1
+00:00000564 028100000003    	    51:         andi.l  #$00000003,d1
+00:0000056A 8081            	    52:         or.l    d1,d0
+00:0000056C 23C000C00004    	    53:         move.l  d0,(VDP_CONTROL).l
+00:00000572 4E75            	    54:         rts
+                            	    55: 
+                            	    56: ; Post-video fatal renderer. Interrupts are already masked by SafeException.
+                            	    57: ; It never waits indefinitely and uses the resident diagnostic font.
+                            	    58: VdpShowFatalScreen:
+00:00000574 303C1FFE        	    59:         move.w  #VDP_FATAL_WAIT-1,d0
+                            	    60: .wait_for_dma:
+00:00000578 323900C00004    	    61:         move.w  (VDP_CONTROL).l,d1
+00:0000057E 02410002        	    62:         andi.w  #$0002,d1
+00:00000582 6704            	    63:         beq.s   .dma_idle
+00:00000584 51C8FFF2        	    64:         dbf     d0,.wait_for_dma
+                            	    65: .dma_idle:
+00:00000588 33FC810400C00004	    66:         move.w  #VDP_REGISTER_DISPLAY_OFF,(VDP_CONTROL).l
+                            	    67: 
+00:00000590 303CC000        	    68:         move.w  #VRAM_PLANE_A,d0
+00:00000594 6100FFB8        	    69:         bsr.w   VdpSetVramWriteAddress
+00:00000598 7000            	    70:         moveq   #0,d0
+00:0000059A 323C07FF        	    71:         move.w  #VDP_PLANE_TABLE_WORDS-1,d1
+                            	    72: .clear_plane_a:
+00:0000059E 33C000C00000    	    73:         move.w  d0,(VDP_DATA).l
+00:000005A4 51C9FFF8        	    74:         dbf     d1,.clear_plane_a
+                            	    75: 
+00:000005A8 303CE000        	    76:         move.w  #VRAM_PLANE_B,d0
+00:000005AC 6100FFA0        	    77:         bsr.w   VdpSetVramWriteAddress
+00:000005B0 7000            	    78:         moveq   #0,d0
+00:000005B2 323C07FF        	    79:         move.w  #VDP_PLANE_TABLE_WORDS-1,d1
+                            	    80: .clear_plane_b:
+00:000005B6 33C000C00000    	    81:         move.w  d0,(VDP_DATA).l
+00:000005BC 51C9FFF8        	    82:         dbf     d1,.clear_plane_b
+                            	    83: 
+00:000005C0 303CF000        	    84:         move.w  #VRAM_SAT,d0
+00:000005C4 6100FF88        	    85:         bsr.w   VdpSetVramWriteAddress
+00:000005C8 7000            	    86:         moveq   #0,d0
+00:000005CA 323C013F        	    87:         move.w  #SAT_SHADOW_WORDS-1,d1
+                            	    88: .clear_sat:
+00:000005CE 33C000C00000    	    89:         move.w  d0,(VDP_DATA).l
+00:000005D4 51C9FFF8        	    90:         dbf     d1,.clear_sat
+                            	    91: 
+00:000005D8 23FCC000000000C0	    92:         move.l  #VDP_COMMAND_CRAM_WRITE_0,(VDP_CONTROL).l
+00:000005E0 0004
+00:000005E2 33FC000E00C00000	    93:         move.w  #$000E,(VDP_DATA).l
+00:000005EA 23FCC062000000C0	    94:         move.l  #VDP_COMMAND_FATAL_TEXT_COLOR,(VDP_CONTROL).l
+00:000005F2 0004
+00:000005F4 33FC0EEE00C00000	    95:         move.w  #$0EEE,(VDP_DATA).l
+                            	    96: 
+00:000005FC 41FA0046        	    97:         lea     FatalTitle(pc),a0
+00:00000600 700C            	    98:         moveq   #12,d0
+00:00000602 720D            	    99:         moveq   #13,d1
+00:00000604 610008BA        	   100:         bsr.w   VdpWriteDiagnosticText
+00:00000608 41FA004A        	   101:         lea     FatalCodeLine(pc),a0
+00:0000060C 700E            	   102:         moveq   #14,d0
+00:0000060E 7210            	   103:         moveq   #16,d1
+00:00000610 610008AE        	   104:         bsr.w   VdpWriteDiagnosticText
+00:00000614 33FC814400C00004	   105:         move.w  #VDP_REGISTER_FATAL_DISPLAY,(VDP_CONTROL).l
+00:0000061C 4E75            	   106:         rts
+                            	   107: 
+                            	   108: VdpInitialRegisters:
+00:0000061E 8004            	   109:         dc.w    $8004                   ; H-int off, mode 5
+00:00000620 8104            	   110:         dc.w    VDP_REGISTER_DISPLAY_OFF
+00:00000622 8230            	   111:         dc.w    $8230                   ; Plane A at $C000
+00:00000624 8334            	   112:         dc.w    $8334                   ; Window at $D000
+00:00000626 8407            	   113:         dc.w    $8407                   ; Plane B at $E000
+00:00000628 8578            	   114:         dc.w    $8578                   ; SAT at $F000 (H40 aligned)
+00:0000062A 8600            	   115:         dc.w    $8600
+00:0000062C 8700            	   116:         dc.w    $8700                   ; Backdrop palette 0, color 0
+00:0000062E 8800            	   117:         dc.w    $8800
+00:00000630 8900            	   118:         dc.w    $8900
+00:00000632 8A00            	   119:         dc.w    $8A00                   ; H-int counter, interrupt disabled
+00:00000634 8B00            	   120:         dc.w    $8B00                   ; Full-screen H/V scroll
+00:00000636 8C81            	   121:         dc.w    $8C81                   ; H40, no interlace, no shadow
+00:00000638 8D3F            	   122:         dc.w    $8D3F                   ; H-scroll table at $FC00
+00:0000063A 8E00            	   123:         dc.w    $8E00
+00:0000063C 8F02            	   124:         dc.w    $8F02                   ; Word auto-increment
+00:0000063E 9001            	   125:         dc.w    $9001                   ; 64x32 scroll planes
+00:00000640 9100            	   126:         dc.w    $9100                   ; Window disabled at left edge
+00:00000642 9200            	   127:         dc.w    $9200                   ; Window disabled at top edge
+                            	   128: 
+                            	   129: FatalTitle:
+00:00000644 464154414C204558	   130:         dc.b    "FATAL EXCEPTION",0
+00:0000064C 43455054494F4E
+00:00000653 00
+                            	   131: FatalCodeLine:
+00:00000654 434F444520303030	   132:         dc.b    "CODE 0001",0
+00:0000065C 31
+00:0000065D 00
+                            	   133:         even
+                            	   134: 
+
+Source: "src\main.asm"
+                            	    15:         include "hardware/dma.asm"
+
+Source: "hardware\dma.asm"
+                            	     1: ; Bounded VDP DMA queue. Main-side producers publish complete 12-byte records;
+                            	     2: ; only DmaCommitPreparedQueue, called by VBlank, touches the VDP DMA registers.
+                            	     3: 
+                            	     4: DMA_QUEUE_PUBLISHED_DEPTH       equ     DMA_QUEUE_BASE+$00
+                            	     5: DMA_QUEUE_BUILD_DEPTH           equ     DMA_QUEUE_BASE+$02
+                            	     6: DMA_QUEUE_BUILD_WORDS           equ     DMA_QUEUE_BASE+$04
+                            	     7: DMA_QUEUE_COMMIT_WORDS          equ     DMA_QUEUE_BASE+$08
+                            	     8: DMA_QUEUE_FRAME_PENDING         equ     DMA_QUEUE_BASE+$0A
+                            	     9: DMA_QUEUE_RESERVED_0            equ     DMA_QUEUE_BASE+$0C
+                            	    10: DMA_QUEUE_RESERVED_1            equ     DMA_QUEUE_BASE+$0E
+                            	    11: DMA_QUEUE_ENTRIES               equ     DMA_QUEUE_BASE+$10
+                            	    12: 
+                            	    13: DMA_QUEUE_ENTRY_SOURCE          equ     $00
+                            	    14: DMA_QUEUE_ENTRY_DESTINATION     equ     $04
+                            	    15: DMA_QUEUE_ENTRY_WORDS           equ     $06
+                            	    16: DMA_QUEUE_ENTRY_FLAGS           equ     $08
+                            	    17: DMA_QUEUE_ENTRY_AGE             equ     $0A
+                            	    18: DMA_QUEUE_ENTRY_BYTES           equ     $0C
+                            	    19: 
+                            	    20: DMA_FLAG_REQUIRED               equ     $8000
+                            	    21: DMA_FLAG_PROCESSED              equ     $4000
+                            	    22: DMA_PRIORITY_MASK               equ     $0003
+                            	    23: DMA_PRIORITY_CRITICAL           equ     $0000
+                            	    24: DMA_PRIORITY_HIGH               equ     $0001
+                            	    25: DMA_PRIORITY_NORMAL             equ     $0002
+                            	    26: DMA_PRIORITY_LOW                equ     $0003
+                            	    27: DMA_PRIORITY_LEVELS             equ     4
+                            	    28: 
+                            	    29: DMA_ORDINARY_WORD_LIMIT         equ     2048
+                            	    30: DMA_SOURCE_WINDOW_BYTES         equ     $00020000
+                            	    31: DMA_BUSY_TIMEOUT                equ     $1FFF
+                            	    32: VDP_REGISTER_DISPLAY_ON_DMA     equ     $8174
+                            	    33: 
+                            	    34: DMA_VRAM_DYNAMIC_START          equ     (DIAGNOSTIC_GRID_TILE+1)*32
+                            	    35: DMA_VRAM_DYNAMIC_END            equ     VRAM_PLANE_A
+                            	    36: DMA_VRAM_PLANE_A_END            equ     VRAM_WINDOW
+                            	    37: DMA_VRAM_WINDOW_END             equ     VRAM_PLANE_B
+                            	    38: DMA_VRAM_PLANE_B_END            equ     VRAM_SAT
+                            	    39: DMA_VRAM_SAT_END                equ     VRAM_SAT+SAT_SHADOW_BYTES
+                            	    40: DMA_VRAM_HSCROLL_END            equ     VRAM_HSCROLL+$0100
+                            	    41: 
+                            	    42: DMA_QUEUE_STORAGE_END           equ     DMA_QUEUE_ENTRIES+(DMA_QUEUE_CAPACITY*DMA_QUEUE_ENTRY_BYTES)
+                            	    43: 
+                            	    44:         assert  DMA_QUEUE_STORAGE_END<=INPUT_STATE_BASE,"DMA queue must not overlap input state"
+                            	    45: 
+                            	    46: DmaInitialize:
+00:0000065E 427900FF9000    	    47:         clr.w   (DMA_QUEUE_PUBLISHED_DEPTH).l
+00:00000664 427900FF9002    	    48:         clr.w   (DMA_QUEUE_BUILD_DEPTH).l
+00:0000066A 42B900FF9004    	    49:         clr.l   (DMA_QUEUE_BUILD_WORDS).l
+00:00000670 427900FF9008    	    50:         clr.w   (DMA_QUEUE_COMMIT_WORDS).l
+00:00000676 427900FF900A    	    51:         clr.w   (DMA_QUEUE_FRAME_PENDING).l
+00:0000067C 427900FF900C    	    52:         clr.w   (DMA_QUEUE_RESERVED_0).l
+00:00000682 427900FF900E    	    53:         clr.w   (DMA_QUEUE_RESERVED_1).l
+00:00000688 427900FFF028    	    54:         clr.w   (DEBUG_DMA_WORDS_FRAME).l
+00:0000068E 427900FFF02A    	    55:         clr.w   (DEBUG_DMA_WORDS_MAX).l
+00:00000694 427900FFF02C    	    56:         clr.w   (DEBUG_DMA_QUEUE_DEPTH).l
+00:0000069A 427900FFF02E    	    57:         clr.w   (DEBUG_DMA_QUEUE_HIGH_WATER).l
+00:000006A0 427900FFF030    	    58:         clr.w   (DEBUG_DMA_OVERFLOW_COUNT).l
+00:000006A6 427900FFF032    	    59:         clr.w   (DEBUG_VBLANK_OVERRUN_COUNT).l
+00:000006AC 427900FFF042    	    60:         clr.w   (DEBUG_DMA_DEFERRED_COUNT).l
+00:000006B2 427900FFF044    	    61:         clr.w   (DEBUG_DMA_REQUIRED_DROP_COUNT).l
+00:000006B8 427900FFF046    	    62:         clr.w   (DEBUG_DMA_INVALID_COUNT).l
+00:000006BE 0079000400FFF03A	    63:         ori.w   #M2_FLAG_DMA_ACTIVE,(DEBUG_M2_FLAGS).l
+00:000006C6 4E75            	    64:         rts
+                            	    65: 
+                            	    66: ; Begin a producer transaction while retaining any optional records deferred
+                            	    67: ; by the previous VBlank. Clobbers d0-d2/a0.
+                            	    68: DmaQueueBeginFrame:
+00:000006C8 7000            	    69:         moveq   #0,d0
+00:000006CA 303900FF9000    	    70:         move.w  (DMA_QUEUE_PUBLISHED_DEPTH).l,d0
+00:000006D0 0C400020        	    71:         cmpi.w  #DMA_QUEUE_CAPACITY,d0
+00:000006D4 6318            	    72:         bls.s   .depth_valid
+00:000006D6 7000            	    73:         moveq   #0,d0
+00:000006D8 427900FF9000    	    74:         clr.w   (DMA_QUEUE_PUBLISHED_DEPTH).l
+00:000006DE 0C79FFFF00FFF046	    75:         cmpi.w  #$FFFF,(DEBUG_DMA_INVALID_COUNT).l
+00:000006E6 6706            	    76:         beq.s   .depth_valid
+00:000006E8 527900FFF046    	    77:         addq.w  #1,(DEBUG_DMA_INVALID_COUNT).l
+                            	    78: .depth_valid:
+00:000006EE 33C000FF9002    	    79:         move.w  d0,(DMA_QUEUE_BUILD_DEPTH).l
+00:000006F4 42B900FF9004    	    80:         clr.l   (DMA_QUEUE_BUILD_WORDS).l
+00:000006FA 4A40            	    81:         tst.w   d0
+00:000006FC 671E            	    82:         beq.s   .complete
+00:000006FE 41F900FF9010    	    83:         lea     (DMA_QUEUE_ENTRIES).l,a0
+00:00000704 3200            	    84:         move.w  d0,d1
+00:00000706 5341            	    85:         subq.w  #1,d1
+                            	    86: .sum_words:
+00:00000708 7400            	    87:         moveq   #0,d2
+00:0000070A 34280006        	    88:         move.w  DMA_QUEUE_ENTRY_WORDS(a0),d2
+00:0000070E D5B900FF9004    	    89:         add.l   d2,(DMA_QUEUE_BUILD_WORDS).l
+00:00000714 D0FC000C        	    90:         adda.w  #DMA_QUEUE_ENTRY_BYTES,a0
+00:00000718 51C9FFEE        	    91:         dbf     d1,.sum_words
+                            	    92: .complete:
+00:0000071C 4E75            	    93:         rts
+                            	    94: 
+                            	    95: ; a0: approved even source, d0.w: even VRAM destination, d1.w: word count,
+                            	    96: ; d2.w: DMA_FLAG_REQUIRED plus one DMA_PRIORITY_* value.
+                            	    97: ; Returns d0.l=1 when appended, d0.l=0 when rejected.
+                            	    98: DmaQueueEnqueue:
+00:0000071E 48E71C20        	    99:         movem.l d3-d5/a2,-(a7)
+00:00000722 02800000FFFF    	   100:         andi.l  #$0000FFFF,d0
+00:00000728 02810000FFFF    	   101:         andi.l  #$0000FFFF,d1
+00:0000072E 02820000FFFF    	   102:         andi.l  #$0000FFFF,d2
+00:00000734 2608            	   103:         move.l  a0,d3
+                            	   104: 
+                            	   105: ; Only the public required flag and two priority bits may be supplied.
+00:00000736 3802            	   106:         move.w  d2,d4
+00:00000738 02447FFC        	   107:         andi.w  #$7FFC,d4
+00:0000073C 6600017E        	   108:         bne.w   .invalid
+                            	   109: 
+00:00000740 2803            	   110:         move.l  d3,d4
+00:00000742 028400000001    	   111:         andi.l  #$00000001,d4
+00:00000748 66000172        	   112:         bne.w   .invalid
+00:0000074C 0C8300100000    	   113:         cmpi.l  #$00100000,d3
+00:00000752 6514            	   114:         blo.s   .source_allowed
+00:00000754 0C8300FF0000    	   115:         cmpi.l  #WORK_RAM_BASE,d3
+00:0000075A 65000160        	   116:         blo.w   .invalid
+00:0000075E 0C8301000000    	   117:         cmpi.l  #$01000000,d3
+00:00000764 64000156        	   118:         bhs.w   .invalid
+                            	   119: .source_allowed:
+00:00000768 4A41            	   120:         tst.w   d1
+00:0000076A 67000150        	   121:         beq.w   .invalid
+00:0000076E 0C410800        	   122:         cmpi.w  #DMA_ORDINARY_WORD_LIMIT,d1
+00:00000772 62000148        	   123:         bhi.w   .invalid
+                            	   124: 
+00:00000776 3800            	   125:         move.w  d0,d4
+00:00000778 02440001        	   126:         andi.w  #$0001,d4
+00:0000077C 6600013E        	   127:         bne.w   .invalid
+                            	   128: 
+                            	   129: ; Verify both an explicitly owned VRAM destination range and the conservative
+                            	   130: ; 128 KiB source window before publishing the transfer.
+00:00000780 7800            	   131:         moveq   #0,d4
+00:00000782 3801            	   132:         move.w  d1,d4
+00:00000784 D884            	   133:         add.l   d4,d4
+00:00000786 7A00            	   134:         moveq   #0,d5
+00:00000788 3A00            	   135:         move.w  d0,d5
+00:0000078A DA84            	   136:         add.l   d4,d5
+00:0000078C 0C8500010000    	   137:         cmpi.l  #$00010000,d5
+00:00000792 62000128        	   138:         bhi.w   .invalid
+                            	   139: 
+00:00000796 0C80000004E0    	   140:         cmpi.l  #DMA_VRAM_DYNAMIC_START,d0
+00:0000079C 6516            	   141:         blo.s   .check_plane_a
+00:0000079E 0C800000C000    	   142:         cmpi.l  #DMA_VRAM_DYNAMIC_END,d0
+00:000007A4 640E            	   143:         bhs.s   .check_plane_a
+00:000007A6 0C850000C000    	   144:         cmpi.l  #DMA_VRAM_DYNAMIC_END,d5
+00:000007AC 630000A4        	   145:         bls.w   .destination_allowed
+00:000007B0 6000010A        	   146:         bra.w   .invalid
+                            	   147: 
+                            	   148: .check_plane_a:
+00:000007B4 0C800000C000    	   149:         cmpi.l  #VRAM_PLANE_A,d0
+00:000007BA 65000100        	   150:         blo.w   .invalid
+00:000007BE 0C800000D000    	   151:         cmpi.l  #DMA_VRAM_PLANE_A_END,d0
+00:000007C4 640E            	   152:         bhs.s   .check_window
+00:000007C6 0C850000D000    	   153:         cmpi.l  #DMA_VRAM_PLANE_A_END,d5
+00:000007CC 63000084        	   154:         bls.w   .destination_allowed
+00:000007D0 600000EA        	   155:         bra.w   .invalid
+                            	   156: 
+                            	   157: .check_window:
+00:000007D4 0C800000D000    	   158:         cmpi.l  #VRAM_WINDOW,d0
+00:000007DA 650000E0        	   159:         blo.w   .invalid
+00:000007DE 0C800000E000    	   160:         cmpi.l  #DMA_VRAM_WINDOW_END,d0
+00:000007E4 640E            	   161:         bhs.s   .check_plane_b
+00:000007E6 0C850000E000    	   162:         cmpi.l  #DMA_VRAM_WINDOW_END,d5
+00:000007EC 63000064        	   163:         bls.w   .destination_allowed
+00:000007F0 600000CA        	   164:         bra.w   .invalid
+                            	   165: 
+                            	   166: .check_plane_b:
+00:000007F4 0C800000E000    	   167:         cmpi.l  #VRAM_PLANE_B,d0
+00:000007FA 650000C0        	   168:         blo.w   .invalid
+00:000007FE 0C800000F000    	   169:         cmpi.l  #DMA_VRAM_PLANE_B_END,d0
+00:00000804 640E            	   170:         bhs.s   .check_sat
+00:00000806 0C850000F000    	   171:         cmpi.l  #DMA_VRAM_PLANE_B_END,d5
+00:0000080C 63000044        	   172:         bls.w   .destination_allowed
+00:00000810 600000AA        	   173:         bra.w   .invalid
+                            	   174: 
+                            	   175: .check_sat:
+00:00000814 0C800000F000    	   176:         cmpi.l  #VRAM_SAT,d0
+00:0000081A 650000A0        	   177:         blo.w   .invalid
+00:0000081E 0C800000F280    	   178:         cmpi.l  #DMA_VRAM_SAT_END,d0
+00:00000824 640E            	   179:         bhs.s   .check_hscroll
+00:00000826 0C850000F280    	   180:         cmpi.l  #DMA_VRAM_SAT_END,d5
+00:0000082C 63000024        	   181:         bls.w   .destination_allowed
+00:00000830 6000008A        	   182:         bra.w   .invalid
+                            	   183: 
+                            	   184: .check_hscroll:
+00:00000834 0C800000FC00    	   185:         cmpi.l  #VRAM_HSCROLL,d0
+00:0000083A 65000080        	   186:         blo.w   .invalid
+00:0000083E 0C800000FD00    	   187:         cmpi.l  #DMA_VRAM_HSCROLL_END,d0
+00:00000844 64000076        	   188:         bhs.w   .invalid
+00:00000848 0C850000FD00    	   189:         cmpi.l  #DMA_VRAM_HSCROLL_END,d5
+00:0000084E 6200006C        	   190:         bhi.w   .invalid
+                            	   191: .destination_allowed:
+                            	   192: 
+00:00000852 2A03            	   193:         move.l  d3,d5
+00:00000854 02850001FFFF    	   194:         andi.l  #DMA_SOURCE_WINDOW_BYTES-1,d5
+00:0000085A DA84            	   195:         add.l   d4,d5
+00:0000085C 0C8500020000    	   196:         cmpi.l  #DMA_SOURCE_WINDOW_BYTES,d5
+00:00000862 62000058        	   197:         bhi.w   .invalid
+                            	   198: 
+00:00000866 7A00            	   199:         moveq   #0,d5
+00:00000868 3A3900FF9002    	   200:         move.w  (DMA_QUEUE_BUILD_DEPTH).l,d5
+00:0000086E 0C450020        	   201:         cmpi.w  #DMA_QUEUE_CAPACITY,d5
+00:00000872 64000064        	   202:         bhs.w   .overflow
+                            	   203: 
+00:00000876 3805            	   204:         move.w  d5,d4
+00:00000878 C8FC000C        	   205:         mulu.w  #DMA_QUEUE_ENTRY_BYTES,d4
+00:0000087C 43F900FF9010    	   206:         lea     (DMA_QUEUE_ENTRIES).l,a1
+00:00000882 D3C4            	   207:         adda.l  d4,a1
+00:00000884 23430000        	   208:         move.l  d3,DMA_QUEUE_ENTRY_SOURCE(a1)
+00:00000888 33400004        	   209:         move.w  d0,DMA_QUEUE_ENTRY_DESTINATION(a1)
+00:0000088C 33410006        	   210:         move.w  d1,DMA_QUEUE_ENTRY_WORDS(a1)
+00:00000890 33420008        	   211:         move.w  d2,DMA_QUEUE_ENTRY_FLAGS(a1)
+00:00000894 4269000A        	   212:         clr.w   DMA_QUEUE_ENTRY_AGE(a1)
+                            	   213: 
+00:00000898 5245            	   214:         addq.w  #1,d5
+00:0000089A 33C500FF9002    	   215:         move.w  d5,(DMA_QUEUE_BUILD_DEPTH).l
+00:000008A0 D3B900FF9004    	   216:         add.l   d1,(DMA_QUEUE_BUILD_WORDS).l
+00:000008A6 BA7900FFF02E    	   217:         cmp.w   (DEBUG_DMA_QUEUE_HIGH_WATER).l,d5
+00:000008AC 6306            	   218:         bls.s   .accepted
+00:000008AE 33C500FFF02E    	   219:         move.w  d5,(DEBUG_DMA_QUEUE_HIGH_WATER).l
+                            	   220: .accepted:
+00:000008B4 7001            	   221:         moveq   #1,d0
+00:000008B6 4CDF0438        	   222:         movem.l (a7)+,d3-d5/a2
+00:000008BA 4E75            	   223:         rts
+                            	   224: 
+                            	   225: .invalid:
+00:000008BC 0C79FFFF00FFF046	   226:         cmpi.w  #$FFFF,(DEBUG_DMA_INVALID_COUNT).l
+00:000008C4 6706            	   227:         beq.s   .invalid_counted
+00:000008C6 527900FFF046    	   228:         addq.w  #1,(DEBUG_DMA_INVALID_COUNT).l
+                            	   229: .invalid_counted:
+00:000008CC 0802000F        	   230:         btst    #15,d2
+00:000008D0 6720            	   231:         beq.s   .rejected
+00:000008D2 610002DA        	   232:         bsr.w   DmaCountRequiredDrop
+00:000008D6 601A            	   233:         bra.s   .rejected
+                            	   234: 
+                            	   235: .overflow:
+00:000008D8 0C79FFFF00FFF030	   236:         cmpi.w  #$FFFF,(DEBUG_DMA_OVERFLOW_COUNT).l
+00:000008E0 6706            	   237:         beq.s   .overflow_counted
+00:000008E2 527900FFF030    	   238:         addq.w  #1,(DEBUG_DMA_OVERFLOW_COUNT).l
+                            	   239: .overflow_counted:
+00:000008E8 0802000F        	   240:         btst    #15,d2
+00:000008EC 6704            	   241:         beq.s   .rejected
+00:000008EE 610002BE        	   242:         bsr.w   DmaCountRequiredDrop
+                            	   243: .rejected:
+00:000008F2 7000            	   244:         moveq   #0,d0
+00:000008F4 4CDF0438        	   245:         movem.l (a7)+,d3-d5/a2
+00:000008F8 4E75            	   246:         rts
+                            	   247: 
+                            	   248: ; Publish depth last, after every entry is complete. Producers call this with
+                            	   249: ; VBlank masked as one short bounded transaction.
+                            	   250: DmaQueuePublish:
+00:000008FA 7000            	   251:         moveq   #0,d0
+00:000008FC 303900FF9002    	   252:         move.w  (DMA_QUEUE_BUILD_DEPTH).l,d0
+00:00000902 0C400020        	   253:         cmpi.w  #DMA_QUEUE_CAPACITY,d0
+00:00000906 6312            	   254:         bls.s   .valid
+00:00000908 7000            	   255:         moveq   #0,d0
+00:0000090A 0C79FFFF00FFF046	   256:         cmpi.w  #$FFFF,(DEBUG_DMA_INVALID_COUNT).l
+00:00000912 6706            	   257:         beq.s   .valid
+00:00000914 527900FFF046    	   258:         addq.w  #1,(DEBUG_DMA_INVALID_COUNT).l
+                            	   259: .valid:
+00:0000091A 33C000FFF02C    	   260:         move.w  d0,(DEBUG_DMA_QUEUE_DEPTH).l
+00:00000920 33FC000100FF900A	   261:         move.w  #$0001,(DMA_QUEUE_FRAME_PENDING).l
+00:00000928 33C000FF9000    	   262:         move.w  d0,(DMA_QUEUE_PUBLISHED_DEPTH).l
+00:0000092E 4E75            	   263:         rts
+                            	   264: 
+                            	   265: ; VBlank-only consumer. Required records are drained first, then optional
+                            	   266: ; records, in stable insertion order within each of four priorities. Optional
+                            	   267: ; records that exceed the 2,048-word frame cap are compacted for a later frame.
+                            	   268: DmaCommitPreparedQueue:
+00:00000930 427900FF900A    	   269:         clr.w   (DMA_QUEUE_FRAME_PENDING).l
+00:00000936 427900FF9008    	   270:         clr.w   (DMA_QUEUE_COMMIT_WORDS).l
+00:0000093C 427900FFF028    	   271:         clr.w   (DEBUG_DMA_WORDS_FRAME).l
+00:00000942 7E00            	   272:         moveq   #0,d7
+00:00000944 3E3900FF9000    	   273:         move.w  (DMA_QUEUE_PUBLISHED_DEPTH).l,d7
+00:0000094A 0C470020        	   274:         cmpi.w  #DMA_QUEUE_CAPACITY,d7
+00:0000094E 6318            	   275:         bls.s   .depth_valid
+00:00000950 0C79FFFF00FFF046	   276:         cmpi.w  #$FFFF,(DEBUG_DMA_INVALID_COUNT).l
+00:00000958 6706            	   277:         beq.s   .discard_corrupt
+00:0000095A 527900FFF046    	   278:         addq.w  #1,(DEBUG_DMA_INVALID_COUNT).l
+                            	   279: .discard_corrupt:
+00:00000960 7E00            	   280:         moveq   #0,d7
+00:00000962 427900FF9000    	   281:         clr.w   (DMA_QUEUE_PUBLISHED_DEPTH).l
+                            	   282: .depth_valid:
+00:00000968 4A47            	   283:         tst.w   d7
+00:0000096A 67000186        	   284:         beq.w   .finish_empty
+                            	   285: 
+00:0000096E 33FC817400C00004	   286:         move.w  #VDP_REGISTER_DISPLAY_ON_DMA,(VDP_CONTROL).l
+                            	   287: 
+                            	   288: ; Pass 1: required work, critical through low priority.
+00:00000976 7C00            	   289:         moveq   #0,d6
+                            	   290: .required_priority:
+00:00000978 45F900FF9010    	   291:         lea     (DMA_QUEUE_ENTRIES).l,a2
+00:0000097E 3A07            	   292:         move.w  d7,d5
+00:00000980 5345            	   293:         subq.w  #1,d5
+                            	   294: .required_entry:
+00:00000982 382A0008        	   295:         move.w  DMA_QUEUE_ENTRY_FLAGS(a2),d4
+00:00000986 0804000F        	   296:         btst    #15,d4
+00:0000098A 674E            	   297:         beq.s   .required_next
+00:0000098C 3604            	   298:         move.w  d4,d3
+00:0000098E 02430003        	   299:         andi.w  #DMA_PRIORITY_MASK,d3
+00:00000992 B646            	   300:         cmp.w   d6,d3
+00:00000994 6644            	   301:         bne.s   .required_next
+                            	   302: 
+00:00000996 7600            	   303:         moveq   #0,d3
+00:00000998 363900FF9008    	   304:         move.w  (DMA_QUEUE_COMMIT_WORDS).l,d3
+00:0000099E 7800            	   305:         moveq   #0,d4
+00:000009A0 382A0006        	   306:         move.w  DMA_QUEUE_ENTRY_WORDS(a2),d4
+00:000009A4 D684            	   307:         add.l   d4,d3
+00:000009A6 0C8300000800    	   308:         cmpi.l  #DMA_ORDINARY_WORD_LIMIT,d3
+00:000009AC 6222            	   309:         bhi.s   .required_drop
+                            	   310: 
+00:000009AE 33C300FF9008    	   311:         move.w  d3,(DMA_QUEUE_COMMIT_WORDS).l
+00:000009B4 006A40000008    	   312:         ori.w   #DMA_FLAG_PROCESSED,DMA_QUEUE_ENTRY_FLAGS(a2)
+00:000009BA 206A0000        	   313:         movea.l DMA_QUEUE_ENTRY_SOURCE(a2),a0
+00:000009BE 7000            	   314:         moveq   #0,d0
+00:000009C0 302A0004        	   315:         move.w  DMA_QUEUE_ENTRY_DESTINATION(a2),d0
+00:000009C4 7200            	   316:         moveq   #0,d1
+00:000009C6 322A0006        	   317:         move.w  DMA_QUEUE_ENTRY_WORDS(a2),d1
+00:000009CA 6100013A        	   318:         bsr.w   DmaIssueVramTransfer
+00:000009CE 600A            	   319:         bra.s   .required_next
+                            	   320: 
+                            	   321: .required_drop:
+00:000009D0 006A40000008    	   322:         ori.w   #DMA_FLAG_PROCESSED,DMA_QUEUE_ENTRY_FLAGS(a2)
+00:000009D6 610001D6        	   323:         bsr.w   DmaCountRequiredDrop
+                            	   324: .required_next:
+00:000009DA D4FC000C        	   325:         adda.w  #DMA_QUEUE_ENTRY_BYTES,a2
+00:000009DE 51CDFFA2        	   326:         dbf     d5,.required_entry
+00:000009E2 5246            	   327:         addq.w  #1,d6
+00:000009E4 0C460004        	   328:         cmpi.w  #DMA_PRIORITY_LEVELS,d6
+00:000009E8 6500FF8E        	   329:         blo.w   .required_priority
+                            	   330: 
+                            	   331: ; Pass 2: optional work in the same stable priority order.
+00:000009EC 7C00            	   332:         moveq   #0,d6
+                            	   333: .optional_priority:
+00:000009EE 45F900FF9010    	   334:         lea     (DMA_QUEUE_ENTRIES).l,a2
+00:000009F4 3A07            	   335:         move.w  d7,d5
+00:000009F6 5345            	   336:         subq.w  #1,d5
+                            	   337: .optional_entry:
+00:000009F8 382A0008        	   338:         move.w  DMA_QUEUE_ENTRY_FLAGS(a2),d4
+00:000009FC 0804000F        	   339:         btst    #15,d4
+00:00000A00 6660            	   340:         bne.s   .optional_next
+00:00000A02 3604            	   341:         move.w  d4,d3
+00:00000A04 02430003        	   342:         andi.w  #DMA_PRIORITY_MASK,d3
+00:00000A08 B646            	   343:         cmp.w   d6,d3
+00:00000A0A 6656            	   344:         bne.s   .optional_next
+                            	   345: 
+00:00000A0C 7600            	   346:         moveq   #0,d3
+00:00000A0E 363900FF9008    	   347:         move.w  (DMA_QUEUE_COMMIT_WORDS).l,d3
+00:00000A14 7800            	   348:         moveq   #0,d4
+00:00000A16 382A0006        	   349:         move.w  DMA_QUEUE_ENTRY_WORDS(a2),d4
+00:00000A1A D684            	   350:         add.l   d4,d3
+00:00000A1C 0C8300000800    	   351:         cmpi.l  #DMA_ORDINARY_WORD_LIMIT,d3
+00:00000A22 6222            	   352:         bhi.s   .optional_defer
+                            	   353: 
+00:00000A24 33C300FF9008    	   354:         move.w  d3,(DMA_QUEUE_COMMIT_WORDS).l
+00:00000A2A 006A40000008    	   355:         ori.w   #DMA_FLAG_PROCESSED,DMA_QUEUE_ENTRY_FLAGS(a2)
+00:00000A30 206A0000        	   356:         movea.l DMA_QUEUE_ENTRY_SOURCE(a2),a0
+00:00000A34 7000            	   357:         moveq   #0,d0
+00:00000A36 302A0004        	   358:         move.w  DMA_QUEUE_ENTRY_DESTINATION(a2),d0
+00:00000A3A 7200            	   359:         moveq   #0,d1
+00:00000A3C 322A0006        	   360:         move.w  DMA_QUEUE_ENTRY_WORDS(a2),d1
+00:00000A40 610000C4        	   361:         bsr.w   DmaIssueVramTransfer
+00:00000A44 601C            	   362:         bra.s   .optional_next
+                            	   363: 
+                            	   364: .optional_defer:
+00:00000A46 0C6AFFFF000A    	   365:         cmpi.w  #$FFFF,DMA_QUEUE_ENTRY_AGE(a2)
+00:00000A4C 6704            	   366:         beq.s   .age_saturated
+00:00000A4E 526A000A        	   367:         addq.w  #1,DMA_QUEUE_ENTRY_AGE(a2)
+                            	   368: .age_saturated:
+00:00000A52 0C79FFFF00FFF042	   369:         cmpi.w  #$FFFF,(DEBUG_DMA_DEFERRED_COUNT).l
+00:00000A5A 6706            	   370:         beq.s   .optional_next
+00:00000A5C 527900FFF042    	   371:         addq.w  #1,(DEBUG_DMA_DEFERRED_COUNT).l
+                            	   372: .optional_next:
+00:00000A62 D4FC000C        	   373:         adda.w  #DMA_QUEUE_ENTRY_BYTES,a2
+00:00000A66 51CDFF90        	   374:         dbf     d5,.optional_entry
+00:00000A6A 5246            	   375:         addq.w  #1,d6
+00:00000A6C 0C460004        	   376:         cmpi.w  #DMA_PRIORITY_LEVELS,d6
+00:00000A70 6500FF7C        	   377:         blo.w   .optional_priority
+                            	   378: 
+00:00000A74 33FC816400C00004	   379:         move.w  #VDP_REGISTER_DISPLAY_ON,(VDP_CONTROL).l
+                            	   380: 
+                            	   381: ; Compact every unprocessed optional record in original insertion order.
+00:00000A7C 45F900FF9010    	   382:         lea     (DMA_QUEUE_ENTRIES).l,a2
+00:00000A82 47F900FF9010    	   383:         lea     (DMA_QUEUE_ENTRIES).l,a3
+00:00000A88 7800            	   384:         moveq   #0,d4
+00:00000A8A 7C00            	   385:         moveq   #0,d6
+00:00000A8C 3A07            	   386:         move.w  d7,d5
+00:00000A8E 5345            	   387:         subq.w  #1,d5
+                            	   388: .compact:
+00:00000A90 362A0008        	   389:         move.w  DMA_QUEUE_ENTRY_FLAGS(a2),d3
+00:00000A94 02434000        	   390:         andi.w  #DMA_FLAG_PROCESSED,d3
+00:00000A98 661C            	   391:         bne.s   .consumed
+00:00000A9A 2692            	   392:         move.l  (a2),(a3)
+00:00000A9C 276A00040004    	   393:         move.l  $04(a2),$04(a3)
+00:00000AA2 276A00080008    	   394:         move.l  $08(a2),$08(a3)
+00:00000AA8 7600            	   395:         moveq   #0,d3
+00:00000AAA 362A0006        	   396:         move.w  DMA_QUEUE_ENTRY_WORDS(a2),d3
+00:00000AAE DC83            	   397:         add.l   d3,d6
+00:00000AB0 5244            	   398:         addq.w  #1,d4
+00:00000AB2 D6FC000C        	   399:         adda.w  #DMA_QUEUE_ENTRY_BYTES,a3
+                            	   400: .consumed:
+00:00000AB6 D4FC000C        	   401:         adda.w  #DMA_QUEUE_ENTRY_BYTES,a2
+00:00000ABA 51CDFFD4        	   402:         dbf     d5,.compact
+                            	   403: 
+00:00000ABE 33C400FF9000    	   404:         move.w  d4,(DMA_QUEUE_PUBLISHED_DEPTH).l
+00:00000AC4 33C400FF9002    	   405:         move.w  d4,(DMA_QUEUE_BUILD_DEPTH).l
+00:00000ACA 33C400FFF02C    	   406:         move.w  d4,(DEBUG_DMA_QUEUE_DEPTH).l
+00:00000AD0 23C600FF9004    	   407:         move.l  d6,(DMA_QUEUE_BUILD_WORDS).l
+                            	   408: 
+00:00000AD6 303900FF9008    	   409:         move.w  (DMA_QUEUE_COMMIT_WORDS).l,d0
+00:00000ADC 33C000FFF028    	   410:         move.w  d0,(DEBUG_DMA_WORDS_FRAME).l
+00:00000AE2 B07900FFF02A    	   411:         cmp.w   (DEBUG_DMA_WORDS_MAX).l,d0
+00:00000AE8 6306            	   412:         bls.s   .complete
+00:00000AEA 33C000FFF02A    	   413:         move.w  d0,(DEBUG_DMA_WORDS_MAX).l
+                            	   414: .complete:
+00:00000AF0 4E75            	   415:         rts
+                            	   416: 
+                            	   417: .finish_empty:
+00:00000AF2 427900FF9002    	   418:         clr.w   (DMA_QUEUE_BUILD_DEPTH).l
+00:00000AF8 42B900FF9004    	   419:         clr.l   (DMA_QUEUE_BUILD_WORDS).l
+00:00000AFE 427900FFF02C    	   420:         clr.w   (DEBUG_DMA_QUEUE_DEPTH).l
+00:00000B04 4E75            	   421:         rts
+                            	   422: 
+                            	   423: ; a0: source, d0.w: VRAM destination, d1.w: words. VBlank-only and already
+                            	   424: ; validated. Clobbers d0-d2/a0-a1.
+                            	   425: DmaIssueVramTransfer:
+00:00000B06 3401            	   426:         move.w  d1,d2
+00:00000B08 024200FF        	   427:         andi.w  #$00FF,d2
+00:00000B0C 00429300        	   428:         ori.w   #$9300,d2
+00:00000B10 33C200C00004    	   429:         move.w  d2,(VDP_CONTROL).l
+00:00000B16 3401            	   430:         move.w  d1,d2
+00:00000B18 E04A            	   431:         lsr.w   #8,d2
+00:00000B1A 024200FF        	   432:         andi.w  #$00FF,d2
+00:00000B1E 00429400        	   433:         ori.w   #$9400,d2
+00:00000B22 33C200C00004    	   434:         move.w  d2,(VDP_CONTROL).l
+                            	   435: 
+00:00000B28 2408            	   436:         move.l  a0,d2
+00:00000B2A E28A            	   437:         lsr.l   #1,d2
+00:00000B2C 3202            	   438:         move.w  d2,d1
+00:00000B2E 024100FF        	   439:         andi.w  #$00FF,d1
+00:00000B32 00419500        	   440:         ori.w   #$9500,d1
+00:00000B36 33C100C00004    	   441:         move.w  d1,(VDP_CONTROL).l
+00:00000B3C E08A            	   442:         lsr.l   #8,d2
+00:00000B3E 3202            	   443:         move.w  d2,d1
+00:00000B40 024100FF        	   444:         andi.w  #$00FF,d1
+00:00000B44 00419600        	   445:         ori.w   #$9600,d1
+00:00000B48 33C100C00004    	   446:         move.w  d1,(VDP_CONTROL).l
+00:00000B4E E08A            	   447:         lsr.l   #8,d2
+00:00000B50 0242007F        	   448:         andi.w  #$007F,d2
+00:00000B54 00429700        	   449:         ori.w   #$9700,d2
+00:00000B58 33C200C00004    	   450:         move.w  d2,(VDP_CONTROL).l
+                            	   451: 
+                            	   452: ; Construct a VRAM write command and set CD5 for memory-to-VDP DMA.
+00:00000B5E 7200            	   453:         moveq   #0,d1
+00:00000B60 3200            	   454:         move.w  d0,d1
+00:00000B62 028000003FFF    	   455:         andi.l  #$00003FFF,d0
+00:00000B68 008000004000    	   456:         ori.l   #$00004000,d0
+00:00000B6E 4840            	   457:         swap    d0
+00:00000B70 E089            	   458:         lsr.l   #8,d1
+00:00000B72 EC89            	   459:         lsr.l   #6,d1
+00:00000B74 028100000003    	   460:         andi.l  #$00000003,d1
+00:00000B7A 008100000080    	   461:         ori.l   #$00000080,d1
+00:00000B80 8081            	   462:         or.l    d1,d0
+00:00000B82 23C000C00004    	   463:         move.l  d0,(VDP_CONTROL).l
+                            	   464: 
+00:00000B88 323C1FFE        	   465:         move.w  #DMA_BUSY_TIMEOUT-1,d1
+                            	   466: .wait_busy:
+00:00000B8C 303900C00004    	   467:         move.w  (VDP_CONTROL).l,d0
+00:00000B92 02400002        	   468:         andi.w  #$0002,d0
+00:00000B96 6714            	   469:         beq.s   .complete
+00:00000B98 51C9FFF2        	   470:         dbf     d1,.wait_busy
+00:00000B9C 0C79FFFF00FFF032	   471:         cmpi.w  #$FFFF,(DEBUG_VBLANK_OVERRUN_COUNT).l
+00:00000BA4 6706            	   472:         beq.s   .complete
+00:00000BA6 527900FFF032    	   473:         addq.w  #1,(DEBUG_VBLANK_OVERRUN_COUNT).l
+                            	   474: .complete:
+00:00000BAC 4E75            	   475:         rts
+                            	   476: 
+                            	   477: DmaCountRequiredDrop:
+00:00000BAE 0C79FFFF00FFF044	   478:         cmpi.w  #$FFFF,(DEBUG_DMA_REQUIRED_DROP_COUNT).l
+00:00000BB6 6706            	   479:         beq.s   .complete
+00:00000BB8 527900FFF044    	   480:         addq.w  #1,(DEBUG_DMA_REQUIRED_DROP_COUNT).l
+                            	   481: .complete:
+00:00000BBE 4E75            	   482:         rts
+                            	   483: 
+
+Source: "src\main.asm"
+                            	    16:         include "hardware/sprites.asm"
+
+Source: "hardware\sprites.asm"
+                            	     1: ; One-sprite Milestone 2 renderer. Logical coordinates are screen pixels;
+                            	     2: ; hardware SAT coordinates include the Genesis +128 bias.
+                            	     3: 
+                            	     4: SPRITE_STATE_BASE               equ     SAT_SHADOW+SAT_SHADOW_BYTES
+                            	     5: SPRITE_STATE_X                  equ     SPRITE_STATE_BASE+$00
+                            	     6: SPRITE_STATE_Y                  equ     SPRITE_STATE_BASE+$02
+                            	     7: SPRITE_STATE_END                equ     SPRITE_STATE_BASE+$04
+                            	     8: 
+                            	     9: SPRITE_INITIAL_X                equ     156
+                            	    10: SPRITE_INITIAL_Y                equ     176
+                            	    11: SPRITE_MAX_X                    equ     312
+                            	    12: SPRITE_MAX_Y                    equ     216
+                            	    13: SPRITE_SPEED                    equ     2
+                            	    14: SPRITE_COORDINATE_BIAS          equ     128
+                            	    15: SPRITE_TILE_ATTRIBUTE           equ     DIAGNOSTIC_PALETTE_BITS+DIAGNOSTIC_PULSE_TILE
+                            	    16: SPRITE_DMA_FLAGS                equ     DMA_FLAG_REQUIRED+DMA_PRIORITY_CRITICAL
+                            	    17: 
+                            	    18:         assert  SPRITE_STATE_END<=DMA_QUEUE_BASE,"sprite state must remain in render RAM"
+                            	    19: 
+                            	    20: SpriteInitialize:
+00:00000BC0 41F900FF8000    	    21:         lea     (SAT_SHADOW).l,a0
+00:00000BC6 7000            	    22:         moveq   #0,d0
+00:00000BC8 323C013F        	    23:         move.w  #SAT_SHADOW_WORDS-1,d1
+                            	    24: .clear_shadow:
+00:00000BCC 30C0            	    25:         move.w  d0,(a0)+
+00:00000BCE 51C9FFFC        	    26:         dbf     d1,.clear_shadow
+                            	    27: 
+00:00000BD2 33FC009C00FF8280	    28:         move.w  #SPRITE_INITIAL_X,(SPRITE_STATE_X).l
+00:00000BDA 33FC00B000FF8282	    29:         move.w  #SPRITE_INITIAL_Y,(SPRITE_STATE_Y).l
+00:00000BE2 610000E4        	    30:         bsr.w   SpriteWriteSatEntry
+                            	    31: 
+00:00000BE6 33FC000100FFF024	    32:         move.w  #$0001,(DEBUG_SPRITE_COUNT).l
+00:00000BEE 33FC000100FFF026	    33:         move.w  #$0001,(DEBUG_SPRITE_SCANLINE_MAX).l
+00:00000BF6 0079000200FFF03A	    34:         ori.w   #M2_FLAG_SPRITE_ACTIVE,(DEBUG_M2_FLAGS).l
+                            	    35: 
+00:00000BFE 6100FAC8        	    36:         bsr.w   DmaQueueBeginFrame
+00:00000C02 41F900FF8000    	    37:         lea     (SAT_SHADOW).l,a0
+00:00000C08 303CF000        	    38:         move.w  #VRAM_SAT,d0
+00:00000C0C 323C0140        	    39:         move.w  #SAT_SHADOW_WORDS,d1
+00:00000C10 343C8000        	    40:         move.w  #SPRITE_DMA_FLAGS,d2
+00:00000C14 6100FB08        	    41:         bsr.w   DmaQueueEnqueue
+00:00000C18 4A80            	    42:         tst.l   d0
+00:00000C1A 6704            	    43:         beq.s   .complete
+00:00000C1C 6100FCDC        	    44:         bsr.w   DmaQueuePublish
+                            	    45: .complete:
+00:00000C20 4E75            	    46:         rts
+                            	    47: 
+                            	    48: ; Main-side render producer, called once per consumed frame token. The short
+                            	    49: ; mask-7 section makes SAT writes and queue publication one atomic transaction
+                            	    50: ; relative to VBlank. A backlog token never overwrites already-published work.
+                            	    51: SpriteUpdateAndQueue:
+00:00000C22 46FC2700        	    52:         move.w  #$2700,sr
+00:00000C26 4A7900FF900A    	    53:         tst.w   (DMA_QUEUE_FRAME_PENDING).l
+00:00000C2C 66000094        	    54:         bne.w   .complete
+                            	    55: 
+00:00000C30 7000            	    56:         moveq   #0,d0
+00:00000C32 103900FF9800    	    57:         move.b  (INPUT_HELD).l,d0
+00:00000C38 323900FF8280    	    58:         move.w  (SPRITE_STATE_X).l,d1
+00:00000C3E 343900FF8282    	    59:         move.w  (SPRITE_STATE_Y).l,d2
+                            	    60: 
+00:00000C44 08000002        	    61:         btst    #2,d0
+00:00000C48 670C            	    62:         beq.s   .not_left
+00:00000C4A 0C410002        	    63:         cmpi.w  #SPRITE_SPEED,d1
+00:00000C4E 6404            	    64:         bhs.s   .move_left
+00:00000C50 7200            	    65:         moveq   #0,d1
+00:00000C52 6002            	    66:         bra.s   .not_left
+                            	    67: .move_left:
+00:00000C54 5541            	    68:         subq.w  #SPRITE_SPEED,d1
+                            	    69: .not_left:
+00:00000C56 08000003        	    70:         btst    #3,d0
+00:00000C5A 670E            	    71:         beq.s   .not_right
+00:00000C5C 0C410136        	    72:         cmpi.w  #SPRITE_MAX_X-SPRITE_SPEED,d1
+00:00000C60 6306            	    73:         bls.s   .move_right
+00:00000C62 323C0138        	    74:         move.w  #SPRITE_MAX_X,d1
+00:00000C66 6002            	    75:         bra.s   .not_right
+                            	    76: .move_right:
+00:00000C68 5441            	    77:         addq.w  #SPRITE_SPEED,d1
+                            	    78: .not_right:
+                            	    79: 
+00:00000C6A 08000000        	    80:         btst    #0,d0
+00:00000C6E 670C            	    81:         beq.s   .not_up
+00:00000C70 0C420002        	    82:         cmpi.w  #SPRITE_SPEED,d2
+00:00000C74 6404            	    83:         bhs.s   .move_up
+00:00000C76 7400            	    84:         moveq   #0,d2
+00:00000C78 6002            	    85:         bra.s   .not_up
+                            	    86: .move_up:
+00:00000C7A 5542            	    87:         subq.w  #SPRITE_SPEED,d2
+                            	    88: .not_up:
+00:00000C7C 08000001        	    89:         btst    #1,d0
+00:00000C80 670E            	    90:         beq.s   .not_down
+00:00000C82 0C4200D6        	    91:         cmpi.w  #SPRITE_MAX_Y-SPRITE_SPEED,d2
+00:00000C86 6306            	    92:         bls.s   .move_down
+00:00000C88 343C00D8        	    93:         move.w  #SPRITE_MAX_Y,d2
+00:00000C8C 6002            	    94:         bra.s   .not_down
+                            	    95: .move_down:
+00:00000C8E 5442            	    96:         addq.w  #SPRITE_SPEED,d2
+                            	    97: .not_down:
+                            	    98: 
+00:00000C90 33C100FF8280    	    99:         move.w  d1,(SPRITE_STATE_X).l
+00:00000C96 33C200FF8282    	   100:         move.w  d2,(SPRITE_STATE_Y).l
+00:00000C9C 6100002A        	   101:         bsr.w   SpriteWriteSatEntry
+                            	   102: 
+00:00000CA0 6100FA26        	   103:         bsr.w   DmaQueueBeginFrame
+00:00000CA4 41F900FF8000    	   104:         lea     (SAT_SHADOW).l,a0
+00:00000CAA 303CF000        	   105:         move.w  #VRAM_SAT,d0
+00:00000CAE 323C0140        	   106:         move.w  #SAT_SHADOW_WORDS,d1
+00:00000CB2 343C8000        	   107:         move.w  #SPRITE_DMA_FLAGS,d2
+00:00000CB6 6100FA66        	   108:         bsr.w   DmaQueueEnqueue
+00:00000CBA 4A80            	   109:         tst.l   d0
+00:00000CBC 6704            	   110:         beq.s   .complete
+00:00000CBE 6100FC3A        	   111:         bsr.w   DmaQueuePublish
+                            	   112: 
+                            	   113: .complete:
+00:00000CC2 46FC2500        	   114:         move.w  #$2500,sr
+00:00000CC6 4E75            	   115:         rts
+                            	   116: 
+                            	   117: SpriteWriteSatEntry:
+00:00000CC8 7000            	   118:         moveq   #0,d0
+00:00000CCA 303900FF8282    	   119:         move.w  (SPRITE_STATE_Y).l,d0
+00:00000CD0 06400080        	   120:         addi.w  #SPRITE_COORDINATE_BIAS,d0
+00:00000CD4 33C000FF8000    	   121:         move.w  d0,(SAT_SHADOW+$00).l
+00:00000CDA 427900FF8002    	   122:         clr.w   (SAT_SHADOW+$02).l
+00:00000CE0 33FC602500FF8004	   123:         move.w  #SPRITE_TILE_ATTRIBUTE,(SAT_SHADOW+$04).l
+00:00000CE8 7000            	   124:         moveq   #0,d0
+00:00000CEA 303900FF8280    	   125:         move.w  (SPRITE_STATE_X).l,d0
+00:00000CF0 06400080        	   126:         addi.w  #SPRITE_COORDINATE_BIAS,d0
+00:00000CF4 33C000FF8006    	   127:         move.w  d0,(SAT_SHADOW+$06).l
+00:00000CFA 4E75            	   128:         rts
+                            	   129: 
+
+Source: "src\main.asm"
+                            	    17:         include "boot/m2_diagnostic.asm"
+
+Source: "boot\m2_diagnostic.asm"
+                            	     1: ; Explicit Debug-only fatal-screen fixture. Holding Start+A+B+C in the live
+                            	     2: ; controller sample executes one illegal instruction exactly once.
+                            	     3: 
+                            	     4: M2_FATAL_FIXTURE_TRIGGERED      equ     INPUT_STATE_BASE+$0C
+                            	     5: M2_FATAL_FIXTURE_BUTTONS        equ     INPUT_BIT_A+INPUT_BIT_B+INPUT_BIT_C
+                            	     6: 
+                            	     7: M2DebugFatalFixture:
+                            	     8:         ifd     BUILD_DEBUG
+00:00000CFC 4A3900FF980C    	     9:         tst.b   (M2_FATAL_FIXTURE_TRIGGERED).l
+00:00000D02 6624            	    10:         bne.s   .complete
+00:00000D04 4A3900FF9806    	    11:         tst.b   (INPUT_START_HELD).l
+00:00000D0A 671C            	    12:         beq.s   .complete
+00:00000D0C 7000            	    13:         moveq   #0,d0
+00:00000D0E 103900FF9800    	    14:         move.b  (INPUT_HELD).l,d0
+00:00000D14 02000070        	    15:         andi.b  #M2_FATAL_FIXTURE_BUTTONS,d0
+00:00000D18 0C000070        	    16:         cmpi.b  #M2_FATAL_FIXTURE_BUTTONS,d0
+00:00000D1C 660A            	    17:         bne.s   .complete
+00:00000D1E 13FC000100FF980C	    18:         move.b  #$01,(M2_FATAL_FIXTURE_TRIGGERED).l
+00:00000D26 4AFC            	    19:         illegal
+                            	    20: .complete:
+                            	    21:         endif
+00:00000D28 4E75            	    22:         rts
+                            	    23: 
+
+Source: "src\main.asm"
+                            	    18:         include "hardware/interrupts.asm"
+
+Source: "hardware\interrupts.asm"
+                            	     1: ; Level-6 VBlank handler. It acknowledges the VDP, advances the seqlocked
+                            	     2: ; debug heartbeat and saturating frame token, commits the prepared bounded DMA
+                            	     3: ; queue, then updates the visible heartbeat palette every 32 frames.
+                            	     4: 
+                            	     5: VBlankInterrupt:
+00:00000D2A 48E7FFFE        	     6:         movem.l d0-d7/a0-a6,-(a7)
+00:00000D2E 303900C00004    	     7:         move.w  (VDP_CONTROL).l,d0
+                            	     8: 
+00:00000D34 52B900FFF008    	     9:         addq.l  #1,(DEBUG_SEQUENCE).l
+00:00000D3A 33C000FFF01C    	    10:         move.w  d0,(DEBUG_LAST_VDP_STATUS).l
+00:00000D40 6100F676        	    11:         bsr.w   ControllerPoll
+00:00000D44 52B900FFF010    	    12:         addq.l  #1,(DEBUG_FRAME_COUNTER).l
+00:00000D4A 52B900FFF00C    	    13:         addq.l  #1,(DEBUG_HEARTBEAT).l
+00:00000D50 0C79FFFF00FFF014	    14:         cmpi.w  #$FFFF,(DEBUG_FRAME_TOKEN).l
+00:00000D58 6706            	    15:         beq.s   .token_saturated
+00:00000D5A 527900FFF014    	    16:         addq.w  #1,(DEBUG_FRAME_TOKEN).l
+                            	    17: .token_saturated:
+00:00000D60 6100FBCE        	    18:         bsr.w   DmaCommitPreparedQueue
+                            	    19: 
+00:00000D64 203900FFF010    	    20:         move.l  (DEBUG_FRAME_COUNTER).l,d0
+00:00000D6A 0240001F        	    21:         andi.w  #$001F,d0
+00:00000D6E 6628            	    22:         bne.s   .complete
+00:00000D70 23FCC07C000000C0	    23:         move.l  #VDP_COMMAND_PULSE_CRAM_WRITE,(VDP_CONTROL).l
+00:00000D78 0004
+00:00000D7A 203900FFF010    	    24:         move.l  (DEBUG_FRAME_COUNTER).l,d0
+00:00000D80 02400020        	    25:         andi.w  #$0020,d0
+00:00000D84 670A            	    26:         beq.s   .pulse_cyan
+00:00000D86 33FC000E00C00000	    27:         move.w  #$000E,(VDP_DATA).l
+00:00000D8E 6008            	    28:         bra.s   .complete
+                            	    29: .pulse_cyan:
+00:00000D90 33FC0EE000C00000	    30:         move.w  #$0EE0,(VDP_DATA).l
+                            	    31: .complete:
+                            	    32: ; Bit 3 is asserted only during vertical blank. Losing it before all commits
+                            	    33: ; complete is a measured VBlank budget overrun. A pending level-6 observed
+                            	    34: ; immediately after display enable can enter outside blank and is not timed.
+00:00000D98 303900C00004    	    35:         move.w  (VDP_CONTROL).l,d0
+00:00000D9E 323900FFF01C    	    36:         move.w  (DEBUG_LAST_VDP_STATUS).l,d1
+00:00000DA4 02410008        	    37:         andi.w  #$0008,d1
+00:00000DA8 6716            	    38:         beq.s   .within_vblank
+00:00000DAA 02400008        	    39:         andi.w  #$0008,d0
+00:00000DAE 6610            	    40:         bne.s   .within_vblank
+00:00000DB0 0C79FFFF00FFF032	    41:         cmpi.w  #$FFFF,(DEBUG_VBLANK_OVERRUN_COUNT).l
+00:00000DB8 6706            	    42:         beq.s   .within_vblank
+00:00000DBA 527900FFF032    	    43:         addq.w  #1,(DEBUG_VBLANK_OVERRUN_COUNT).l
+                            	    44: .within_vblank:
+00:00000DC0 52B900FFF008    	    45:         addq.l  #1,(DEBUG_SEQUENCE).l
+00:00000DC6 4CDF7FFF        	    46:         movem.l (a7)+,d0-d7/a0-a6
+00:00000DCA 4E73            	    47:         rte
+                            	    48: 
+
+Source: "src\main.asm"
+                            	    19:         include "boot/diagnostic.asm"
+
+Source: "boot\diagnostic.asm"
+                            	     1: ; Original compact 1bpp diagnostic font and palette. Font rows are expanded to
+                            	     2: ; native 4bpp tiles during display-off initialization.
+                            	     3: 
+                            	     4: VdpLoadDiagnostic:
+00:00000DCC 61000010        	     5:         bsr.w   VdpLoadDiagnosticPalette
+00:00000DD0 61000028        	     6:         bsr.w   VdpLoadDiagnosticTiles
+00:00000DD4 61000076        	     7:         bsr.w   VdpFillDiagnosticBackground
+00:00000DD8 61000098        	     8:         bsr.w   VdpDrawDiagnosticText
+00:00000DDC 4E75            	     9:         rts
+                            	    10: 
+                            	    11: VdpLoadDiagnosticPalette:
+00:00000DDE 23FCC000000000C0	    12:         move.l  #VDP_COMMAND_CRAM_WRITE_0,(VDP_CONTROL).l
+00:00000DE6 0004
+00:00000DE8 41FA0136        	    13:         lea     DiagnosticPalette(pc),a0
+00:00000DEC 703F            	    14:         moveq   #63,d0
+                            	    15: .copy:
+00:00000DEE 33D800C00000    	    16:         move.w  (a0)+,(VDP_DATA).l
+00:00000DF4 51C8FFF8        	    17:         dbf     d0,.copy
+00:00000DF8 4E75            	    18:         rts
+                            	    19: 
+                            	    20: VdpLoadDiagnosticTiles:
+00:00000DFA 48E71800        	    21:         movem.l d3-d4,-(a7)
+00:00000DFE 23FC4020000000C0	    22:         move.l  #VDP_COMMAND_FONT_WRITE,(VDP_CONTROL).l
+00:00000E06 0004
+00:00000E08 41FA0196        	    23:         lea     DiagnosticFont1bpp(pc),a0
+00:00000E0C 363C0023        	    24:         move.w  #DIAGNOSTIC_FONT_GLYPHS-1,d3
+                            	    25: .next_glyph:
+00:00000E10 7407            	    26:         moveq   #7,d2
+                            	    27: .next_row:
+00:00000E12 7000            	    28:         moveq   #0,d0
+00:00000E14 1018            	    29:         move.b  (a0)+,d0
+00:00000E16 7200            	    30:         moveq   #0,d1
+00:00000E18 7807            	    31:         moveq   #7,d4
+                            	    32: .next_pixel:
+00:00000E1A E989            	    33:         lsl.l   #4,d1
+00:00000E1C E308            	    34:         lsl.b   #1,d0
+00:00000E1E 6404            	    35:         bcc.s   .transparent
+00:00000E20 00010001        	    36:         ori.b   #$01,d1
+                            	    37: .transparent:
+00:00000E24 51CCFFF4        	    38:         dbf     d4,.next_pixel
+00:00000E28 23C100C00000    	    39:         move.l  d1,(VDP_DATA).l
+00:00000E2E 51CAFFE2        	    40:         dbf     d2,.next_row
+00:00000E32 51CBFFDC        	    41:         dbf     d3,.next_glyph
+                            	    42: 
+00:00000E36 41FA0288        	    43:         lea     DiagnosticSpecialTiles(pc),a0
+00:00000E3A 700F            	    44:         moveq   #15,d0
+                            	    45: .copy_special:
+00:00000E3C 23D800C00000    	    46:         move.l  (a0)+,(VDP_DATA).l
+00:00000E42 51C8FFF8        	    47:         dbf     d0,.copy_special
+00:00000E46 4CDF0018        	    48:         movem.l (a7)+,d3-d4
+00:00000E4A 4E75            	    49:         rts
+                            	    50: 
+                            	    51: VdpFillDiagnosticBackground:
+00:00000E4C 7400            	    52:         moveq   #0,d2
+                            	    53: .next_row:
+00:00000E4E 3002            	    54:         move.w  d2,d0
+00:00000E50 EF48            	    55:         lsl.w   #7,d0
+00:00000E52 0640E000        	    56:         addi.w  #VRAM_PLANE_B,d0
+00:00000E56 6100F6F6        	    57:         bsr.w   VdpSetVramWriteAddress
+00:00000E5A 7227            	    58:         moveq   #VISIBLE_WIDTH_CELLS-1,d1
+                            	    59: .next_cell:
+00:00000E5C 33FC002600C00000	    60:         move.w  #DIAGNOSTIC_GRID_TILE,(VDP_DATA).l
+00:00000E64 51C9FFF6        	    61:         dbf     d1,.next_cell
+00:00000E68 5242            	    62:         addq.w  #1,d2
+00:00000E6A 0C42001C        	    63:         cmpi.w  #VISIBLE_HEIGHT_CELLS,d2
+00:00000E6E 65DE            	    64:         blo.s   .next_row
+00:00000E70 4E75            	    65:         rts
+                            	    66: 
+                            	    67: VdpDrawDiagnosticText:
+00:00000E72 41FA028C        	    68:         lea     DiagnosticTitle(pc),a0
+00:00000E76 7007            	    69:         moveq   #7,d0
+00:00000E78 720E            	    70:         moveq   #14,d1
+00:00000E7A 61000044        	    71:         bsr.w   VdpWriteDiagnosticText
+                            	    72: 
+00:00000E7E 41FA028D        	    73:         lea     DiagnosticBootLine(pc),a0
+00:00000E82 700A            	    74:         moveq   #10,d0
+00:00000E84 720A            	    75:         moveq   #10,d1
+00:00000E86 61000038        	    76:         bsr.w   VdpWriteDiagnosticText
+                            	    77: 
+00:00000E8A 41FA0292        	    78:         lea     DiagnosticVideoLine(pc),a0
+00:00000E8E 700C            	    79:         moveq   #12,d0
+00:00000E90 720B            	    80:         moveq   #11,d1
+00:00000E92 6100002C        	    81:         bsr.w   VdpWriteDiagnosticText
+                            	    82: 
+00:00000E96 41FA0298        	    83:         lea     DiagnosticVBlankLine(pc),a0
+00:00000E9A 700E            	    84:         moveq   #14,d0
+00:00000E9C 720C            	    85:         moveq   #12,d1
+00:00000E9E 61000020        	    86:         bsr.w   VdpWriteDiagnosticText
+                            	    87: 
+00:00000EA2 41FA029C        	    88:         lea     DiagnosticTagline(pc),a0
+00:00000EA6 7012            	    89:         moveq   #18,d0
+00:00000EA8 7209            	    90:         moveq   #9,d1
+00:00000EAA 61000014        	    91:         bsr.w   VdpWriteDiagnosticText
+                            	    92: 
+00:00000EAE 303CC73C        	    93:         move.w  #VRAM_PLANE_A+(14*PLANE_ROW_BYTES)+(30*2),d0
+00:00000EB2 6100F69A        	    94:         bsr.w   VdpSetVramWriteAddress
+00:00000EB6 33FC602500C00000	    95:         move.w  #DIAGNOSTIC_PALETTE_BITS+DIAGNOSTIC_PULSE_TILE,(VDP_DATA).l
+00:00000EBE 4E75            	    96:         rts
+                            	    97: 
+                            	    98: ; a0: zero-terminated uppercase text, d0.w: row, d1.w: column.
+                            	    99: ; Clobbers d0-d2/a0.
+                            	   100: VdpWriteDiagnosticText:
+00:00000EC0 3400            	   101:         move.w  d0,d2
+00:00000EC2 EF4A            	   102:         lsl.w   #7,d2
+00:00000EC4 D241            	   103:         add.w   d1,d1
+00:00000EC6 D441            	   104:         add.w   d1,d2
+00:00000EC8 0642C000        	   105:         addi.w  #VRAM_PLANE_A,d2
+00:00000ECC 3002            	   106:         move.w  d2,d0
+00:00000ECE 6100F67E        	   107:         bsr.w   VdpSetVramWriteAddress
+00:00000ED2 343C0027        	   108:         move.w  #VISIBLE_WIDTH_CELLS-1,d2
+                            	   109: .next_character:
+00:00000ED6 7000            	   110:         moveq   #0,d0
+00:00000ED8 1018            	   111:         move.b  (a0)+,d0
+00:00000EDA 6742            	   112:         beq.s   .done
+00:00000EDC 0C000020        	   113:         cmpi.b  #$20,d0
+00:00000EE0 672C            	   114:         beq.s   .blank
+00:00000EE2 0C000030        	   115:         cmpi.b  #$30,d0
+00:00000EE6 6526            	   116:         blo.s   .blank
+00:00000EE8 0C000039        	   117:         cmpi.b  #$39,d0
+00:00000EEC 620A            	   118:         bhi.s   .try_letter
+00:00000EEE 04000030        	   119:         subi.b  #$30,d0
+00:00000EF2 06400001        	   120:         addi.w  #DIAGNOSTIC_DIGIT_ZERO_TILE,d0
+00:00000EF6 6018            	   121:         bra.s   .attribute
+                            	   122: .try_letter:
+00:00000EF8 0C000041        	   123:         cmpi.b  #$41,d0
+00:00000EFC 6510            	   124:         blo.s   .blank
+00:00000EFE 0C00005A        	   125:         cmpi.b  #$5A,d0
+00:00000F02 620A            	   126:         bhi.s   .blank
+00:00000F04 04000041        	   127:         subi.b  #$41,d0
+00:00000F08 0640000B        	   128:         addi.w  #DIAGNOSTIC_LETTER_A_TILE,d0
+00:00000F0C 6002            	   129:         bra.s   .attribute
+                            	   130: .blank:
+00:00000F0E 7000            	   131:         moveq   #0,d0
+                            	   132: .attribute:
+00:00000F10 00406000        	   133:         ori.w   #DIAGNOSTIC_PALETTE_BITS,d0
+                            	   134: .emit:
+00:00000F14 33C000C00000    	   135:         move.w  d0,(VDP_DATA).l
+00:00000F1A 51CAFFBA        	   136:         dbf     d2,.next_character
+                            	   137: .done:
+00:00000F1E 4E75            	   138:         rts
+                            	   139: 
+                            	   140: DiagnosticPalette:
+                            	   141: ; Palette 0: black field and a quiet blue-grey dot grid.
+00:00000F20 0000            	   142:         dc.w    $0000,$0000,$0222,$0000,$0000,$0000,$0000,$0000
+00:00000F22 0000
+00:00000F24 0222
+00:00000F26 0000
+00:00000F28 0000
+00:00000F2A 0000
+00:00000F2C 0000
+00:00000F2E 0000
+00:00000F30 0000            	   143:         dc.w    $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
+00:00000F32 0000
+00:00000F34 0000
+00:00000F36 0000
+00:00000F38 0000
+00:00000F3A 0000
+00:00000F3C 0000
+00:00000F3E 0000
+                            	   144: ; Palette 1: reserved current-actor palette.
+00:00000F40 0000            	   145:         dcb.w   16,$0000
+00:00000F42 *
+                            	   146: ; Palette 2: reserved echo/identity palette.
+00:00000F60 0000            	   147:         dcb.w   16,$0000
+00:00000F62 *
+                            	   148: ; Palette 3: diagnostic text and heartbeat.
+00:00000F80 0000            	   149:         dc.w    $0000,$0EEA,$0444,$0666,$0888,$0AAA,$0CCC,$0EEE
+00:00000F82 0EEA
+00:00000F84 0444
+00:00000F86 0666
+00:00000F88 0888
+00:00000F8A 0AAA
+00:00000F8C 0CCC
+00:00000F8E 0EEE
+00:00000F90 000E            	   150:         dc.w    $000E,$002E,$004E,$006E,$008E,$00AE,$0EE0,$0EEE
+00:00000F92 002E
+00:00000F94 004E
+00:00000F96 006E
+00:00000F98 008E
+00:00000F9A 00AE
+00:00000F9C 0EE0
+00:00000F9E 0EEE
+                            	   151: DiagnosticPaletteEnd:
+                            	   152: 
+                            	   153:         assert  DiagnosticPaletteEnd-DiagnosticPalette=128,"diagnostic palette must fill CRAM"
+                            	   154: 
+                            	   155: ; Tiles 1-10: digits 0-9. Tiles 11-36: letters A-Z.
+                            	   156: DiagnosticFont1bpp:
+00:00000FA0 70              	   157:         dc.b    $70,$88,$98,$A8,$C8,$88,$70,$00       ; 0
+00:00000FA1 88
+00:00000FA2 98
+00:00000FA3 A8
+00:00000FA4 C8
+00:00000FA5 88
+00:00000FA6 70
+00:00000FA7 00
+00:00000FA8 20              	   158:         dc.b    $20,$60,$20,$20,$20,$20,$70,$00       ; 1
+00:00000FA9 60
+00:00000FAA 20
+00:00000FAB 20
+00:00000FAC 20
+00:00000FAD 20
+00:00000FAE 70
+00:00000FAF 00
+00:00000FB0 70              	   159:         dc.b    $70,$88,$08,$10,$20,$40,$F8,$00       ; 2
+00:00000FB1 88
+00:00000FB2 08
+00:00000FB3 10
+00:00000FB4 20
+00:00000FB5 40
+00:00000FB6 F8
+00:00000FB7 00
+00:00000FB8 F0              	   160:         dc.b    $F0,$08,$08,$70,$08,$08,$F0,$00       ; 3
+00:00000FB9 08
+00:00000FBA 08
+00:00000FBB 70
+00:00000FBC 08
+00:00000FBD 08
+00:00000FBE F0
+00:00000FBF 00
+00:00000FC0 10              	   161:         dc.b    $10,$30,$50,$90,$F8,$10,$10,$00       ; 4
+00:00000FC1 30
+00:00000FC2 50
+00:00000FC3 90
+00:00000FC4 F8
+00:00000FC5 10
+00:00000FC6 10
+00:00000FC7 00
+00:00000FC8 F8              	   162:         dc.b    $F8,$80,$80,$F0,$08,$08,$F0,$00       ; 5
+00:00000FC9 80
+00:00000FCA 80
+00:00000FCB F0
+00:00000FCC 08
+00:00000FCD 08
+00:00000FCE F0
+00:00000FCF 00
+00:00000FD0 70              	   163:         dc.b    $70,$80,$80,$F0,$88,$88,$70,$00       ; 6
+00:00000FD1 80
+00:00000FD2 80
+00:00000FD3 F0
+00:00000FD4 88
+00:00000FD5 88
+00:00000FD6 70
+00:00000FD7 00
+00:00000FD8 F8              	   164:         dc.b    $F8,$08,$10,$20,$40,$40,$40,$00       ; 7
+00:00000FD9 08
+00:00000FDA 10
+00:00000FDB 20
+00:00000FDC 40
+00:00000FDD 40
+00:00000FDE 40
+00:00000FDF 00
+00:00000FE0 70              	   165:         dc.b    $70,$88,$88,$70,$88,$88,$70,$00       ; 8
+00:00000FE1 88
+00:00000FE2 88
+00:00000FE3 70
+00:00000FE4 88
+00:00000FE5 88
+00:00000FE6 70
+00:00000FE7 00
+00:00000FE8 70              	   166:         dc.b    $70,$88,$88,$78,$08,$08,$70,$00       ; 9
+00:00000FE9 88
+00:00000FEA 88
+00:00000FEB 78
+00:00000FEC 08
+00:00000FED 08
+00:00000FEE 70
+00:00000FEF 00
+                            	   167: 
+00:00000FF0 70              	   168:         dc.b    $70,$88,$88,$F8,$88,$88,$88,$00       ; A
+00:00000FF1 88
+00:00000FF2 88
+00:00000FF3 F8
+00:00000FF4 88
+00:00000FF5 88
+00:00000FF6 88
+00:00000FF7 00
+00:00000FF8 F0              	   169:         dc.b    $F0,$88,$88,$F0,$88,$88,$F0,$00       ; B
+00:00000FF9 88
+00:00000FFA 88
+00:00000FFB F0
+00:00000FFC 88
+00:00000FFD 88
+00:00000FFE F0
+00:00000FFF 00
+00:00001000 78              	   170:         dc.b    $78,$80,$80,$80,$80,$80,$78,$00       ; C
+00:00001001 80
+00:00001002 80
+00:00001003 80
+00:00001004 80
+00:00001005 80
+00:00001006 78
+00:00001007 00
+00:00001008 F0              	   171:         dc.b    $F0,$88,$88,$88,$88,$88,$F0,$00       ; D
+00:00001009 88
+00:0000100A 88
+00:0000100B 88
+00:0000100C 88
+00:0000100D 88
+00:0000100E F0
+00:0000100F 00
+00:00001010 F8              	   172:         dc.b    $F8,$80,$80,$F0,$80,$80,$F8,$00       ; E
+00:00001011 80
+00:00001012 80
+00:00001013 F0
+00:00001014 80
+00:00001015 80
+00:00001016 F8
+00:00001017 00
+00:00001018 F8              	   173:         dc.b    $F8,$80,$80,$F0,$80,$80,$80,$00       ; F
+00:00001019 80
+00:0000101A 80
+00:0000101B F0
+00:0000101C 80
+00:0000101D 80
+00:0000101E 80
+00:0000101F 00
+00:00001020 78              	   174:         dc.b    $78,$80,$80,$B8,$88,$88,$78,$00       ; G
+00:00001021 80
+00:00001022 80
+00:00001023 B8
+00:00001024 88
+00:00001025 88
+00:00001026 78
+00:00001027 00
+00:00001028 88              	   175:         dc.b    $88,$88,$88,$F8,$88,$88,$88,$00       ; H
+00:00001029 88
+00:0000102A 88
+00:0000102B F8
+00:0000102C 88
+00:0000102D 88
+00:0000102E 88
+00:0000102F 00
+00:00001030 F8              	   176:         dc.b    $F8,$20,$20,$20,$20,$20,$F8,$00       ; I
+00:00001031 20
+00:00001032 20
+00:00001033 20
+00:00001034 20
+00:00001035 20
+00:00001036 F8
+00:00001037 00
+00:00001038 38              	   177:         dc.b    $38,$08,$08,$08,$08,$88,$70,$00       ; J
+00:00001039 08
+00:0000103A 08
+00:0000103B 08
+00:0000103C 08
+00:0000103D 88
+00:0000103E 70
+00:0000103F 00
+00:00001040 88              	   178:         dc.b    $88,$90,$A0,$C0,$A0,$90,$88,$00       ; K
+00:00001041 90
+00:00001042 A0
+00:00001043 C0
+00:00001044 A0
+00:00001045 90
+00:00001046 88
+00:00001047 00
+00:00001048 80              	   179:         dc.b    $80,$80,$80,$80,$80,$80,$F8,$00       ; L
+00:00001049 80
+00:0000104A 80
+00:0000104B 80
+00:0000104C 80
+00:0000104D 80
+00:0000104E F8
+00:0000104F 00
+00:00001050 88              	   180:         dc.b    $88,$D8,$A8,$A8,$88,$88,$88,$00       ; M
+00:00001051 D8
+00:00001052 A8
+00:00001053 A8
+00:00001054 88
+00:00001055 88
+00:00001056 88
+00:00001057 00
+00:00001058 88              	   181:         dc.b    $88,$C8,$A8,$98,$88,$88,$88,$00       ; N
+00:00001059 C8
+00:0000105A A8
+00:0000105B 98
+00:0000105C 88
+00:0000105D 88
+00:0000105E 88
+00:0000105F 00
+00:00001060 70              	   182:         dc.b    $70,$88,$88,$88,$88,$88,$70,$00       ; O
+00:00001061 88
+00:00001062 88
+00:00001063 88
+00:00001064 88
+00:00001065 88
+00:00001066 70
+00:00001067 00
+00:00001068 F0              	   183:         dc.b    $F0,$88,$88,$F0,$80,$80,$80,$00       ; P
+00:00001069 88
+00:0000106A 88
+00:0000106B F0
+00:0000106C 80
+00:0000106D 80
+00:0000106E 80
+00:0000106F 00
+00:00001070 70              	   184:         dc.b    $70,$88,$88,$88,$A8,$90,$68,$00       ; Q
+00:00001071 88
+00:00001072 88
+00:00001073 88
+00:00001074 A8
+00:00001075 90
+00:00001076 68
+00:00001077 00
+00:00001078 F0              	   185:         dc.b    $F0,$88,$88,$F0,$A0,$90,$88,$00       ; R
+00:00001079 88
+00:0000107A 88
+00:0000107B F0
+00:0000107C A0
+00:0000107D 90
+00:0000107E 88
+00:0000107F 00
+00:00001080 78              	   186:         dc.b    $78,$80,$80,$70,$08,$08,$F0,$00       ; S
+00:00001081 80
+00:00001082 80
+00:00001083 70
+00:00001084 08
+00:00001085 08
+00:00001086 F0
+00:00001087 00
+00:00001088 F8              	   187:         dc.b    $F8,$20,$20,$20,$20,$20,$20,$00       ; T
+00:00001089 20
+00:0000108A 20
+00:0000108B 20
+00:0000108C 20
+00:0000108D 20
+00:0000108E 20
+00:0000108F 00
+00:00001090 88              	   188:         dc.b    $88,$88,$88,$88,$88,$88,$70,$00       ; U
+00:00001091 88
+00:00001092 88
+00:00001093 88
+00:00001094 88
+00:00001095 88
+00:00001096 70
+00:00001097 00
+00:00001098 88              	   189:         dc.b    $88,$88,$88,$88,$88,$50,$20,$00       ; V
+00:00001099 88
+00:0000109A 88
+00:0000109B 88
+00:0000109C 88
+00:0000109D 50
+00:0000109E 20
+00:0000109F 00
+00:000010A0 88              	   190:         dc.b    $88,$88,$88,$88,$A8,$D8,$88,$00       ; W
+00:000010A1 88
+00:000010A2 88
+00:000010A3 88
+00:000010A4 A8
+00:000010A5 D8
+00:000010A6 88
+00:000010A7 00
+00:000010A8 88              	   191:         dc.b    $88,$88,$50,$20,$50,$88,$88,$00       ; X
+00:000010A9 88
+00:000010AA 50
+00:000010AB 20
+00:000010AC 50
+00:000010AD 88
+00:000010AE 88
+00:000010AF 00
+00:000010B0 88              	   192:         dc.b    $88,$88,$50,$20,$20,$20,$20,$00       ; Y
+00:000010B1 88
+00:000010B2 50
+00:000010B3 20
+00:000010B4 20
+00:000010B5 20
+00:000010B6 20
+00:000010B7 00
+00:000010B8 F8              	   193:         dc.b    $F8,$08,$10,$20,$40,$80,$F8,$00       ; Z
+00:000010B9 08
+00:000010BA 10
+00:000010BB 20
+00:000010BC 40
+00:000010BD 80
+00:000010BE F8
+00:000010BF 00
+                            	   194: DiagnosticFont1bppEnd:
+                            	   195: 
+                            	   196:         assert  DiagnosticFont1bppEnd-DiagnosticFont1bpp=DIAGNOSTIC_FONT_GLYPHS*8,"diagnostic font size mismatch"
+                            	   197: 
+                            	   198: DiagnosticSpecialTiles:
+                            	   199: ; Tile 37: heartbeat block using palette color 14.
+00:000010C0 EEEEEEEE        	   200:         dcb.l   8,$EEEEEEEE
+00:000010C4 *
+                            	   201: ; Tile 38: sparse grid point using palette color 2.
+00:000010E0 20000000        	   202:         dc.l    $20000000,$00000000,$00000000,$00000000
+00:000010E4 00000000
+00:000010E8 00000000
+00:000010EC 00000000
+00:000010F0 00000000        	   203:         dc.l    $00000000,$00000000,$00000000,$00000000
+00:000010F4 00000000
+00:000010F8 00000000
+00:000010FC 00000000
+                            	   204: DiagnosticSpecialTilesEnd:
+                            	   205: 
+                            	   206:         assert  DiagnosticSpecialTilesEnd-DiagnosticSpecialTiles=64,"special tile size mismatch"
+                            	   207: 
+                            	   208: DiagnosticTitle:
+00:00001100 524543555253494F	   209:         dc.b    "RECURSION 94",0
+00:00001108 4E203934
+00:0000110C 00
+                            	   210: DiagnosticBootLine:
+00:0000110D 494E505554204C49	   211:         dc.b    "INPUT LINK READY",0
+00:00001115 4E4B205245414459
+00:0000111D 00
+                            	   212: DiagnosticVideoLine:
+00:0000111E 535052495445204C	   213:         dc.b    "SPRITE LINK READY",0
+00:00001126 494E4B2052454144
+00:0000112E 59
+00:0000112F 00
+                            	   214: DiagnosticVBlankLine:
+00:00001130 444D412051554555	   215:         dc.b    "DMA QUEUE READY",0
+00:00001138 45205245414459
+00:0000113F 00
+                            	   216: DiagnosticTagline:
+00:00001140 5448452046555455	   217:         dc.b    "THE FUTURE HID IN 1994",0
+00:00001148 5245204849442049
+00:00001150 4E2031393934
+00:00001156 00
+                            	   218:         even
+                            	   219: 
+
+Source: "src\main.asm"
+                            	    20: 
+                            	    21:         even
+                            	    22: 
+                            	    23: RomImageEnd:
+                            	    24: 
+
+
+Symbols by name:
+AUDIO_SHADOW_BASE                E:00FF9900
+BOOT_STAGE_RAM_READY             E:00000001
+BOOT_STAGE_RUNNING               E:00000004
+BOOT_STAGE_VIDEO_READY           E:00000003
+BOOT_STAGE_Z80_SAFE              E:00000002
+BUILD_DEBUG                      E:00000001
+CONTROLLER_PHASE_HIGH            E:00000040
+CONTROLLER_PHASE_LOW             E:00000000
+CONTROLLER_TH_OUTPUT             E:00000040
+CartridgeHeader                  A:00000100
+CartridgeHeaderEnd               A:00000200
+ControllerInitialize             A:00000368
+ControllerPoll                   A:000003B8
+DEBUG_ABI_SIZE                   E:00FFF006
+DEBUG_ABI_SIZE_VALUE             E:00000400
+DEBUG_ABI_VERSION                E:00FFF004
+DEBUG_ABI_VERSION_VALUE          E:00000001
+DEBUG_AUDIO_COMMAND_COUNT        E:00FFF038
+DEBUG_AUDIO_STATE                E:00FFF034
+DEBUG_BASE                       E:00FFF000
+DEBUG_BOOT_STAGE                 E:00FFF018
+DEBUG_CONTROLLER_SAMPLES         E:00FFF03C
+DEBUG_DMA_DEFERRED_COUNT         E:00FFF042
+DEBUG_DMA_INVALID_COUNT          E:00FFF046
+DEBUG_DMA_OVERFLOW_COUNT         E:00FFF030
+DEBUG_DMA_QUEUE_DEPTH            E:00FFF02C
+DEBUG_DMA_QUEUE_HIGH_WATER       E:00FFF02E
+DEBUG_DMA_REQUIRED_DROP_COUNT    E:00FFF044
+DEBUG_DMA_WORDS_FRAME            E:00FFF028
+DEBUG_DMA_WORDS_MAX              E:00FFF02A
+DEBUG_FATAL_CODE                 E:00FFF016
+DEBUG_FRAME_COUNTER              E:00FFF010
+DEBUG_FRAME_TOKEN                E:00FFF014
+DEBUG_HARDWARE_FLAGS             E:00FFF01A
+DEBUG_HEARTBEAT                  E:00FFF00C
+DEBUG_INPUT_CONNECTED            E:00FFF021
+DEBUG_INPUT_HELD                 E:00FFF01E
+DEBUG_INPUT_PRESSED              E:00FFF01F
+DEBUG_INPUT_RELEASED             E:00FFF020
+DEBUG_INPUT_START_HELD           E:00FFF022
+DEBUG_LAST_VDP_STATUS            E:00FFF01C
+DEBUG_M2_FLAGS                   E:00FFF03A
+DEBUG_MAGIC                      E:00FFF000
+DEBUG_MAGIC_R94D                 E:52393444
+DEBUG_SEQUENCE                   E:00FFF008
+DEBUG_SPRITE_COUNT               E:00FFF024
+DEBUG_SPRITE_SCANLINE_MAX        E:00FFF026
+DEBUG_VBLANK_OVERRUN_COUNT       E:00FFF032
+DEBUG_Z80_HEARTBEAT              E:00FFF036
+DEBUG_Z80_TIMEOUT_COUNT          E:00FFF040
+DIAGNOSTIC_DIGIT_ZERO_TILE       E:00000001
+DIAGNOSTIC_FONT_GLYPHS           E:00000024
+DIAGNOSTIC_GRID_TILE             E:00000026
+DIAGNOSTIC_LETTER_A_TILE         E:0000000B
+DIAGNOSTIC_PALETTE_BITS          E:00006000
+DIAGNOSTIC_PULSE_TILE            E:00000025
+DMA_BUSY_TIMEOUT                 E:00001FFF
+DMA_FLAG_PROCESSED               E:00004000
+DMA_FLAG_REQUIRED                E:00008000
+DMA_ORDINARY_WORD_LIMIT          E:00000800
+DMA_PRIORITY_CRITICAL            E:00000000
+DMA_PRIORITY_HIGH                E:00000001
+DMA_PRIORITY_LEVELS              E:00000004
+DMA_PRIORITY_LOW                 E:00000003
+DMA_PRIORITY_MASK                E:00000003
+DMA_PRIORITY_NORMAL              E:00000002
+DMA_QUEUE_BASE                   E:00FF9000
+DMA_QUEUE_BUILD_DEPTH            E:00FF9002
+DMA_QUEUE_BUILD_WORDS            E:00FF9004
+DMA_QUEUE_CAPACITY               E:00000020
+DMA_QUEUE_COMMIT_WORDS           E:00FF9008
+DMA_QUEUE_ENTRIES                E:00FF9010
+DMA_QUEUE_ENTRY_AGE              E:0000000A
+DMA_QUEUE_ENTRY_BYTES            E:0000000C
+DMA_QUEUE_ENTRY_DESTINATION      E:00000004
+DMA_QUEUE_ENTRY_FLAGS            E:00000008
+DMA_QUEUE_ENTRY_SOURCE           E:00000000
+DMA_QUEUE_ENTRY_WORDS            E:00000006
+DMA_QUEUE_FRAME_PENDING          E:00FF900A
+DMA_QUEUE_PUBLISHED_DEPTH        E:00FF9000
+DMA_QUEUE_RESERVED_0             E:00FF900C
+DMA_QUEUE_RESERVED_1             E:00FF900E
+DMA_QUEUE_STORAGE_END            E:00FF9190
+DMA_SOURCE_WINDOW_BYTES          E:00020000
+DMA_VRAM_DYNAMIC_END             E:0000C000
+DMA_VRAM_DYNAMIC_START           E:000004E0
+DMA_VRAM_HSCROLL_END             E:0000FD00
+DMA_VRAM_PLANE_A_END             E:0000D000
+DMA_VRAM_PLANE_B_END             E:0000F000
+DMA_VRAM_SAT_END                 E:0000F280
+DMA_VRAM_WINDOW_END              E:0000E000
+DiagnosticBootLine               A:0000110D
+DiagnosticFont1bpp               A:00000FA0
+DiagnosticFont1bppEnd            A:000010C0
+DiagnosticPalette                A:00000F20
+DiagnosticPaletteEnd             A:00000FA0
+DiagnosticSpecialTiles           A:000010C0
+DiagnosticSpecialTilesEnd        A:00001100
+DiagnosticTagline                A:00001140
+DiagnosticTitle                  A:00001100
+DiagnosticVBlankLine             A:00001130
+DiagnosticVideoLine              A:0000111E
+DmaCommitPreparedQueue           A:00000930
+DmaCountRequiredDrop             A:00000BAE
+DmaInitialize                    A:0000065E
+DmaIssueVramTransfer             A:00000B06
+DmaQueueBeginFrame               A:000006C8
+DmaQueueEnqueue                  A:0000071E
+DmaQueuePublish                  A:000008FA
+FATAL_UNEXPECTED_EXCEPTION       E:00000001
+FatalCodeLine                    A:00000654
+FatalTitle                       A:00000644
+HARDWARE_FLAG_Z80_TIMEOUT        E:00000001
+HW_VERSION                       E:00A10001
+HeaderChecksum                   A:0000018E
+HeaderConsole                    A:00000100
+HeaderCopyright                  A:00000110
+HeaderDomestic                   A:00000120
+HeaderIoSupport                  A:00000190
+HeaderMemo                       A:000001C8
+HeaderModem                      A:000001BC
+HeaderOverseas                   A:00000150
+HeaderRegions                    A:000001F0
+HeaderSerial                     A:00000180
+INITIAL_STACK                    E:00FFFFFC
+INPUT_BIT_A                      E:00000010
+INPUT_BIT_B                      E:00000020
+INPUT_BIT_C                      E:00000040
+INPUT_BIT_DOWN                   E:00000002
+INPUT_BIT_LEFT                   E:00000004
+INPUT_BIT_RIGHT                  E:00000008
+INPUT_BIT_UP                     E:00000001
+INPUT_CONNECTED                  E:00FF9805
+INPUT_HELD                       E:00FF9800
+INPUT_PRESSED                    E:00FF9801
+INPUT_PREVIOUS                   E:00FF9807
+INPUT_RAW_HIGH                   E:00FF9803
+INPUT_RAW_LOW                    E:00FF9804
+INPUT_RELEASED                   E:00FF9802
+INPUT_SAMPLE_COUNT               E:00FF9808
+INPUT_START_HELD                 E:00FF9806
+INPUT_STATE_BASE                 E:00FF9800
+IO_PORT1_CONTROL                 E:00A10009
+IO_PORT1_DATA                    E:00A10003
+IO_PORT2_CONTROL                 E:00A1000B
+IO_PORT2_DATA                    E:00A10005
+M2DebugFatalFixture              A:00000CFC
+M2_FATAL_FIXTURE_BUTTONS         E:00000070
+M2_FATAL_FIXTURE_TRIGGERED       E:00FF980C
+M2_FLAG_DMA_ACTIVE               E:00000004
+M2_FLAG_INPUT_ACTIVE             E:00000001
+M2_FLAG_PSG_ACTIVE               E:00000020
+M2_FLAG_SPRITE_ACTIVE            E:00000002
+M2_FLAG_YM2612_ACTIVE            E:00000010
+M2_FLAG_Z80_UPLOADED             E:00000008
+MainLoop                         A:0000029E
+PLANE_ROW_BYTES                  E:00000080
+PLANE_WIDTH_CELLS                E:00000040
+PSG_PORT                         E:00C00011
+ResetEntry                       A:00000200
+RomImageEnd                      A:00001158
+SAT_SHADOW                       E:00FF8000
+SAT_SHADOW_BYTES                 E:00000280
+SAT_SHADOW_WORDS                 E:00000140
+SPRITE_COORDINATE_BIAS           E:00000080
+SPRITE_DMA_FLAGS                 E:00008000
+SPRITE_INITIAL_X                 E:0000009C
+SPRITE_INITIAL_Y                 E:000000B0
+SPRITE_MAX_X                     E:00000138
+SPRITE_MAX_Y                     E:000000D8
+SPRITE_SPEED                     E:00000002
+SPRITE_STATE_BASE                E:00FF8280
+SPRITE_STATE_END                 E:00FF8284
+SPRITE_STATE_X                   E:00FF8280
+SPRITE_STATE_Y                   E:00FF8282
+SPRITE_TILE_ATTRIBUTE            E:00006025
+SafeException                    A:000002C0
+SafeExceptionHalt                A:0000031C
+SpriteInitialize                 A:00000BC0
+SpriteUpdateAndQueue             A:00000C22
+SpriteWriteSatEntry              A:00000CC8
+TMSS_REGISTER                    E:00A14000
+VBlankInterrupt                  A:00000D2A
+VDP_COMMAND_CRAM_WRITE_0         E:C0000000
+VDP_COMMAND_FATAL_TEXT_COLOR     E:C0620000
+VDP_COMMAND_FONT_WRITE           E:40200000
+VDP_COMMAND_PULSE_CRAM_WRITE     E:C07C0000
+VDP_COMMAND_VRAM_WRITE_0         E:40000000
+VDP_COMMAND_VSRAM_WRITE_0        E:40000010
+VDP_CONTROL                      E:00C00004
+VDP_DATA                         E:00C00000
+VDP_FATAL_WAIT                   E:00001FFF
+VDP_PLANE_TABLE_WORDS            E:00000800
+VDP_REGISTER_DISPLAY_OFF         E:00008104
+VDP_REGISTER_DISPLAY_ON          E:00008164
+VDP_REGISTER_DISPLAY_ON_DMA      E:00008174
+VDP_REGISTER_FATAL_DISPLAY       E:00008144
+VISIBLE_HEIGHT_CELLS             E:0000001C
+VISIBLE_WIDTH_CELLS              E:00000028
+VRAM_HSCROLL                     E:0000FC00
+VRAM_PLANE_A                     E:0000C000
+VRAM_PLANE_B                     E:0000E000
+VRAM_SAT                         E:0000F000
+VRAM_WINDOW                      E:0000D000
+VdpDrawDiagnosticText            A:00000E72
+VdpFillDiagnosticBackground      A:00000E4C
+VdpInitialRegisters              A:0000061E
+VdpInitialize                    A:000004EE
+VdpLoadDiagnostic                A:00000DCC
+VdpLoadDiagnosticPalette         A:00000DDE
+VdpLoadDiagnosticTiles           A:00000DFA
+VdpSetVramWriteAddress           A:0000054E
+VdpShowFatalScreen               A:00000574
+VdpWriteDiagnosticText           A:00000EC0
+VectorTable                      A:00000000
+VectorTableEnd                   A:00000100
+WORK_RAM_BASE                    E:00FF0000
+WORK_RAM_LONGS                   E:00004000
+Z80EnterSafeState                A:00000322
+Z80_BUS_REQUEST                  E:00A11100
+Z80_BUS_TIMEOUT                  E:00003FFF
+Z80_RAM                          E:00A00000
+Z80_RESET                        E:00A11200
+
+Symbols by value:
+00000000 CONTROLLER_PHASE_LOW
+00000000 DMA_PRIORITY_CRITICAL
+00000000 VectorTable
+00000000 DMA_QUEUE_ENTRY_SOURCE
+00000001 BUILD_DEBUG
+00000001 M2_FLAG_INPUT_ACTIVE
+00000001 DMA_PRIORITY_HIGH
+00000001 BOOT_STAGE_RAM_READY
+00000001 DEBUG_ABI_VERSION_VALUE
+00000001 INPUT_BIT_UP
+00000001 FATAL_UNEXPECTED_EXCEPTION
+00000001 DIAGNOSTIC_DIGIT_ZERO_TILE
+00000001 HARDWARE_FLAG_Z80_TIMEOUT
+00000002 DMA_PRIORITY_NORMAL
+00000002 BOOT_STAGE_Z80_SAFE
+00000002 M2_FLAG_SPRITE_ACTIVE
+00000002 SPRITE_SPEED
+00000002 INPUT_BIT_DOWN
+00000003 BOOT_STAGE_VIDEO_READY
+00000003 DMA_PRIORITY_MASK
+00000003 DMA_PRIORITY_LOW
+00000004 DMA_PRIORITY_LEVELS
+00000004 INPUT_BIT_LEFT
+00000004 BOOT_STAGE_RUNNING
+00000004 DMA_QUEUE_ENTRY_DESTINATION
+00000004 M2_FLAG_DMA_ACTIVE
+00000006 DMA_QUEUE_ENTRY_WORDS
+00000008 M2_FLAG_Z80_UPLOADED
+00000008 INPUT_BIT_RIGHT
+00000008 DMA_QUEUE_ENTRY_FLAGS
+0000000A DMA_QUEUE_ENTRY_AGE
+0000000B DIAGNOSTIC_LETTER_A_TILE
+0000000C DMA_QUEUE_ENTRY_BYTES
+00000010 INPUT_BIT_A
+00000010 M2_FLAG_YM2612_ACTIVE
+0000001C VISIBLE_HEIGHT_CELLS
+00000020 M2_FLAG_PSG_ACTIVE
+00000020 DMA_QUEUE_CAPACITY
+00000020 INPUT_BIT_B
+00000024 DIAGNOSTIC_FONT_GLYPHS
+00000025 DIAGNOSTIC_PULSE_TILE
+00000026 DIAGNOSTIC_GRID_TILE
+00000028 VISIBLE_WIDTH_CELLS
+00000040 CONTROLLER_PHASE_HIGH
+00000040 CONTROLLER_TH_OUTPUT
+00000040 INPUT_BIT_C
+00000040 PLANE_WIDTH_CELLS
+00000070 M2_FATAL_FIXTURE_BUTTONS
+00000080 SPRITE_COORDINATE_BIAS
+00000080 PLANE_ROW_BYTES
+0000009C SPRITE_INITIAL_X
+000000B0 SPRITE_INITIAL_Y
+000000D8 SPRITE_MAX_Y
+00000100 HeaderConsole
+00000100 CartridgeHeader
+00000100 VectorTableEnd
+00000110 HeaderCopyright
+00000120 HeaderDomestic
+00000138 SPRITE_MAX_X
+00000140 SAT_SHADOW_WORDS
+00000150 HeaderOverseas
+00000180 HeaderSerial
+0000018E HeaderChecksum
+00000190 HeaderIoSupport
+000001BC HeaderModem
+000001C8 HeaderMemo
+000001F0 HeaderRegions
+00000200 CartridgeHeaderEnd
+00000200 ResetEntry
+00000280 SAT_SHADOW_BYTES
+0000029E MainLoop
+000002C0 SafeException
+0000031C SafeExceptionHalt
+00000322 Z80EnterSafeState
+00000368 ControllerInitialize
+000003B8 ControllerPoll
+00000400 DEBUG_ABI_SIZE_VALUE
+000004E0 DMA_VRAM_DYNAMIC_START
+000004EE VdpInitialize
+0000054E VdpSetVramWriteAddress
+00000574 VdpShowFatalScreen
+0000061E VdpInitialRegisters
+00000644 FatalTitle
+00000654 FatalCodeLine
+0000065E DmaInitialize
+000006C8 DmaQueueBeginFrame
+0000071E DmaQueueEnqueue
+00000800 VDP_PLANE_TABLE_WORDS
+00000800 DMA_ORDINARY_WORD_LIMIT
+000008FA DmaQueuePublish
+00000930 DmaCommitPreparedQueue
+00000B06 DmaIssueVramTransfer
+00000BAE DmaCountRequiredDrop
+00000BC0 SpriteInitialize
+00000C22 SpriteUpdateAndQueue
+00000CC8 SpriteWriteSatEntry
+00000CFC M2DebugFatalFixture
+00000D2A VBlankInterrupt
+00000DCC VdpLoadDiagnostic
+00000DDE VdpLoadDiagnosticPalette
+00000DFA VdpLoadDiagnosticTiles
+00000E4C VdpFillDiagnosticBackground
+00000E72 VdpDrawDiagnosticText
+00000EC0 VdpWriteDiagnosticText
+00000F20 DiagnosticPalette
+00000FA0 DiagnosticPaletteEnd
+00000FA0 DiagnosticFont1bpp
+000010C0 DiagnosticSpecialTiles
+000010C0 DiagnosticFont1bppEnd
+00001100 DiagnosticTitle
+00001100 DiagnosticSpecialTilesEnd
+0000110D DiagnosticBootLine
+0000111E DiagnosticVideoLine
+00001130 DiagnosticVBlankLine
+00001140 DiagnosticTagline
+00001158 RomImageEnd
+00001FFF DMA_BUSY_TIMEOUT
+00001FFF VDP_FATAL_WAIT
+00003FFF Z80_BUS_TIMEOUT
+00004000 WORK_RAM_LONGS
+00004000 DMA_FLAG_PROCESSED
+00006000 DIAGNOSTIC_PALETTE_BITS
+00006025 SPRITE_TILE_ATTRIBUTE
+00008000 DMA_FLAG_REQUIRED
+00008000 SPRITE_DMA_FLAGS
+00008104 VDP_REGISTER_DISPLAY_OFF
+00008144 VDP_REGISTER_FATAL_DISPLAY
+00008164 VDP_REGISTER_DISPLAY_ON
+00008174 VDP_REGISTER_DISPLAY_ON_DMA
+0000C000 DMA_VRAM_DYNAMIC_END
+0000C000 VRAM_PLANE_A
+0000D000 VRAM_WINDOW
+0000D000 DMA_VRAM_PLANE_A_END
+0000E000 VRAM_PLANE_B
+0000E000 DMA_VRAM_WINDOW_END
+0000F000 VRAM_SAT
+0000F000 DMA_VRAM_PLANE_B_END
+0000F280 DMA_VRAM_SAT_END
+0000FC00 VRAM_HSCROLL
+0000FD00 DMA_VRAM_HSCROLL_END
+00020000 DMA_SOURCE_WINDOW_BYTES
+00A00000 Z80_RAM
+00A10001 HW_VERSION
+00A10003 IO_PORT1_DATA
+00A10005 IO_PORT2_DATA
+00A10009 IO_PORT1_CONTROL
+00A1000B IO_PORT2_CONTROL
+00A11100 Z80_BUS_REQUEST
+00A11200 Z80_RESET
+00A14000 TMSS_REGISTER
+00C00000 VDP_DATA
+00C00004 VDP_CONTROL
+00C00011 PSG_PORT
+00FF0000 WORK_RAM_BASE
+00FF8000 SAT_SHADOW
+00FF8280 SPRITE_STATE_X
+00FF8280 SPRITE_STATE_BASE
+00FF8282 SPRITE_STATE_Y
+00FF8284 SPRITE_STATE_END
+00FF9000 DMA_QUEUE_PUBLISHED_DEPTH
+00FF9000 DMA_QUEUE_BASE
+00FF9002 DMA_QUEUE_BUILD_DEPTH
+00FF9004 DMA_QUEUE_BUILD_WORDS
+00FF9008 DMA_QUEUE_COMMIT_WORDS
+00FF900A DMA_QUEUE_FRAME_PENDING
+00FF900C DMA_QUEUE_RESERVED_0
+00FF900E DMA_QUEUE_RESERVED_1
+00FF9010 DMA_QUEUE_ENTRIES
+00FF9190 DMA_QUEUE_STORAGE_END
+00FF9800 INPUT_HELD
+00FF9800 INPUT_STATE_BASE
+00FF9801 INPUT_PRESSED
+00FF9802 INPUT_RELEASED
+00FF9803 INPUT_RAW_HIGH
+00FF9804 INPUT_RAW_LOW
+00FF9805 INPUT_CONNECTED
+00FF9806 INPUT_START_HELD
+00FF9807 INPUT_PREVIOUS
+00FF9808 INPUT_SAMPLE_COUNT
+00FF980C M2_FATAL_FIXTURE_TRIGGERED
+00FF9900 AUDIO_SHADOW_BASE
+00FFF000 DEBUG_MAGIC
+00FFF000 DEBUG_BASE
+00FFF004 DEBUG_ABI_VERSION
+00FFF006 DEBUG_ABI_SIZE
+00FFF008 DEBUG_SEQUENCE
+00FFF00C DEBUG_HEARTBEAT
+00FFF010 DEBUG_FRAME_COUNTER
+00FFF014 DEBUG_FRAME_TOKEN
+00FFF016 DEBUG_FATAL_CODE
+00FFF018 DEBUG_BOOT_STAGE
+00FFF01A DEBUG_HARDWARE_FLAGS
+00FFF01C DEBUG_LAST_VDP_STATUS
+00FFF01E DEBUG_INPUT_HELD
+00FFF01F DEBUG_INPUT_PRESSED
+00FFF020 DEBUG_INPUT_RELEASED
+00FFF021 DEBUG_INPUT_CONNECTED
+00FFF022 DEBUG_INPUT_START_HELD
+00FFF024 DEBUG_SPRITE_COUNT
+00FFF026 DEBUG_SPRITE_SCANLINE_MAX
+00FFF028 DEBUG_DMA_WORDS_FRAME
+00FFF02A DEBUG_DMA_WORDS_MAX
+00FFF02C DEBUG_DMA_QUEUE_DEPTH
+00FFF02E DEBUG_DMA_QUEUE_HIGH_WATER
+00FFF030 DEBUG_DMA_OVERFLOW_COUNT
+00FFF032 DEBUG_VBLANK_OVERRUN_COUNT
+00FFF034 DEBUG_AUDIO_STATE
+00FFF036 DEBUG_Z80_HEARTBEAT
+00FFF038 DEBUG_AUDIO_COMMAND_COUNT
+00FFF03A DEBUG_M2_FLAGS
+00FFF03C DEBUG_CONTROLLER_SAMPLES
+00FFF040 DEBUG_Z80_TIMEOUT_COUNT
+00FFF042 DEBUG_DMA_DEFERRED_COUNT
+00FFF044 DEBUG_DMA_REQUIRED_DROP_COUNT
+00FFF046 DEBUG_DMA_INVALID_COUNT
+00FFFFFC INITIAL_STACK
+40000000 VDP_COMMAND_VRAM_WRITE_0
+40000010 VDP_COMMAND_VSRAM_WRITE_0
+40200000 VDP_COMMAND_FONT_WRITE
+52393444 DEBUG_MAGIC_R94D
+C0000000 VDP_COMMAND_CRAM_WRITE_0
+C0620000 VDP_COMMAND_FATAL_TEXT_COLOR
+C07C0000 VDP_COMMAND_PULSE_CRAM_WRITE

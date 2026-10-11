@@ -1,0 +1,160 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "I03",
+  "numeric_id": 503,
+  "name": "VECTOR TABLE",
+  "kind": "primary",
+  "campaign_order": 19,
+  "sector": {
+    "id": "INTERRUPT",
+    "name": "INTERRUPT",
+    "theme": "six-vector transport pipeline through split-scroll machinery"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#....#....#....#...#",
+      "#....#....#....#...#",
+      "#....#.........#...#",
+      "#.........##.......#",
+      "#....#....##...#...#",
+      "#....#.........#...#",
+      "#..................#",
+      "#....#.........#...#",
+      "#....#...##....#...#",
+      "#........##........#",
+      "#....#.........#...#",
+      "#....#....#....#...#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [18, 36],
+    "reset_policy": "restore payload, handoff pads, lift, beam, bridge, socket, vector port, and moving hazards"
+  },
+  "echoes": {
+    "cap": 6,
+    "minimum": 6,
+    "first_clear_range": [6, 10],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_INTERRUPT_VECTOR_03",
+    "music_id": "MUS_INTERRUPT_VECTOR_TABLE",
+    "tempo_bpm": 160,
+    "visual_layers": ["split_scroll", "payload_owner", "vector_lines", "bridge_state", "beam_path"]
+  },
+  "mechanics": ["seed_payload", "two_handoffs", "moving_platform", "redirectable_beam", "bridge", "power_socket", "producer_consumer_pipeline"],
+  "entities": {
+    "devices": [
+      {"logical_id": "I03_HANDOFF_A", "type": "payload_pad", "x": 96, "y": 176, "state": {"initial": "empty", "states": ["empty", "occupied"]}, "reset_policy": "empty", "anchor_policy": "forbidden", "parameters": {"handoff_radius_px": 16}},
+      {"logical_id": "I03_LIFT_CALL", "type": "transport_pad_control", "x": 128, "y": 48, "state": {"initial": "idle", "states": ["idle", "called"]}, "reset_policy": "idle", "anchor_policy": "forbidden", "parameters": {"controls": ["I03_LIFT"], "call_latency_frames": 24}},
+      {"logical_id": "I03_LIFT", "type": "moving_platform", "x": 144, "y": 160, "state": {"initial": "lower", "states": ["lower", "rising", "upper", "falling"]}, "reset_policy": "lower", "anchor_policy": "forbidden", "parameters": {"travel_frames": 96, "payload_capacity": 1}},
+      {"logical_id": "I03_PRISM", "type": "redirectable_prism", "x": 176, "y": 80, "state": {"initial": "south", "states": ["south", "east"]}, "reset_policy": "south", "anchor_policy": "forbidden", "parameters": {"safe_state": "east", "rotation_frames": 18}},
+      {"logical_id": "I03_HANDOFF_B", "type": "payload_pad", "x": 208, "y": 48, "state": {"initial": "empty", "states": ["empty", "occupied"]}, "reset_policy": "empty", "anchor_policy": "forbidden", "parameters": {"handoff_radius_px": 16}},
+      {"logical_id": "I03_BRIDGE_POWER", "type": "bridge_switch", "x": 224, "y": 176, "state": {"initial": "off", "states": ["off", "on"]}, "reset_policy": "off", "anchor_policy": {"allowed": true, "record_type": "bridge_state", "max_records": 1, "idempotent_state": "on"}, "parameters": {"active_while_held": true}},
+      {"logical_id": "I03_SOCKET", "type": "seed_socket", "x": 256, "y": 48, "state": {"initial": "empty", "states": ["empty", "seeded"]}, "reset_policy": "empty", "anchor_policy": "forbidden", "parameters": {"accepts": "I03_SEED"}},
+      {"logical_id": "I03_VECTOR_PORT", "type": "exit_terminal", "x": 288, "y": 48, "state": {"initial": "locked", "states": ["locked", "armed", "committed"]}, "reset_policy": "locked", "anchor_policy": "forbidden", "parameters": {"requires": ["I03_SOCKET", "I03_BRIDGE_POWER"], "interact_frames": 24}}
+    ],
+    "enemies": [],
+    "hazards": [
+      {"logical_id": "I03_BEAM", "type": "redirected_laser", "x": 160, "y": 64, "state": {"initial": "south_path", "states": ["south_path", "east_path"]}, "reset_policy": "south_path", "anchor_policy": "forbidden", "parameters": {"max_segments": 12}},
+      {"logical_id": "I03_BRIDGE", "type": "energy_bridge", "x": 224, "y": 96, "state": {"initial": "off", "states": ["off", "warning", "on"]}, "reset_policy": "derive from I03_BRIDGE_POWER after anchors", "anchor_policy": "forbidden", "parameters": {"width": 64, "height": 16}},
+      {"logical_id": "I03_VECTOR_SWEEPER", "type": "moving_hazard", "x": 192, "y": 112, "state": {"initial": "north", "states": ["north", "south"]}, "reset_policy": "north", "anchor_policy": "forbidden", "parameters": {"path_y": [80, 160], "cycle_frames": 90}}
+    ],
+    "carryables": [
+      {
+        "logical_id": "I03_SEED",
+        "type": "seed_payload",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "vault", "states": ["vault", "carried_leg_1", "handoff_a", "carried_leg_2", "handoff_b", "carried_leg_3", "socketed"]},
+        "reset_policy": "vault at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 68, "drop_on_damage": true, "unique": true}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "I03_O1_RETRIEVE", "type": "carry", "depends_on": [], "condition": "echo_1 retrieves I03_SEED and drops at I03_HANDOFF_A", "deadline_frame": 260, "role": "echo_1"},
+      {"objective_id": "I03_O2_CARRY_LIFT", "type": "carry", "depends_on": ["I03_O1_RETRIEVE"], "condition": "echo_2 carries seed onto I03_LIFT", "deadline_frame": 390, "role": "echo_2"},
+      {"objective_id": "I03_O3_CALL_REDIRECT", "type": "interact_and_redirect", "depends_on": ["I03_O2_CARRY_LIFT"], "condition": "echo_3 calls lift and rotates I03_PRISM east", "deadline_frame": 470, "role": "echo_3"},
+      {"objective_id": "I03_O4_RECEIVE", "type": "carry", "depends_on": ["I03_O3_CALL_REDIRECT"], "condition": "echo_4 receives at upper floor and drops at I03_HANDOFF_B", "deadline_frame": 560, "role": "echo_4"},
+      {"objective_id": "I03_O5_BRIDGE", "type": "maintain_state", "depends_on": [], "condition": "echo_5 powers I03_BRIDGE", "deadline_frame": 650, "role": "echo_5"},
+      {"objective_id": "I03_O6_SOCKET", "type": "carry_and_interact", "depends_on": ["I03_O4_RECEIVE", "I03_O5_BRIDGE"], "condition": "echo_6 sockets seed and opens vector", "deadline_frame": 680, "role": "echo_6"},
+      {"objective_id": "I03_O7_COMMIT", "type": "interact", "depends_on": ["I03_O6_SOCKET"], "condition": "current commits I03_VECTOR_PORT", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "I03_O7_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "I03_ROLE_RETRIEVE", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 90, "action": "pick_up", "target": "I03_SEED"}, {"frame": 210, "action": "drop", "target": "I03_HANDOFF_A"}]},
+    {"role_id": "I03_ROLE_LIFT_CARRY", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 225, "action": "pick_up", "target": "I03_SEED"}, {"frame": 330, "action": "board", "target": "I03_LIFT"}]},
+    {"role_id": "I03_ROLE_CALL_REDIRECT", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 260, "action": "interact", "target": "I03_LIFT_CALL"}, {"frame": 390, "action": "rotate", "target": "I03_PRISM"}]},
+    {"role_id": "I03_ROLE_RECEIVE", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 430, "action": "pick_up", "target": "I03_SEED"}, {"frame": 510, "action": "drop", "target": "I03_HANDOFF_B"}]},
+    {"role_id": "I03_ROLE_BRIDGE", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 500, "action": "hold_interact", "target": "I03_BRIDGE_POWER"}]},
+    {"role_id": "I03_ROLE_SOCKET", "actor": "echo_6", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 525, "action": "pick_up", "target": "I03_SEED"}, {"frame": 625, "action": "socket", "target": "I03_SOCKET"}]},
+    {"role_id": "I03_ROLE_COMMIT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 680, "action": "interact", "target": "I03_VECTOR_PORT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "I03_ALT_HANDOFF_A",
+      "role_changes": "echo_1 carries directly onto the lift and echo_2 owns lift call",
+      "constraints": ["first legal handoff is skipped", "echo_3 still redirects beam before upper arrival"],
+      "echo_cost": 6
+    },
+    {
+      "id": "I03_ALT_HANDOFF_B",
+      "role_changes": "echo_4 carries directly over bridge while echo_6 waits at socket",
+      "constraints": ["bridge already powered", "payload never enters active beam path"],
+      "echo_cost": 6
+    }
+  ],
+  "failure_signals": [
+    {"id": "I03_FAIL_PAYLOAD", "condition": "I03_SEED is dropped outside a legal pad, lift, bridge, or socket route", "visual": "owner, handoff index, and drop coordinate freeze", "audio": "payload drop alarm", "timeline": "identifies last valid handoff"},
+    {"id": "I03_FAIL_DEPENDENCY", "condition": "lift, beam, or bridge state invalidates next payload leg", "visual": "next dependency edge flashes before actor divergence", "audio": "vector route rejection cue", "timeline": "names machine state and owner"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 64,
+    "dma_words": 2040,
+    "dma_queue_entries": 32,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 0,
+    "projectiles": 16,
+    "devices": 8,
+    "carryables": 1,
+    "hazards": 3,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "I03_CANONICAL",
+    "failure": "I03_FAILURE_PAYLOAD_HANDOFF",
+    "stress": "I03_STRESS_FULL_VECTOR_PIPELINE",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["I02", "ECHO_CAP_6"],
+    "unlocks": ["I04", "SEED_PAYLOAD", "VECTOR_HANDOFF_OVERLAY"]
+  },
+  "narrative": {
+    "briefing": "THE PAYLOAD MUST CROSS SIX OWNERS AND TWO LEGAL HANDOFFS.",
+    "success": "THE VECTOR REACHED ITS TABLE ENTRY.",
+    "failure": "OWNERSHIP AND TIME OF LOSS ARE RECORDED.",
+    "echo_hint": "RETRIEVE. LIFT. REDIRECT. RECEIVE. BRIDGE. SOCKET."
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "M02",
+  "numeric_id": 402,
+  "name": "BAD SECTOR",
+  "kind": "primary",
+  "campaign_order": 14,
+  "sector": {
+    "id": "MEMORY",
+    "name": "MEMORY",
+    "theme": "corrupted replay lanes with deterministic blackout blocks"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#.####..........####",
+      "#.####..........####",
+      "#.......####.......#",
+      "#.......####.......#",
+      "#..................#",
+      "#.......####.......#",
+      "#.......####.......#",
+      "####..........####.#",
+      "####..........####.#",
+      "#..................#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [30, 60],
+    "reset_policy": "restore blackout phase, Scrubber, cell, gates, slots; retain only explicit protected-slot metadata"
+  },
+  "echoes": {
+    "cap": 5,
+    "minimum": 4,
+    "first_clear_range": [4, 7],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_MEMORY_BAD_02",
+    "music_id": "MUS_MEMORY_BAD_SECTOR",
+    "tempo_bpm": 140,
+    "visual_layers": ["blackout_overlay", "disabled_intervals", "slot_protection", "scrubber_trace"]
+  },
+  "mechanics": ["deterministic_blackout", "scrubber", "replay_holes", "slot_protection", "slot_replacement", "power_cell"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "M02_PRE_GATE",
+        "type": "timed_switch",
+        "x": 80,
+        "y": 48,
+        "state": {"initial": "idle", "states": ["idle", "active", "expired"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_frames": 300}
+      },
+      {
+        "logical_id": "M02_POST_GATE",
+        "type": "blackout_gate",
+        "x": 160,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"opens_after_frame": 360, "requires": "M02_PRE_GATE"}
+      },
+      {
+        "logical_id": "M02_SOCKET",
+        "type": "power_socket",
+        "x": 240,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "powered"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"accepts": "M02_CELL"}
+      },
+      {
+        "logical_id": "M02_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 112,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["M02_SOCKET", "M02_SCRUBBER"], "interact_frames": 24}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "M02_SCRUBBER",
+        "type": "scrubber",
+        "x": 224,
+        "y": 64,
+        "state": {"initial": "seeking", "states": ["seeking", "attacking_replay", "stunned", "destroyed"]},
+        "reset_policy": "seeking at x=224 y=64",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "unprotected oldest echo object then slot id", "health": 4, "attack_period_frames": 72}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "M02_BLACKOUT_A",
+        "type": "replay_disable_zone",
+        "x": 96,
+        "y": 80,
+        "state": {"initial": "visible", "states": ["visible", "blackout"]},
+        "reset_policy": "visible",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_frames": [180, 299], "affected_slots": ["unprotected"] }
+      },
+      {
+        "logical_id": "M02_BLACKOUT_B",
+        "type": "replay_disable_zone",
+        "x": 176,
+        "y": 128,
+        "state": {"initial": "visible", "states": ["visible", "blackout"]},
+        "reset_policy": "visible",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_frames": [420, 509], "affected_slots": ["unprotected"] }
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "M02_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "socketed"]},
+        "reset_policy": "grounded at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 74}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "M02_O1_PROTECT_SLOT", "type": "timeline_management", "depends_on": [], "condition": "echo_1 slot protected before attempt begins", "deadline_frame": 0, "role": "player"},
+      {"objective_id": "M02_O2_PRE_BLACKOUT", "type": "interact", "depends_on": ["M02_O1_PROTECT_SLOT"], "condition": "protected echo_1 activates M02_PRE_GATE before blackout A", "deadline_frame": 179, "role": "echo_1"},
+      {"objective_id": "M02_O3_POST_BLACKOUT", "type": "interact", "depends_on": ["M02_O2_PRE_BLACKOUT"], "condition": "echo_2 opens M02_POST_GATE after blackout", "deadline_frame": 470, "role": "echo_2"},
+      {"objective_id": "M02_O4_CARRY", "type": "carry", "depends_on": ["M02_O3_POST_BLACKOUT"], "condition": "echo_3 sockets M02_CELL", "deadline_frame": 620, "role": "echo_3"},
+      {"objective_id": "M02_O5_DESTROY_SCRUBBER", "type": "destroy", "depends_on": [], "condition": "echo_4 destroys M02_SCRUBBER", "deadline_frame": 640, "role": "echo_4"},
+      {"objective_id": "M02_O6_COMMIT", "type": "interact", "depends_on": ["M02_O4_CARRY", "M02_O5_DESTROY_SCRUBBER"], "condition": "current commits M02_EXIT", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "M02_O6_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "M02_ROLE_PROTECTED", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 110, "action": "interact", "target": "M02_PRE_GATE"}]},
+    {"role_id": "M02_ROLE_POST", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "interact", "target": "M02_POST_GATE"}]},
+    {"role_id": "M02_ROLE_CARRIER", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 180, "action": "pick_up", "target": "M02_CELL"}, {"frame": 520, "action": "socket", "target": "M02_SOCKET"}]},
+    {"role_id": "M02_ROLE_SCRUBBER", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 360, "action": "fire_burst", "target": "M02_SCRUBBER"}]},
+    {"role_id": "M02_ROLE_COMMIT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 620, "action": "interact", "target": "M02_EXIT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "M02_ALT_PROTECT_CARRIER",
+      "role_changes": "protect echo_3 carrier and rewrite echo_1 to finish its switch before blackout without protection",
+      "constraints": ["M02_PRE_GATE active before frame 180", "carrier remains available through blackout B"],
+      "echo_cost": 4
+    }
+  ],
+  "failure_signals": [
+    {"id": "M02_FAIL_BLACKOUT", "condition": "an unprotected required echo enters a declared blackout interval", "visual": "disabled interval overlays the affected replay and all downstream edges", "audio": "corruption mute with visual equivalent", "timeline": "marks exact disabled frame range"},
+    {"id": "M02_FAIL_SCRUBBER", "condition": "M02_SCRUBBER corrupts a required replay object", "visual": "scrubber target line and slot protection state freeze", "audio": "scrub attack rasp", "timeline": "names stable target selection"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 56,
+    "dma_words": 1840,
+    "dma_queue_entries": 28,
+    "hardware_sprites": 58,
+    "sprites_per_scanline": 16,
+    "actors": 6,
+    "enemies": 1,
+    "projectiles": 18,
+    "devices": 4,
+    "carryables": 1,
+    "hazards": 2,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "M02_CANONICAL",
+    "failure": "M02_FAILURE_BLACKOUT",
+    "stress": "M02_STRESS_SCRUB_OVERLAY",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["M01", "ANCHOR_CAP_1"],
+    "unlocks": ["M03", "TIMELINE_SLOT_PROTECTION", "TIMELINE_SLOT_REPLACEMENT"]
+  },
+  "narrative": {
+    "briefing": "THE REPLAY HAS HOLES. THE TIMELINE DOES NOT HIDE THEM.",
+    "success": "A PROTECTED PROCESS BRIDGED THE BAD SECTOR.",
+    "failure": "REPLACE THE SLOT THAT BREAKS THE DOWNSTREAM PLAN.",
+    "echo_hint": "PROTECT THE EARLY SWITCH OR THE CARRIER, THEN REWRITE THE OTHER."
+  }
+}

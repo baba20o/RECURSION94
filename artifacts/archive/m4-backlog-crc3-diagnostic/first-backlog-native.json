@@ -1,0 +1,399 @@
+{
+  "backlog_address": "000053C2",
+  "command_policy": {
+    "allowed_commands": [
+      "breakpoint",
+      "commands",
+      "continue",
+      "end",
+      "printf"
+    ],
+    "errors": [],
+    "guest_memory_or_register_writes": [],
+    "input_injection": "none",
+    "status": "pass"
+  },
+  "command_script": "breakpoint $2C4\nbreakpoint $525A\nbreakpoint $2FE\nbreakpoint $163A\nbreakpoint $17E4\nbreakpoint $53C2\ncommands 0\nprintf \"R94B M %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\ncontinue\nend\ncommands 1\nprintf \"R94B R %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\ncontinue\nend\ncommands 2\nprintf \"R94B E %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\ncontinue\nend\ncommands 3\nprintf \"R94B V %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\ncontinue\nend\ncommands 4\nprintf \"R94B W %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\ncontinue\nend\ncommands 5\nprintf \"R94B X %x %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A].w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w\nprintf \"R94B COMPLETE\\n\"\nend\ncontinue\n",
+  "completed_utc": "2026-07-26T12:14:10.611267+00:00",
+  "expected_phase_sequence": [
+    "V",
+    "W",
+    "M",
+    "V",
+    "W",
+    "R",
+    "E",
+    "M",
+    "R",
+    "X"
+  ],
+  "first_backlog_before_increment": {
+    "attempt": 0,
+    "backlog": 0,
+    "boot_stage": 4,
+    "ceil_m68k_cycles_from_previous": 272,
+    "cycle": 19339361,
+    "delta_master_from_previous": 1904,
+    "frame": 2,
+    "index": 9,
+    "last_tick": 1,
+    "last_vdp_status": 21000,
+    "pending": 1,
+    "phase": "X",
+    "sequence": 4,
+    "tick": 2,
+    "token": 0,
+    "vblank_overruns": 0
+  },
+  "limitations": [
+    "Pinned BlastEm emulator evidence is not physical hardware.",
+    "The breakpoint samples state before the backlog branch mutates the backlog flag/counter/result.",
+    "Breakpoint and console handling consume host time only; the native cycle value is sampled before the breakpointed instruction in Genesis master-clock units."
+  ],
+  "master_clocks_per_m68k_cycle": 7,
+  "pc_contract": {
+    "addresses": {
+      "main_end": 766,
+      "main_renderer": 762,
+      "main_start": 708,
+      "projection_checkpoint_return": 14862,
+      "projection_entry": 8372,
+      "reset_end": 752,
+      "reset_start": 748,
+      "terminal_step_end": 740,
+      "vblank_entry": 5690,
+      "vblank_rte": 6116
+    },
+    "main_end_derivation": {
+      "call_hex": "61004F5E",
+      "end_is_instruction_after_bsr_return": true,
+      "following_hex": "60B2",
+      "renderer_call_symbol": 762,
+      "renderer_target": 8372
+    },
+    "main_start_derivation": {
+      "main_loop_symbol": 690,
+      "signature_hex": "537900FFF01446FC2500",
+      "start_is_first_instruction_after_token_decrement": true,
+      "token_decrement_address": 702
+    },
+    "projection_derivation": {
+      "checkpoint_call": 14858,
+      "checkpoint_call_hex": "6100E6A8",
+      "checkpoint_return_is_instruction_after_bsr": true,
+      "gameplay_step_symbol": 14392,
+      "projection_calls_in_bounded_gameplay_step_scan": [
+        14858,
+        14926,
+        14990
+      ],
+      "projection_entry_symbol": 8372,
+      "regular_checkpoint_call_is_first_projection_call": true
+    },
+    "rom_bytes": {
+      "main_end": "60B2",
+      "main_renderer": "6100",
+      "main_start": "46FC",
+      "projection_checkpoint_return": "4279",
+      "projection_entry": "48E7",
+      "reset_end": "4A40",
+      "reset_start": "6100",
+      "terminal_step_end": "0C40",
+      "vblank_entry": "48E7",
+      "vblank_rte": "4E73"
+    },
+    "terminal_reset_derivation": {
+      "gameplay_step_call": 736,
+      "gameplay_step_call_hex": "61003556",
+      "reset_call": 748,
+      "reset_call_hex": "610031E0",
+      "reset_end_is_instruction_after_bsr": true,
+      "reset_start_is_commit_reset_bsr": true,
+      "terminal_step_end_is_instruction_after_bsr": true
+    },
+    "vblank_derivation": {
+      "entry_symbol": 5690,
+      "rte_hex": "4E73",
+      "rte_is_first_even_rte_in_bounded_scan": true,
+      "rte_offset": 426
+    }
+  },
+  "provenance": {
+    "collector": {
+      "bytes": 16860,
+      "path": "artifacts/archive/m4-backlog-crc3-diagnostic/native-backlog-collector.py",
+      "sha256": "da4cd1d2b28458a04aba45990f4b9d33a5d1bfd2b50dee45713d4deca5fc05b0"
+    },
+    "cycle_collector": {
+      "bytes": 95594,
+      "path": "tools/m4_cycle_evidence.py",
+      "sha256": "f65a662c38b6c63dc85efdfcfc84caf5766e903663db4c4a4cc9ae86908c39fb"
+    },
+    "default_config": {
+      "bytes": 10171,
+      "path": ".toolcache/blastem/default.cfg",
+      "sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "emulator": {
+      "bytes": 12690147,
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "listing": {
+      "bytes": 2130321,
+      "path": "build/recursion94-debug.lst",
+      "sha256": "6353e83ca85fef14380696bac562693f6247c2e199411bcba9947d150e9ef996"
+    },
+    "rom": {
+      "bytes": 1048576,
+      "path": "build/recursion94-debug.bin",
+      "sha256": "01107b5f1dd14e2fa578247d266be95cbe97704248ae2e578d97b3f08551967e"
+    },
+    "symbols": {
+      "bytes": 54670,
+      "path": "build/recursion94-debug.sym",
+      "sha256": "3484dc15d1b9df47107865e5a29c10c01a6cd2a5bf92bfd9ff2568d1ba2becd8"
+    }
+  },
+  "records": [
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "cycle": 18635343,
+      "frame": 0,
+      "index": 0,
+      "last_tick": 0,
+      "last_vdp_status": 0,
+      "pending": 0,
+      "phase": "V",
+      "sequence": 0,
+      "tick": 0,
+      "token": 0,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 2282,
+      "cycle": 18651317,
+      "delta_master_from_previous": 15974,
+      "frame": 1,
+      "index": 1,
+      "last_tick": 0,
+      "last_vdp_status": 20992,
+      "pending": 0,
+      "phase": "W",
+      "sequence": 2,
+      "tick": 0,
+      "token": 1,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 82,
+      "cycle": 18651891,
+      "delta_master_from_previous": 574,
+      "frame": 1,
+      "index": 2,
+      "last_tick": 0,
+      "last_vdp_status": 20992,
+      "pending": 0,
+      "phase": "M",
+      "sequence": 2,
+      "tick": 0,
+      "token": 0,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 5128,
+      "cycle": 18687787,
+      "delta_master_from_previous": 35896,
+      "frame": 1,
+      "index": 3,
+      "last_tick": 0,
+      "last_vdp_status": 20992,
+      "pending": 0,
+      "phase": "V",
+      "sequence": 2,
+      "tick": 0,
+      "token": 0,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 2298,
+      "cycle": 18703873,
+      "delta_master_from_previous": 16086,
+      "frame": 2,
+      "index": 4,
+      "last_tick": 0,
+      "last_vdp_status": 21000,
+      "pending": 0,
+      "phase": "W",
+      "sequence": 4,
+      "tick": 0,
+      "token": 1,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 7844,
+      "cycle": 18758781,
+      "delta_master_from_previous": 54908,
+      "frame": 2,
+      "index": 5,
+      "last_tick": 0,
+      "last_vdp_status": 21000,
+      "pending": 0,
+      "phase": "R",
+      "sequence": 4,
+      "tick": 1,
+      "token": 1,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 70266,
+      "cycle": 19250643,
+      "delta_master_from_previous": 491862,
+      "frame": 2,
+      "index": 6,
+      "last_tick": 1,
+      "last_vdp_status": 21000,
+      "pending": 1,
+      "phase": "E",
+      "sequence": 4,
+      "tick": 1,
+      "token": 1,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 72,
+      "cycle": 19251147,
+      "delta_master_from_previous": 504,
+      "frame": 2,
+      "index": 7,
+      "last_tick": 1,
+      "last_vdp_status": 21000,
+      "pending": 1,
+      "phase": "M",
+      "sequence": 4,
+      "tick": 1,
+      "token": 0,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 12330,
+      "cycle": 19337457,
+      "delta_master_from_previous": 86310,
+      "frame": 2,
+      "index": 8,
+      "last_tick": 1,
+      "last_vdp_status": 21000,
+      "pending": 1,
+      "phase": "R",
+      "sequence": 4,
+      "tick": 2,
+      "token": 0,
+      "vblank_overruns": 0
+    },
+    {
+      "attempt": 0,
+      "backlog": 0,
+      "boot_stage": 4,
+      "ceil_m68k_cycles_from_previous": 272,
+      "cycle": 19339361,
+      "delta_master_from_previous": 1904,
+      "frame": 2,
+      "index": 9,
+      "last_tick": 1,
+      "last_vdp_status": 21000,
+      "pending": 1,
+      "phase": "X",
+      "sequence": 4,
+      "tick": 2,
+      "token": 0,
+      "vblank_overruns": 0
+    }
+  ],
+  "rom_sha256": "01107b5f1dd14e2fa578247d266be95cbe97704248ae2e578d97b3f08551967e",
+  "scope": "read-only first renderer backlog native-cycle diagnostic",
+  "session": {
+    "console_geometry": {
+      "cursor_x": 0,
+      "cursor_y": 60,
+      "height": 9001,
+      "width": 120
+    },
+    "controller": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/blastem/blastem.cfg",
+        "config_sha256": "cb12b05fa142e08751723855a40bb7051a04ac06363a427853efb4ef0d939df8",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/session-data/vgm"
+      },
+      "sha256": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "debugger_transport": "native_win32_console",
+    "gdb_port_opened": false,
+    "isolated_config_sha256": "cb12b05fa142e08751723855a40bb7051a04ac06363a427853efb4ef0d939df8",
+    "isolated_runtime": {
+      "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/blastem/blastem.cfg",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+      "status": "pass",
+      "temporary_copy_removed_after_session": true,
+      "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/blastem"
+    },
+    "launch_flags": [
+      "-d",
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "process_id": 6692,
+    "quit_input_records": 5,
+    "script_input_records": 1421
+  },
+  "started_utc": "2026-07-26T12:13:28.325158+00:00",
+  "status": "pass",
+  "trace": {
+    "bytes": 2305,
+    "path": "artifacts/archive/m4-backlog-crc3-diagnostic/first-backlog-native.log",
+    "sha256": "e027016b8fc133fbb6a43c585b5bd8471c1959a1a31d3805fb874837a9274639"
+  },
+  "transcript_policy": {
+    "errors": [],
+    "status": "pass"
+  }
+}

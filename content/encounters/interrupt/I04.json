@@ -1,0 +1,217 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "I04",
+  "numeric_id": 504,
+  "name": "ORACLE",
+  "kind": "boss",
+  "campaign_order": 20,
+  "sector": {
+    "id": "INTERRUPT",
+    "name": "INTERRUPT",
+    "theme": "controlled hardware collapse around the final transmission lattice"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#....#........#....#",
+      "#..###..####..###..#",
+      "#..###..####..###..#",
+      "#......#....#......#",
+      "#.##...#....#...##.#",
+      "#.##............##.#",
+      "#..................#",
+      "#.##............##.#",
+      "#.##...#....#...##.#",
+      "#......#....#......#",
+      "#..###..####..###..#",
+      "#....#........#....#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 160, "y": 192},
+    "exit": {"x": 160, "y": 32}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [15, 30],
+    "reset_policy": "restore ORACLE profile history for this attempt, infrastructure, payload, response phase, attacks, then apply approved anchor record before deterministic policy selection"
+  },
+  "echoes": {
+    "cap": 6,
+    "minimum": 6,
+    "first_clear_range": [6, 12],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_INTERRUPT_ORACLE",
+    "music_id": "MUS_INTERRUPT_ORACLE",
+    "tempo_bpm": 160,
+    "visual_layers": ["split_scroll", "midframe_palette", "oracle_policy_preview", "corrupted_tiles", "six_echo_layers", "transmission_trace"]
+  },
+  "mechanics": ["deterministic_response_policy", "uplink", "shield", "redirected_attacks", "payload_handoff", "route_gate", "clock_stabilizer", "seed_transmission", "anchor"],
+  "entities": {
+    "devices": [
+      {"logical_id": "I04_UPLINK", "type": "uplink_power_terminal", "x": 64, "y": 48, "state": {"initial": "off", "states": ["off", "charging", "powered"]}, "reset_policy": "off", "anchor_policy": "forbidden", "parameters": {"charge_frames": 120}},
+      {"logical_id": "I04_SHIELD", "type": "shield_emitter", "x": 256, "y": 48, "state": {"initial": "off", "states": ["off", "active", "overloaded"]}, "reset_policy": "off", "anchor_policy": "forbidden", "parameters": {"active_while_held": true, "overload_after_frames": 240}},
+      {"logical_id": "I04_REFLECTOR", "type": "attack_reflector", "x": 64, "y": 176, "state": {"initial": "north", "states": ["north", "east", "west"]}, "reset_policy": "north", "anchor_policy": "forbidden", "parameters": {"rotation_frames": 18, "redirect_target": "I04_ORACLE_LENS"}},
+      {"logical_id": "I04_ROUTE_GATE", "type": "route_terminal", "x": 256, "y": 176, "state": {"initial": "closed", "states": ["closed", "open"]}, "reset_policy": "closed unless approved anchor applies", "anchor_policy": {"allowed": true, "record_type": "route_open", "max_records": 1, "idempotent_state": "open"}, "parameters": {"open_frames": 72}},
+      {"logical_id": "I04_CLOCK", "type": "phase_stabilizer", "x": 160, "y": 160, "state": {"initial": "drifting", "states": ["drifting", "locked", "stable"]}, "reset_policy": "drifting", "anchor_policy": "forbidden", "parameters": {"lock_frames": 90, "authoritative_source": "68000 encounter frame"}},
+      {"logical_id": "I04_HANDOFF", "type": "seed_handoff_pad", "x": 160, "y": 112, "state": {"initial": "empty", "states": ["empty", "occupied"]}, "reset_policy": "empty", "anchor_policy": "forbidden", "parameters": {"handoff_radius_px": 16}},
+      {"logical_id": "I04_TRANSMITTER", "type": "final_seed_transmitter", "x": 160, "y": 32, "state": {"initial": "sealed", "states": ["sealed", "ready", "transmitting", "verified"]}, "reset_policy": "sealed", "anchor_policy": "forbidden", "parameters": {"requires": ["I04_UPLINK", "I04_SHIELD", "I04_REFLECTOR", "I04_ROUTE_GATE", "I04_CLOCK", "I04_SEED"], "transmit_frames": 90, "non_damage_objective": true}}
+    ],
+    "enemies": [
+      {
+        "logical_id": "I04_RESPONSE_MIRROR",
+        "type": "mirror",
+        "x": 160,
+        "y": 80,
+        "state": {"initial": "preview", "states": ["preview", "active", "contained"]},
+        "reset_policy": "preview",
+        "anchor_policy": "forbidden",
+        "parameters": {"source_selection": "highest repeated-action score then oldest echo then slot id", "transform": "policy-table-selected and previewed", "target_order": "role criticality score then distance then actor id"}
+      }
+    ],
+    "hazards": [
+      {"logical_id": "I04_ATTACK_FIELD", "type": "oracle_projectile_field", "x": 0, "y": 0, "state": {"initial": "profile", "states": ["profile", "cardinal", "mirrored", "final"]}, "reset_policy": "profile", "anchor_policy": "forbidden", "parameters": {"projectile_cap": 24, "patterns": ["cardinal", "aimed", "reflected"]}},
+      {"logical_id": "I04_RASTER_SPLIT", "type": "scheduled_raster_hazard", "x": 0, "y": 96, "state": {"initial": "safe", "states": ["safe", "active"]}, "reset_policy": "safe", "anchor_policy": "forbidden", "parameters": {"active_windows": [[195, 209], [375, 389], [555, 569]], "width": 320, "height": 16}},
+      {"logical_id": "I04_CORRUPT_ZONE", "type": "replay_interference_zone", "x": 112, "y": 80, "state": {"initial": "dormant", "states": ["dormant", "active", "stabilized"]}, "reset_policy": "dormant", "anchor_policy": "forbidden", "parameters": {"width": 96, "height": 64, "active_after_frame": 360}}
+    ],
+    "carryables": [
+      {
+        "logical_id": "I04_SEED",
+        "type": "seed_payload",
+        "x": 64,
+        "y": 112,
+        "state": {"initial": "vault", "states": ["vault", "carried_leg_1", "handoff", "carried_leg_2", "loaded"]},
+        "reset_policy": "vault at x=64 y=112",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 66, "unique": true, "drop_on_damage": true}
+      }
+    ],
+    "boss_components": [
+      {"logical_id": "I04_ORACLE_CORE", "type": "boss_core", "x": 160, "y": 112, "state": {"initial": "profiling", "states": ["profiling", "responding", "contained", "transcended"]}, "reset_policy": "profiling", "anchor_policy": "forbidden", "parameters": {"damageable": false, "progress_source": "I04_TRANSMITTER"}},
+      {"logical_id": "I04_ORACLE_LENS", "type": "boss_sensor", "x": 160, "y": 72, "state": {"initial": "observing", "states": ["observing", "redirected", "dark"]}, "reset_policy": "observing", "anchor_policy": "forbidden", "parameters": {"reads": ["echo_count", "echo_age", "repeated_actions", "anchor_state", "phase_history"]}},
+      {"logical_id": "I04_POLICY_RING", "type": "boss_policy_display", "x": 160, "y": 144, "state": {"initial": "preview", "states": ["preview", "locked", "resolved"]}, "reset_policy": "preview", "anchor_policy": "forbidden", "parameters": {"display_before_apply_frames": 60}},
+      {"logical_id": "I04_ATTACK_ARM_A", "type": "boss_weapon", "x": 112, "y": 112, "state": {"initial": "armed", "states": ["armed", "redirected", "disabled"]}, "reset_policy": "armed", "anchor_policy": "forbidden", "parameters": {"pattern": "cardinal"}},
+      {"logical_id": "I04_ATTACK_ARM_B", "type": "boss_weapon", "x": 208, "y": 112, "state": {"initial": "armed", "states": ["armed", "redirected", "disabled"]}, "reset_policy": "armed", "anchor_policy": "forbidden", "parameters": {"pattern": "aimed"}},
+      {"logical_id": "I04_TRANSMISSION_RING", "type": "boss_lock", "x": 160, "y": 32, "state": {"initial": "sealed", "states": ["sealed", "open", "verified"]}, "reset_policy": "sealed", "anchor_policy": "forbidden", "parameters": {"opens_from": "I04_TRANSMITTER prerequisites"}}
+    ]
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "I04_O1_POWER_UPLINK", "type": "maintain_state", "depends_on": [], "condition": "echo_1 powers I04_UPLINK", "deadline_frame": 600, "role": "echo_1"},
+      {"objective_id": "I04_O2_SHIELD", "type": "maintain_state", "depends_on": [], "condition": "echo_2 maintains I04_SHIELD through transmission", "deadline_frame": 719, "role": "echo_2"},
+      {"objective_id": "I04_O3_REDIRECT", "type": "redirect", "depends_on": [], "condition": "echo_3 redirects ORACLE attack into I04_ORACLE_LENS", "deadline_frame": 620, "role": "echo_3"},
+      {"objective_id": "I04_O4_CARRY_LEG_1", "type": "carry", "depends_on": [], "condition": "echo_4 carries I04_SEED to I04_HANDOFF", "deadline_frame": 520, "role": "echo_4"},
+      {"objective_id": "I04_O5_OPEN_ROUTE", "type": "interact", "depends_on": [], "condition": "echo_5 opens I04_ROUTE_GATE", "deadline_frame": 580, "role": "echo_5"},
+      {"objective_id": "I04_O6_STABILIZE_HANDOFF", "type": "stabilize_and_carry", "depends_on": ["I04_O4_CARRY_LEG_1", "I04_O5_OPEN_ROUTE"], "condition": "echo_6 stabilizes I04_CLOCK and carries seed from handoff to transmitter", "deadline_frame": 660, "role": "echo_6"},
+      {"objective_id": "I04_O7_TRANSMIT", "type": "non_damage_boss_progress", "depends_on": ["I04_O1_POWER_UPLINK", "I04_O2_SHIELD", "I04_O3_REDIRECT", "I04_O5_OPEN_ROUTE", "I04_O6_STABILIZE_HANDOFF"], "condition": "current completes 90-frame seed transmission", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "I04_TRANSMITTER verified and I04_ORACLE_CORE transcended"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "I04_ROLE_UPLINK", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 210, "action": "hold_interact", "target": "I04_UPLINK"}]},
+    {"role_id": "I04_ROLE_SHIELD", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "hold_interact", "target": "I04_SHIELD"}]},
+    {"role_id": "I04_ROLE_REDIRECT", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 420, "action": "rotate", "target": "I04_REFLECTOR"}, {"frame": 510, "action": "hold_angle", "target": "I04_ORACLE_LENS"}]},
+    {"role_id": "I04_ROLE_PAYLOAD_1", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 180, "action": "pick_up", "target": "I04_SEED"}, {"frame": 450, "action": "drop", "target": "I04_HANDOFF"}]},
+    {"role_id": "I04_ROLE_ROUTE", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 360, "action": "interact", "target": "I04_ROUTE_GATE"}]},
+    {"role_id": "I04_ROLE_CLOCK_PAYLOAD_2", "actor": "echo_6", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "hold_interact", "target": "I04_CLOCK"}, {"frame": 500, "action": "pick_up", "target": "I04_SEED"}, {"frame": 600, "action": "load", "target": "I04_TRANSMITTER"}]},
+    {"role_id": "I04_ROLE_TRANSMIT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 625, "action": "hold_interact", "target": "I04_TRANSMITTER"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "I04_ALT_ANCHORED_ROUTE",
+      "role_changes": "anchor I04_ROUTE_GATE open and move echo_5 to payload leg two while echo_6 focuses only on clock stabilization",
+      "constraints": ["one approved route_open anchor", "seed ownership changes only at I04_HANDOFF"],
+      "echo_cost": 6
+    },
+    {
+      "id": "I04_ALT_REDIRECT_CARRIER_SWAP",
+      "role_changes": "echo_3 carries first payload leg and echo_4 owns reflector",
+      "constraints": ["response preview still selects the same deterministic policy", "reflector reaches required angle before phase containment"],
+      "echo_cost": 6
+    }
+  ],
+  "failure_signals": [
+    {"id": "I04_FAIL_POLICY", "condition": "a previewed ORACLE response invalidates an authored role", "visual": "policy input tuple and selected response are displayed before application", "audio": "response motif with text and geometry equivalent", "timeline": "records echo count, ages, repeated-action score, anchor record, and phase history"},
+    {"id": "I04_FAIL_ROLE", "condition": "uplink, shield, redirect, payload, route, clock, or transmit role loses its required state", "visual": "first broken role and downstream edges flash", "audio": "corresponding echo layer drops", "timeline": "names first causal failure"},
+    {"id": "I04_FAIL_TRANSMIT", "condition": "90-frame transmission is interrupted", "visual": "seed bitstream stops at exact verified fraction", "audio": "transmission carrier collapses", "timeline": "marks interruption source and frame"}
+  ],
+  "deterministic_response_policy": [
+    {"priority": 1, "condition": "anchor I04_ROUTE_GATE is open", "response": "activate I04_CORRUPT_ZONE over handoff approach from frames 360-479"},
+    {"priority": 2, "condition": "echo_count equals 6 and repeated_fire_score exceeds 24", "response": "MIRRORED response transform inverts horizontal fire-lane selection"},
+    {"priority": 3, "condition": "oldest_echo_age exceeds 3 authored attempts", "response": "AIMED response targets oldest visible echo on 45-frame cadence"},
+    {"priority": 4, "condition": "otherwise", "response": "CARDINAL response fires fixed clockwise lanes on 60-frame cadence"}
+  ],
+  "boss_phases": [
+    {
+      "phase_id": "I04_PHASE_PROFILE",
+      "entry_condition": "encounter frame equals 0",
+      "frame_window": [0, 179],
+      "attacks": [{"pattern": "non-damaging policy preview", "frames": [0, 60, 120]}, {"pattern": "fixed cardinal probes", "period_frames": 60}],
+      "required_progress": "move all roles to their opening stations while reading selected policy",
+      "exit_condition": "frame 180 locks deterministic response"
+    },
+    {
+      "phase_id": "I04_PHASE_INFRASTRUCTURE",
+      "entry_condition": "response policy locked",
+      "frame_window": [180, 359],
+      "attacks": [{"pattern": "selected response attack", "period_frames": 45}, {"pattern": "raster split", "frames": [195]}],
+      "required_progress": "power uplink, begin route opening, retrieve seed",
+      "exit_condition": "uplink charging and seed carried"
+    },
+    {
+      "phase_id": "I04_PHASE_CONTAINMENT",
+      "entry_condition": "infrastructure progress established",
+      "frame_window": [360, 539],
+      "attacks": [{"pattern": "mirrored or aimed response per policy", "period_frames": 45}, {"pattern": "corrupt-zone expansion", "frames": [360, 450]}],
+      "required_progress": "maintain shield, redirect attack into lens, hand off seed, stabilize clock",
+      "exit_condition": "lens redirected and clock stable"
+    },
+    {
+      "phase_id": "I04_PHASE_TRANSMISSION",
+      "entry_condition": "all transmitter prerequisites except loaded seed overlap",
+      "frame_window": [540, 719],
+      "attacks": [{"pattern": "three final interruption volleys", "frames": [570, 630, 690]}, {"pattern": "split-scroll collapse", "period_frames": 30}],
+      "required_progress": "load seed and complete uninterrupted 90-frame transmission",
+      "exit_condition": "I04_TRANSMITTER verified"
+    }
+  ],
+  "budgets": {
+    "cpu_percent": 65,
+    "dma_words": 2048,
+    "dma_queue_entries": 32,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 1,
+    "projectiles": 24,
+    "devices": 7,
+    "carryables": 1,
+    "hazards": 3,
+    "boss_components": 6,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "I04_CANONICAL",
+    "failure": "I04_FAILURE_POLICY_ROLE",
+    "stress": "I04_STRESS_ORACLE_MAXIMUM",
+    "phase_regression": "I04_PHASE_BOUNDARIES"
+  },
+  "progression": {
+    "requires": ["I03", "SEED_PAYLOAD", "ECHO_CAP_6"],
+    "unlocks": ["PROGRAM_STABLE", "SEED_TRANSMITTED", "ENDING", "REPLAY_THEATER_COMPLETE"]
+  },
+  "narrative": {
+    "briefing": "ORACLE HAS ALREADY READ THE STRUCTURE OF YOUR PLAN.",
+    "success": "PROGRAM STABLE\nSEED TRANSMITTED",
+    "failure": "THE RESPONSE WAS DERIVED, PREVIEWED, AND REPEATABLE.",
+    "echo_hint": "POWER. SHIELD. REDIRECT. CARRY. OPEN. STABILIZE. TRANSMIT."
+  }
+}

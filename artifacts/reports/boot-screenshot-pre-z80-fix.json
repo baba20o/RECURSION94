@@ -1,0 +1,22 @@
+{
+  "evidence_type": "manually_inspected_boot_screenshot",
+  "observations": [
+    "Visible diagnostic text: RECURSION 94, BOOT SEQUENCE STABLE, VIDEO LINK ACTIVE, VBLANK HEARTBEAT.",
+    "Cyan heartbeat block is visible; this capture predates the Z80 safe-state fix."
+  ],
+  "rom": {
+    "path_at_capture": "build/recursion94-debug.bin",
+    "sha256": "c6bb50ac6da73fbf7c710942cd44c3b937186c911c84cc68d42b91509eff9917",
+    "current_file_binding": false
+  },
+  "schema": 1,
+  "scope_limit": "This proves one visible Milestone 1 diagnostic frame only. It is not the later independent visual-QA rubric, gameplay, or determinism gate.",
+  "screenshot": {
+    "bytes": 9451,
+    "height": 519,
+    "path": "artifacts/screenshots/m1-diagnostic-window.png",
+    "sha256": "d19da6a2ddd71aa4b506fb678af4b9c06adb5ffd09a0b08de9c103ad3d28e8a1",
+    "width": 656
+  },
+  "status": "pass"
+}

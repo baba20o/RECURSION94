@@ -1,0 +1,138 @@
+{
+  "gates": [
+    {
+      "exit_code": 0,
+      "gate": "safe_clean",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "pinned_toolchain",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "host_unit_tests",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "b03_debug_fixture_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "b03_debug_fixture_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "detail": null,
+      "exit_code": 0,
+      "gate": "bounded_headless_emulator",
+      "required": false,
+      "status": "pass"
+    },
+    {
+      "debug_rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+      "detail": "M2-M4 reports remain bound to the archived historical ROMs; no current-ROM equivalence is claimed",
+      "gate": "frozen_m2_m4_evidence",
+      "release_rom_sha256": "0cf94ab5a303bc077810f3d1fe2d4157070ffe6ca515ba0ae5568d3cb90f9d43",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m5_current_debug_static_artifact",
+      "required": true,
+      "rom_sha256": "58a9058667da76eb2dcf33aa199fedd4a6b44fe3d9b59772d9e2994c1433f5c1",
+      "status": "pass"
+    },
+    {
+      "gate": "m5_current_release_static_artifact",
+      "required": true,
+      "rom_sha256": "41dca6ce2831e8f5ff25b1d1dbd905f2d40d29d99c6ce0e9638e8e1cc39f1315",
+      "status": "pass"
+    },
+    {
+      "gate": "m5_current_b03_static_artifact",
+      "required": true,
+      "rom_sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e",
+      "status": "pass"
+    },
+    {
+      "gate": "m5_b01_live_runtime",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m5_b03_live_combined_room",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "detail": "invalid M5 budget evidence: budget report status is not pass; status is not pass; acceptance status is not pass; required passing check vector mismatch; budget_session_1/initial ABI/clock invalid; budget_session_1/initial budget contract invalid; budget_session_1/attempt_0_tick_67 ABI/clock invalid; budget_session_1/attempt_0_tick_67 fault field nonzero; budget_session_1/attempt_0_tick_67 budget contract invalid; budget_session_1/attempt_0_tick_719 ABI/clock invalid; budget_session_1/attempt_0_tick_719 fault field nonzero; budget_session_1/attempt_0_tick_719 budget contract invalid; budget_session_1/post_timeout_1 ABI/clock invalid; budget_session_1/post_timeout_1 fault field nonzero; budget_session_1/post_timeout_1 budget contract invalid; budget_session_1/attempt_1_tick_55 ABI/clock invalid; budget_session_1/attempt_1_tick_55 fault field nonzero; budget_session_1/attempt_1_tick_55 budget contract invalid; budget_session_1/attempt_1_tick_196 ABI/clock invalid; budget_session_1/attempt_1_tick_196 fault field nonzero; budget_session_1/attempt_1_tick_196 budget contract invalid; budget_session_1/attempt_1_tick_719 ABI/clock invalid; budget_session_1/attempt_1_tick_719 fault field nonzero; budget_session_1/attempt_1_tick_719 budget contract invalid; budget_session_1/post_timeout_2 ABI/clock invalid; budget_session_1/post_timeout_2 fault field nonzero; budget_session_1/post_timeout_2 budget contract invalid; budget_session_1/attempt_2_tick_55 ABI/clock invalid; budget_session_1/attempt_2_tick_55 fault field nonzero; budget_session_1/attempt_2_tick_55 budget contract invalid; budget_session_1/attempt_2_tick_67 ABI/clock invalid; budget_session_1/attempt_2_tick_67 fault field nonzero; budget_session_1/attempt_2_tick_67 budget contract invalid; budget_session_1/attempt_2_tick_86 ABI/clock invalid; budget_session_1/attempt_2_tick_86 fault field nonzero; budget_session_1/attempt_2_tick_86 budget contract invalid; budget_session_1/attempt_2_tick_87 ABI/clock invalid; budget_session_1/attempt_2_tick_87 fault field nonzero; budget_session_1/attempt_2_tick_87 budget contract invalid; budget_session_1/attempt_2_tick_183 ABI/clock invalid; budget_session_1/attempt_2_tick_183 fault field nonzero; budget_session_1/attempt_2_tick_183 budget contract invalid; budget_session_1/attempt_2_tick_185 ABI/clock invalid; budget_session_1/attempt_2_tick_185 fault field nonzero; budget_session_1/attempt_2_tick_185 budget contract invalid; budget_session_1/attempt_2_tick_186 ABI/clock invalid; budget_session_1/attempt_2_tick_186 fault field nonzero; budget_session_1/attempt_2_tick_186 budget contract invalid; budget_session_1/attempt_2_tick_188 ABI/clock invalid; budget_session_1/attempt_2_tick_188 fault field nonzero; budget_session_1/attempt_2_tick_188 budget contract invalid; budget_session_1/attempt_2_tick_190 ABI/clock invalid; budget_session_1/attempt_2_tick_190 fault field nonzero; budget_session_1/attempt_2_tick_190 budget contract invalid; budget_session_1/attempt_2_tick_191 ABI/clock invalid; budget_session_1/attempt_2_tick_191 fault field nonzero; budget_session_1/attempt_2_tick_191 budget contract invalid; budget_session_1/attempt_2_tick_193 ABI/clock invalid; budget_session_1/attempt_2_tick_193 fault field nonzero; budget_session_1/attempt_2_tick_193 budget contract invalid; budget_session_1/attempt_2_tick_195 ABI/clock invalid; budget_session_1/attempt_2_tick_195 fault field nonzero; budget_session_1/attempt_2_tick_195 budget contract invalid; budget_session_1/attempt_2_tick_196 ABI/clock invalid; budget_session_1/attempt_2_tick_196 fault field nonzero; budget_session_1/attempt_2_tick_196 budget contract invalid; budget_session_1/attempt_2_tick_197 ABI/clock invalid; budget_session_1/attempt_2_tick_197 fault field nonzero; budget_session_1/attempt_2_tick_197 budget contract invalid; budget_session_1/attempt_2_tick_198 ABI/clock invalid; budget_session_1/attempt_2_tick_198 fault field nonzero; budget_session_1/attempt_2_tick_198 budget contract invalid; budget_session_1/attempt_2_tick_201 ABI/clock invalid; budget_session_1/attempt_2_tick_201 fault field nonzero; budget_session_1/attempt_2_tick_201 budget contract invalid; budget_session_1/attempt_2_tick_273 ABI/clock invalid; budget_session_1/attempt_2_tick_273 fault field nonzero; budget_session_1/attempt_2_tick_273 budget contract invalid; budget_session_1/attempt_2_tick_291 ABI/clock invalid; budget_session_1/attempt_2_tick_291 fault field nonzero; budget_session_1/attempt_2_tick_291 budget contract invalid; budget_session_1/terminal ABI/clock invalid; budget_session_1/terminal fault field nonzero; budget_session_1/terminal budget contract invalid; budget_session_2/initial ABI/clock invalid; budget_session_2/initial budget contract invalid; budget_session_2/attempt_0_tick_67 ABI/clock invalid; budget_session_2/attempt_0_tick_67 fault field nonzero; budget_session_2/attempt_0_tick_67 budget contract invalid; budget_session_2/attempt_0_tick_719 ABI/clock invalid; budget_session_2/attempt_0_tick_719 fault field nonzero; budget_session_2/attempt_0_tick_719 budget contract invalid; budget_session_2/post_timeout_1 ABI/clock invalid; budget_session_2/post_timeout_1 fault field nonzero; budget_session_2/post_timeout_1 budget contract invalid; budget_session_2/attempt_1_tick_55 ABI/clock invalid; budget_session_2/attempt_1_tick_55 fault field nonzero; budget_session_2/attempt_1_tick_55 budget contract invalid; budget_session_2/attempt_1_tick_196 ABI/clock invalid; budget_session_2/attempt_1_tick_196 fault field nonzero; budget_session_2/attempt_1_tick_196 budget contract invalid; budget_session_2/attempt_1_tick_719 ABI/clock invalid; budget_session_2/attempt_1_tick_719 fault field nonzero; budget_session_2/attempt_1_tick_719 budget contract invalid; budget_session_2/post_timeout_2 ABI/clock invalid; budget_session_2/post_timeout_2 fault field nonzero; budget_session_2/post_timeout_2 budget contract invalid; budget_session_2/attempt_2_tick_55 ABI/clock invalid; budget_session_2/attempt_2_tick_55 fault field nonzero; budget_session_2/attempt_2_tick_55 budget contract invalid; budget_session_2/attempt_2_tick_67 ABI/clock invalid; budget_session_2/attempt_2_tick_67 fault field nonzero; budget_session_2/attempt_2_tick_67 budget contract invalid; budget_session_2/attempt_2_tick_86 ABI/clock invalid; budget_session_2/attempt_2_tick_86 fault field nonzero; budget_session_2/attempt_2_tick_86 budget contract invalid; budget_session_2/attempt_2_tick_87 ABI/clock invalid; budget_session_2/attempt_2_tick_87 fault field nonzero; budget_session_2/attempt_2_tick_87 budget contract invalid; budget_session_2/attempt_2_tick_183 ABI/clock invalid; budget_session_2/attempt_2_tick_183 fault field nonzero; budget_session_2/attempt_2_tick_183 budget contract invalid; budget_session_2/attempt_2_tick_185 ABI/clock invalid; budget_session_2/attempt_2_tick_185 fault field nonzero; budget_session_2/attempt_2_tick_185 budget contract invalid; budget_session_2/attempt_2_tick_186 ABI/clock invalid; budget_session_2/attempt_2_tick_186 fault field nonzero; budget_session_2/attempt_2_tick_186 budget contract invalid; budget_session_2/attempt_2_tick_188 ABI/clock invalid; budget_session_2/attempt_2_tick_188 fault field nonzero; budget_session_2/attempt_2_tick_188 budget contract invalid; budget_session_2/attempt_2_tick_190 ABI/clock invalid; budget_session_2/attempt_2_tick_190 fault field nonzero; budget_session_2/attempt_2_tick_190 budget contract invalid; budget_session_2/attempt_2_tick_191 ABI/clock invalid; budget_session_2/attempt_2_tick_191 fault field nonzero; budget_session_2/attempt_2_tick_191 budget contract invalid; budget_session_2/attempt_2_tick_193 ABI/clock invalid; budget_session_2/attempt_2_tick_193 fault field nonzero; budget_session_2/attempt_2_tick_193 budget contract invalid; budget_session_2/attempt_2_tick_195 ABI/clock invalid; budget_session_2/attempt_2_tick_195 fault field nonzero; budget_session_2/attempt_2_tick_195 budget contract invalid; budget_session_2/attempt_2_tick_196 ABI/clock invalid; budget_session_2/attempt_2_tick_196 fault field nonzero; budget_session_2/attempt_2_tick_196 budget contract invalid; budget_session_2/attempt_2_tick_197 ABI/clock invalid; budget_session_2/attempt_2_tick_197 fault field nonzero; budget_session_2/attempt_2_tick_197 budget contract invalid; budget_session_2/attempt_2_tick_198 ABI/clock invalid; budget_session_2/attempt_2_tick_198 fault field nonzero; budget_session_2/attempt_2_tick_198 budget contract invalid; budget_session_2/attempt_2_tick_201 ABI/clock invalid; budget_session_2/attempt_2_tick_201 fault field nonzero; budget_session_2/attempt_2_tick_201 budget contract invalid; budget_session_2/attempt_2_tick_273 ABI/clock invalid; budget_session_2/attempt_2_tick_273 fault field nonzero; budget_session_2/attempt_2_tick_273 budget contract invalid; budget_session_2/attempt_2_tick_291 ABI/clock invalid; budget_session_2/attempt_2_tick_291 fault field nonzero; budget_session_2/attempt_2_tick_291 budget contract invalid; budget_session_2/terminal ABI/clock invalid; budget_session_2/terminal fault field nonzero; budget_session_2/terminal budget contract invalid",
+      "gate": "m5_b03_hardware_budget",
+      "required": true,
+      "status": "fail"
+    },
+    {
+      "detail": "invalid M5 objective visual evidence: visual-capture status is not pass; objective visual evidence is not critic-ready; visual-capture report does not contain exactly five states; visual capture PNG/pixel identities are not five distinct hashes; visual captures did not use five fresh processes; one or more objective visual checks did not pass; visual critic handoff manifest is missing or malformed; visual transcript provenance is missing or malformed; visual transcript write audit is not exactly empty; visual schedule is not semantically derived; visual capture_count is not semantically derived; visual checks is not semantically derived; visual objective_only is not semantically derived; visual critic_handoff is not semantically derived",
+      "gate": "m5_b03_objective_visual_capture",
+      "required": true,
+      "status": "fail"
+    },
+    {
+      "detail": "m5-b03-visual-critic.json does not exist",
+      "gate": "m5_b03_visual_critic",
+      "required": true,
+      "status": "pending"
+    }
+  ],
+  "license_limitations": [
+    "vasm 2.0f is under a non-commercial upstream license for this target; commercial distribution clearance is unresolved"
+  ],
+  "release_complete": false,
+  "resume_commands": [
+    ".\\tools\\build.ps1 -Configuration Debug",
+    ".\\tools\\build.ps1 -Configuration Release",
+    ".\\tools\\test.ps1",
+    ".\\tools\\validate.ps1 -Scope Milestone5"
+  ],
+  "schema": 2,
+  "scope": "Milestone5",
+  "status": "FAIL",
+  "summary": {
+    "failed": 2,
+    "passed": 15,
+    "pending": 1,
+    "required": 18
+  }
+}

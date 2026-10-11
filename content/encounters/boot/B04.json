@@ -1,0 +1,314 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "B04",
+  "numeric_id": 104,
+  "name": "THE WATCHDOG",
+  "kind": "boss",
+  "campaign_order": 4,
+  "sector": {
+    "id": "BOOT",
+    "name": "BOOT",
+    "theme": "watchdog kernel chamber with rotating monochrome gaze"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#........##........#",
+      "#..###...##...###..#",
+      "#..###........###..#",
+      "#..................#",
+      "#......######......#",
+      "#......#....#......#",
+      "#......#....#......#",
+      "#......######......#",
+      "#..................#",
+      "#..###........###..#",
+      "#..###...##...###..#",
+      "#........##........#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 176}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [60, 96],
+    "reset_policy": "restore watchdog phase zero, scan angle, blind plate, cover node, projectiles, and shutdown port"
+  },
+  "echoes": {
+    "cap": 2,
+    "minimum": 2,
+    "first_clear_range": [2, 4],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_BOOT_WATCHDOG",
+    "music_id": "MUS_BOOT_WATCHDOG",
+    "tempo_bpm": 80,
+    "visual_layers": ["rotating_gaze_cone", "kernel_ring", "blind_spot_trace"]
+  },
+  "mechanics": ["deterministic_gaze", "observation_reset", "decoy", "blind_spot_plate", "scan_motor", "shutdown_port"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "B04_BLIND_PLATE",
+        "type": "pressure_switch",
+        "x": 80,
+        "y": 48,
+        "state": {"initial": "released", "states": ["released", "pressed"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"effect": "northwest gaze occluder", "occupancy_frames": 1}
+      },
+      {
+        "logical_id": "B04_SCAN_MOTOR",
+        "type": "hack_terminal",
+        "x": 240,
+        "y": 48,
+        "state": {"initial": "running", "states": ["running", "stalled", "restarting"]},
+        "reset_policy": "running",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 90, "stall_frames": 180}
+      },
+      {
+        "logical_id": "B04_COVER_NODE",
+        "type": "breakable_security_node",
+        "x": 80,
+        "y": 176,
+        "state": {"initial": "intact", "states": ["intact", "damaged", "destroyed"]},
+        "reset_policy": "intact",
+        "anchor_policy": "forbidden",
+        "parameters": {"health": 3, "creates_occluder_gap": true}
+      },
+      {
+        "logical_id": "B04_SHUTDOWN_PORT",
+        "type": "boss_shutdown_port",
+        "x": 272,
+        "y": 176,
+        "state": {"initial": "sealed", "states": ["sealed", "exposed", "writing", "shutdown"]},
+        "reset_policy": "sealed",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 72, "non_damage_objective": true}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "B04_GAZE_FIELD",
+        "type": "rotating_observation_cone",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "north", "states": ["north", "east", "south", "west", "stalled"]},
+        "reset_policy": "north",
+        "anchor_policy": "forbidden",
+        "parameters": {"rotation_step_frames": 60, "range_px": 144, "observed_actor_reset_delay_frames": 12}
+      }
+    ],
+    "carryables": [],
+    "boss_components": [
+      {
+        "logical_id": "B04_WATCHDOG_CORE",
+        "type": "boss_core",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "guarding", "states": ["guarding", "desynchronized", "shutdown"]},
+        "reset_policy": "guarding",
+        "anchor_policy": "forbidden",
+        "parameters": {"damageable": false, "progress_source": "B04_SHUTDOWN_PORT"}
+      },
+      {
+        "logical_id": "B04_GAZE_HEAD",
+        "type": "boss_sensor",
+        "x": 160,
+        "y": 80,
+        "state": {"initial": "active", "states": ["active", "stalled", "dark"]},
+        "reset_policy": "active",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "current then youngest visible echo then logical actor id"}
+      },
+      {
+        "logical_id": "B04_PORT_LOCK",
+        "type": "boss_lock",
+        "x": 256,
+        "y": 176,
+        "state": {"initial": "sealed", "states": ["sealed", "exposed", "released"]},
+        "reset_policy": "sealed",
+        "anchor_policy": "forbidden",
+        "parameters": {"release_requires": ["B04_BLIND_PLATE", "B04_SCAN_MOTOR"]}
+      }
+    ]
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "B04_O1_DIVIDE_GAZE",
+        "type": "distract",
+        "depends_on": [],
+        "condition": "echo_1 remains visible on north route while current stays outside cone",
+        "deadline_frame": 260,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "B04_O2_CREATE_BLIND_SPOT",
+        "type": "maintain_state",
+        "depends_on": ["B04_O1_DIVIDE_GAZE"],
+        "condition": "echo_2 presses B04_BLIND_PLATE then stalls B04_SCAN_MOTOR",
+        "deadline_frame": 500,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "B04_O3_REACH_PORT",
+        "type": "traverse",
+        "depends_on": ["B04_O2_CREATE_BLIND_SPOT"],
+        "condition": "current reaches B04_SHUTDOWN_PORT via south route unobserved",
+        "deadline_frame": 630,
+        "role": "current"
+      },
+      {
+        "objective_id": "B04_O4_SHUTDOWN",
+        "type": "non_damage_boss_progress",
+        "depends_on": ["B04_O3_REACH_PORT"],
+        "condition": "current completes shutdown write",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "B04_WATCHDOG_CORE state is shutdown"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "B04_ROLE_NORTH_DECOY",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 54, "action": "move_to", "target": "B04_GAZE_FIELD"},
+        {"frame": 130, "action": "fire", "target": "B04_GAZE_HEAD"},
+        {"frame": 250, "action": "circle_north", "target": "B04_WATCHDOG_CORE"}
+      ]
+    },
+    {
+      "role_id": "B04_ROLE_SCAN_STALL",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 74, "action": "hold_position", "target": "B04_BLIND_PLATE"},
+        {"frame": 286, "action": "interact", "target": "B04_SCAN_MOTOR"}
+      ]
+    },
+    {
+      "role_id": "B04_ROLE_SHUTDOWN",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 360, "action": "traverse_south", "target": "B04_SHUTDOWN_PORT"},
+        {"frame": 590, "action": "interact", "target": "B04_SHUTDOWN_PORT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "B04_ALT_COVER_BREACH",
+      "role_changes": "echo_2 destroys B04_COVER_NODE instead of stalling the motor, and echo_1 times the plate occupancy",
+      "constraints": ["cover node destroyed before frame 360", "current enters only during west-facing scan"],
+      "echo_cost": 2
+    },
+    {
+      "id": "B04_ALT_ROUTE_SWAP",
+      "role_changes": "north and blind-spot echoes exchange routes",
+      "constraints": ["stable target order must still select the north decoy", "shutdown remains a current-role action"],
+      "echo_cost": 2
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "B04_FAIL_OBSERVED",
+      "condition": "current remains inside B04_GAZE_FIELD for 12 frames",
+      "visual": "exact gaze ray and observed collision box freeze before reset",
+      "audio": "watchdog bark collapses to reset tone",
+      "timeline": "marks first observed frame and selected target rank"
+    },
+    {
+      "id": "B04_FAIL_PORT_SEALED",
+      "condition": "current reaches B04_SHUTDOWN_PORT without blind plate and stalled motor overlap",
+      "visual": "port lock displays both missing dependency runes",
+      "audio": "sealed-port pulse",
+      "timeline": "names the dependency that expired first"
+    }
+  ],
+  "boss_phases": [
+    {
+      "phase_id": "B04_PHASE_SCAN_CALIBRATION",
+      "entry_condition": "encounter frame equals 0",
+      "frame_window": [0, 239],
+      "attacks": [
+        {"pattern": "clockwise gaze quarter-turn", "frames": [0, 60, 120, 180]},
+        {"pattern": "single aimed pulse at selected visible actor", "period_frames": 48}
+      ],
+      "required_progress": "establish north decoy and press B04_BLIND_PLATE",
+      "exit_condition": "frame 240 or both required states established"
+    },
+    {
+      "phase_id": "B04_PHASE_COUNTER_ROTATION",
+      "entry_condition": "phase one exited",
+      "frame_window": [240, 479],
+      "attacks": [
+        {"pattern": "counterclockwise gaze half-step", "period_frames": 45},
+        {"pattern": "paired cardinal pulses", "period_frames": 72}
+      ],
+      "required_progress": "stall B04_SCAN_MOTOR or destroy B04_COVER_NODE",
+      "exit_condition": "scan motor stalled or cover route opened"
+    },
+    {
+      "phase_id": "B04_PHASE_SHUTDOWN_WINDOW",
+      "entry_condition": "port lock dependencies overlap",
+      "frame_window": [480, 719],
+      "attacks": [
+        {"pattern": "fixed north-south gaze sweep", "period_frames": 90},
+        {"pattern": "port interruption pulse", "frames": [552, 624, 696]}
+      ],
+      "required_progress": "complete 72-frame non-damage shutdown write",
+      "exit_condition": "B04_SHUTDOWN_PORT reaches shutdown state"
+    }
+  ],
+  "budgets": {
+    "cpu_percent": 42,
+    "dma_words": 980,
+    "dma_queue_entries": 14,
+    "hardware_sprites": 30,
+    "sprites_per_scanline": 10,
+    "actors": 3,
+    "enemies": 0,
+    "projectiles": 16,
+    "devices": 4,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 3,
+    "effects": 16
+  },
+  "replays": {
+    "canonical": "B04_CANONICAL",
+    "failure": "B04_FAILURE_GAZE_RESET",
+    "stress": "B04_STRESS_FULL_SCAN",
+    "phase_regression": "B04_PHASE_BOUNDARIES"
+  },
+  "progression": {
+    "requires": ["B03"],
+    "unlocks": ["V01", "SECTOR_VIDEO", "ECHO_CAP_3", "VDP_ACCESS"]
+  },
+  "narrative": {
+    "briefing": "THE WATCHDOG RESETS WHAT IT CAN SEE.",
+    "success": "OBSERVATION WAS DIVIDED. THE PORT IS DARK.",
+    "failure": "A GAZE IS ONLY A SCHEDULE WITH DIRECTION.",
+    "echo_hint": "GIVE IT TWO PROCESSES TO WATCH AND NONE TO UNDERSTAND."
+  }
+}

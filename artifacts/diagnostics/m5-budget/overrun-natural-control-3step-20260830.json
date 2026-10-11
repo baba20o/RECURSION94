@@ -1,0 +1,128 @@
+{
+  "acceptance_status": "incomplete",
+  "canonical_acceptance_eligible": false,
+  "debugger_write_packets": [],
+  "error": "EvidenceFailure: natural/F8 A/B did not isolate an ui.advance-only VBlank-exit counter increment",
+  "evidence_type": "blastem_gdb_m5_b03_vblank_overrun_natural_pre_post_control",
+  "fixed_steps": 3,
+  "limitations": [
+    "A failed natural control proves no canonical budget claim."
+  ],
+  "provenance": {
+    "canonical_acceptance_eligible": false,
+    "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+    "emulator_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+    "frame_advance_source_contract": {
+      "bindings": {
+        "frame_advance": "f8 ui.advance",
+        "frame_advance_matches": 1,
+        "pause_forbidden_during_drive": "f7 ui.pause",
+        "pause_matches": 1
+      },
+      "blastem_version": "0.6.3-pre-732f5689d438",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "source_node": "732f5689d4381862da283c420b68f37ac320c1d8",
+      "source_semantics": {
+        "frame_end": "clears frame_advance, sets paused to 1, requests exit, and prevents the next frame/VBlank dispatch until the following ui.advance",
+        "gdb_stop": "permanent breakpoint callback blocks emulation until c",
+        "pause_caption": "render_update_display writes '<caption> - PAUSED' only after the internal non-paused to paused edge",
+        "queue_bound": "frame_advance is a boolean and cannot accumulate frames",
+        "ui_action_edge": "KEYUP",
+        "ui_advance": "sets frame_advance boolean to 1 and paused to 0",
+        "vdp_status_defined_lower_10": "exactly 0x0208/0x020C/0x0228/0x022C at cadence stops: FIFO empty and VBlank, with only the instantaneous HBlank bit and informational sprite-collision latch allowed to vary",
+        "vdp_status_upper_bits": "bits 15-10 are 68000 prefetch open bus and are ignored"
+      },
+      "source_sha256": {
+        "bindings.c": "d6f2e4d5d7b38a1180654ed7354776a3f1d2879b1e454733687d906f3810a429",
+        "blastem.c": "dc88e812d70d1ed3baffa4f488e5e1af3df3fb47245103792474eb4ce83c946c",
+        "gdb_remote.c": "9eda587f9d11c6a8a624dc2f17c2293ba5600a8cfa6370639841b6fb6708cf92",
+        "genesis.c": "8b02bb53c0105c29af88008b674f3105a9d487a83fbc50f3d500579bb4c85364",
+        "render_sdl.c": "c969bb16e1d83c76602835a9dc2caa5dde6899b5810e3260de5a7588d795b85e",
+        "vdp.c": "21fc02bca5ad4f2e16e2be364195e9f02907cc68e0538aa6be8c8e436a9498e2"
+      },
+      "status": "pass"
+    },
+    "frame_advance_vblank_boundary_fact": {
+      "genesis.c_sha256": "8b02bb53c0105c29af88008b674f3105a9d487a83fbc50f3d500579bb4c85364",
+      "genesis_anchor": "sync_components_detects_frame_change_after_vdp_run_context_then_frame_advance_clears_pauses_and_requests_exit",
+      "source_node": "732f5689d4381862da283c420b68f37ac320c1d8",
+      "timing_consequence": "ui.advance pauses at or after the VDP frame/VBlank boundary; it is not neutral for a 68000 V-int exit-time measurement",
+      "vdp.c_sha256": "21fc02bca5ad4f2e16e2be364195e9f02907cc68e0538aa6be8c8e436a9498e2",
+      "vdp_anchor": "vcounter_increment_and_inactive_start_frame_increment"
+    },
+    "lock": {
+      "acquired_utc": "2026-08-31T00:28:41.138105+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "overrun_origin_site_contract": {
+      "errors": [],
+      "rom_sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e",
+      "sites": {
+        "dma_busy_timeout": {
+          "address": "000014B8",
+          "compare_opcode_hex": "0C79FFFF00FFF032",
+          "exact": true,
+          "guard_window_address": "000014A8",
+          "guard_window_hex": "303900C0000402400002671451C9FFF2",
+          "increment_address": "000014C2",
+          "increment_opcode_hex": "527900FFF032",
+          "meaning": "DmaIssueVramTransfer exhausted its statically bounded VDP DMA-busy poll",
+          "register_low_words": {
+            "d0": 2,
+            "d1": 65535
+          }
+        },
+        "vblank_exit": {
+          "address": "0000170E",
+          "compare_opcode_hex": "0C79FFFF00FFF032",
+          "exact": true,
+          "guard_window_address": "000016FC",
+          "guard_window_hex": "323900FFF01C024100086716024000086610",
+          "increment_address": "00001718",
+          "increment_opcode_hex": "527900FFF032",
+          "meaning": "VBlankInterrupt observed VBlank on entry and no VBlank at its post-commit exit check",
+          "register_low_words": {
+            "d0": 0,
+            "d1": 8
+          }
+        }
+      },
+      "status": "pass"
+    },
+    "rom_sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e",
+    "runtime_prerequisite": {
+      "replay_sha256": "01ec5267ec497ceafd81879d449ec05ea44aef78112b5945f198e4a3bf5370e5",
+      "report_sha256": "fb383777cca27708ebf47f07460a52268604f0e36877027ebfacbd363c2a8aa0",
+      "status": "pass",
+      "trace_sha256": "a8cca50ea16e36cb82055655190c81003725675faa638b1a91991c48e0b09809"
+    },
+    "source_bindings": {
+      "bundle_sha256": "5e70bf8e9b44c3fd078c8fe28f0e656034378e83824b8c31167383e2e4469c0b",
+      "sources": {
+        "assets/generated/campaign_runtime/campaign_runtime.inc.asm": "47ec0b8d9308e43f040ddfa12e94bed87910ae8bfd08ecee7e6071bb68dcc294",
+        "assets/generated/campaign_runtime/campaign_runtime_report.json": "d6d9cdf9b7074050252e8d3854b5ef6764d48574689534f7a35f79309e76ed9b",
+        "assets/generated/content/campaign_content.bin": "cd1381f609962e315d11b34f4cdb21b8b7c43c4507eaca1abc5f85dc78170b56",
+        "assets/generated/content/campaign_content_report.json": "7f58cd921edb25ff730924c033cb89faa43120e474da8a7bb07d31551b021732",
+        "content/campaign.json": "b1c84119d945117ef285d2214a684e8ff9180f0a2883cda5630f068e66afbd15",
+        "content/encounters/boot/B03.json": "2af6f57b65edb5a04d2f2d0149c98c5e915ba6f5210d7e2edbf89ae78e7b7d93",
+        "src/boot/startup.asm": "7dfa3f64f7652663f66969ac3d05bbe602de6f94b6e5d49bacd58484bd3d6b90",
+        "src/game/engine_layout.asm": "38fb6316ce2ac1b6f3ed6baa7ce8c45bad7936d2c099e1129447db9a2132ac54",
+        "src/game/object_pool.asm": "1139edd853781b3469e1c44563f23371bb709fad26c00b82245ab41aff5f78e7",
+        "src/gameplay/actor_sim.asm": "b14b2388f1a516bd2d0fbbb411c0363a47f89a5866b3c81003eaedb155bdf671",
+        "src/gameplay/campaign_collision.asm": "fccd2f54db0128289fe9d43c9718dc0728facd32b63f3dd5a123c53a3d0fb33d",
+        "src/gameplay/campaign_runtime.asm": "1bb9da1afb50814800ab444bc75c679d3ca18ae2097e911227a0b422940335c8",
+        "src/gameplay/gameplay_core.asm": "df9b9056d65c7bbb987d7a42f56f9fa84bc01ec67db1d1d1fe15a842f7058a49",
+        "src/gameplay/replay.asm": "90994c2ba8662d48907b511c68565fe9a8a0964f948900a334dac56a74da50c2",
+        "src/gameplay/vocabulary_combat.asm": "558f30d2b94040444d9314b2e0e3693f8efc21cef99c0b5420220dc0f87ce8c4",
+        "src/gameplay/vocabulary_core.asm": "287f41939ce9b9301b969ccd44a6b299258f5f4cf4cb03364f64b9a1a42b1015",
+        "src/gameplay/vocabulary_interactions.asm": "ef7d5afd56f79b1c3003f2079a1d42560c077f5e129cb5f286e27e65a1ebfedc",
+        "src/gameplay/vocabulary_layout.asm": "2f3039ce461efa1740d19c76e413db76a34dcbc42caf4a3292706c6b64eb9d43",
+        "src/ui/timeline_control.asm": "7e973afaf3325f49af5dbabeef839d75b3ab488dd07192197952214dde10cb03"
+      }
+    },
+    "symbol_map_sha256": "09ec73f7671ce406d86334bec10a46a4f83d6bc7faa696c7a6e95b2391e87165"
+  },
+  "schema": "r94-m5-b03-budget-overrun-natural-control-diagnostic-v1",
+  "scope": "Milestone5/B03/diagnostic",
+  "status": "diagnostic_fail"
+}

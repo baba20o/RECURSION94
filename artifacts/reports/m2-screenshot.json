@@ -1,0 +1,157 @@
+{
+  "checks": [
+    {
+      "check": "fully_decoded_png",
+      "detail": "decoded RGBA PNG 320x240 2846 bytes",
+      "status": "pass"
+    },
+    {
+      "check": "fresh_owned_capture",
+      "detail": "path/mtime artifacts/screenshots/m2-diagnostic.png/1785071319503528800 >= 1785071319435754700",
+      "status": "pass"
+    },
+    {
+      "check": "owned_native_screenshot",
+      "detail": "PID-owned BlastEm ui.screenshot source and exact isolated P binding",
+      "status": "pass"
+    },
+    {
+      "check": "normal_not_fatal",
+      "detail": "red-dominant pixel ratio 0.0049; fatal rejection threshold 0.1000",
+      "status": "pass"
+    },
+    {
+      "check": "recognized_normal_palette",
+      "detail": "legacy cyan/gameplay-rich True/False; cyan/red 0.0061/0.0049",
+      "status": "pass"
+    },
+    {
+      "check": "nonblank_visible_composition",
+      "detail": "black ratio/white pixels/quantized colors 0.7869/4130/17",
+      "status": "pass"
+    },
+    {
+      "check": "standard_three_button_profile",
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "status": "pass"
+    },
+    {
+      "check": "portable_runtime_isolation",
+      "detail": "temporary bundled config and redirected writable paths",
+      "status": "pass"
+    },
+    {
+      "check": "rom_hash_stable",
+      "detail": "ROM remained SHA-256 c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+      "status": "pass"
+    }
+  ],
+  "evidence_type": "isolated_blastem_m2_visible_screenshot",
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460"
+  },
+  "rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+  "schema": 1,
+  "scope": "Milestone2",
+  "scope_limit": "This proves the integrated M2/current gameplay frame is visible and nonfatal; full gameplay visual QA remains separate.",
+  "screenshot": {
+    "black_pixel_count": 60433,
+    "black_pixel_ratio": 0.7868880208333333,
+    "bytes": 2846,
+    "captured_utc": "2026-07-26T13:08:39.672810+00:00",
+    "cyan_pixel_count": 465,
+    "cyan_pixel_ratio": 0.0060546875,
+    "height": 240,
+    "mtime_ns": 1785071319503528800,
+    "path": "artifacts/screenshots/m2-diagnostic.png",
+    "quantized_color_count": 17,
+    "red_pixel_count": 380,
+    "red_pixel_ratio": 0.0049479166666666664,
+    "sha256": "307b17667ecd09835a2b6c78556281655483bf67661b406e84b8edd30ef88939",
+    "tool_output": "Captured one fresh BlastEm-native framebuffer PNG via the isolated P ui.screenshot binding",
+    "white_pixel_count": 4130,
+    "width": 320,
+    "window_ownership": {
+      "capture_method": "BlastEm ui.screenshot via isolated one-shot key binding",
+      "isolated_screenshot_path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/session-data/screenshots",
+      "isolated_source_name": "blastem_20260726_090839.png",
+      "isolated_source_removed_after_verified_copy": true,
+      "process_id": 33100,
+      "resolved_owner_process_id": 33100,
+      "source_sha256": "307b17667ecd09835a2b6c78556281655483bf67661b406e84b8edd30ef88939",
+      "title": "RECURSION 94: THE LAST CARTRIDGE - BlastEm - 61.8 fps",
+      "title_is_rom_specific": true,
+      "title_matches": true,
+      "title_policy": "accept ROM-specific RECURSION 94 / BlastEm title or the exact generic BlastEm title retained by debugger-paused sessions",
+      "ui_screenshot_key": "P",
+      "window_handle": 11929950
+    }
+  },
+  "session": {
+    "controller_profile": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "runtime_copy": {
+        "bundled_override": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/blastem/blastem.cfg",
+        "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+        "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+        "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+        "status": "pass",
+        "temporary_copy_removed_after_session": true,
+        "temporary_directory": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/blastem"
+      },
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/blastem/blastem.cfg",
+        "config_sha256": "d439a836caf3be81878aea73c24232d968943752ebd24d6dff83d6c38bbdb7d5",
+        "save_path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Projects/RECURSION94/.toolcache/evidence-sessions/recursion94-m2-screenshot-zvpmtyrj/session-data/vgm"
+      },
+      "sha256": "d439a836caf3be81878aea73c24232d968943752ebd24d6dff83d6c38bbdb7d5",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "launch_flags": [
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "launch_retry": {
+      "access_denied_retries": 0,
+      "attempts": 1,
+      "retry_delays_seconds": [
+        0.0
+      ],
+      "status": "pass"
+    },
+    "process_id": 33100,
+    "screenshot_binding": {
+      "config_bindings": [
+        "p"
+      ],
+      "key": "P",
+      "scan_code": 25,
+      "status": "pass",
+      "virtual_key": 80
+    },
+    "serialized_lock": {
+      "acquired_utc": "2026-07-26T13:07:56.753312+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    },
+    "window_handle": 11929950
+  },
+  "status": "pass"
+}

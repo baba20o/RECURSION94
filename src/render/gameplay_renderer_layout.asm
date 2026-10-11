@@ -1,0 +1,307 @@
+; Milestone 4 B01 cartridge-renderer fixed layout and hardware budgets.
+; Requires hardware/memory_map.asm, hardware/dma.asm, game/engine_layout.asm,
+; and gameplay/gameplay_layout.asm to have been included first.
+
+RENDERER_STATE_BASE             equ     $00FF8300
+RENDERER_MAGIC                  equ     RENDERER_STATE_BASE+$00
+RENDERER_VERSION                equ     RENDERER_STATE_BASE+$04
+RENDERER_BYTES                  equ     RENDERER_STATE_BASE+$06
+RENDERER_FLAGS                  equ     RENDERER_STATE_BASE+$08
+RENDERER_LAST_ATTEMPT           equ     RENDERER_STATE_BASE+$0A
+RENDERER_RESET_PHASE            equ     RENDERER_STATE_BASE+$0C
+RENDERER_RESET_PREVIOUS_ROW     equ     RENDERER_STATE_BASE+$0E
+RENDERER_OVERLAY_CLEAR_DEST     equ     RENDERER_STATE_BASE+$10
+RENDERER_OVERLAY_TRACE_DEST     equ     RENDERER_STATE_BASE+$12
+RENDERER_SPRITE_COUNT           equ     RENDERER_STATE_BASE+$14
+RENDERER_SCANLINE_MAX           equ     RENDERER_STATE_BASE+$16
+RENDERER_SCANLINE_PIXEL_MAX     equ     RENDERER_STATE_BASE+$18
+RENDERER_DROPPED_SPRITES        equ     RENDERER_STATE_BASE+$1A
+RENDERER_DMA_REJECTS            equ     RENDERER_STATE_BASE+$1C
+RENDERER_BACKLOG_FRAMES         equ     RENDERER_STATE_BASE+$1E
+RENDERER_LAST_TICK              equ     RENDERER_STATE_BASE+$20
+RENDERER_LAST_RESULT            equ     RENDERER_STATE_BASE+$22
+RENDERER_STATE_USED_END         equ     RENDERER_STATE_BASE+$24
+; Milestone 5-private checkpoint scheduling state occupies the reserved gap
+; after the frozen Milestone 4 evidence prefix.  Keep the public used endpoint
+; stable so archived/current M4 parsers continue to describe the same ABI.
+RENDERER_LAST_CHECKPOINT_COUNT  equ     RENDERER_STATE_BASE+$24
+RENDERER_PRIVATE_USED_END       equ     RENDERER_STATE_BASE+$26
+
+RENDERER_MAGIC_VALUE            equ     $52393456      ; "R94V"
+RENDERER_VERSION_VALUE          equ     $0001
+RENDERER_BYTES_VALUE            equ     $0500
+
+RENDERER_FLAG_INITIALIZED       equ     $0001
+RENDERER_FLAG_RESET_ACTIVE      equ     $0002
+RENDERER_FLAG_QUEUE_BACKLOG     equ     $0004
+RENDERER_FLAG_SPRITE_DROPPED    equ     $0008
+RENDERER_FLAG_DMA_REJECTED      equ     $0010
+RENDERER_FLAG_REPLACEMENT       equ     $0020
+RENDERER_FLAG_PROGRAM_STABLE    equ     $0040
+RENDERER_FLAG_INVALID_STATE     equ     $0080
+RENDERER_FLAG_COMPLETION_STAGED equ     $0100
+RENDERER_FLAG_BEAM_TRUNCATED    equ     $0200
+
+RENDERER_RESULT_OK              equ     $0000
+RENDERER_RESULT_BACKLOG         equ     $0001
+RENDERER_RESULT_NOT_INITIALIZED equ     $0002
+RENDERER_RESULT_DMA_REJECTED    equ     $0003
+RENDERER_RESULT_CHECKPOINT_HELD equ     $0004
+
+; Every visible scanline has both a sprite-count and sprite-pixel ledger.
+; Admission is all-or-nothing: a rejected sprite mutates neither ledger.
+RENDERER_SCANLINE_COUNT_BASE    equ     $00FF8340
+RENDERER_SCANLINE_COUNT_BYTES   equ     VISIBLE_HEIGHT_CELLS*8
+RENDERER_SCANLINE_COUNT_END     equ     RENDERER_SCANLINE_COUNT_BASE+RENDERER_SCANLINE_COUNT_BYTES
+RENDERER_SCANLINE_PIXEL_BASE    equ     $00FF8420
+RENDERER_SCANLINE_PIXEL_BYTES   equ     RENDERER_SCANLINE_COUNT_BYTES*2
+RENDERER_SCANLINE_PIXEL_END     equ     RENDERER_SCANLINE_PIXEL_BASE+RENDERER_SCANLINE_PIXEL_BYTES
+
+; Three contiguous 40-cell HUD rows and two 40-cell reset-wipe rows are the
+; only dynamic plane sources. They stay inside one verified 128 KiB DMA window.
+RENDERER_HUD_BUFFER             equ     $00FF8600
+RENDERER_HUD_ROW_WORDS          equ     VISIBLE_WIDTH_CELLS
+RENDERER_HUD_ROW_BYTES          equ     RENDERER_HUD_ROW_WORDS*2
+RENDERER_HUD_ROW_0              equ     RENDERER_HUD_BUFFER
+RENDERER_HUD_ROW_1              equ     RENDERER_HUD_ROW_0+RENDERER_HUD_ROW_BYTES
+RENDERER_HUD_ROW_2              equ     RENDERER_HUD_ROW_1+RENDERER_HUD_ROW_BYTES
+RENDERER_HUD_END                equ     RENDERER_HUD_ROW_2+RENDERER_HUD_ROW_BYTES
+RENDERER_OVERLAY_CLEAR_ROW      equ     RENDERER_HUD_END
+RENDERER_OVERLAY_TRACE_ROW      equ     RENDERER_OVERLAY_CLEAR_ROW+RENDERER_HUD_ROW_BYTES
+RENDERER_DYNAMIC_END            equ     RENDERER_OVERLAY_TRACE_ROW+RENDERER_HUD_ROW_BYTES
+RENDERER_RAM_END                equ     RENDERER_STATE_BASE+RENDERER_BYTES_VALUE
+
+RENDERER_VISIBLE_SCANLINES      equ     VISIBLE_HEIGHT_CELLS*8
+RENDERER_VISIBLE_PIXELS         equ     VISIBLE_WIDTH_CELLS*8
+RENDERER_SAT_CAPACITY           equ     SAT_SHADOW_BYTES/8
+RENDERER_SPRITE_LIMIT           equ     64
+RENDERER_SCANLINE_SPRITE_LIMIT  equ     20
+RENDERER_SCANLINE_PIXEL_LIMIT   equ     320
+RENDERER_PROJECTILE_LIMIT       equ     6
+RENDERER_DOOR_FEEDBACK_SPRITES  equ     2
+
+; Campaign SAT projection admits every replay actor first, then fixed physical
+; pool order within the maxima accepted by the campaign content compiler.
+; Hazards use four boundary markers for either semantic rectangular geometry
+; or the live radius byte, and state palettes expose safe/warning/active.
+; Current generated content owns one emitter (V02), at most two cache segments,
+; and at most ten 32-pixel chunks (96-pixel incident plus 160-pixel reflected
+; spans, inclusive endpoints). Transactional admission still enforces H40.
+RENDERER_CAMPAIGN_ACTOR_SPRITES equ     ACTOR_CAPACITY*2
+RENDERER_CAMPAIGN_DEVICE_LIMIT  equ     8
+RENDERER_CAMPAIGN_ENEMY_LIMIT   equ     2
+RENDERER_CAMPAIGN_CARRYABLE_LIMIT equ   1
+RENDERER_CAMPAIGN_HAZARD_LIMIT  equ     3
+RENDERER_CAMPAIGN_HAZARD_SPRITES equ    4
+RENDERER_CAMPAIGN_BEAM_SEGMENT_LIMIT equ 2
+RENDERER_CAMPAIGN_BEAM_CHUNK_PIXELS equ 32
+RENDERER_CAMPAIGN_BEAM_CHUNKS_PER_SEGMENT equ 6
+RENDERER_CAMPAIGN_BEAM_SPRITE_LIMIT equ 10
+RENDERER_CAMPAIGN_PROJECTILE_LIMIT equ  24
+; These are per-encounter generated maxima, not a sum of unrelated category
+; maxima from different rooms. I04 is the largest non-beam projection at 50
+; one-marker sprites; expanding its three hazards adds nine. V02's 14-sprite
+; base expands one hazard by three and adds ten beam chunks, for 27.
+RENDERER_CAMPAIGN_NON_BEAM_BASE_MAX equ 50
+RENDERER_CAMPAIGN_NON_BEAM_WORST_SPRITES equ RENDERER_CAMPAIGN_NON_BEAM_BASE_MAX+(RENDERER_CAMPAIGN_HAZARD_LIMIT*(RENDERER_CAMPAIGN_HAZARD_SPRITES-1))
+RENDERER_CAMPAIGN_BEAM_ENCOUNTER_BASE_MAX equ 14
+RENDERER_CAMPAIGN_BEAM_ENCOUNTER_HAZARDS equ 1
+RENDERER_CAMPAIGN_BEAM_ENCOUNTER_WORST_SPRITES equ RENDERER_CAMPAIGN_BEAM_ENCOUNTER_BASE_MAX+(RENDERER_CAMPAIGN_BEAM_ENCOUNTER_HAZARDS*(RENDERER_CAMPAIGN_HAZARD_SPRITES-1))+RENDERER_CAMPAIGN_BEAM_SPRITE_LIMIT
+RENDERER_CAMPAIGN_WORST_SPRITES equ     RENDERER_CAMPAIGN_NON_BEAM_WORST_SPRITES
+RENDERER_CAMPAIGN_SAT_HEADROOM  equ     RENDERER_SPRITE_LIMIT-RENDERER_CAMPAIGN_WORST_SPRITES
+RENDERER_CAMPAIGN_AUTHORED_SCANLINE_SPRITES equ 16
+RENDERER_CAMPAIGN_SCANLINE_SPRITE_LIMIT equ RENDERER_SCANLINE_SPRITE_LIMIT
+RENDERER_CAMPAIGN_SCANLINE_PIXEL_LIMIT equ RENDERER_SCANLINE_PIXEL_LIMIT
+RENDERER_CAMPAIGN_STATUS_SWITCH_ACTIVE equ $0001
+RENDERER_CAMPAIGN_STATUS_DOOR_OPEN equ $0002
+RENDERER_CAMPAIGN_STATUS_DOOR_CLOSED equ $0004
+RENDERER_CAMPAIGN_STATUS_TERMINAL equ $0008
+
+RENDERER_SPRITE_COORD_BIAS      equ     128
+RENDERER_SPRITE_SIZE_1X1        equ     $0000
+RENDERER_SPRITE_SIZE_1X2        equ     $0100
+RENDERER_SPRITE_SIZE_1X3        equ     $0200
+RENDERER_SPRITE_SIZE_1X4        equ     $0300
+RENDERER_SPRITE_SIZE_2X1        equ     $0400
+RENDERER_SPRITE_SIZE_2X2        equ     $0500
+RENDERER_SPRITE_SIZE_2X4        equ     $0700
+RENDERER_SPRITE_SIZE_3X1        equ     $0800
+RENDERER_SPRITE_SIZE_3X3        equ     $0A00
+RENDERER_SPRITE_SIZE_4X1        equ     $0C00
+
+RENDERER_ATTR_PRIORITY          equ     $8000
+RENDERER_ATTR_HFLIP             equ     $0800
+RENDERER_ATTR_VFLIP             equ     $1000
+RENDERER_ATTR_PALETTE_0         equ     $0000
+RENDERER_ATTR_PALETTE_1         equ     $2000
+RENDERER_ATTR_PALETTE_2         equ     $4000
+RENDERER_ATTR_PALETTE_3         equ     $6000
+
+; Resident tiles 1..38 are the diagnostic digits, letters, pulse, and grid.
+RENDERER_TILE_BASE              equ     DIAGNOSTIC_GRID_TILE+1
+RENDERER_TILE_FLOOR_A           equ     RENDERER_TILE_BASE+0
+RENDERER_TILE_FLOOR_B           equ     RENDERER_TILE_BASE+1
+RENDERER_TILE_WALL              equ     RENDERER_TILE_BASE+2
+RENDERER_TILE_RAIL              equ     RENDERER_TILE_BASE+3
+RENDERER_TILE_HUD_DARK          equ     RENDERER_TILE_BASE+4
+RENDERER_TILE_SWITCH_IDLE       equ     RENDERER_TILE_BASE+5
+RENDERER_TILE_SWITCH_IDLE_R     equ     RENDERER_TILE_BASE+6
+RENDERER_TILE_SWITCH_HELD       equ     RENDERER_TILE_BASE+7
+RENDERER_TILE_SWITCH_HELD_R     equ     RENDERER_TILE_BASE+8
+RENDERER_TILE_DOOR              equ     RENDERER_TILE_BASE+9
+RENDERER_TILE_DOOR_END          equ     RENDERER_TILE_DOOR+8
+RENDERER_TILE_DOOR_OPEN         equ     RENDERER_TILE_DOOR_END
+RENDERER_TILE_TERMINAL          equ     RENDERER_TILE_DOOR_OPEN+1
+RENDERER_TILE_TERMINAL_END      equ     RENDERER_TILE_TERMINAL+4
+RENDERER_TILE_TERMINAL_STABLE   equ     RENDERER_TILE_TERMINAL_END
+RENDERER_TILE_TERMINAL_STABLE_END equ  RENDERER_TILE_TERMINAL_STABLE+4
+RENDERER_ACTOR_FRAME_TILES      equ     9
+RENDERER_TILE_CURRENT_0         equ     RENDERER_TILE_TERMINAL_STABLE_END
+RENDERER_TILE_CURRENT_1         equ     RENDERER_TILE_CURRENT_0+RENDERER_ACTOR_FRAME_TILES
+RENDERER_TILE_ECHO_0            equ     RENDERER_TILE_CURRENT_1+RENDERER_ACTOR_FRAME_TILES
+RENDERER_TILE_ECHO_1            equ     RENDERER_TILE_ECHO_0+RENDERER_ACTOR_FRAME_TILES
+RENDERER_TILE_ECHO_RESET        equ     RENDERER_TILE_ECHO_1+RENDERER_ACTOR_FRAME_TILES
+RENDERER_TILE_HAZARD            equ     RENDERER_TILE_ECHO_RESET+RENDERER_ACTOR_FRAME_TILES
+; The first four patterns remain the shared 1x4/4x1 beam and corner set.
+; A pixel-identical second column lets the 16x64 shutter use two 2x4 SAT
+; entries instead of four 1x4 entries without changing its raster.
+RENDERER_TILE_HAZARD_COLUMN_TILES equ   4
+RENDERER_TILE_HAZARD_SHUTTER_TILES equ  8
+RENDERER_TILE_HAZARD_END        equ     RENDERER_TILE_HAZARD+RENDERER_TILE_HAZARD_SHUTTER_TILES
+RENDERER_TILE_ENEMY             equ     RENDERER_TILE_HAZARD_END
+RENDERER_TILE_ENEMY_END         equ     RENDERER_TILE_ENEMY+4
+RENDERER_TILE_CARRYABLE         equ     RENDERER_TILE_ENEMY_END
+RENDERER_TILE_CARRYABLE_END     equ     RENDERER_TILE_CARRYABLE+4
+RENDERER_TILE_PROJECTILE        equ     RENDERER_TILE_CARRYABLE_END
+RENDERER_TILE_TRACE             equ     RENDERER_TILE_PROJECTILE+1
+RENDERER_TILE_SWITCH_PAD        equ     RENDERER_TILE_TRACE+1
+RENDERER_TILE_TERMINAL_PAD      equ     RENDERER_TILE_SWITCH_PAD+1
+RENDERER_TILE_HAZARD_PAD        equ     RENDERER_TILE_TERMINAL_PAD+1
+RENDERER_TILE_ECHO_MARK         equ     RENDERER_TILE_HAZARD_PAD+1
+RENDERER_TILE_LOCK              equ     RENDERER_TILE_ECHO_MARK+1
+RENDERER_TILE_SELECTION         equ     RENDERER_TILE_LOCK+1
+RENDERER_TILE_COLON             equ     RENDERER_TILE_SELECTION+1
+RENDERER_TILE_DOT               equ     RENDERER_TILE_COLON+1
+RENDERER_TILE_SLASH             equ     RENDERER_TILE_DOT+1
+RENDERER_TILE_DASH              equ     RENDERER_TILE_SLASH+1
+RENDERER_TILE_WALL_SHADOW_H     equ     RENDERER_TILE_DASH+1
+RENDERER_TILE_WALL_SHADOW_V     equ     RENDERER_TILE_WALL_SHADOW_H+1
+RENDERER_TILE_ROUTE_CORE        equ     RENDERER_TILE_WALL_SHADOW_V+1
+RENDERER_TILE_DOOR_REJECT_0     equ     RENDERER_TILE_ROUTE_CORE+1
+RENDERER_TILE_DOOR_REJECT_1     equ     RENDERER_TILE_DOOR_REJECT_0+1
+RENDERER_TILE_END               equ     RENDERER_TILE_DOOR_REJECT_1+1
+RENDERER_TILE_COUNT             equ     RENDERER_TILE_END-RENDERER_TILE_BASE
+RENDERER_TILE_BYTES             equ     RENDERER_TILE_COUNT*32
+RENDERER_VRAM_TILE_START        equ     RENDERER_TILE_BASE*32
+RENDERER_VRAM_TILE_END          equ     RENDERER_TILE_END*32
+
+RENDERER_HUD_ATTRIBUTE          equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_3
+RENDERER_HUD_DIM_ATTRIBUTE      equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_0
+RENDERER_HUD_VALUE_ATTRIBUTE    equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_1
+RENDERER_ECHO_ATTRIBUTE         equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_2
+RENDERER_ECHO_HUD_ATTRIBUTE     equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_2
+RENDERER_DATA_ATTRIBUTE         equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_2
+RENDERER_RESET_ATTRIBUTE        equ     RENDERER_ATTR_PALETTE_2
+RENDERER_RESET_HUD_ATTRIBUTE    equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_2
+RENDERER_COMPLETION_ATTRIBUTE   equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_2
+RENDERER_CURRENT_ATTRIBUTE      equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_1
+RENDERER_OBJECTIVE_ATTRIBUTE    equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_0
+RENDERER_HAZARD_ATTRIBUTE       equ     RENDERER_ATTR_PRIORITY+RENDERER_ATTR_PALETTE_3
+
+RENDERER_RESET_PHASE_TICKS      equ     12
+RENDERER_RESET_FIRST_ROW        equ     3
+RENDERER_RESET_ROW_STEP         equ     2
+RENDERER_RESET_ECHO_FAN_LEFT    equ     10
+RENDERER_RESET_ECHO_FAN_STEP    equ     4
+RENDERER_NO_ROW                 equ     $FFFF
+RENDERER_COMPLETION_FIRST_ROW   equ     18
+RENDERER_COMPLETION_SECOND_ROW  equ     RENDERER_COMPLETION_FIRST_ROW+1
+
+; Read-only B01 closed-door feedback window. The current actor stops at
+; x=$6C/$84 with its four-pixel collision half extent; the wider window keeps
+; the feedback visible while the route obstruction is still spatially clear.
+RENDERER_DOOR_FEEDBACK_MIN_X_16_8 equ   (112-8)*256
+RENDERER_DOOR_FEEDBACK_MAX_X_16_8 equ   (112+16+8)*256
+RENDERER_DOOR_FEEDBACK_MIN_Y_16_8 equ   (48-4)*256
+RENDERER_DOOR_FEEDBACK_MAX_Y_16_8 equ   (48+128+4)*256
+RENDERER_DOOR_MID_X_16_8        equ     120*256
+RENDERER_CAMPAIGN_DOOR_FEEDBACK_RADIUS_16_8 equ 16*256
+RENDERER_BLOCKED_ACTOR_OFFSET   equ     8
+
+RENDERER_DMA_SAT_WORDS          equ     SAT_SHADOW_WORDS
+RENDERER_DMA_HUD_WORDS          equ     RENDERER_HUD_ROW_WORDS*3
+RENDERER_DMA_RESET_WORDS        equ     RENDERER_HUD_ROW_WORDS*2
+RENDERER_DMA_WORST_WORDS        equ     RENDERER_DMA_SAT_WORDS+RENDERER_DMA_HUD_WORDS+RENDERER_DMA_RESET_WORDS
+RENDERER_DMA_WORST_ENTRIES      equ     1+3+2
+RENDERER_DMA_SAT_FLAGS          equ     DMA_FLAG_REQUIRED+DMA_PRIORITY_CRITICAL
+RENDERER_DMA_HUD_FLAGS          equ     DMA_FLAG_REQUIRED+DMA_PRIORITY_HIGH
+RENDERER_DMA_RESET_FLAGS        equ     DMA_FLAG_REQUIRED+DMA_PRIORITY_NORMAL
+
+; B01's maximum authored renderer set remains 31 sprites: current body/badge,
+; one hazard, switch, terminal, four door blocks, twelve echo body/badges,
+; one enemy, one carryable, six projectiles, and two closed-door brackets.
+RENDERER_B01_WORST_SPRITES      equ     2+1+1+1+4+(GAMEPLAY_ECHO_LIMIT*2)+1+1+RENDERER_PROJECTILE_LIMIT+RENDERER_DOOR_FEEDBACK_SPRITES
+
+; Deliberately stacked route stress: seven 24-pixel actor bodies, switch,
+; terminal, one door block, enemy, carryable, two brackets, six projectiles.
+; Badges are vertically disjoint from body scanlines.
+RENDERER_B01_WORST_SCANLINE_SPRITES equ (1+GAMEPLAY_ECHO_LIMIT)+1+1+1+1+1+RENDERER_DOOR_FEEDBACK_SPRITES+RENDERER_PROJECTILE_LIMIT
+RENDERER_B01_WORST_SCANLINE_PIXELS equ ((1+GAMEPLAY_ECHO_LIMIT)*24)+(5*16)+(RENDERER_DOOR_FEEDBACK_SPRITES*8)+(RENDERER_PROJECTILE_LIMIT*8)
+
+        assert  RENDERER_STATE_BASE>=SAT_SHADOW+SAT_SHADOW_BYTES,"renderer state overlaps SAT shadow"
+        assert  RENDERER_STATE_USED_END<=RENDERER_SCANLINE_COUNT_BASE,"renderer state ABI overflow"
+        assert  RENDERER_PRIVATE_USED_END<=RENDERER_SCANLINE_COUNT_BASE,"renderer private state overflow"
+        assert  RENDERER_SCANLINE_COUNT_BYTES=224,"renderer needs one count per visible scanline"
+        assert  RENDERER_SCANLINE_COUNT_END=RENDERER_SCANLINE_PIXEL_BASE,"scanline ledgers must be contiguous"
+        assert  RENDERER_SCANLINE_PIXEL_BYTES=448,"renderer needs one word per scanline pixel ledger"
+        assert  RENDERER_SCANLINE_PIXEL_END<=RENDERER_HUD_BUFFER,"scanline ledger overlaps HUD"
+        assert  RENDERER_HUD_END-RENDERER_HUD_BUFFER=240,"HUD must contain exactly three 40-cell rows"
+        assert  RENDERER_DYNAMIC_END<=RENDERER_RAM_END,"renderer dynamic buffers overflow owned RAM"
+        assert  RENDERER_RAM_END<=DMA_QUEUE_BASE,"renderer RAM overlaps DMA queue"
+        assert  RENDERER_DYNAMIC_END<=$01000000,"renderer DMA source exceeds 24-bit work RAM"
+        assert  (RENDERER_HUD_BUFFER&$0001FFFF)+RENDERER_DYNAMIC_END-RENDERER_HUD_BUFFER<=$00020000,"renderer DMA sources cross 128 KiB window"
+        assert  (SAT_SHADOW&$0001FFFF)+SAT_SHADOW_BYTES<=$00020000,"renderer SAT DMA source crosses 128 KiB window"
+        assert  RENDERER_SAT_CAPACITY=80,"SAT shadow must hold exactly 80 hardware entries"
+        assert  RENDERER_SPRITE_LIMIT<=RENDERER_SAT_CAPACITY,"renderer sprite limit exceeds SAT"
+        assert  RENDERER_SCANLINE_SPRITE_LIMIT<=20,"H40 scanline sprite limit exceeded"
+        assert  RENDERER_SCANLINE_PIXEL_LIMIT<=RENDERER_VISIBLE_PIXELS,"H40 scanline pixel limit exceeded"
+        assert  RENDERER_CAMPAIGN_DEVICE_LIMIT<=DEVICE_CAPACITY,"campaign device display cap exceeds pool"
+        assert  RENDERER_CAMPAIGN_ENEMY_LIMIT<=ENEMY_CAPACITY,"campaign enemy display cap exceeds pool"
+        assert  RENDERER_CAMPAIGN_CARRYABLE_LIMIT<=CARRYABLE_CAPACITY,"campaign carryable display cap exceeds pool"
+        assert  RENDERER_CAMPAIGN_HAZARD_LIMIT<=HAZARD_CAPACITY,"campaign hazard display cap exceeds pool"
+        assert  RENDERER_CAMPAIGN_BEAM_SEGMENT_LIMIT<=VOCAB_BEAM_LIMIT,"campaign beam segment cap exceeds cache"
+        assert  RENDERER_CAMPAIGN_BEAM_CHUNK_PIXELS=32,"campaign beam chunk must fit one 4x1/1x4 sprite"
+        assert  RENDERER_CAMPAIGN_BEAM_CHUNKS_PER_SEGMENT=((VOCAB_BEAM_STEP_PIXELS*VOCAB_BEAM_MAX_STEPS+1+RENDERER_CAMPAIGN_BEAM_CHUNK_PIXELS-1)/RENDERER_CAMPAIGN_BEAM_CHUNK_PIXELS),"campaign inclusive beam chunk bound drift"
+        assert  RENDERER_CAMPAIGN_BEAM_SPRITE_LIMIT=10,"generated V02 beam chunk reservation drift"
+        assert  RENDERER_CAMPAIGN_PROJECTILE_LIMIT<=PROJECTILE_CAPACITY,"campaign projectile display cap exceeds pool"
+        assert  RENDERER_CAMPAIGN_NON_BEAM_WORST_SPRITES=59,"campaign non-beam authored sprite budget drift"
+        assert  RENDERER_CAMPAIGN_BEAM_ENCOUNTER_WORST_SPRITES=27,"campaign beam-room authored sprite budget drift"
+        assert  RENDERER_CAMPAIGN_BEAM_ENCOUNTER_WORST_SPRITES<=RENDERER_CAMPAIGN_WORST_SPRITES,"campaign beam room exceeds authored worst case"
+        assert  RENDERER_CAMPAIGN_WORST_SPRITES=59,"campaign authored sprite budget drift"
+        assert  RENDERER_CAMPAIGN_SAT_HEADROOM=5,"campaign SAT headroom drift"
+        assert  RENDERER_CAMPAIGN_WORST_SPRITES<=RENDERER_SPRITE_LIMIT,"campaign authored sprite set exceeds renderer limit"
+        assert  RENDERER_CAMPAIGN_AUTHORED_SCANLINE_SPRITES=16,"campaign authored scanline count drift"
+        assert  RENDERER_CAMPAIGN_AUTHORED_SCANLINE_SPRITES<=RENDERER_CAMPAIGN_SCANLINE_SPRITE_LIMIT,"campaign authored scanline count exceeds admission limit"
+        assert  RENDERER_CAMPAIGN_SCANLINE_SPRITE_LIMIT<=20,"campaign H40 scanline count exceeds hardware"
+        assert  RENDERER_CAMPAIGN_SCANLINE_PIXEL_LIMIT<=RENDERER_VISIBLE_PIXELS,"campaign H40 scanline pixels exceed hardware"
+        assert  RENDERER_B01_WORST_SPRITES<=RENDERER_SPRITE_LIMIT,"B01 authored sprite set exceeds renderer limit"
+        assert  RENDERER_B01_WORST_SCANLINE_SPRITES=20,"B01 route scanline count budget drift"
+        assert  RENDERER_B01_WORST_SCANLINE_SPRITES<=RENDERER_SCANLINE_SPRITE_LIMIT,"B01 route scanline count exceeds H40"
+        assert  RENDERER_B01_WORST_SCANLINE_PIXELS=312,"B01 route scanline pixel budget drift"
+        assert  RENDERER_B01_WORST_SCANLINE_PIXELS<=RENDERER_SCANLINE_PIXEL_LIMIT,"B01 route scanline pixels exceed H40"
+        assert  RENDERER_TILE_BASE=39,"resident diagnostic tile contract drift"
+        assert  RENDERER_ACTOR_FRAME_TILES=9,"24x24 actor frame must occupy nine tiles"
+        assert  RENDERER_TILE_CURRENT_1-RENDERER_TILE_CURRENT_0=9,"current frame stride drift"
+        assert  RENDERER_TILE_ECHO_1-RENDERER_TILE_ECHO_0=9,"echo frame stride drift"
+        assert  RENDERER_TILE_ECHO_RESET-RENDERER_TILE_ECHO_1=9,"reset echo frame stride drift"
+        assert  RENDERER_TILE_HAZARD_SHUTTER_TILES=8,"filled shutter needs two identical four-tile columns"
+        assert  RENDERER_TILE_COUNT=104,"renderer tile bank size drift"
+        assert  RENDERER_VRAM_TILE_START>=DMA_VRAM_DYNAMIC_START,"renderer tiles below dynamic VRAM"
+        assert  RENDERER_VRAM_TILE_END<=DMA_VRAM_DYNAMIC_END,"renderer tiles overlap Plane A"
+        assert  RENDERER_TILE_BYTES=RENDERER_TILE_COUNT*32,"renderer tile byte count mismatch"
+        assert  RENDERER_DMA_WORST_WORDS=520,"renderer DMA budget drift"
+        assert  RENDERER_DMA_WORST_WORDS<=DMA_ORDINARY_WORD_LIMIT,"renderer exceeds VBlank DMA word limit"
+        assert  RENDERER_DMA_WORST_ENTRIES<=DMA_QUEUE_CAPACITY,"renderer exceeds DMA queue depth"
+        assert  RENDERER_RESET_FIRST_ROW+((RENDERER_RESET_PHASE_TICKS-1)*RENDERER_RESET_ROW_STEP)<VISIBLE_HEIGHT_CELLS,"reset trace exceeds visible plane"
+        assert  ((GAMEPLAY_ECHO_LIMIT-1)*RENDERER_RESET_ECHO_FAN_STEP)-RENDERER_RESET_ECHO_FAN_LEFT=RENDERER_RESET_ECHO_FAN_LEFT,"reset echo fan must be symmetric"
+        assert  RENDERER_BLOCKED_ACTOR_OFFSET<=12,"blocked actor presentation offset exceeds half body width"

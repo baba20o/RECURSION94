@@ -1,0 +1,347 @@
+{
+  "binding_sha256": "fb4fe1e57511a813ee2a4c5ddc82ac2bedff2eecddd5f2ed01a3c8c2de88334c",
+  "canonical_script": {
+    "algorithm": "tick%120 quarters: Right,Down,Left,Up; A added when tick%67==0",
+    "checkpoint_interval": 60,
+    "checkpoints": [
+      {
+        "crc32_iso_hdlc": "D6C025DF",
+        "tick": 0
+      },
+      {
+        "crc32_iso_hdlc": "F1DBFAF2",
+        "tick": 60
+      },
+      {
+        "crc32_iso_hdlc": "2F59755F",
+        "tick": 120
+      },
+      {
+        "crc32_iso_hdlc": "692B3E2B",
+        "tick": 180
+      },
+      {
+        "crc32_iso_hdlc": "2C112818",
+        "tick": 240
+      },
+      {
+        "crc32_iso_hdlc": "CE7D29BB",
+        "tick": 300
+      },
+      {
+        "crc32_iso_hdlc": "75073316",
+        "tick": 360
+      },
+      {
+        "crc32_iso_hdlc": "46E0733E",
+        "tick": 420
+      },
+      {
+        "crc32_iso_hdlc": "91CA7A02",
+        "tick": 480
+      },
+      {
+        "crc32_iso_hdlc": "DF679EBC",
+        "tick": 540
+      },
+      {
+        "crc32_iso_hdlc": "B7716439",
+        "tick": 600
+      },
+      {
+        "crc32_iso_hdlc": "56E943E0",
+        "tick": 660
+      },
+      {
+        "crc32_iso_hdlc": "F92B572A",
+        "tick": 720
+      }
+    ],
+    "frames": 720,
+    "golden_terminal_crc32_iso_hdlc": "F92B572A",
+    "mutated_diverged": true,
+    "mutated_terminal_crc32_iso_hdlc": "36F58D62",
+    "mutated_tick": 718,
+    "repeat_equal": true,
+    "terminal_crc32_iso_hdlc": "F92B572A"
+  },
+  "collision": {
+    "fractional_x_16_8": 27584,
+    "resolved_x_16_8": 27648,
+    "resolved_x_pixels": 108,
+    "start_x_16_8": 27200,
+    "x_then_y_corner": {
+      "x_16_8": 27664,
+      "x_collision": false,
+      "y_16_8": 11264,
+      "y_collision": true
+    }
+  },
+  "contract": {
+    "actor_capacity": 7,
+    "attempt_ticks": 720,
+    "checkpoint_interval": 60,
+    "encounter_ids": [
+      0,
+      1
+    ],
+    "pool_capacities": {
+      "1": 16,
+      "2": 32,
+      "3": 32,
+      "4": 8,
+      "5": 16,
+      "6": 12,
+      "7": 24
+    },
+    "projection_bytes": 3638
+  },
+  "crc32_iso_hdlc": {
+    "123456789": "CBF43926",
+    "empty": "00000000",
+    "polynomial_reflected": "EDB88320"
+  },
+  "deterministic_generation": true,
+  "limitations": [
+    "This is an independent behavioral model; it does not execute 68000 opcodes or prove instruction/cycle timing.",
+    "It covers the M3 authoritative core only, excluding interrupts, renderer, audio, debug ABI publication, and later echo/gameplay systems.",
+    "Assembly source hashes fail closed on instruction drift, but semantic parity still depends on the explicit cross-model tests."
+  ],
+  "pools": {
+    "1": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "canaries_intact": true,
+      "capacity": 16,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "2": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "canaries_intact": true,
+      "capacity": 32,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "3": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "canaries_intact": true,
+      "capacity": 32,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "4": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "canaries_intact": true,
+      "capacity": 8,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "5": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "canaries_intact": true,
+      "capacity": 16,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "6": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "canaries_intact": true,
+      "capacity": 12,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    },
+    "7": {
+      "allocation_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "canaries_intact": true,
+      "capacity": 24,
+      "lowest_free_reused": 0,
+      "overflow_reported": true
+    }
+  },
+  "projection": {
+    "big_endian": true,
+    "bytes": 3638,
+    "explicit_schema": true,
+    "frame_zero_crc32_iso_hdlc": "D6C025DF",
+    "prefix_hex": "5239345000010E360000000000000001000000030000000000000000014000E000000000010100020106000000002000"
+  },
+  "reference_sources": {
+    "tests/m3/__init__.py": "5596226423dd97f13ee712af604d36136ced51efdbaf069261f37039fef8733e",
+    "tests/m3/test_contracts.py": "36675de2f778b5c6c91f012c4fcf33adfa1d09fcd9ef1ef2ff980742e6e41158",
+    "tests/m3/test_crc32_tables.py": "4bebe95141c2a2006e1ce0a84a8ed256c1c2af55cbe3f60ae4c5bccd3809c664",
+    "tests/m3/test_model.py": "032ed98c3a8e04b672a27fcd255b5bd02a9ccfcee21e43c9a1c10f6da0b626d7",
+    "tests/m3/test_report.py": "8ef3048960713d8d59133aa55ecd4d662837caa96086854ea5e9ec6bab04ba3c",
+    "tests/m3/test_reset_architecture.py": "fec85b0ca6248b276d7537f2e96e6b49899dc8fd090e37bb336afee030b558e8",
+    "tools/m3_reference/__init__.py": "6adf6ddfebfb49b255cc406200edf5fa16bbd6b7389c591da5e640f32ce4b148",
+    "tools/m3_reference/__main__.py": "49451b430c70f30c9217f14c44772cafe51c447ee4802f98767df8e1c3a0938c",
+    "tools/m3_reference/contracts.py": "efdb88eb90726feabd041b4bbd42b8668bda1596ed69a9848458078625de7807",
+    "tools/m3_reference/model.py": "b8efb4c37ce33d14b12e52397cb33c8995a7445accbc38905e4f68f006b49a87",
+    "tools/m3_reference/report.py": "0e46d84130d5ffe7bfdaa3f1f32824b8177f3ea4428afb36aeb9c5dffca1c9cf"
+  },
+  "reset": {
+    "attempt_after_reset": 1,
+    "byte_equal_after_reset": true,
+    "mutated_before_reset": true,
+    "ordinary_bytes": 18432,
+    "tick_after_reset": 0
+  },
+  "runtime_sources": {
+    "src/game/collision.asm": "f926c4878409fa101d01274b77b41e63f3e946ebbf83a1c16d1e398f9904041f",
+    "src/game/crc32.asm": "c99fbe1689e8448ca9b86ede56049aa5b7ca548665b8c02625d11b12823777e4",
+    "src/game/encounters.asm": "f6c2d528ef928a10e4fe442d6347d5e2624a875f4d659a7b8f33b60c8841fc44",
+    "src/game/engine.asm": "13088a9830d31671ff8b2cf15f05d44670052bfbd0dfc8a7ff76488ec0604d90",
+    "src/game/engine_core.asm": "7d0b9a2daf017b514c81842985bcf205ded4689054cf57212f13bfce0d7afd05",
+    "src/game/engine_layout.asm": "40e2876cc36a02057a9a2254d4c381e9a00bad4939c9fd5426d890cc70f409be",
+    "src/game/object_pool.asm": "360e47bab4a3b25008e6aff6489e5fc61ed053c614b63ee6cd161e2ed5d72d2c",
+    "src/game/projection.asm": "f863d0ea4730da3767144c6b5336c7b012754fb56adf4efb0651734f9663ee64"
+  },
+  "schema": "r94-m3-reference-report-v1",
+  "status": "pass"
+}

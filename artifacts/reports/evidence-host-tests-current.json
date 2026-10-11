@@ -1,0 +1,18 @@
+{
+  "binary_checks": [],
+  "pending_release_suites": {},
+  "release_gate_passed": false,
+  "requested_suite": "Evidence",
+  "runs": [
+    {
+      "errors": 38,
+      "failures": 2,
+      "path": "tests/emulator",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 72
+    }
+  ],
+  "schema": 1,
+  "status": "fail"
+}

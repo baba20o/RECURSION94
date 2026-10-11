@@ -1,0 +1,1575 @@
+{
+  "baseline_kind": "pre_repair_frozen_failure",
+  "captures": {
+    "blocked_path": {
+      "archived_failure_context": {
+        "authoritative_ticks_during_ui_capture": 2,
+        "capture_started_ns": 1785055076888107600,
+        "emulator_resumes_during_ui_capture": 2,
+        "isolated_screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-blocked_path-_r0w1p_l/session-data/screenshots",
+        "label": "blocked_path",
+        "post_capture_state_sha256": "c53379a915a080dc321d08cbf078f8fec036041fc2db0c904fe32b629b526688",
+        "state": {
+          "actors": {
+            "current": {
+              "active": 1,
+              "flags": 0,
+              "half_height": 4,
+              "half_width": 4,
+              "health": 1,
+              "input": 0,
+              "logical_id": 6,
+              "previous_input": 0,
+              "role": 6,
+              "slot": 6,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 27648,
+              "y_16_8": 28672
+            },
+            "echo_1": {
+              "active": 0,
+              "flags": 0,
+              "half_height": 0,
+              "half_width": 0,
+              "health": 0,
+              "input": 0,
+              "logical_id": 0,
+              "previous_input": 0,
+              "role": 0,
+              "slot": 0,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 0,
+              "y_16_8": 0
+            },
+            "region_sha256": "4926e53e17041cfd0bd655681a9f23f8c9a28b1bc0122e3ed030b27322fa8a18"
+          },
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "raw_sha256": "53a1a63e48875674b92a8f477678d6695dd68f3f399fc9eec49b2c87077695e7",
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "debug": {
+            "abi_size": 1024,
+            "abi_version": 1,
+            "audio_command_count": 1,
+            "audio_state": 2,
+            "boot_stage": 4,
+            "controller_samples": 104,
+            "dma_deferred_count": 0,
+            "dma_invalid_count": 0,
+            "dma_overflow_count": 0,
+            "dma_queue_depth": 0,
+            "dma_queue_high_water": 4,
+            "dma_required_drop_count": 0,
+            "dma_words_frame": 440,
+            "dma_words_max": 440,
+            "engine_active_actors": 1,
+            "engine_attempt": 0,
+            "engine_checkpoint_count": 2,
+            "engine_checkpoint_tick": 60,
+            "engine_encounter": 0,
+            "engine_last_error": 0,
+            "engine_overflow_flags": 0,
+            "engine_projection_length": 3638,
+            "engine_state": 1,
+            "engine_state_crc": 2389679397,
+            "engine_tick": 103,
+            "fatal_code": 0,
+            "frame_counter": 104,
+            "frame_token": 0,
+            "gameplay_door_state": 0,
+            "gameplay_flags": 1,
+            "gameplay_last_bank_crc": 0,
+            "gameplay_result": 0,
+            "gameplay_stable_tick": 0,
+            "gameplay_switch_mask": 0,
+            "hardware_flags": 0,
+            "heartbeat": 104,
+            "input_connected": 1,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_released": 0,
+            "input_start_held": 0,
+            "last_vdp_status": 20992,
+            "m2_flags": 63,
+            "magic": 1379480644,
+            "magic_ascii": "R94D",
+            "raw_sha256": "1c3d69f9afcb403d155d51c77b93f9506e37340bb16c1122267c2df6bce0e6d2",
+            "sequence": 208,
+            "sprite_count": 11,
+            "sprite_scanline_max": 4,
+            "timeline_attempt_length": 103,
+            "timeline_current_bank": 6,
+            "timeline_echo_count": 0,
+            "timeline_flags": 1,
+            "timeline_selected_ordinal": 255,
+            "vblank_overrun_count": 0,
+            "z80_heartbeat": 138,
+            "z80_timeout_count": 0
+          },
+          "engine": {
+            "abi_version": 1,
+            "active_actor_count": 1,
+            "attempt": 0,
+            "checkpoint_count": 2,
+            "checkpoint_tick": 60,
+            "control_bytes": 1024,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480645,
+            "magic_ascii": "R94E",
+            "object_init_count": 4,
+            "overflow_flags": 0,
+            "pool_counts": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "pool_high_water": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "projection_length": 3638,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "spawn_x": 8192,
+            "spawn_y": 28672,
+            "state": 1,
+            "state_crc": 2389679397,
+            "terminal_reason": 0,
+            "tick": 104
+          },
+          "gameplay": {
+            "current_actor_index": 6,
+            "current_input": 0,
+            "current_pressed": 0,
+            "current_previous": 0,
+            "current_released": 0,
+            "declared_bytes": 256,
+            "door_state": 0,
+            "echo_actor_count": 0,
+            "flags": 1,
+            "last_bank_crc": 0,
+            "last_bank_crc_hex": "00000000",
+            "last_commit_reason": 0,
+            "magic": 1379480647,
+            "magic_ascii": "R94G",
+            "phase": 0,
+            "raw_sha256": "3d67a2252f98382ade82a5a35a5c8623a98a60521e3c81b5db2145af3d7247e2",
+            "replacement_flags": 0,
+            "result": 0,
+            "stable_tick": 0,
+            "step_count": 104,
+            "switch_mask": 0,
+            "version": 1
+          },
+          "input": {
+            "connected": 1,
+            "held": 0,
+            "pressed": 0,
+            "raw_high": 127,
+            "raw_low": 51,
+            "released": 0,
+            "start_held": 0
+          },
+          "label": "blocked_path_after_ui_screenshot",
+          "raw_bundle_bytes": 1279,
+          "raw_bundle_sha256": "c53379a915a080dc321d08cbf078f8fec036041fc2db0c904fe32b629b526688",
+          "renderer": {
+            "backlog_frames": 0,
+            "declared_bytes": 1280,
+            "dma_rejects": 0,
+            "dropped_sprites": 0,
+            "flags": 1,
+            "last_attempt": 0,
+            "last_result": 0,
+            "last_tick": 103,
+            "magic": 1379480662,
+            "magic_ascii": "R94V",
+            "overlay_clear_destination": 65535,
+            "overlay_trace_destination": 65535,
+            "raw_sha256": "793ab229d8c68f0b8b748fcfeecb1791476cb094dc43811d5f6b66aa32d1c7e3",
+            "reset_phase": 0,
+            "reset_previous_row": 65535,
+            "scanline_pixel_max": 56,
+            "scanline_sprite_max": 4,
+            "sprite_count": 11,
+            "version": 1
+          },
+          "replay_bank_6": {
+            "bank_sha256": "c8bacff7176fe9cf00d7183ab7ab1bf75a918dca29e5eb73fa14a3ec94fd6306",
+            "committed_prefix_crc32_iso_hdlc": "FE1C5258",
+            "committed_prefix_sha256": "232c54f2870de6c6a1dcdb0a9015a9acf470126c3f18415e09916c1140e6583d",
+            "descriptor": {
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 104,
+              "raw_hex": "0068000000000401"
+            },
+            "first_40_hex": "08080808080808080808080808080808080808080808080808080808080808080808080808080808",
+            "zero_tail": true
+          },
+          "timeline": {
+            "attempt_length": 104,
+            "current_bank": 6,
+            "declared_bytes": 24,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "raw_sha256": "db376e6a01c23c8cc80bc5d59b68677c7dfb8c686fbfef9303a60f350671294d",
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        },
+        "state_after_ui_key_down": {
+          "actors": {
+            "current": {
+              "active": 1,
+              "flags": 0,
+              "half_height": 4,
+              "half_width": 4,
+              "health": 1,
+              "input": 0,
+              "logical_id": 6,
+              "previous_input": 0,
+              "role": 6,
+              "slot": 6,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 27648,
+              "y_16_8": 28672
+            },
+            "echo_1": {
+              "active": 0,
+              "flags": 0,
+              "half_height": 0,
+              "half_width": 0,
+              "health": 0,
+              "input": 0,
+              "logical_id": 0,
+              "previous_input": 0,
+              "role": 0,
+              "slot": 0,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 0,
+              "y_16_8": 0
+            },
+            "region_sha256": "4926e53e17041cfd0bd655681a9f23f8c9a28b1bc0122e3ed030b27322fa8a18"
+          },
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "raw_sha256": "53a1a63e48875674b92a8f477678d6695dd68f3f399fc9eec49b2c87077695e7",
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "debug": {
+            "abi_size": 1024,
+            "abi_version": 1,
+            "audio_command_count": 1,
+            "audio_state": 2,
+            "boot_stage": 4,
+            "controller_samples": 103,
+            "dma_deferred_count": 0,
+            "dma_invalid_count": 0,
+            "dma_overflow_count": 0,
+            "dma_queue_depth": 0,
+            "dma_queue_high_water": 4,
+            "dma_required_drop_count": 0,
+            "dma_words_frame": 440,
+            "dma_words_max": 440,
+            "engine_active_actors": 1,
+            "engine_attempt": 0,
+            "engine_checkpoint_count": 2,
+            "engine_checkpoint_tick": 60,
+            "engine_encounter": 0,
+            "engine_last_error": 0,
+            "engine_overflow_flags": 0,
+            "engine_projection_length": 3638,
+            "engine_state": 1,
+            "engine_state_crc": 2389679397,
+            "engine_tick": 102,
+            "fatal_code": 0,
+            "frame_counter": 103,
+            "frame_token": 0,
+            "gameplay_door_state": 0,
+            "gameplay_flags": 1,
+            "gameplay_last_bank_crc": 0,
+            "gameplay_result": 0,
+            "gameplay_stable_tick": 0,
+            "gameplay_switch_mask": 0,
+            "hardware_flags": 0,
+            "heartbeat": 103,
+            "input_connected": 1,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_released": 0,
+            "input_start_held": 0,
+            "last_vdp_status": 20992,
+            "m2_flags": 63,
+            "magic": 1379480644,
+            "magic_ascii": "R94D",
+            "raw_sha256": "cfb5ac42143d6a488eeed8225be496075602566dd5c83a98e057b14b7db5fa42",
+            "sequence": 206,
+            "sprite_count": 11,
+            "sprite_scanline_max": 4,
+            "timeline_attempt_length": 102,
+            "timeline_current_bank": 6,
+            "timeline_echo_count": 0,
+            "timeline_flags": 1,
+            "timeline_selected_ordinal": 255,
+            "vblank_overrun_count": 0,
+            "z80_heartbeat": 137,
+            "z80_timeout_count": 0
+          },
+          "engine": {
+            "abi_version": 1,
+            "active_actor_count": 1,
+            "attempt": 0,
+            "checkpoint_count": 2,
+            "checkpoint_tick": 60,
+            "control_bytes": 1024,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 0,
+            "input_released": 0,
+            "last_error": 0,
+            "magic": 1379480645,
+            "magic_ascii": "R94E",
+            "object_init_count": 4,
+            "overflow_flags": 0,
+            "pool_counts": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "pool_high_water": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "projection_length": 3638,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "spawn_x": 8192,
+            "spawn_y": 28672,
+            "state": 1,
+            "state_crc": 2389679397,
+            "terminal_reason": 0,
+            "tick": 103
+          },
+          "gameplay": {
+            "current_actor_index": 6,
+            "current_input": 0,
+            "current_pressed": 0,
+            "current_previous": 0,
+            "current_released": 0,
+            "declared_bytes": 256,
+            "door_state": 0,
+            "echo_actor_count": 0,
+            "flags": 1,
+            "last_bank_crc": 0,
+            "last_bank_crc_hex": "00000000",
+            "last_commit_reason": 0,
+            "magic": 1379480647,
+            "magic_ascii": "R94G",
+            "phase": 0,
+            "raw_sha256": "30968c493e3485aa78cfdcd75185b674c2e2d4222651ca218d985fa1bf57b17d",
+            "replacement_flags": 0,
+            "result": 0,
+            "stable_tick": 0,
+            "step_count": 103,
+            "switch_mask": 0,
+            "version": 1
+          },
+          "input": {
+            "connected": 1,
+            "held": 0,
+            "pressed": 0,
+            "raw_high": 127,
+            "raw_low": 51,
+            "released": 0,
+            "start_held": 0
+          },
+          "label": "blocked_path_after_ui_screenshot_key_down",
+          "raw_bundle_bytes": 1279,
+          "raw_bundle_sha256": "9289816dab524d5ad26f1316792be700001842197b15428c663d426a02f6bca8",
+          "renderer": {
+            "backlog_frames": 0,
+            "declared_bytes": 1280,
+            "dma_rejects": 0,
+            "dropped_sprites": 0,
+            "flags": 1,
+            "last_attempt": 0,
+            "last_result": 0,
+            "last_tick": 102,
+            "magic": 1379480662,
+            "magic_ascii": "R94V",
+            "overlay_clear_destination": 65535,
+            "overlay_trace_destination": 65535,
+            "raw_sha256": "f5a01470d145b27e443b2c5851caebdc31ca611b9c8211116aa07ad354fd9801",
+            "reset_phase": 0,
+            "reset_previous_row": 65535,
+            "scanline_pixel_max": 56,
+            "scanline_sprite_max": 4,
+            "sprite_count": 11,
+            "version": 1
+          },
+          "replay_bank_6": {
+            "bank_sha256": "c8bacff7176fe9cf00d7183ab7ab1bf75a918dca29e5eb73fa14a3ec94fd6306",
+            "committed_prefix_crc32_iso_hdlc": "C7235EBE",
+            "committed_prefix_sha256": "a997a4cb8aa3ef776fe94748d91f65b3e35fdca7b1e4c755e4e81513dc965e9b",
+            "descriptor": {
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 103,
+              "raw_hex": "0067000000000401"
+            },
+            "first_40_hex": "08080808080808080808080808080808080808080808080808080808080808080808080808080808",
+            "zero_tail": true
+          },
+          "timeline": {
+            "attempt_length": 103,
+            "current_bank": 6,
+            "declared_bytes": 24,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "raw_sha256": "57899dbd6369925be65cdc5a27851e7de302bf046478441e140381668d631e54",
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        },
+        "state_before_ui_request": {
+          "actors": {
+            "current": {
+              "active": 1,
+              "flags": 0,
+              "half_height": 4,
+              "half_width": 4,
+              "health": 1,
+              "input": 0,
+              "logical_id": 6,
+              "previous_input": 40,
+              "role": 6,
+              "slot": 6,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 27648,
+              "y_16_8": 28672
+            },
+            "echo_1": {
+              "active": 0,
+              "flags": 0,
+              "half_height": 0,
+              "half_width": 0,
+              "health": 0,
+              "input": 0,
+              "logical_id": 0,
+              "previous_input": 0,
+              "role": 0,
+              "slot": 0,
+              "vx_16_8": 0,
+              "vy_16_8": 0,
+              "x_16_8": 0,
+              "y_16_8": 0
+            },
+            "region_sha256": "6277c8d55b3eef714170e3b8ebbdb6c4b413cbd60df75572451459c446775f51"
+          },
+          "b01_device": {
+            "active": 1,
+            "logical_id": 0,
+            "occupancy_mask": 0,
+            "raw_sha256": "53a1a63e48875674b92a8f477678d6695dd68f3f399fc9eec49b2c87077695e7",
+            "state": 0,
+            "timer": 0,
+            "vx_16_8": 0,
+            "vy_16_8": 0,
+            "x_16_8": 20480,
+            "y_16_8": 28672
+          },
+          "debug": {
+            "abi_size": 1024,
+            "abi_version": 1,
+            "audio_command_count": 1,
+            "audio_state": 2,
+            "boot_stage": 4,
+            "controller_samples": 102,
+            "dma_deferred_count": 0,
+            "dma_invalid_count": 0,
+            "dma_overflow_count": 0,
+            "dma_queue_depth": 0,
+            "dma_queue_high_water": 4,
+            "dma_required_drop_count": 0,
+            "dma_words_frame": 440,
+            "dma_words_max": 440,
+            "engine_active_actors": 1,
+            "engine_attempt": 0,
+            "engine_checkpoint_count": 2,
+            "engine_checkpoint_tick": 60,
+            "engine_encounter": 0,
+            "engine_last_error": 0,
+            "engine_overflow_flags": 0,
+            "engine_projection_length": 3638,
+            "engine_state": 1,
+            "engine_state_crc": 2389679397,
+            "engine_tick": 101,
+            "fatal_code": 0,
+            "frame_counter": 102,
+            "frame_token": 0,
+            "gameplay_door_state": 0,
+            "gameplay_flags": 1,
+            "gameplay_last_bank_crc": 0,
+            "gameplay_result": 0,
+            "gameplay_stable_tick": 0,
+            "gameplay_switch_mask": 0,
+            "hardware_flags": 0,
+            "heartbeat": 102,
+            "input_connected": 1,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_released": 40,
+            "input_start_held": 0,
+            "last_vdp_status": 20992,
+            "m2_flags": 63,
+            "magic": 1379480644,
+            "magic_ascii": "R94D",
+            "raw_sha256": "86794ef7c1aa3c94bc642ff4e03314c87d5a7569adc8a6050bcc4e9539329261",
+            "sequence": 204,
+            "sprite_count": 11,
+            "sprite_scanline_max": 4,
+            "timeline_attempt_length": 101,
+            "timeline_current_bank": 6,
+            "timeline_echo_count": 0,
+            "timeline_flags": 1,
+            "timeline_selected_ordinal": 255,
+            "vblank_overrun_count": 0,
+            "z80_heartbeat": 136,
+            "z80_timeout_count": 0
+          },
+          "engine": {
+            "abi_version": 1,
+            "active_actor_count": 1,
+            "attempt": 0,
+            "checkpoint_count": 2,
+            "checkpoint_tick": 60,
+            "control_bytes": 1024,
+            "encounter": 0,
+            "facing_x": 1,
+            "flags": 3,
+            "input_held": 0,
+            "input_pressed": 0,
+            "input_previous": 40,
+            "input_released": 40,
+            "last_error": 0,
+            "magic": 1379480645,
+            "magic_ascii": "R94E",
+            "object_init_count": 4,
+            "overflow_flags": 0,
+            "pool_counts": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "pool_high_water": [
+              1,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0
+            ],
+            "projection_length": 3638,
+            "rect_count": 2,
+            "room_bottom": 224,
+            "room_left": 0,
+            "room_right": 320,
+            "room_top": 0,
+            "spawn_x": 8192,
+            "spawn_y": 28672,
+            "state": 1,
+            "state_crc": 2389679397,
+            "terminal_reason": 0,
+            "tick": 102
+          },
+          "gameplay": {
+            "current_actor_index": 6,
+            "current_input": 0,
+            "current_pressed": 0,
+            "current_previous": 40,
+            "current_released": 40,
+            "declared_bytes": 256,
+            "door_state": 0,
+            "echo_actor_count": 0,
+            "flags": 1,
+            "last_bank_crc": 0,
+            "last_bank_crc_hex": "00000000",
+            "last_commit_reason": 0,
+            "magic": 1379480647,
+            "magic_ascii": "R94G",
+            "phase": 0,
+            "raw_sha256": "22bf94620b003c5bee1a78989d577a0b427a45cba06e41e7da19b7d0bc577d36",
+            "replacement_flags": 0,
+            "result": 0,
+            "stable_tick": 0,
+            "step_count": 102,
+            "switch_mask": 0,
+            "version": 1
+          },
+          "input": {
+            "connected": 1,
+            "held": 0,
+            "pressed": 0,
+            "raw_high": 127,
+            "raw_low": 51,
+            "released": 40,
+            "start_held": 0
+          },
+          "label": "blocked_path_before_ui_screenshot",
+          "raw_bundle_bytes": 1279,
+          "raw_bundle_sha256": "28284a2e27658e5178d86d2bf01361172f2137479eb377f35aad8ec370e8c781",
+          "renderer": {
+            "backlog_frames": 0,
+            "declared_bytes": 1280,
+            "dma_rejects": 0,
+            "dropped_sprites": 0,
+            "flags": 1,
+            "last_attempt": 0,
+            "last_result": 0,
+            "last_tick": 101,
+            "magic": 1379480662,
+            "magic_ascii": "R94V",
+            "overlay_clear_destination": 65535,
+            "overlay_trace_destination": 65535,
+            "raw_sha256": "959c4268d0a13e6f99937a915c270b9ab9333cfa384ea2e5149b0cefe7bccd61",
+            "reset_phase": 0,
+            "reset_previous_row": 65535,
+            "scanline_pixel_max": 56,
+            "scanline_sprite_max": 4,
+            "sprite_count": 11,
+            "version": 1
+          },
+          "replay_bank_6": {
+            "bank_sha256": "c8bacff7176fe9cf00d7183ab7ab1bf75a918dca29e5eb73fa14a3ec94fd6306",
+            "committed_prefix_crc32_iso_hdlc": "FB9C7A5D",
+            "committed_prefix_sha256": "bada8eeebfdf178b7344dd2cdff314abd7c8c26e2f5dca22b8188a4f9fab07da",
+            "descriptor": {
+              "crc32_iso_hdlc": 0,
+              "crc32_iso_hdlc_hex": "00000000",
+              "flags": 4,
+              "generation": 1,
+              "length": 102,
+              "raw_hex": "0066000000000401"
+            },
+            "first_40_hex": "08080808080808080808080808080808080808080808080808080808080808080808080808080808",
+            "zero_tail": true
+          },
+          "timeline": {
+            "attempt_length": 102,
+            "current_bank": 6,
+            "declared_bytes": 24,
+            "echo_count": 0,
+            "echo_order": [
+              255,
+              255,
+              255,
+              255,
+              255,
+              255
+            ],
+            "flags": 1,
+            "last_result": 0,
+            "magic": 1379480660,
+            "magic_ascii": "R94T",
+            "pending_reason": 0,
+            "raw_sha256": "20d267de569f54a2ce0ee84b75f1b9cedfa0e4a142c8ea9bdfdaa6d3915268c6",
+            "selected_ordinal": 255,
+            "version": 1
+          }
+        },
+        "ui_key_release_serviced_before_capture_stop": true,
+        "ui_screenshot_key": "F12",
+        "ui_screenshot_progression_valid": true,
+        "window_ownership": {
+          "capture_method": "BlastEm ui.screenshot via isolated one-shot key binding",
+          "process_id": 139648,
+          "resolved_owner_process_id": 139648,
+          "title": "RECURSION 94: THE LAST CARTRIDGE - BlastEm - 59.9 fps",
+          "title_is_rom_specific": true,
+          "title_matches": true,
+          "title_policy": "accept ROM-specific RECURSION 94 / BlastEm title or the exact generic BlastEm title retained by debugger-paused sessions",
+          "window_handle": 11470346
+        }
+      },
+      "baseline": "pre_repair_immutable",
+      "capture_method": "BlastEm ui.screenshot in one isolated fresh process",
+      "expected_path": "artifacts/screenshots/m4-blocked-path.png",
+      "failure": "EvidenceFailure: blocked_path native ui.screenshot validation failed: EvidenceFailure: BlastEm ui.screenshot changed 0 PNGs; exactly one required",
+      "state_binding": {
+        "authoritative_ticks_during_ui_capture": 2,
+        "emulator_resumes_during_ui_capture": 2,
+        "key_down_raw_bundle_sha256": "9289816dab524d5ad26f1316792be700001842197b15428c663d426a02f6bca8",
+        "key_up_raw_bundle_sha256": "c53379a915a080dc321d08cbf078f8fec036041fc2db0c904fe32b629b526688",
+        "pre_request_raw_bundle_sha256": "28284a2e27658e5178d86d2bf01361172f2137479eb377f35aad8ec370e8c781",
+        "published_target_tick": 101,
+        "state_after_ui_key_down_tick": 103,
+        "state_after_ui_key_up_tick": 104,
+        "state_before_ui_request_tick": 102,
+        "ui_key_release_serviced_before_capture_stop": true
+      },
+      "status": "missing",
+      "transcript_binding": {
+        "gdb_commands": 376,
+        "line_end": 3525,
+        "line_start": 2773,
+        "session_id": "fresh_blocked_path",
+        "sha256": "eddf4ec4c14a348f2578197d93b7748468f4edd4ee22fe577216f34d13a065ba"
+      },
+      "ui_screenshot_key": "F12",
+      "window_ownership": {
+        "capture_method": "BlastEm ui.screenshot via isolated one-shot key binding",
+        "process_id": 139648,
+        "resolved_owner_process_id": 139648,
+        "title": "RECURSION 94: THE LAST CARTRIDGE - BlastEm - 59.9 fps",
+        "title_is_rom_specific": true,
+        "title_matches": true,
+        "title_policy": "accept ROM-specific RECURSION 94 / BlastEm title or the exact generic BlastEm title retained by debugger-paused sessions",
+        "window_handle": 11470346
+      }
+    },
+    "echo_door_open": {
+      "baseline": "pre_repair_immutable",
+      "capture_method": "BlastEm ui.screenshot in one isolated fresh process",
+      "expected_sha256": "0a68bf377c9bb628eefb53613917fd4ced49cd4d29d8d15f74dd81d1e7a33b5e",
+      "hash_matches": true,
+      "screenshot": {
+        "bytes": 2621,
+        "captured_utc": "2026-07-26T08:36:25+00:00",
+        "cobalt_dominant_ratio": 0.01078125,
+        "content_bounds": {
+          "bottom": 232,
+          "left": 0,
+          "right": 319,
+          "top": 9
+        },
+        "cyan_dominant_ratio": 0.0014322916666666666,
+        "dark_pixel_ratio": 0.3983984375,
+        "format": "PNG indexed8 non-interlaced",
+        "height": 240,
+        "horizontal_edge_ratio": 0.34853709508881925,
+        "hud_light_pixel_ratio": 0.06948529411764706,
+        "light_pixel_ratio": 0.010065104166666667,
+        "luminance_entropy_bits": 2.001487200746323,
+        "mtime_ns": 1785054985000000000,
+        "opaque_ratio": 1.0,
+        "path": "artifacts/screenshots/m4-before-repair-echo-door-open.png",
+        "pixel_sha256": "349d63fb374501fe790451125ca02be39a23803a378d6ef7f9064a30ca3a618b",
+        "quantized_color_count": 12,
+        "red_dominant_ratio": 0.043958333333333335,
+        "rust_dominant_ratio": 0.043958333333333335,
+        "sha256": "0a68bf377c9bb628eefb53613917fd4ced49cd4d29d8d15f74dd81d1e7a33b5e",
+        "source_color_type": 3,
+        "viewport": {
+          "bottom": 240,
+          "left": 0,
+          "pixels": 76800,
+          "right": 320,
+          "top": 0
+        },
+        "width": 320
+      },
+      "state_binding": {
+        "authoritative_ticks_during_ui_capture": 2,
+        "emulator_resumes_during_ui_capture": 2,
+        "note": "The native screenshot is release-triggered; the visible HUD corresponds to the rendered key-down frame, while the collector also serviced key-up before stopping.",
+        "published_target_tick": 40,
+        "state_after_ui_key_down_tick": 42,
+        "state_after_ui_key_up_tick": 43,
+        "state_before_ui_request_tick": 41,
+        "ui_key_release_serviced_before_capture_stop": true,
+        "visible_hud_tick": 41
+      },
+      "status": "captured",
+      "transcript_binding": {
+        "gdb_commands": 340,
+        "line_end": 1335,
+        "line_start": 655,
+        "session_id": "fresh_echo_door_open",
+        "sha256": "07e0b52adb883d557120a86fd59ced3869e84c4ebb059d62a3a5c5d4577dabf8"
+      },
+      "ui_screenshot_key": "F9"
+    },
+    "program_stable": {
+      "baseline": "pre_repair_immutable",
+      "capture_method": "BlastEm ui.screenshot in one isolated fresh process",
+      "expected_sha256": "610a4998cd6dee3017e6f5fb4280262b9af9237e86307df83cc51f7374830947",
+      "hash_matches": true,
+      "screenshot": {
+        "bytes": 2702,
+        "captured_utc": "2026-07-26T08:37:12+00:00",
+        "cobalt_dominant_ratio": 0.0113671875,
+        "content_bounds": {
+          "bottom": 232,
+          "left": 0,
+          "right": 319,
+          "top": 9
+        },
+        "cyan_dominant_ratio": 0.0024088541666666668,
+        "dark_pixel_ratio": 0.3975651041666667,
+        "format": "PNG indexed8 non-interlaced",
+        "height": 240,
+        "horizontal_edge_ratio": 0.35032654127481716,
+        "hud_light_pixel_ratio": 0.08759191176470588,
+        "light_pixel_ratio": 0.01359375,
+        "luminance_entropy_bits": 2.022930541643466,
+        "mtime_ns": 1785055032000000000,
+        "opaque_ratio": 1.0,
+        "path": "artifacts/screenshots/m4-before-repair-program-stable.png",
+        "pixel_sha256": "7efb154d65b207f6a021f9ab72dd12bcfed2d699f61879d4f12bff8b21f6a067",
+        "quantized_color_count": 11,
+        "red_dominant_ratio": 0.043359375,
+        "rust_dominant_ratio": 0.043359375,
+        "sha256": "610a4998cd6dee3017e6f5fb4280262b9af9237e86307df83cc51f7374830947",
+        "source_color_type": 3,
+        "viewport": {
+          "bottom": 240,
+          "left": 0,
+          "pixels": 76800,
+          "right": 320,
+          "top": 0
+        },
+        "width": 320
+      },
+      "state_binding": {
+        "authoritative_ticks_during_ui_capture": 0,
+        "emulator_resumes_during_ui_capture": 2,
+        "note": "The native screenshot is release-triggered; the visible HUD corresponds to the rendered key-down frame, while the collector also serviced key-up before stopping.",
+        "published_target_tick": 166,
+        "state_after_ui_key_down_tick": 166,
+        "state_after_ui_key_up_tick": 166,
+        "state_before_ui_request_tick": 166,
+        "ui_key_release_serviced_before_capture_stop": true,
+        "visible_hud_tick": 166
+      },
+      "status": "captured",
+      "transcript_binding": {
+        "gdb_commands": 718,
+        "line_end": 2772,
+        "line_start": 1336,
+        "session_id": "fresh_program_stable",
+        "sha256": "14e90545ca28eb13abceb0ec11cfb2178cd387439af7205ba3a12537c870f556"
+      },
+      "ui_screenshot_key": "F10"
+    },
+    "reset_trace": {
+      "baseline": "pre_repair_immutable",
+      "capture_method": "BlastEm ui.screenshot in one isolated fresh process",
+      "expected_sha256": "6785a9beab69777769d3a9e6cf9f271b9ca67c1d0f3d7820876be7e0b04eb357",
+      "hash_matches": true,
+      "screenshot": {
+        "bytes": 3224,
+        "captured_utc": "2026-07-26T08:35:41+00:00",
+        "cobalt_dominant_ratio": 0.017473958333333334,
+        "content_bounds": {
+          "bottom": 232,
+          "left": 0,
+          "right": 319,
+          "top": 9
+        },
+        "cyan_dominant_ratio": 0.0015364583333333333,
+        "dark_pixel_ratio": 0.3862760416666667,
+        "format": "PNG indexed8 non-interlaced",
+        "height": 240,
+        "horizontal_edge_ratio": 0.3537748171368861,
+        "hud_light_pixel_ratio": 0.08998161764705882,
+        "light_pixel_ratio": 0.016966145833333335,
+        "luminance_entropy_bits": 2.0645209867482572,
+        "mtime_ns": 1785054941000000000,
+        "opaque_ratio": 1.0,
+        "path": "artifacts/screenshots/m4-before-repair-reset-trace.png",
+        "pixel_sha256": "8754039de40ff3c16b9a8c5b45a4adbd6e307955b857ed7ed3832d2186ccd48b",
+        "quantized_color_count": 12,
+        "red_dominant_ratio": 0.048776041666666665,
+        "rust_dominant_ratio": 0.048776041666666665,
+        "sha256": "6785a9beab69777769d3a9e6cf9f271b9ca67c1d0f3d7820876be7e0b04eb357",
+        "source_color_type": 3,
+        "viewport": {
+          "bottom": 240,
+          "left": 0,
+          "pixels": 76800,
+          "right": 320,
+          "top": 0
+        },
+        "width": 320
+      },
+      "state_binding": {
+        "authoritative_ticks_during_ui_capture": 2,
+        "emulator_resumes_during_ui_capture": 2,
+        "note": "The native screenshot is release-triggered; the visible HUD corresponds to the rendered key-down frame, while the collector also serviced key-up before stopping.",
+        "published_target_tick": 3,
+        "state_after_ui_key_down_tick": 5,
+        "state_after_ui_key_up_tick": 6,
+        "state_before_ui_request_tick": 4,
+        "ui_key_release_serviced_before_capture_stop": true,
+        "visible_hud_tick": 4
+      },
+      "status": "captured",
+      "transcript_binding": {
+        "gdb_commands": 229,
+        "line_end": 654,
+        "line_start": 196,
+        "session_id": "fresh_reset_trace",
+        "sha256": "e98695f410c72dd0d10b508ea6251690403b9f17a5e6f26c4a97fd7b3000ddea"
+      },
+      "ui_screenshot_key": "F6"
+    },
+    "zero_echo": {
+      "baseline": "pre_repair_immutable",
+      "capture_method": "BlastEm ui.screenshot in one isolated fresh process",
+      "expected_sha256": "d8afefcea497ca33ef173442a6271f68efb906fb3cdc3b0bfc55b293e7d9309d",
+      "hash_matches": true,
+      "screenshot": {
+        "bytes": 2879,
+        "captured_utc": "2026-07-26T08:34:57+00:00",
+        "cobalt_dominant_ratio": 0.016640625,
+        "content_bounds": {
+          "bottom": 232,
+          "left": 0,
+          "right": 319,
+          "top": 9
+        },
+        "cyan_dominant_ratio": 0.000625,
+        "dark_pixel_ratio": 0.38938802083333335,
+        "format": "PNG indexed8 non-interlaced",
+        "height": 240,
+        "horizontal_edge_ratio": 0.3477272727272727,
+        "hud_light_pixel_ratio": 0.07058823529411765,
+        "light_pixel_ratio": 0.010794270833333333,
+        "luminance_entropy_bits": 2.029423120589803,
+        "mtime_ns": 1785054897000000000,
+        "opaque_ratio": 1.0,
+        "path": "artifacts/screenshots/m4-before-repair-zero-echo.png",
+        "pixel_sha256": "676782e6a2d1ca636530d6a6518b79d67e65523cfecb5624964d3b964a59dffd",
+        "quantized_color_count": 10,
+        "red_dominant_ratio": 0.048880208333333335,
+        "rust_dominant_ratio": 0.048880208333333335,
+        "sha256": "d8afefcea497ca33ef173442a6271f68efb906fb3cdc3b0bfc55b293e7d9309d",
+        "source_color_type": 3,
+        "viewport": {
+          "bottom": 240,
+          "left": 0,
+          "pixels": 76800,
+          "right": 320,
+          "top": 0
+        },
+        "width": 320
+      },
+      "state_binding": {
+        "authoritative_ticks_during_ui_capture": 2,
+        "emulator_resumes_during_ui_capture": 2,
+        "note": "The native screenshot is release-triggered; the visible HUD corresponds to the rendered key-down frame, while the collector also serviced key-up before stopping.",
+        "published_target_tick": 8,
+        "state_after_ui_key_down_tick": 10,
+        "state_after_ui_key_up_tick": 11,
+        "state_before_ui_request_tick": 9,
+        "ui_key_release_serviced_before_capture_stop": true,
+        "visible_hud_tick": 9
+      },
+      "status": "captured",
+      "transcript_binding": {
+        "gdb_commands": 97,
+        "line_end": 195,
+        "line_start": 1,
+        "session_id": "fresh_zero_echo",
+        "sha256": "d5146d6eb66192da0266c1d3d47fdde52ff7d94a9a287a1d8e0304b8c7c420fc"
+      },
+      "ui_screenshot_key": "F1"
+    }
+  },
+  "checks": [
+    {
+      "check": "capture_time_rom_is_assigned_pre_repair_rom",
+      "detail": "capture-time Debug ROM SHA-256 9cbc580892e2530bfb48e3d0da865a75f287e16f811ee47cb42515cafd153104",
+      "status": "pass"
+    },
+    {
+      "check": "four_immutable_native_frames_hash_match_and_decode",
+      "detail": "four 320x240 indexed native PNGs match immutable SHA-256 values",
+      "status": "pass"
+    },
+    {
+      "check": "five_fresh_process_transcript_sections_preserved",
+      "detail": "[('zero_echo', 1, 195, 'd5146d6eb66192da0266c1d3d47fdde52ff7d94a9a287a1d8e0304b8c7c420fc'), ('reset_trace', 196, 654, 'e98695f410c72dd0d10b508ea6251690403b9f17a5e6f26c4a97fd7b3000ddea'), ('echo_door_open', 655, 1335, '07e0b52adb883d557120a86fd59ced3869e84c4ebb059d62a3a5c5d4577dabf8'), ('program_stable', 1336, 2772, '14e90545ca28eb13abceb0ec11cfb2178cd387439af7205ba3a12537c870f556'), ('blocked_path', 2773, 3525, 'eddf4ec4c14a348f2578197d93b7748468f4edd4ee22fe577216f34d13a065ba')]",
+      "status": "pass"
+    },
+    {
+      "check": "controller_path_has_no_debugger_state_writes",
+      "detail": "debugger RAM/register/PC write packets []",
+      "status": "pass"
+    },
+    {
+      "check": "blocked_capture_failure_context_preserved",
+      "detail": "archived failure artifacts/reports/m4-before-repair-blocked-capture-failure.json SHA-256 f0943f2886745c1d3b777c1775863fa5027fc7bb1979e6eb1274087856978371",
+      "status": "pass"
+    },
+    {
+      "check": "complete_required_five_png_set",
+      "detail": "blocked-path ui.screenshot produced zero PNGs; four of five exist",
+      "status": "fail"
+    },
+    {
+      "check": "successful_session_process_and_profile_metadata_checkpointed",
+      "detail": "the fifth-session exception preceded aggregate serialization, so the four successful PIDs/profile hashes are unavailable",
+      "status": "fail"
+    },
+    {
+      "check": "prompt_section_42_visual_rubric_passes_every_scene",
+      "detail": "[('zero_echo', 1, 2.167), ('reset_trace', 1, 2.0), ('echo_door_open', 1, 2.25), ('program_stable', 1, 2.25), ('blocked_path', 1, 1.0)]",
+      "status": "fail"
+    }
+  ],
+  "concrete_defects_and_limitations": [
+    {
+      "blocking": true,
+      "finding": "The required blocked-path native PNG is missing, so the five-frame visual evidence set is incomplete.",
+      "severity": "critical"
+    },
+    {
+      "blocking": true,
+      "finding": "Approximately 8x8 actors and objectives are not reliably readable against the high-contrast checker/D-grid floor.",
+      "severity": "critical"
+    },
+    {
+      "blocking": true,
+      "finding": "The reset overlay obscures actors and the hazard, and current-versus-echo identity relies on HUD text/badges.",
+      "severity": "critical"
+    },
+    {
+      "blocking": true,
+      "finding": "Door-open causality and program completion are explained primarily by HUD text rather than playfield hierarchy.",
+      "severity": "critical"
+    },
+    {
+      "blocking": true,
+      "finding": "Successful process IDs and isolated profile hashes were not checkpointed before the fifth-session exception; no values are reconstructed or fabricated.",
+      "severity": "limitation"
+    }
+  ],
+  "debugger_write_packets": [],
+  "evidence_type": "blastem_m4_native_rendered_state_png_set",
+  "provenance": {
+    "archived_blocked_failure": {
+      "path": "artifacts/reports/m4-before-repair-blocked-capture-failure.json",
+      "sha256": "f0943f2886745c1d3b777c1775863fa5027fc7bb1979e6eb1274087856978371"
+    },
+    "capture_time_rom": {
+      "binding_source": "collector preflight and archived failure report",
+      "path": "build/recursion94-debug.bin",
+      "sha256": "9cbc580892e2530bfb48e3d0da865a75f287e16f811ee47cb42515cafd153104"
+    },
+    "freeze_environment_not_capture_binding": {
+      "matches_capture_time_rom": false,
+      "workspace_rom_sha256": "9c9392fb4b5194d91aa4ec983718679a26b35579fab509e65155a502d87f2d0b"
+    },
+    "transcript": {
+      "commands": 1760,
+      "path": "artifacts/traces/m4-visual-gdb-transcript.log",
+      "sections": {
+        "blocked_path": {
+          "gdb_commands": 376,
+          "line_end": 3525,
+          "line_start": 2773,
+          "session_id": "fresh_blocked_path",
+          "sha256": "eddf4ec4c14a348f2578197d93b7748468f4edd4ee22fe577216f34d13a065ba"
+        },
+        "echo_door_open": {
+          "gdb_commands": 340,
+          "line_end": 1335,
+          "line_start": 655,
+          "session_id": "fresh_echo_door_open",
+          "sha256": "07e0b52adb883d557120a86fd59ced3869e84c4ebb059d62a3a5c5d4577dabf8"
+        },
+        "program_stable": {
+          "gdb_commands": 718,
+          "line_end": 2772,
+          "line_start": 1336,
+          "session_id": "fresh_program_stable",
+          "sha256": "14e90545ca28eb13abceb0ec11cfb2178cd387439af7205ba3a12537c870f556"
+        },
+        "reset_trace": {
+          "gdb_commands": 229,
+          "line_end": 654,
+          "line_start": 196,
+          "session_id": "fresh_reset_trace",
+          "sha256": "e98695f410c72dd0d10b508ea6251690403b9f17a5e6f26c4a97fd7b3000ddea"
+        },
+        "zero_echo": {
+          "gdb_commands": 97,
+          "line_end": 195,
+          "line_start": 1,
+          "session_id": "fresh_zero_echo",
+          "sha256": "d5146d6eb66192da0266c1d3d47fdde52ff7d94a9a287a1d8e0304b8c7c420fc"
+        }
+      },
+      "sha256": "c8d8226579734d1a579471719132fc8336942169e23523daa2f109d614828135"
+    }
+  },
+  "reviewer": {
+    "classification": "independent visual-critic agent; did not implement renderer",
+    "method": "direct inspection of four immutable native PNGs; the required blocked-path frame is scored unavailable, not inferred",
+    "rubric_source": "prompt.txt section 42"
+  },
+  "rom_sha256": "9cbc580892e2530bfb48e3d0da865a75f287e16f811ee47cb42515cafd153104",
+  "schema": "r94-m4-visual-evidence-v1",
+  "scope": "Milestone4",
+  "status": "fail",
+  "visual_reviews": {
+    "blocked_path": {
+      "assessment_context": "required native BlastEm frame was not produced",
+      "average_score": 1.0,
+      "capture_available": false,
+      "categories": [
+        {
+          "category": "composition",
+          "evidence": "The required blocked-path native PNG was not produced, so this composition criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "silhouette_readability",
+          "evidence": "The required blocked-path native PNG was not produced, so this silhouette readability criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "palette_coherence",
+          "evidence": "The required blocked-path native PNG was not produced, so this palette coherence criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "sprite_readability",
+          "evidence": "The required blocked-path native PNG was not produced, so this sprite readability criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "background_readability",
+          "evidence": "The required blocked-path native PNG was not produced, so this background readability criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "depth_and_layering",
+          "evidence": "The required blocked-path native PNG was not produced, so this depth and layering criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "motion_clarity",
+          "evidence": "The required blocked-path native PNG was not produced, so this motion clarity criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "echo_identity",
+          "evidence": "The required blocked-path native PNG was not produced, so this echo identity criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "hazard_legibility",
+          "evidence": "The required blocked-path native PNG was not produced, so this hazard legibility criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "ui_hierarchy",
+          "evidence": "The required blocked-path native PNG was not produced, so this ui hierarchy criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "hardware_authenticity",
+          "evidence": "The required blocked-path native PNG was not produced, so this hardware authenticity criterion cannot be visually established.",
+          "score": 1
+        },
+        {
+          "category": "professional_finish",
+          "evidence": "The required blocked-path native PNG was not produced, so this professional finish criterion cannot be visually established.",
+          "score": 1
+        }
+      ],
+      "critical_gameplay_readability_defects": [
+        "The required blocked-path PNG is missing; failure-state gameplay readability cannot be assessed."
+      ],
+      "minimum_score": 1,
+      "severe_sprite_dropout_or_corruption": false,
+      "status": "fail"
+    },
+    "echo_door_open": {
+      "assessment_context": "direct inspection of the frozen native BlastEm pre-repair frame",
+      "average_score": 2.25,
+      "capture_available": true,
+      "categories": [
+        {
+          "category": "composition",
+          "evidence": "Echo on the west switch and current east of it imply a solution, but the door opening is not a strong compositional focal point.",
+          "score": 2
+        },
+        {
+          "category": "silhouette_readability",
+          "evidence": "The E and C actors are tiny glyph-like clusters whose bodies do not form robust silhouettes against the patterned field.",
+          "score": 2
+        },
+        {
+          "category": "palette_coherence",
+          "evidence": "Cyan echo, bone/cobalt current, rust machinery, and black remain coherent, though the many small accents fragment attention.",
+          "score": 3
+        },
+        {
+          "category": "sprite_readability",
+          "evidence": "E and C badges help, but both actors, switch, terminal, and hazard remain difficult to parse at a glance at native scale.",
+          "score": 2
+        },
+        {
+          "category": "background_readability",
+          "evidence": "The continuous checker/D-grid texture competes with the echo, current, open-door rails, and objective pads.",
+          "score": 1
+        },
+        {
+          "category": "depth_and_layering",
+          "evidence": "The open door, actors, devices, and floor share near-equal visual weight and do not create convincing foreground/background depth.",
+          "score": 1
+        },
+        {
+          "category": "motion_clarity",
+          "evidence": "The separated actor positions suggest choreography, but one frame does not clearly convey replay motion or timing.",
+          "score": 2
+        },
+        {
+          "category": "echo_identity",
+          "evidence": "The E badge, cyan color, switch position, and ECHO 1 HUD improve identity, but the echo body remains too small.",
+          "score": 3
+        },
+        {
+          "category": "hazard_legibility",
+          "evidence": "The red hazard diamond is visible yet still reads as another micro-marker in the noisy floor vocabulary.",
+          "score": 2
+        },
+        {
+          "category": "ui_hierarchy",
+          "evidence": "ECHO HOLDS / DOOR OPEN clearly states causality, but that textual explanation is stronger than the door's visual state change.",
+          "score": 3
+        },
+        {
+          "category": "hardware_authenticity",
+          "evidence": "Indexed color, tile rhythm, and the constrained 320x240 native frame are convincingly period-authentic.",
+          "score": 4
+        },
+        {
+          "category": "professional_finish",
+          "evidence": "The mechanic is represented, but weak scale and hierarchy keep the scene below polished commercial presentation.",
+          "score": 2
+        }
+      ],
+      "critical_gameplay_readability_defects": [
+        "The switch-to-echo-to-open-door causal chain is not immediately readable from the playfield without HUD text.",
+        "Actor identity still depends on tiny letter badges rather than distinct silhouettes."
+      ],
+      "minimum_score": 1,
+      "severe_sprite_dropout_or_corruption": false,
+      "status": "fail"
+    },
+    "program_stable": {
+      "assessment_context": "direct inspection of the frozen native BlastEm pre-repair frame",
+      "average_score": 2.25,
+      "capture_available": true,
+      "categories": [
+        {
+          "category": "composition",
+          "evidence": "Echo remains west and current reaches the east terminal, but the terminal overlap does not create a strong completion tableau.",
+          "score": 2
+        },
+        {
+          "category": "silhouette_readability",
+          "evidence": "The tiny C actor merges into the terminal cluster while the E actor remains a small glyph on the patterned floor.",
+          "score": 2
+        },
+        {
+          "category": "palette_coherence",
+          "evidence": "The established rust/cobalt/bone palette remains coherent, but the completion state adds little controlled visual emphasis.",
+          "score": 3
+        },
+        {
+          "category": "sprite_readability",
+          "evidence": "Current and terminal overlap at native scale, weakening both sprite and device readability in the decisive frame.",
+          "score": 2
+        },
+        {
+          "category": "background_readability",
+          "evidence": "The dense repeated checker/D-grid field remains the highest-area visual element and competes with the solved-state proof.",
+          "score": 1
+        },
+        {
+          "category": "depth_and_layering",
+          "evidence": "Terminal, current, echo, door, and floor stay in a flat band of similar scale and contrast.",
+          "score": 1
+        },
+        {
+          "category": "motion_clarity",
+          "evidence": "Final positions imply that a route completed, but the still provides little motion or transmission feedback.",
+          "score": 2
+        },
+        {
+          "category": "echo_identity",
+          "evidence": "The E badge, cyan color, switch placement, and ECHO 1 HUD preserve basic echo identity despite the small body.",
+          "score": 3
+        },
+        {
+          "category": "hazard_legibility",
+          "evidence": "The red hazard remains visible but no more legible or spatially defined than in earlier frames.",
+          "score": 2
+        },
+        {
+          "category": "ui_hierarchy",
+          "evidence": "PROGRAM STABLE / TRANSMISSION COMPLETE is clear and dominant; the HUD supplies nearly all of the completion payoff.",
+          "score": 3
+        },
+        {
+          "category": "hardware_authenticity",
+          "evidence": "The limited indexed palette, crisp tile grid, and 320x240 frame retain strong target-hardware authenticity.",
+          "score": 4
+        },
+        {
+          "category": "professional_finish",
+          "evidence": "The state is functional but lacks a visually authored reward, clear terminal feedback, and final-pass hierarchy.",
+          "score": 2
+        }
+      ],
+      "critical_gameplay_readability_defects": [
+        "Current overlaps the terminal, making the successful interaction hard to read spatially.",
+        "Completion is communicated primarily by HUD text rather than a clear playfield transformation or reward."
+      ],
+      "minimum_score": 1,
+      "severe_sprite_dropout_or_corruption": false,
+      "status": "fail"
+    },
+    "reset_trace": {
+      "assessment_context": "direct inspection of the frozen native BlastEm pre-repair frame",
+      "average_score": 2.0,
+      "capture_available": true,
+      "categories": [
+        {
+          "category": "composition",
+          "evidence": "A broad reset band crosses the room, but its checker/X texture covers the route instead of focusing attention on the actors.",
+          "score": 2
+        },
+        {
+          "category": "silhouette_readability",
+          "evidence": "Current and echo are tiny and visually merge with the reset marks and surrounding grid at their near-spawn positions.",
+          "score": 2
+        },
+        {
+          "category": "palette_coherence",
+          "evidence": "The red, cobalt, bone, and black effect colors remain within the established palette but intensify the room's existing noise.",
+          "score": 3
+        },
+        {
+          "category": "sprite_readability",
+          "evidence": "Actor badges, hazard, switch, and reset marks collapse into similarly sized glyphs during the effect.",
+          "score": 1
+        },
+        {
+          "category": "background_readability",
+          "evidence": "The coarse X/checker reset overlay obscures rather than subdues the already high-contrast floor texture.",
+          "score": 1
+        },
+        {
+          "category": "depth_and_layering",
+          "evidence": "The overlay, room shell, objects, and actors have little tonal or priority separation, so the event reads as one flat pattern.",
+          "score": 1
+        },
+        {
+          "category": "motion_clarity",
+          "evidence": "The horizontal colored band and RESET TRACE text do communicate that a transition is occurring, albeit without clear direction.",
+          "score": 3
+        },
+        {
+          "category": "echo_identity",
+          "evidence": "ECHO 1 is readable in the HUD, but the tiny new echo is not immediately separable from current inside the effect.",
+          "score": 2
+        },
+        {
+          "category": "hazard_legibility",
+          "evidence": "The hazard diamond loses salience among red X marks and the bright reset band.",
+          "score": 1
+        },
+        {
+          "category": "ui_hierarchy",
+          "evidence": "RESET TRACE and TRY 002 are legible, but the UI must explain an event the playfield does not clearly stage.",
+          "score": 3
+        },
+        {
+          "category": "hardware_authenticity",
+          "evidence": "The tile-row effect and indexed 320x240 output are credible bounded VDP-era techniques.",
+          "score": 4
+        },
+        {
+          "category": "professional_finish",
+          "evidence": "The effect looks coarse and unfinished: it obscures critical sprites and lacks a clean visual hierarchy.",
+          "score": 1
+        }
+      ],
+      "critical_gameplay_readability_defects": [
+        "The reset overlay obscures the already tiny actors and hazard.",
+        "Current-versus-echo identity is not reliably readable during the event without consulting the HUD."
+      ],
+      "minimum_score": 1,
+      "severe_sprite_dropout_or_corruption": false,
+      "status": "fail"
+    },
+    "zero_echo": {
+      "assessment_context": "direct inspection of the frozen native BlastEm pre-repair frame",
+      "average_score": 2.167,
+      "capture_available": true,
+      "categories": [
+        {
+          "category": "composition",
+          "evidence": "The room has a left-to-right route, but the uniformly busy floor and rails overpower the switch-door-terminal objective chain.",
+          "score": 2
+        },
+        {
+          "category": "silhouette_readability",
+          "evidence": "The current actor is an approximately 8x8 C-marked cluster whose outline is not distinct from nearby checker and rail tiles.",
+          "score": 2
+        },
+        {
+          "category": "palette_coherence",
+          "evidence": "Rust, cobalt, bone, red, and black are period-coherent, although red/cobalt micro-patterns do not carry consistent semantics.",
+          "score": 3
+        },
+        {
+          "category": "sprite_readability",
+          "evidence": "Current, switch, hazard, and terminal occupy similarly tiny footprints and require HUD/context knowledge to distinguish.",
+          "score": 2
+        },
+        {
+          "category": "background_readability",
+          "evidence": "High-contrast checker and D-grid tiles fill nearly the entire playfield and compete directly with every interactive object.",
+          "score": 1
+        },
+        {
+          "category": "depth_and_layering",
+          "evidence": "Floor, rails, door, actors, and devices share similar contrast and tile scale, producing a visually flat room.",
+          "score": 1
+        },
+        {
+          "category": "motion_clarity",
+          "evidence": "A still neutral frame shows position but gives little visual language for facing, intended motion, or the next action.",
+          "score": 2
+        },
+        {
+          "category": "echo_identity",
+          "evidence": "ECHO 0 is readable in the HUD, but the playfield itself provides no visual preview of how an echo will differ from current.",
+          "score": 2
+        },
+        {
+          "category": "hazard_legibility",
+          "evidence": "The red diamond is visible but is as small as other markers and does not establish a strong danger zone or consequence.",
+          "score": 2
+        },
+        {
+          "category": "ui_hierarchy",
+          "evidence": "The three HUD rows are legible, but status text carries more of the gameplay explanation than the room composition does.",
+          "score": 3
+        },
+        {
+          "category": "hardware_authenticity",
+          "evidence": "The 320x240 indexed frame, hard 8-pixel construction, and limited palette read authentically as Mega Drive-era output.",
+          "score": 4
+        },
+        {
+          "category": "professional_finish",
+          "evidence": "The frame is internally consistent but remains a dense debug-like vertical-slice presentation rather than release-quality art.",
+          "score": 2
+        }
+      ],
+      "critical_gameplay_readability_defects": [
+        "The approximately 8x8 actor and objective silhouettes are not reliably readable against the high-contrast checker field.",
+        "The background dominates the gameplay hierarchy, so the switch, door, terminal, and hazard are not immediately scannable."
+      ],
+      "minimum_score": 1,
+      "severe_sprite_dropout_or_corruption": false,
+      "status": "fail"
+    }
+  }
+}

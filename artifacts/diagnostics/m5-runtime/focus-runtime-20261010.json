@@ -1,0 +1,151 @@
+{
+  "acceptance_status": "incomplete",
+  "checks": [
+    {
+      "check": "m5_b03_runtime_evidence_session",
+      "detail": "EvidenceFailure: zero_echo_negative attempt 0 pre-step tick 88 d0/INPUT_HELD are $00000000/$00; $08 required",
+      "status": "fail"
+    }
+  ],
+  "debugger_write_packets": [],
+  "error": "EvidenceFailure: zero_echo_negative attempt 0 pre-step tick 88 d0/INPUT_HELD are $00000000/$00; $08 required",
+  "evidence_limits": [
+    "A failed capture proves no B03 runtime claim."
+  ],
+  "evidence_type": "blastem_gdb_m5_campaign_b03_debug_fixture",
+  "provenance": {
+    "default_config": {
+      "bindings": {
+        "a": true,
+        "d": true,
+        "down": true,
+        "enter": true,
+        "left": true,
+        "right": true,
+        "s": true,
+        "up": true
+      },
+      "buttons": [
+        "Up",
+        "Down",
+        "Left",
+        "Right",
+        "A",
+        "B",
+        "C",
+        "Start"
+      ],
+      "keys": [
+        "up",
+        "down",
+        "left",
+        "right",
+        "a",
+        "s",
+        "d",
+        "enter"
+      ],
+      "path": ".toolcache/blastem/default.cfg",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "emulator": {
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "fixture": {
+      "debug_start_encounter": 2,
+      "expected_directory_index": 2,
+      "expected_numeric_stage_id": 103
+    },
+    "launch_flags": [
+      "-D",
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "lock": {
+      "acquired_utc": "2026-10-10T23:44:21.514751+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "pre_step_rom_binding": {
+      "address": "000002FA",
+      "instruction": "bsr.w GameplayStep",
+      "opcode": "6100",
+      "resolved_target": "00003A14",
+      "status": "pass",
+      "unique_matching_call_count": 1
+    },
+    "rom": {
+      "hash_policy": "verified before and after all three sessions",
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "140039e336ca8e1bc1a6042025d41a4190596c244e6a4cce98f1a3a325e7265e"
+    },
+    "serialized_lock": ".toolcache/locks/blastem-gdb.lock",
+    "source_bindings": {
+      "bundle_sha256": "2f859ef7a936c2ee498212eced6869f7c0e11419cb35b50499bd5cffce4ad9dd",
+      "sources": {
+        "assets/generated/campaign_runtime/campaign_runtime.inc.asm": "47ec0b8d9308e43f040ddfa12e94bed87910ae8bfd08ecee7e6071bb68dcc294",
+        "assets/generated/campaign_runtime/campaign_runtime_report.json": "d6d9cdf9b7074050252e8d3854b5ef6764d48574689534f7a35f79309e76ed9b",
+        "assets/generated/content/campaign_content.bin": "cd1381f609962e315d11b34f4cdb21b8b7c43c4507eaca1abc5f85dc78170b56",
+        "assets/generated/content/campaign_content_report.json": "7f58cd921edb25ff730924c033cb89faa43120e474da8a7bb07d31551b021732",
+        "content/campaign.json": "b1c84119d945117ef285d2214a684e8ff9180f0a2883cda5630f068e66afbd15",
+        "content/encounters/boot/B03.json": "2af6f57b65edb5a04d2f2d0149c98c5e915ba6f5210d7e2edbf89ae78e7b7d93",
+        "src/boot/startup.asm": "141a561bebd89133b716c7f4753b68dc269758ecea1f9a9e471cdfa3b13966ef",
+        "src/game/engine_layout.asm": "38fb6316ce2ac1b6f3ed6baa7ce8c45bad7936d2c099e1129447db9a2132ac54",
+        "src/game/object_pool.asm": "1139edd853781b3469e1c44563f23371bb709fad26c00b82245ab41aff5f78e7",
+        "src/gameplay/actor_sim.asm": "b14b2388f1a516bd2d0fbbb411c0363a47f89a5866b3c81003eaedb155bdf671",
+        "src/gameplay/campaign_collision.asm": "fccd2f54db0128289fe9d43c9718dc0728facd32b63f3dd5a123c53a3d0fb33d",
+        "src/gameplay/campaign_runtime.asm": "1bb9da1afb50814800ab444bc75c679d3ca18ae2097e911227a0b422940335c8",
+        "src/gameplay/gameplay_core.asm": "df9b9056d65c7bbb987d7a42f56f9fa84bc01ec67db1d1d1fe15a842f7058a49",
+        "src/gameplay/replay.asm": "90994c2ba8662d48907b511c68565fe9a8a0964f948900a334dac56a74da50c2",
+        "src/gameplay/vocabulary_combat.asm": "558f30d2b94040444d9314b2e0e3693f8efc21cef99c0b5420220dc0f87ce8c4",
+        "src/gameplay/vocabulary_core.asm": "287f41939ce9b9301b969ccd44a6b299258f5f4cf4cb03364f64b9a1a42b1015",
+        "src/gameplay/vocabulary_interactions.asm": "ef7d5afd56f79b1c3003f2079a1d42560c077f5e129cb5f286e27e65a1ebfedc",
+        "src/gameplay/vocabulary_layout.asm": "2f3039ce461efa1740d19c76e413db76a34dcbc42caf4a3292706c6b64eb9d43",
+        "src/ui/timeline_control.asm": "7e973afaf3325f49af5dbabeef839d75b3ab488dd07192197952214dde10cb03"
+      }
+    },
+    "symbol_map": {
+      "path": "build/level-B03/recursion94-debug.sym",
+      "sha256": "b1010589d79ac0594d146001833185f1f4747a480e3929c80b71f9c6dd5fa8b0",
+      "symbols": {
+        "CampaignCheckCompletion": "00005F8C",
+        "CampaignEvaluateDependencies": "00005C5C",
+        "CampaignLoadEncounter": "00005634",
+        "CampaignRuntimeDependencyEdgesB03": "0001751C",
+        "CampaignRuntimeDependencyGroupsB03": "000174EC",
+        "CampaignRuntimeDescriptorB03": "000173AC",
+        "CampaignRuntimeObjectsB03": "0001742C",
+        "CampaignRuntimeProfileB03": "0001753C",
+        "CampaignRuntimeRectsB03": "000173CC",
+        "CampaignRuntimeSemanticsB03": "0001748C",
+        "DEBUG_START_ENCOUNTER": "00000002",
+        "GameplayBuildProjection": "000069F8",
+        "GameplayStep": "00003A14",
+        "MainLoopGameplayStepCall": "000002FA",
+        "MainLoopPostGameplayStep": "0000033E",
+        "VBlankInterrupt": "0000169A"
+      }
+    },
+    "transcript": {
+      "commands": 1024,
+      "path": "artifacts/diagnostics/m5-runtime/focus-trace-20261010.log",
+      "sha256": "949064fefedbf0750b8c74a79604b393da248a7a73713b855ee8cc6617ec431d"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "rom_sha256": "140039e336ca8e1bc1a6042025d41a4190596c244e6a4cce98f1a3a325e7265e",
+  "schema": "r94-m5-b03-runtime-evidence-v1",
+  "scope": "Milestone5/B03",
+  "status": "fail",
+  "symbol_map_sha256": "b1010589d79ac0594d146001833185f1f4747a480e3929c80b71f9c6dd5fa8b0"
+}

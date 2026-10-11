@@ -1,0 +1,224 @@
+{
+  "schema": "recursion94.pixel_asset",
+  "schema_version": 1,
+  "asset_id": "numbered_echoes",
+  "kind": "sprite",
+  "palette": "echo",
+  "provenance_id": "original_project",
+  "frames": [
+    {
+      "id": "echo_1",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp..11..pc...",
+        "...cp.111..pc...",
+        "...cp..11..pc...",
+        "...cp..11..pc...",
+        "...cp.1111.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_2",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp.2222.pc...",
+        "...cp....2.pc...",
+        "...cp.2222.pc...",
+        "...cp.2....pc...",
+        "...cp.2222.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_3",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp.3333.pc...",
+        "...cp....3.pc...",
+        "...cp..333.pc...",
+        "...cp....3.pc...",
+        "...cp.3333.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_4",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp.4..4.pc...",
+        "...cp.4..4.pc...",
+        "...cp.4444.pc...",
+        "...cp....4.pc...",
+        "...cp....4.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_5",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp.5555.pc...",
+        "...cp.5....pc...",
+        "...cp.5555.pc...",
+        "...cp....5.pc...",
+        "...cp.5555.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_6",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        ".....pppppp.....",
+        "....pcnnnncp....",
+        "...pcnwwwwncp...",
+        "...pcwnnnnwc....",
+        "....pcwwwwcp....",
+        ".....pccccp.....",
+        "....ccp..pcc....",
+        "...cp.6666.pc...",
+        "...cp.6....pc...",
+        "...cp.6666.pc...",
+        "...cp.6..6.pc...",
+        "...cp.6666.pc...",
+        "....cc....cc....",
+        "...cc......cc...",
+        "................"
+      ]
+    },
+    {
+      "id": "echo_phase",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "................",
+        ".....bbbbbb.....",
+        "....bccccccb....",
+        "....bcnnnncb....",
+        ".....bccccb.....",
+        "......bbbb......",
+        ".....bb..bb.....",
+        "....b......b....",
+        "....b.rrrr.b....",
+        "....b.ssss.b....",
+        "....b.rrrr.b....",
+        "....b......b....",
+        ".....b....b.....",
+        "....b......b....",
+        "................"
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "echo_1_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_1", "ticks": 17}, {"frame": "echo_phase", "ticks": 2}]
+    },
+    {
+      "id": "echo_2_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_2", "ticks": 19}, {"frame": "echo_phase", "ticks": 2}]
+    },
+    {
+      "id": "echo_3_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_3", "ticks": 23}, {"frame": "echo_phase", "ticks": 2}]
+    },
+    {
+      "id": "echo_4_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_4", "ticks": 29}, {"frame": "echo_phase", "ticks": 2}]
+    },
+    {
+      "id": "echo_5_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_5", "ticks": 31}, {"frame": "echo_phase", "ticks": 2}]
+    },
+    {
+      "id": "echo_6_anim",
+      "loop": "loop",
+      "steps": [{"frame": "echo_6", "ticks": 37}, {"frame": "echo_phase", "ticks": 2}]
+    }
+  ]
+}

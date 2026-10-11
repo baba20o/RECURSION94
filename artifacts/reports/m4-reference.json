@@ -1,0 +1,183 @@
+{
+  "adversarial_coverage": [
+    "reserved input bit and opposing axes",
+    "partial replay CRC excludes zero padding",
+    "post-terminal bank overrun",
+    "solo/current-only terminal activation",
+    "echo B cannot commit for current",
+    "held B without a current edge",
+    "full-capacity unselected commit",
+    "protected replacement target",
+    "oldest selection skips protection",
+    "mutated replay signature divergence",
+    "source hash, numeric, fixture, and ordered-behavior drift"
+  ],
+  "b01": {
+    "current_terminal_x_16_8": 71936,
+    "device_occupancy_mask": 1,
+    "device_state": 7,
+    "echo_switch_x_16_8": 20480,
+    "first_attempt": {
+      "committed_bank": 6,
+      "frames": 40,
+      "partial": true,
+      "script": "Right x32, neutral x8"
+    },
+    "golden_terminal_crc32_iso_hdlc": "8762E745",
+    "mutated_diverged": true,
+    "mutated_input": "A",
+    "mutated_terminal_crc32_iso_hdlc": "DFB092CD",
+    "mutated_tick": 35,
+    "projection_bytes": 3638,
+    "repeat_projection_equal": true,
+    "repeat_signature_equal": true,
+    "second_attempt": {
+      "right_frames_before_commit": 165,
+      "terminal_input": "Right+B edge",
+      "terminal_tick": 166
+    },
+    "terminal_crc32_iso_hdlc": "8762E745",
+    "terminal_reason_hex": "0100"
+  },
+  "binding_sha256": "1bd2a1edf35dacbbe9c681952c3f9b730bc88f2765fcc930c7561761cd1f672a",
+  "contract": {
+    "actor_slots": 7,
+    "attempt_ticks": 720,
+    "b01_door_rect": [
+      112,
+      48,
+      16,
+      128
+    ],
+    "b01_switch": [
+      80,
+      112
+    ],
+    "b01_terminal": [
+      288,
+      112
+    ],
+    "bank_base_hex": "FF0000",
+    "bank_bytes": 720,
+    "bank_count": 7,
+    "bank_region_end_hex": "FF13B0",
+    "current_actor_slot": 6,
+    "descriptor_base_hex": "FF13B0",
+    "descriptor_bytes": 8,
+    "descriptor_control_remainder_bytes": 80,
+    "descriptor_count": 7,
+    "descriptor_region_end_hex": "FF13E8",
+    "echo_limit": 6,
+    "gameplay_control_base_hex": "FF1500",
+    "gameplay_control_declared_bytes": 256,
+    "projection_bytes": 3638,
+    "timeline_base_hex": "FF13E8",
+    "timeline_bytes": 24,
+    "timeline_end_hex": "FF1400",
+    "total_replay_timeline_bytes": 5120
+  },
+  "crc32_iso_hdlc": {
+    "123456789": "CBF43926",
+    "empty": "00000000",
+    "polynomial_reflected": "EDB88320"
+  },
+  "deterministic_generation": true,
+  "input_recording": {
+    "bank_canaries_intact": true,
+    "crc_covers_padding": false,
+    "opposite_axes_neutral": true,
+    "partial_crc32_iso_hdlc": "96501AB7",
+    "partial_length": 40,
+    "raw_input_hex": "8F",
+    "reserved_bit_zero": true,
+    "sanitized_stored_hex": "00"
+  },
+  "limitations": [
+    "This is an independent Python behavioral model; it does not execute Motorola 68000 instructions or prove cycle timing.",
+    "It verifies the M4 authoritative replay/echo/B01 slice and frozen M3 state projection, not renderer, HUD, reset visuals, controller integration, audio, or music.",
+    "No human-play session, emulator run, canonical .r94r file, visual capture, or audio capture is claimed by this report."
+  ],
+  "reference_sources": {
+    "tests/m4/__init__.py": "4fff85f8aff9394b33a19a28db86963cfa90842b25e1f4fc25dc8c3089a86b1f",
+    "tests/m4/test_adversarial.py": "833612904e726820fa886aa83f83b821c1d6b0fe3691c531a64b3be8aad879bb",
+    "tests/m4/test_audio_layers.py": "3e98607c77791b45e1fd23e7a5f40f98837f5795f0e967f9d0bb7907e2d5fdbb",
+    "tests/m4/test_contracts.py": "c236c3c975f2342ab2f93a95acb2f8de8dfbf14960c142f6f6a41083c464ea95",
+    "tests/m4/test_model.py": "ee98de47c15c718294d0279dfe416a91e94c78609337817e20af0649b83abc4c",
+    "tests/m4/test_report.py": "b24102c433f1c07a9b893496f2c881641c90c5a17c5beefd1944c25bb5a81022",
+    "tools/m4_reference/__init__.py": "be1615880e11c6f660439af8ae363f83233b31557631b329fbef352299814370",
+    "tools/m4_reference/__main__.py": "64dd423b2b248b7154b690883dd98e82eba28539fbbf7f62d71b2159fd72fa33",
+    "tools/m4_reference/contracts.py": "4b2cbfd1484332f39e4edfd094c3d4737ec360c77474addc5b4ad5321b5b4f69",
+    "tools/m4_reference/model.py": "9ae29e0b9e38f4f66f04782d177c14762569cc025a06dff133032697d76d126f",
+    "tools/m4_reference/report.py": "060ce68ff74cfd353f1e685e17cc3cb449a90c1100548cb65138a8403d5b8d67"
+  },
+  "replacement": {
+    "blocked_attempt_unchanged": true,
+    "blocked_banks_unchanged": true,
+    "blocked_descriptors_unchanged": true,
+    "capacity": 6,
+    "current_at_capacity": 5,
+    "explicit_replaced_ordinal": 2,
+    "no_silent_discard": true,
+    "order_after_replacement": [
+      6,
+      0,
+      2,
+      3,
+      4,
+      5
+    ],
+    "order_at_capacity": [
+      6,
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "protected_explicit_rejected": true,
+    "protected_oldest_skipped_to_ordinal": 1,
+    "replacement_visible": true,
+    "reused_current_bank": 1,
+    "unselected_commit_result": "REPLACEMENT_REQUIRED"
+  },
+  "reset": {
+    "actors_at_canonical_spawn": true,
+    "attempt_after_reset": 1,
+    "door_closed": true,
+    "echo_order_preserved": [
+      6
+    ],
+    "new_current_bank": 0,
+    "projectile_pool_empty": true,
+    "real_reset_semantics_modeled": true,
+    "replay_bytes_preserved": true,
+    "tick_after_reset": 0
+  },
+  "runtime_sources": {
+    "src/game/collision.asm": "f926c4878409fa101d01274b77b41e63f3e946ebbf83a1c16d1e398f9904041f",
+    "src/game/crc32.asm": "c99fbe1689e8448ca9b86ede56049aa5b7ca548665b8c02625d11b12823777e4",
+    "src/game/encounters.asm": "f6c2d528ef928a10e4fe442d6347d5e2624a875f4d659a7b8f33b60c8841fc44",
+    "src/game/engine.asm": "13088a9830d31671ff8b2cf15f05d44670052bfbd0dfc8a7ff76488ec0604d90",
+    "src/game/engine_core.asm": "7d0b9a2daf017b514c81842985bcf205ded4689054cf57212f13bfce0d7afd05",
+    "src/game/engine_layout.asm": "40e2876cc36a02057a9a2254d4c381e9a00bad4939c9fd5426d890cc70f409be",
+    "src/game/object_pool.asm": "360e47bab4a3b25008e6aff6489e5fc61ed053c614b63ee6cd161e2ed5d72d2c",
+    "src/game/projection.asm": "f863d0ea4730da3767144c6b5336c7b012754fb56adf4efb0651734f9663ee64",
+    "src/gameplay/actor_sim.asm": "9726a1add2796e0e16bf07478e83aa1cf0877ae869aeaf4a179ad7c5ceabcf53",
+    "src/gameplay/gameplay.asm": "e8b48b999d924d6162cf0da46e7a051eba72f046efb970c26957bb2e62b49fd9",
+    "src/gameplay/gameplay_core.asm": "b211c6a529ff13c3a34cbd4fca8132e7fd8fffd8c9614b134174517c4feb089d",
+    "src/gameplay/gameplay_layout.asm": "41c23b178e425fa723a5889a31e4a6fa6c89477f2b1d94a77f26d471d7fdeaa7",
+    "src/gameplay/replay.asm": "e56a1b52c6828fbb614f9d6248d06637d5e6c01dd48cdefb37d842e9da39e9ae",
+    "src/gameplay/vertical_slice.asm": "38fc69f2d214dcaa700defb677093adfdb1aea6228d97f5b7b99edc052514090"
+  },
+  "schema": "r94-m4-reference-report-v1",
+  "status": "pass",
+  "timeout": {
+    "bank_canaries_intact": true,
+    "post_terminal_write": false,
+    "processed_ticks": 720,
+    "recorded_bytes": 720,
+    "recording_full_visible": true,
+    "reserved_bits_zero": true,
+    "terminal_result": "TIMEOUT"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "recursion94.art_manifest",
+  "schema_version": 1,
+  "product": "RECURSION 94: The Last Cartridge",
+  "identity": "BOOT",
+  "art_direction": "Severe cartridge-space industrial architecture: black void, pale circuitry, deep rust, cold cobalt, strong silhouettes, controlled motion, and deliberate negative space.",
+  "provenance": {
+    "origin": "original",
+    "creator": "RECURSION 94 project",
+    "method": "repository-authored JSON pixel matrices",
+    "rights": "Original project work; no third-party art incorporated",
+    "external_sources": []
+  },
+  "palette_file": "palettes.json",
+  "asset_files": [
+    "font_ui.json",
+    "ui.json",
+    "industrial.json",
+    "actor_current.json",
+    "echoes.json",
+    "devices.json"
+  ],
+  "map_files": [
+    "boot_chamber.json"
+  ],
+  "budgets": {
+    "rom_bytes_max": 65536,
+    "vram_tile_bytes_max": 24576,
+    "vram_map_bytes_max": 4096,
+    "cram_words_max": 64,
+    "unique_tiles_max": 512,
+    "sprite_pieces_per_frame_max": 16,
+    "sprite_frames_max": 64,
+    "animations_max": 32
+  }
+}

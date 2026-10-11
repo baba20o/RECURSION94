@@ -1,0 +1,1036 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://recursion94.invalid/schemas/m4-budget-evidence.schema.json",
+  "title": "RECURSION 94 uninterrupted M4 renderer/VBlank cross-clock budget evidence",
+  "type": "object",
+  "required": [
+    "schema",
+    "scope",
+    "evidence_type",
+    "status",
+    "rom_sha256",
+    "checks",
+    "sessions",
+    "provenance",
+    "debugger_write_packets",
+    "limitations"
+  ],
+  "properties": {
+    "schema": {
+      "const": "r94-m4-uninterrupted-budget-evidence-v1"
+    },
+    "scope": {
+      "const": "Milestone4"
+    },
+    "evidence_type": {
+      "const": "blastem_gdb_m4_uninterrupted_renderer_vblank_budget"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "rom_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 15,
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/session"
+      }
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "debugger_write_packets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "error": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "pass"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "checks": {
+            "minItems": 15,
+            "maxItems": 15,
+            "prefixItems": [
+              {"$ref": "#/$defs/pass_check_01"},
+              {"$ref": "#/$defs/pass_check_02"},
+              {"$ref": "#/$defs/pass_check_03"},
+              {"$ref": "#/$defs/pass_check_04"},
+              {"$ref": "#/$defs/pass_check_05"},
+              {"$ref": "#/$defs/pass_check_06"},
+              {"$ref": "#/$defs/pass_check_07"},
+              {"$ref": "#/$defs/pass_check_08"},
+              {"$ref": "#/$defs/pass_check_09"},
+              {"$ref": "#/$defs/pass_check_10"},
+              {"$ref": "#/$defs/pass_check_11"},
+              {"$ref": "#/$defs/pass_check_12"},
+              {"$ref": "#/$defs/pass_check_13"},
+              {"$ref": "#/$defs/pass_check_14"},
+              {"$ref": "#/$defs/pass_check_15"}
+            ],
+            "items": false
+          },
+          "sessions": {
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "allOf": [
+                  {"$ref": "#/$defs/passing_session"},
+                  {
+                    "properties": {
+                      "session_id": {"const": "session_1"}
+                    }
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {"$ref": "#/$defs/passing_session"},
+                  {
+                    "properties": {
+                      "session_id": {"const": "session_2"}
+                    }
+                  }
+                ]
+              }
+            ],
+            "items": false
+          },
+          "debugger_write_packets": {
+            "maxItems": 0
+          },
+          "provenance": {
+            "$ref": "#/$defs/strict_provenance"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "check": {
+      "type": "object",
+      "required": [
+        "check",
+        "status",
+        "detail"
+      ],
+      "properties": {
+        "check": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pass_check_01": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "two_fresh_owned_sessions"}, "status": {"const": "pass"}}}]},
+    "pass_check_02": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "uninterrupted_main_side_measurement"}, "status": {"const": "pass"}}}]},
+    "pass_check_03": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "read_only_gdb"}, "status": {"const": "pass"}}}]},
+    "pass_check_04": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "natural_tick_720_timeout_boundary"}, "status": {"const": "pass"}}}]},
+    "pass_check_05": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "stopped_reads_are_consistent"}, "status": {"const": "pass"}}}]},
+    "pass_check_06": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "runtime_debug_health"}, "status": {"const": "pass"}}}]},
+    "pass_check_07": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "audio_runtime_ready_and_playing"}, "status": {"const": "pass"}}}]},
+    "pass_check_08": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "z80_m68k_cross_clock_within_startup_allowance"}, "status": {"const": "pass"}}}]},
+    "pass_check_09": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "renderer_abi_and_terminal_alignment"}, "status": {"const": "pass"}}}]},
+    "pass_check_10": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "all_cumulative_fault_counters_zero"}, "status": {"const": "pass"}}}]},
+    "pass_check_11": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "terminal_queue_fully_committed"}, "status": {"const": "pass"}}}]},
+    "pass_check_12": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "dma_capacities_in_bounds"}, "status": {"const": "pass"}}}]},
+    "pass_check_13": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "renderer_capacities_in_bounds"}, "status": {"const": "pass"}}}]},
+    "pass_check_14": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "fresh_session_budget_reproducibility"}, "status": {"const": "pass"}}}]},
+    "pass_check_15": {"allOf": [{"$ref": "#/$defs/check"}, {"properties": {"check": {"const": "exact_hash_bindings_and_no_drift"}, "status": {"const": "pass"}}}]},
+    "hash_block": {
+      "type": "object",
+      "required": [
+        "address",
+        "bytes",
+        "sha256",
+        "raw_hex"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "pattern": "^[0-9A-F]{8}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "raw_hex": {
+          "type": "string",
+          "pattern": "^[0-9A-F]+$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "engine_hash_block": {
+      "allOf": [
+        {"$ref": "#/$defs/hash_block"},
+        {"properties": {"address": {"const": "00FF1400"}, "bytes": {"const": 80}, "raw_hex": {"pattern": "^[0-9A-F]{160}$"}}}
+      ]
+    },
+    "debug_hash_block": {
+      "allOf": [
+        {"$ref": "#/$defs/hash_block"},
+        {"properties": {"address": {"const": "00FFF000"}, "bytes": {"const": 72}, "raw_hex": {"pattern": "^[0-9A-F]{144}$"}}}
+      ]
+    },
+    "renderer_hash_block": {
+      "allOf": [
+        {"$ref": "#/$defs/hash_block"},
+        {"properties": {"address": {"const": "00FF8300"}, "bytes": {"const": 36}, "raw_hex": {"pattern": "^[0-9A-F]{72}$"}}}
+      ]
+    },
+    "dma_hash_block": {
+      "allOf": [
+        {"$ref": "#/$defs/hash_block"},
+        {"properties": {"address": {"const": "00FF9000"}, "bytes": {"const": 16}, "raw_hex": {"pattern": "^[0-9A-F]{32}$"}}}
+      ]
+    },
+    "audio_hash_block": {
+      "allOf": [
+        {"$ref": "#/$defs/hash_block"},
+        {"properties": {"address": {"const": "00FF9900"}, "bytes": {"const": 16}, "raw_hex": {"pattern": "^[0-9A-F]{32}$"}}}
+      ]
+    },
+    "debug_observation": {
+      "type": "object",
+      "required": [
+        "magic",
+        "magic_ascii",
+        "abi_version",
+        "abi_size",
+        "sequence",
+        "heartbeat",
+        "frame_counter",
+        "frame_token",
+        "fatal_code",
+        "boot_stage",
+        "hardware_flags",
+        "last_vdp_status",
+        "sprite_count",
+        "sprite_scanline_max",
+        "dma_words_frame",
+        "dma_words_max",
+        "dma_queue_depth",
+        "dma_queue_high_water",
+        "dma_overflow_count",
+        "vblank_overrun_count",
+        "audio_state",
+        "z80_heartbeat",
+        "audio_command_count",
+        "m2_flags",
+        "z80_timeout_count",
+        "dma_deferred_count",
+        "dma_required_drop_count",
+        "dma_invalid_count"
+      ],
+      "properties": {
+        "magic": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "magic_ascii": {"type": "string"},
+        "abi_version": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "abi_size": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "sequence": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "heartbeat": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "frame_counter": {
+          "type": "integer",
+          "const": 720
+        },
+        "frame_token": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "fatal_code": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "boot_stage": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "hardware_flags": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "last_vdp_status": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "sprite_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "sprite_scanline_max": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_words_frame": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_words_max": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_queue_depth": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_queue_high_water": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_overflow_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "vblank_overrun_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "audio_state": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "z80_heartbeat": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "audio_command_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "m2_flags": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "z80_timeout_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "dma_deferred_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_required_drop_count": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "dma_invalid_count": {"type": "integer", "minimum": 0, "maximum": 65535}
+      },
+      "additionalProperties": false
+    },
+    "cross_clock_observation": {
+      "type": "object",
+      "required": [
+        "m68k_frame_counter",
+        "z80_vint_heartbeat",
+        "z80_vint_excess",
+        "startup_allowance_vints"
+      ],
+      "properties": {
+        "m68k_frame_counter": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "z80_vint_heartbeat": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "z80_vint_excess": {
+          "type": "integer"
+        },
+        "startup_allowance_vints": {
+          "const": 32
+        }
+      },
+      "additionalProperties": false
+    },
+    "audio_shadow_observation": {
+      "type": "object",
+      "required": [
+        "signature",
+        "abi_version",
+        "state",
+        "flags",
+        "heartbeat",
+        "queue_read_sequence",
+        "queue_high_water",
+        "processed_commands",
+        "late_tick_count",
+        "ym_write_count",
+        "psg_write_count",
+        "motif_step",
+        "active_layers",
+        "last_error_or_command"
+      ],
+      "properties": {
+        "signature": {"const": 148},
+        "abi_version": {"const": 1},
+        "state": {"const": 2},
+        "flags": {"const": 7},
+        "heartbeat": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "queue_read_sequence": {"const": 1},
+        "queue_high_water": {"type": "integer", "minimum": 1, "maximum": 16},
+        "processed_commands": {"const": 1},
+        "late_tick_count": {"const": 0},
+        "ym_write_count": {"type": "integer", "minimum": 1, "maximum": 255},
+        "psg_write_count": {"type": "integer", "minimum": 1, "maximum": 255},
+        "motif_step": {"type": "integer", "minimum": 0, "maximum": 255},
+        "active_layers": {"const": 1},
+        "last_error_or_command": {"const": 3}
+      },
+      "additionalProperties": false
+    },
+    "engine_observation": {
+      "type": "object",
+      "required": [
+        "magic", "magic_ascii", "abi_version", "control_bytes", "state",
+        "flags", "encounter", "attempt", "tick", "terminal_reason",
+        "last_error", "overflow_flags", "projection_length", "state_crc",
+        "checkpoint_tick", "checkpoint_count", "input_held",
+        "input_pressed", "input_released", "input_previous", "facing_x",
+        "active_actor_count", "room_left", "room_top", "room_right",
+        "room_bottom", "spawn_x", "spawn_y", "rect_count",
+        "object_init_count", "pool_counts", "pool_high_water"
+      ],
+      "properties": {
+        "magic": {"type": "integer"},
+        "magic_ascii": {"type": "string"},
+        "abi_version": {"type": "integer"},
+        "control_bytes": {"type": "integer"},
+        "state": {"type": "integer"},
+        "flags": {"type": "integer"},
+        "encounter": {"type": "integer"},
+        "attempt": {"type": "integer"},
+        "tick": {"type": "integer"},
+        "terminal_reason": {"type": "integer"},
+        "last_error": {"type": "integer"},
+        "overflow_flags": {"type": "integer"},
+        "projection_length": {"type": "integer"},
+        "state_crc": {"type": "integer"},
+        "checkpoint_tick": {"type": "integer"},
+        "checkpoint_count": {"type": "integer"},
+        "input_held": {"type": "integer"},
+        "input_pressed": {"type": "integer"},
+        "input_released": {"type": "integer"},
+        "input_previous": {"type": "integer"},
+        "facing_x": {"type": "integer"},
+        "active_actor_count": {"type": "integer"},
+        "room_left": {"type": "integer"},
+        "room_top": {"type": "integer"},
+        "room_right": {"type": "integer"},
+        "room_bottom": {"type": "integer"},
+        "spawn_x": {"type": "integer"},
+        "spawn_y": {"type": "integer"},
+        "rect_count": {"type": "integer"},
+        "object_init_count": {"type": "integer"},
+        "pool_counts": {"type": "array", "minItems": 7, "maxItems": 7, "items": {"type": "integer"}},
+        "pool_high_water": {"type": "array", "minItems": 7, "maxItems": 7, "items": {"type": "integer"}}
+      },
+      "additionalProperties": false
+    },
+    "renderer_observation": {
+      "type": "object",
+      "required": [
+        "magic", "magic_ascii", "version", "bytes", "flags",
+        "last_attempt", "reset_phase", "reset_previous_row",
+        "overlay_clear_destination", "overlay_trace_destination",
+        "sprite_count", "scanline_max", "scanline_pixel_max",
+        "dropped_sprites", "dma_rejects", "backlog_frames",
+        "last_tick", "last_result"
+      ],
+      "additionalProperties": {
+        "type": ["integer", "string"]
+      }
+    },
+    "dma_observation": {
+      "type": "object",
+      "required": [
+        "published_depth", "build_depth", "build_words", "commit_words",
+        "frame_pending", "reserved_0", "reserved_1"
+      ],
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "session": {
+      "type": "object",
+      "required": [
+        "session_id",
+        "metadata",
+        "observation"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "pattern": "^session_[12]$"
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "process_id",
+            "launch_flags",
+            "runtime_copy",
+            "controller_profile",
+            "profile_cleanup_verified",
+            "terminal_breakpoint_symbol",
+            "terminal_breakpoint_address",
+            "input_injection",
+            "resume_count",
+            "transcript_policy",
+            "transcript_sha256"
+          ],
+          "properties": {
+            "process_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "launch_flags": {
+              "type": "array",
+              "minItems": 6,
+              "maxItems": 6,
+              "prefixItems": [
+                {"const": "-D"},
+                {"const": "-g"},
+                {"const": "-m"},
+                {"const": "gen"},
+                {"const": "-r"},
+                {"const": "U"}
+              ],
+              "items": false
+            },
+            "runtime_copy": {
+              "type": "object",
+              "required": [
+                "temporary_directory",
+                "executable_sha256",
+                "default_config_sha256"
+              ],
+              "properties": {
+                "temporary_directory": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "executable_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "default_config_sha256": {
+                  "$ref": "#/$defs/sha256"
+                }
+              },
+              "additionalProperties": true
+            },
+            "controller_profile": {
+              "type": "object",
+              "required": [
+                "status",
+                "sha256",
+                "source_sha256",
+                "port_1_assignment",
+                "session_isolation"
+              ],
+              "properties": {
+                "status": {
+                  "const": "pass"
+                },
+                "sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "source_sha256": {
+                  "$ref": "#/$defs/sha256"
+                },
+                "port_1_assignment": {
+                  "const": "gamepad3.1"
+                },
+                "session_isolation": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "config_sha256"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "pass"
+                    },
+                    "config_sha256": {
+                      "$ref": "#/$defs/sha256"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": true
+            },
+            "profile_cleanup_verified": {
+              "type": "boolean"
+            },
+            "terminal_breakpoint_symbol": {
+              "const": "GameplayCommitAndReset"
+            },
+            "terminal_breakpoint_address": {
+              "type": "string",
+              "pattern": "^[0-9A-F]{8}$"
+            },
+            "input_injection": {
+              "const": "none"
+            },
+            "resume_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "transcript_policy": {
+              "type": "object",
+              "required": [
+                "status",
+                "commands",
+                "expected_commands",
+                "breakpoint_packets",
+                "continue_packets",
+                "interrupt_packets",
+                "debugger_write_packets",
+                "forbidden_breakpoint_symbols_observed"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "pass",
+                    "fail"
+                  ]
+                },
+                "commands": {
+                  "type": "array",
+                  "minItems": 13,
+                  "maxItems": 13,
+                  "items": {"type": "string"}
+                },
+                "expected_commands": {
+                  "type": "array",
+                  "minItems": 13,
+                  "maxItems": 13,
+                  "items": {"type": "string"}
+                },
+                "breakpoint_packets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "continue_packets": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "interrupt_packets": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "debugger_write_packets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "forbidden_breakpoint_symbols_observed": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            },
+            "transcript_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "additionalProperties": true
+        },
+        "observation": {
+          "type": "object",
+          "required": [
+            "engine",
+            "debug",
+            "cross_clock",
+            "renderer",
+            "dma_queue",
+            "audio_shadow",
+            "blocks",
+            "read_consistency"
+          ],
+          "properties": {
+            "engine": {
+              "$ref": "#/$defs/engine_observation"
+            },
+            "debug": {
+              "$ref": "#/$defs/debug_observation"
+            },
+            "cross_clock": {
+              "$ref": "#/$defs/cross_clock_observation"
+            },
+            "renderer": {
+              "$ref": "#/$defs/renderer_observation"
+            },
+            "dma_queue": {
+              "$ref": "#/$defs/dma_observation"
+            },
+            "audio_shadow": {
+              "$ref": "#/$defs/audio_shadow_observation"
+            },
+            "blocks": {
+              "type": "object",
+              "required": [
+                "engine_control",
+                "debug_budget",
+                "renderer_state",
+                "dma_queue_control",
+                "audio_shadow"
+              ],
+              "properties": {
+                "engine_control": {
+                  "$ref": "#/$defs/engine_hash_block"
+                },
+                "debug_budget": {
+                  "$ref": "#/$defs/debug_hash_block"
+                },
+                "renderer_state": {
+                  "$ref": "#/$defs/renderer_hash_block"
+                },
+                "dma_queue_control": {
+                  "$ref": "#/$defs/dma_hash_block"
+                },
+                "audio_shadow": {
+                  "$ref": "#/$defs/audio_hash_block"
+                }
+              },
+              "additionalProperties": false
+            },
+            "read_consistency": {
+              "type": "object",
+              "required": [
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "pass",
+                    "fail"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "passing_session": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/session"
+        },
+        {
+          "properties": {
+            "metadata": {
+              "properties": {
+                "profile_cleanup_verified": {
+                  "const": true
+                },
+                "resume_count": {
+                  "const": 1
+                },
+                "transcript_policy": {
+                  "properties": {
+                    "status": {
+                      "const": "pass"
+                    },
+                    "breakpoint_packets": {
+                      "minItems": 1,
+                      "maxItems": 1
+                    },
+                    "continue_packets": {
+                      "const": 1
+                    },
+                    "interrupt_packets": {
+                      "const": 0
+                    },
+                    "debugger_write_packets": {
+                      "maxItems": 0
+                    },
+                    "forbidden_breakpoint_symbols_observed": {
+                      "maxItems": 0
+                    }
+                  }
+                }
+              }
+            },
+            "observation": {
+              "properties": {
+                "engine": {
+                  "properties": {
+                    "magic": {"const": 1379480645},
+                    "abi_version": {"const": 1},
+                    "control_bytes": {"const": 1024},
+                    "state": {"const": 2},
+                    "attempt": {"const": 0},
+                    "tick": {"const": 720},
+                    "terminal_reason": {"const": 1},
+                    "last_error": {"const": 0},
+                    "overflow_flags": {"const": 0}
+                  }
+                },
+                "debug": {
+                  "properties": {
+                    "magic": {"const": 1379480644},
+                    "abi_version": {"const": 1},
+                    "abi_size": {"const": 1024},
+                    "frame_counter": {"const": 720},
+                    "frame_token": {"const": 0},
+                    "fatal_code": {"const": 0},
+                    "boot_stage": {"const": 4},
+                    "hardware_flags": {"const": 0},
+                    "audio_state": {
+                      "const": 2
+                    },
+                    "audio_command_count": {
+                      "const": 1
+                    },
+                    "m2_flags": {
+                      "const": 63
+                    },
+                    "z80_timeout_count": {
+                      "const": 0
+                    },
+                    "dma_overflow_count": {"const": 0},
+                    "vblank_overrun_count": {"const": 0},
+                    "dma_deferred_count": {"const": 0},
+                    "dma_required_drop_count": {"const": 0},
+                    "dma_invalid_count": {"const": 0},
+                    "dma_words_frame": {"minimum": 1, "maximum": 2048},
+                    "dma_words_max": {"minimum": 1, "maximum": 2048},
+                    "dma_queue_depth": {"minimum": 0, "maximum": 32},
+                    "dma_queue_high_water": {"minimum": 1, "maximum": 32},
+                    "sprite_count": {"minimum": 1, "maximum": 64},
+                    "sprite_scanline_max": {"minimum": 1, "maximum": 20}
+                  }
+                },
+                "cross_clock": {
+                  "properties": {
+                    "z80_vint_excess": {
+                      "minimum": 0,
+                      "maximum": 32
+                    },
+                    "startup_allowance_vints": {
+                      "const": 32
+                    }
+                  }
+                },
+                "renderer": {
+                  "properties": {
+                    "magic": {"const": 1379480662},
+                    "version": {"const": 1},
+                    "bytes": {"const": 1280},
+                    "flags": {"const": 1},
+                    "last_attempt": {"const": 0},
+                    "sprite_count": {"minimum": 1, "maximum": 64},
+                    "scanline_max": {"minimum": 1, "maximum": 20},
+                    "scanline_pixel_max": {"minimum": 1, "maximum": 320},
+                    "dropped_sprites": {"const": 0},
+                    "dma_rejects": {"const": 0},
+                    "backlog_frames": {"const": 0},
+                    "last_tick": {"const": 719},
+                    "last_result": {"const": 0}
+                  }
+                },
+                "dma_queue": {
+                  "properties": {
+                    "published_depth": {"const": 0},
+                    "build_depth": {"const": 0},
+                    "build_words": {"const": 0},
+                    "commit_words": {"minimum": 1, "maximum": 2048},
+                    "frame_pending": {"const": 0},
+                    "reserved_0": {"const": 0},
+                    "reserved_1": {"const": 0}
+                  }
+                },
+                "read_consistency": {
+                  "properties": {
+                    "status": {
+                      "const": "pass"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "strict_provenance": {
+      "type": "object",
+      "required": [
+        "rom",
+        "emulator",
+        "default_config",
+        "symbol_map",
+        "report_schema",
+        "collector",
+        "transcript",
+        "hash_verification"
+      ],
+      "properties": {
+        "rom": {
+          "type": "object",
+          "required": [
+            "sha256",
+            "expected_sha256"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "expected_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "additionalProperties": true
+        },
+        "emulator": {
+          "type": "object",
+          "required": [
+            "sha256"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "additionalProperties": true
+        },
+        "default_config": {
+          "type": "object",
+          "required": [
+            "sha256"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "additionalProperties": true
+        },
+        "symbol_map": {
+          "type": "object",
+          "required": [
+            "sha256",
+            "symbols"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "symbols": {
+              "type": "object",
+              "required": [
+                "GameplayCommitAndReset",
+                "VBlankInterrupt",
+                "MainLoopPostGameplayStep",
+                "DmaCommitPreparedQueue",
+                "DEBUG_AUDIO_STATE",
+                "DEBUG_Z80_HEARTBEAT",
+                "DEBUG_AUDIO_COMMAND_COUNT",
+                "DEBUG_M2_FLAGS",
+                "DEBUG_Z80_TIMEOUT_COUNT",
+                "DMA_QUEUE_RESERVED_0",
+                "DMA_QUEUE_RESERVED_1",
+                "AUDIO_SHADOW_BASE"
+              ],
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[0-9A-F]{8}$"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "report_schema": {
+          "type": "object",
+          "required": [
+            "sha256",
+            "id"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "id": {
+              "const": "r94-m4-uninterrupted-budget-evidence-v1"
+            }
+          },
+          "additionalProperties": true
+        },
+        "collector": {
+          "type": "object",
+          "required": [
+            "sha256"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          },
+          "additionalProperties": true
+        },
+        "transcript": {
+          "type": "object",
+          "required": [
+            "sha256",
+            "commands"
+          ],
+          "properties": {
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "commands": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "hash_verification": {
+          "type": "object",
+          "required": [
+            "status",
+            "drift"
+          ],
+          "properties": {
+            "status": {
+              "const": "pass"
+            },
+            "drift": {
+              "type": "array",
+              "maxItems": 0
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

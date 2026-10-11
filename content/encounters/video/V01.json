@@ -1,0 +1,251 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "V01",
+  "numeric_id": 201,
+  "name": "BUS ARBITRATION",
+  "kind": "primary",
+  "campaign_order": 5,
+  "sector": {
+    "id": "VIDEO",
+    "name": "VIDEO",
+    "theme": "cobalt conveyor hall with scrolling machinery"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#..####............#",
+      "#..####............#",
+      "#..........####....#",
+      "#..........####....#",
+      "#..................#",
+      "#....####..........#",
+      "#....####..........#",
+      "#............####..#",
+      "#............####..#",
+      "#..................#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [72, 108],
+    "reset_policy": "restore conveyor direction, both plates, exit lock, particles, and actor positions"
+  },
+  "echoes": {
+    "cap": 3,
+    "minimum": 2,
+    "first_clear_range": [2, 3],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_VIDEO_COBALT_01",
+    "music_id": "MUS_VIDEO_MOTION",
+    "tempo_bpm": 100,
+    "visual_layers": ["conveyor_scroll", "cobalt_parallax", "direction_history"]
+  },
+  "mechanics": ["reversible_conveyors", "pressure_switches", "route_state", "scrolling", "concurrent_machine_control"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "V01_REVERSE_CONTROL",
+        "type": "conveyor_direction_switch",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "forward", "states": ["forward", "reverse"]},
+        "reset_policy": "forward",
+        "anchor_policy": "forbidden",
+        "parameters": {"interaction": "hold", "controls": ["V01_CONVEYOR_WEST", "V01_CONVEYOR_EAST"]}
+      },
+      {
+        "logical_id": "V01_FAR_PLATE",
+        "type": "pressure_switch",
+        "x": 256,
+        "y": 48,
+        "state": {"initial": "released", "states": ["released", "pressed"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"controls": ["V01_EXIT_GATE"]}
+      },
+      {
+        "logical_id": "V01_EXIT_GATE",
+        "type": "door",
+        "x": 272,
+        "y": 112,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"opening_frames": 0, "close_delay_frames": 0}
+      },
+      {
+        "logical_id": "V01_COMMIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 112,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 18}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "V01_CONVEYOR_WEST",
+        "type": "conveyor",
+        "x": 80,
+        "y": 144,
+        "state": {"initial": "eastbound", "states": ["eastbound", "westbound"]},
+        "reset_policy": "eastbound",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 112, "height": 16, "speed_px_per_frame": 1}
+      },
+      {
+        "logical_id": "V01_CONVEYOR_EAST",
+        "type": "conveyor",
+        "x": 192,
+        "y": 64,
+        "state": {"initial": "westbound", "states": ["westbound", "eastbound"]},
+        "reset_policy": "westbound",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 96, "height": 16, "speed_px_per_frame": 1}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "V01_O1_REVERSE",
+        "type": "maintain_state",
+        "depends_on": [],
+        "condition": "V01_REVERSE_CONTROL held in reverse",
+        "deadline_frame": 500,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "V01_O2_RIDE_TO_PLATE",
+        "type": "traverse_and_hold",
+        "depends_on": ["V01_O1_REVERSE"],
+        "condition": "echo_2 rides V01_CONVEYOR_EAST and holds V01_FAR_PLATE",
+        "deadline_frame": 560,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "V01_O3_CROSS",
+        "type": "traverse",
+        "depends_on": ["V01_O1_REVERSE", "V01_O2_RIDE_TO_PLATE"],
+        "condition": "current crosses V01_CONVEYOR_WEST and clears V01_EXIT_GATE",
+        "deadline_frame": 660,
+        "role": "current"
+      },
+      {
+        "objective_id": "V01_O4_COMMIT",
+        "type": "interact",
+        "depends_on": ["V01_O3_CROSS"],
+        "condition": "current commits V01_COMMIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "V01_O4_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "V01_ROLE_REVERSE",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 66, "action": "move_to", "target": "V01_REVERSE_CONTROL"},
+        {"frame": 104, "action": "hold_interact", "target": "V01_REVERSE_CONTROL"}
+      ]
+    },
+    {
+      "role_id": "V01_ROLE_RIDER",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 156, "action": "ride", "target": "V01_CONVEYOR_EAST"},
+        {"frame": 330, "action": "hold_position", "target": "V01_FAR_PLATE"}
+      ]
+    },
+    {
+      "role_id": "V01_ROLE_CROSSER",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 382, "action": "cross", "target": "V01_CONVEYOR_WEST"},
+        {"frame": 566, "action": "interact", "target": "V01_COMMIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "V01_ALT_ROLE_REVERSE",
+      "role_changes": "echo_2 owns reverse control while echo_1 rides the far belt",
+      "constraints": ["reverse state begins before frame 170", "far plate remains pressed through current crossing"],
+      "echo_cost": 2
+    },
+    {
+      "id": "V01_ALT_DASH_SHORTCUT",
+      "role_changes": "current dashes across the west belt before full reversal",
+      "constraints": ["dash begins within the visible 24-frame direction transition", "far plate role remains required"],
+      "echo_cost": 2
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "V01_FAIL_DIRECTION",
+      "condition": "actor is carried into a solid by an incorrectly directed conveyor",
+      "visual": "conveyor arrows replay their last four state changes",
+      "audio": "motor direction cue pans to failed belt",
+      "timeline": "marks reversal frame and actor contact"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 31,
+    "dma_words": 920,
+    "dma_queue_entries": 13,
+    "hardware_sprites": 24,
+    "sprites_per_scanline": 9,
+    "actors": 4,
+    "enemies": 0,
+    "projectiles": 0,
+    "devices": 4,
+    "carryables": 0,
+    "hazards": 2,
+    "boss_components": 0,
+    "effects": 14
+  },
+  "replays": {
+    "canonical": "V01_CANONICAL",
+    "failure": "V01_FAILURE_DIRECTION",
+    "stress": "V01_STRESS_FULL_CONVEYOR",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["B04"],
+    "unlocks": ["V02", "CONVEYOR_CONTROL"]
+  },
+  "narrative": {
+    "briefing": "THE SAME BUS CANNOT FACE BOTH WAYS.",
+    "success": "ARBITRATION GRANTED EVERY PROCESS A ROUTE.",
+    "failure": "MACHINE STATE MOVED WHILE YOUR PLAN DID NOT.",
+    "echo_hint": "ONE PROCESS OWNS DIRECTION. ANOTHER RIDES THE RESULT."
+  }
+}

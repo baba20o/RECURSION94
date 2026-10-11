@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://recursion94.invalid/schemas/validation-report.schema.json",
+  "title": "RECURSION 94 validation report",
+  "type": "object",
+  "required": [
+    "schema",
+    "scope",
+    "status",
+    "release_complete",
+    "gates",
+    "summary"
+  ],
+  "properties": {
+    "schema": {
+      "const": 1
+    },
+    "scope": {
+      "enum": [
+        "Milestone1",
+        "Release"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCOMPLETE"
+      ]
+    },
+    "release_complete": {
+      "type": "boolean"
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gate",
+          "status",
+          "required"
+        ],
+        "properties": {
+          "gate": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "pending"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "required",
+        "passed",
+        "failed",
+        "pending"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

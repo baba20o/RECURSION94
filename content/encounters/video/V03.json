@@ -1,0 +1,297 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "V03",
+  "numeric_id": 203,
+  "name": "DOUBLE BUFFER",
+  "kind": "primary",
+  "campaign_order": 7,
+  "sector": {
+    "id": "VIDEO",
+    "name": "VIDEO",
+    "theme": "vertical lift pipeline and animated buffer machinery"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "#.....#..##..#.....#",
+      "#........##........#",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "#..................#",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "#.....#..##..#.....#",
+      "#........##........#",
+      "#.....#......#.....#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [48, 84],
+    "reset_policy": "restore lift floor, call queue, conveyors, cell, receiver socket, route door, and moving hazard phase"
+  },
+  "echoes": {
+    "cap": 3,
+    "minimum": 3,
+    "first_clear_range": [3, 4],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_VIDEO_BUFFER_03",
+    "music_id": "MUS_VIDEO_PIPELINE",
+    "tempo_bpm": 100,
+    "visual_layers": ["lift_parallax", "buffer_status", "conveyor_animation", "handoff_trace"]
+  },
+  "mechanics": ["moving_platform", "conveyors", "power_cell", "producer_consumer_handoff", "moving_hazard", "timed_route"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "V03_LIFT_CALL",
+        "type": "transport_pad_control",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "idle", "states": ["idle", "called", "locked"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"controls": ["V03_LIFT"], "call_latency_frames": 30}
+      },
+      {
+        "logical_id": "V03_LIFT",
+        "type": "moving_platform",
+        "x": 144,
+        "y": 160,
+        "state": {"initial": "lower", "states": ["lower", "rising", "upper", "falling"]},
+        "reset_policy": "lower",
+        "anchor_policy": "forbidden",
+        "parameters": {"travel_frames": 120, "capacity_actors": 2, "capacity_carryables": 1}
+      },
+      {
+        "logical_id": "V03_RECEIVER",
+        "type": "power_socket",
+        "x": 224,
+        "y": 48,
+        "state": {"initial": "empty", "states": ["empty", "occupied", "powered"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"accepts": "V03_CELL", "power_delay_frames": 36}
+      },
+      {
+        "logical_id": "V03_ROUTE_DOOR",
+        "type": "powered_door",
+        "x": 256,
+        "y": 80,
+        "state": {"initial": "closed", "states": ["closed", "opening", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"power_source": "V03_RECEIVER", "opening_frames": 18}
+      },
+      {
+        "logical_id": "V03_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 18}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "V03_FEED_CONVEYOR",
+        "type": "conveyor",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "eastbound", "states": ["eastbound"]},
+        "reset_policy": "eastbound",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 96, "height": 16, "speed_px_per_frame": 1}
+      },
+      {
+        "logical_id": "V03_SWEEPER",
+        "type": "moving_hazard",
+        "x": 192,
+        "y": 112,
+        "state": {"initial": "north", "states": ["north", "south"]},
+        "reset_policy": "north",
+        "anchor_policy": "forbidden",
+        "parameters": {"path_y": [80, 160], "cycle_frames": 120, "contact_damage": 1}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "V03_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "feed_buffer", "states": ["feed_buffer", "carried", "lift_buffer", "carried_upper", "socketed"]},
+        "reset_policy": "feed_buffer at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 78, "handoff_radius_px": 16}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "V03_O1_CALL_LIFT",
+        "type": "interact",
+        "depends_on": [],
+        "condition": "V03_LIFT arrives lower before cell handoff",
+        "deadline_frame": 260,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "V03_O2_PLACE_CELL",
+        "type": "carry",
+        "depends_on": ["V03_O1_CALL_LIFT"],
+        "condition": "V03_CELL placed in lift buffer before rising",
+        "deadline_frame": 370,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "V03_O3_RECEIVE_CELL",
+        "type": "carry_and_socket",
+        "depends_on": ["V03_O2_PLACE_CELL"],
+        "condition": "echo_3 receives V03_CELL at upper floor and sockets it",
+        "deadline_frame": 590,
+        "role": "echo_3"
+      },
+      {
+        "objective_id": "V03_O4_POWERED_ROUTE",
+        "type": "traverse",
+        "depends_on": ["V03_O3_RECEIVE_CELL"],
+        "condition": "current crosses V03_ROUTE_DOOR after power",
+        "deadline_frame": 670,
+        "role": "current"
+      },
+      {
+        "objective_id": "V03_O5_COMMIT",
+        "type": "interact",
+        "depends_on": ["V03_O4_POWERED_ROUTE"],
+        "condition": "current commits V03_EXIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "V03_O5_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "V03_ROLE_LIFT_CALLER",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 64, "action": "interact", "target": "V03_LIFT_CALL"},
+        {"frame": 188, "action": "hold_platform", "target": "V03_LIFT"}
+      ]
+    },
+    {
+      "role_id": "V03_ROLE_PRODUCER",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 94, "action": "pick_up", "target": "V03_CELL"},
+        {"frame": 248, "action": "drop", "target": "V03_LIFT"}
+      ]
+    },
+    {
+      "role_id": "V03_ROLE_CONSUMER",
+      "actor": "echo_3",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 372, "action": "pick_up", "target": "V03_CELL"},
+        {"frame": 476, "action": "socket", "target": "V03_RECEIVER"}
+      ]
+    },
+    {
+      "role_id": "V03_ROLE_EXIT",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 530, "action": "cross", "target": "V03_ROUTE_DOOR"},
+        {"frame": 632, "action": "interact", "target": "V03_EXIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "V03_ALT_CALL_CARRY_SWAP",
+      "role_changes": "echo_2 calls the lift after placing the cell while echo_1 owns the feed conveyor pickup",
+      "constraints": ["lift call occurs before frame 250", "upper receiver remains echo_3"],
+      "echo_cost": 3
+    },
+    {
+      "id": "V03_ALT_UPPER_CURRENT",
+      "role_changes": "current receives and sockets the upper cell while echo_3 waits at the exit",
+      "constraints": ["current boards lift before rise", "echo_3 interaction begins only after door power"],
+      "echo_cost": 3
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "V03_FAIL_HANDOFF",
+      "condition": "V03_LIFT begins rising without V03_CELL in its buffer",
+      "visual": "last valid cell owner and lift departure frame remain traced",
+      "audio": "empty-buffer motor accent",
+      "timeline": "marks producer drop against platform state"
+    },
+    {
+      "id": "V03_FAIL_SWEEPER",
+      "condition": "carrier contacts V03_SWEEPER and drops the cell",
+      "visual": "sweeper path and drop coordinate flash",
+      "audio": "moving hazard strike plus cell clack",
+      "timeline": "names the failed handoff stage"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 41,
+    "dma_words": 1380,
+    "dma_queue_entries": 19,
+    "hardware_sprites": 38,
+    "sprites_per_scanline": 12,
+    "actors": 4,
+    "enemies": 0,
+    "projectiles": 0,
+    "devices": 5,
+    "carryables": 1,
+    "hazards": 2,
+    "boss_components": 0,
+    "effects": 20
+  },
+  "replays": {
+    "canonical": "V03_CANONICAL",
+    "failure": "V03_FAILURE_HANDOFF",
+    "stress": "V03_STRESS_LIFT_PARTICLES",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["V02"],
+    "unlocks": ["V04", "MOVING_PLATFORM", "ECHO_CAP_3"]
+  },
+  "narrative": {
+    "briefing": "NO PROCESS CAN CROSS THE WHOLE PIPELINE.",
+    "success": "THE SECOND BUFFER ARRIVED FULL.",
+    "failure": "THE LAST VALID HANDOFF IS STILL VISIBLE.",
+    "echo_hint": "CALL, PLACE, RECEIVE, THEN USE THE POWERED ROUTE."
+  }
+}

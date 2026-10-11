@@ -1,0 +1,18 @@
+{
+  "binary_checks": [],
+  "pending_release_suites": {},
+  "release_gate_passed": false,
+  "requested_suite": "Assets",
+  "runs": [
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/assets",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 27
+    }
+  ],
+  "schema": 1,
+  "status": "pass"
+}

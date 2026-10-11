@@ -1,0 +1,131 @@
+{
+  "binary_checks": [
+    {
+      "configuration": "debug",
+      "gate_passed": true,
+      "sha256": "769b5adedd1fe3dcd8b4b6f9757cff9156c3c229d08f10a4b6c2b85204ea836b",
+      "status": "pass"
+    },
+    {
+      "configuration": "release",
+      "gate_passed": true,
+      "sha256": "0cf94ab5a303bc077810f3d1fe2d4157070ffe6ca515ba0ae5568d3cb90f9d43",
+      "status": "pass"
+    }
+  ],
+  "pending_release_suites": {
+    "CanonicalReplay": "the host R94R codec is implemented, but runtime-backed canonical campaign replay fixtures are not yet complete",
+    "Emulator": "use emulator_probe.py or m2_probe.ps1 for live emulator evidence",
+    "Save": "runtime save implementation and round-trip fixture are not implemented"
+  },
+  "release_gate_passed": false,
+  "requested_suite": "All",
+  "runs": [
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/assets",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 27
+    },
+    {
+      "errors": 1,
+      "failures": 0,
+      "path": "tests/audio",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 82
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/campaign_runtime",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 14
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/content",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 21
+    },
+    {
+      "errors": 11,
+      "failures": 2,
+      "path": "tests/emulator",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 109
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/host",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 4
+    },
+    {
+      "errors": 9,
+      "failures": 0,
+      "path": "tests/m2",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 90
+    },
+    {
+      "errors": 4,
+      "failures": 2,
+      "path": "tests/m3",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 24
+    },
+    {
+      "errors": 5,
+      "failures": 1,
+      "path": "tests/m4",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 7
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/m5",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 52
+    },
+    {
+      "errors": 0,
+      "failures": 1,
+      "path": "tests/render",
+      "skipped": 0,
+      "status": "fail",
+      "tests_run": 68
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/replay",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 31
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/rom",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 11
+    }
+  ],
+  "schema": 1,
+  "status": "fail"
+}

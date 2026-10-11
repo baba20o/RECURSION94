@@ -1,0 +1,254 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "S02",
+  "numeric_id": 302,
+  "name": "PHASE LOCK",
+  "kind": "primary",
+  "campaign_order": 10,
+  "sector": {
+    "id": "SOUND",
+    "name": "SOUND",
+    "theme": "three-lobed phase chamber with synchronized visual pulses"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#........#.........#",
+      "#..###...#...###...#",
+      "#..###.......###...#",
+      "#........#.........#",
+      "#........#.........#",
+      "#..................#",
+      "#.........#........#",
+      "#.........#........#",
+      "#...###.......###..#",
+      "#...###...#...###..#",
+      "#.........#........#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 160, "y": 192},
+    "exit": {"x": 160, "y": 32}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [45, 75],
+    "reset_policy": "restore phase counter zero, terminal flags, overlap timer, gate, and visual pulse state"
+  },
+  "echoes": {
+    "cap": 4,
+    "minimum": 3,
+    "first_clear_range": [3, 4],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_SOUND_PHASE_02",
+    "music_id": "MUS_SOUND_PHASE_LOCK",
+    "tempo_bpm": 120,
+    "authoritative_phase_source": "68000 frame counter modulo 90",
+    "visual_layers": ["phase_rings", "terminal_flags", "overlap_meter", "waveform_parallax"]
+  },
+  "mechanics": ["phase_terminals", "successive_windows", "overlapping_flags", "pulse_gate", "visual_audio_legibility"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "S02_TERMINAL_A",
+        "type": "phase_terminal",
+        "x": 64,
+        "y": 64,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "expired"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"phase_window_modulo_90": [0, 23], "latch_frames": 210, "phase_source": "68000"}
+      },
+      {
+        "logical_id": "S02_TERMINAL_B",
+        "type": "phase_terminal",
+        "x": 256,
+        "y": 64,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "expired"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"phase_window_modulo_90": [30, 53], "latch_frames": 210, "phase_source": "68000"}
+      },
+      {
+        "logical_id": "S02_TERMINAL_C",
+        "type": "phase_terminal",
+        "x": 64,
+        "y": 160,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "expired"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"phase_window_modulo_90": [60, 83], "latch_frames": 210, "phase_source": "68000"}
+      },
+      {
+        "logical_id": "S02_PHASE_GATE",
+        "type": "overlap_door",
+        "x": 160,
+        "y": 64,
+        "state": {"initial": "closed", "states": ["closed", "opening", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["S02_TERMINAL_A", "S02_TERMINAL_B", "S02_TERMINAL_C"], "opening_frames": 12}
+      },
+      {
+        "logical_id": "S02_EXIT",
+        "type": "exit_terminal",
+        "x": 160,
+        "y": 32,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 18}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "S02_EARLY_FIELD",
+        "type": "phase_rejection_field",
+        "x": 96,
+        "y": 104,
+        "state": {"initial": "safe", "states": ["safe", "early", "late"]},
+        "reset_policy": "safe",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 128, "height": 16, "damage": 0, "feedback_only": true}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "S02_O1_PHASE_A",
+        "type": "phase_interact",
+        "depends_on": [],
+        "condition": "S02_TERMINAL_A latched inside phase A window",
+        "deadline_frame": 480,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "S02_O2_PHASE_B",
+        "type": "phase_interact",
+        "depends_on": ["S02_O1_PHASE_A"],
+        "condition": "S02_TERMINAL_B latched in the next phase",
+        "deadline_frame": 540,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "S02_O3_PHASE_C",
+        "type": "phase_interact",
+        "depends_on": ["S02_O2_PHASE_B"],
+        "condition": "S02_TERMINAL_C latched in the next phase",
+        "deadline_frame": 600,
+        "role": "echo_3"
+      },
+      {
+        "objective_id": "S02_O4_TRAVERSE",
+        "type": "traverse_and_interact",
+        "depends_on": ["S02_O1_PHASE_A", "S02_O2_PHASE_B", "S02_O3_PHASE_C"],
+        "condition": "current crosses S02_PHASE_GATE and commits S02_EXIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "S02_O4_TRAVERSE complete"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "S02_ROLE_PHASE_A",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [{"frame": 270, "action": "strike", "target": "S02_TERMINAL_A"}]
+    },
+    {
+      "role_id": "S02_ROLE_PHASE_B",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [{"frame": 300, "action": "strike", "target": "S02_TERMINAL_B"}]
+    },
+    {
+      "role_id": "S02_ROLE_PHASE_C",
+      "actor": "echo_3",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [{"frame": 330, "action": "strike", "target": "S02_TERMINAL_C"}]
+    },
+    {
+      "role_id": "S02_ROLE_CROSS",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 390, "action": "cross", "target": "S02_PHASE_GATE"},
+        {"frame": 530, "action": "interact", "target": "S02_EXIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "S02_ALT_ROLE_PERMUTATION",
+      "role_changes": "any permutation of echoes owns phase A, B, and C",
+      "constraints": ["terminal order remains A then B then C", "each strike lies inside its 24-frame visual window"],
+      "echo_cost": 3
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "S02_FAIL_EARLY",
+      "condition": "terminal struck before its phase window",
+      "visual": "terminal labels EARLY and points to next valid visible pulse",
+      "audio": "low rejected phase tick",
+      "timeline": "records authoritative modulo-90 phase"
+    },
+    {
+      "id": "S02_FAIL_LATE",
+      "condition": "terminal struck after its phase window or prior latch expires",
+      "visual": "terminal labels LATE and expired flag darkens",
+      "audio": "high rejected phase tick",
+      "timeline": "marks strike frame and first expired dependency"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 40,
+    "dma_words": 1320,
+    "dma_queue_entries": 19,
+    "hardware_sprites": 36,
+    "sprites_per_scanline": 12,
+    "actors": 5,
+    "enemies": 0,
+    "projectiles": 0,
+    "devices": 5,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 22
+  },
+  "replays": {
+    "canonical": "S02_CANONICAL",
+    "failure": "S02_FAILURE_EARLY_LATE",
+    "stress": "S02_STRESS_FULL_PHASE_ANIMATION",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["S01"],
+    "unlocks": ["S03", "PHASE_TERMINALS"]
+  },
+  "narrative": {
+    "briefing": "THREE FLAGS MUST RING IN SUCCESSIVE PHASES.",
+    "success": "THE FLAGS OVERLAPPED WITHOUT PERFECT PLAYBACK.",
+    "failure": "THE MACHINE SAYS EARLY OR LATE.",
+    "echo_hint": "STRIKE ON THREE BROAD VISIBLE PULSES, THIRTY FRAMES APART."
+  }
+}

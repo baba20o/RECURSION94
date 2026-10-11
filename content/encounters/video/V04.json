@@ -1,0 +1,351 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "V04",
+  "numeric_id": 204,
+  "name": "THE SCHEDULER",
+  "kind": "boss",
+  "campaign_order": 8,
+  "sector": {
+    "id": "VIDEO",
+    "name": "VIDEO",
+    "theme": "three-zone execution arena with a visible 120-frame raster clock"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "#..................#",
+      "#.###....####....###",
+      "#.###....####....###",
+      "#..................#",
+      "###....####....###.#",
+      "###....####....###.#",
+      "#..................#",
+      "#.....#......#.....#",
+      "#.....#......#.....#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 160, "y": 192},
+    "exit": {"x": 160, "y": 32}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [42, 72],
+    "reset_policy": "restore scheduler cycle zero, all channel latches, reflector angle, route gates, boss phases, and projectiles"
+  },
+  "echoes": {
+    "cap": 3,
+    "minimum": 3,
+    "first_clear_range": [3, 5],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_VIDEO_SCHEDULER",
+    "music_id": "MUS_VIDEO_SCHEDULER",
+    "tempo_bpm": 100,
+    "visual_layers": ["three_zone_parallax", "raster_clock", "channel_windows", "scanline_hazards"]
+  },
+  "mechanics": ["execution_windows", "three_channels", "reflector", "global_commit", "deterministic_cycle", "scanline_hazards"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "V04_CHANNEL_A",
+        "type": "scheduled_channel_terminal",
+        "x": 64,
+        "y": 64,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "missed"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"window_modulo_120": [0, 39], "service_frames": 24}
+      },
+      {
+        "logical_id": "V04_CHANNEL_B",
+        "type": "scheduled_channel_terminal",
+        "x": 256,
+        "y": 64,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "missed"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"window_modulo_120": [40, 79], "service_frames": 24}
+      },
+      {
+        "logical_id": "V04_CHANNEL_C",
+        "type": "scheduled_channel_terminal",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "idle", "states": ["idle", "window", "latched", "missed"]},
+        "reset_policy": "idle",
+        "anchor_policy": "forbidden",
+        "parameters": {"window_modulo_120": [80, 119], "service_frames": 24}
+      },
+      {
+        "logical_id": "V04_REFLECTOR",
+        "type": "beam_reflector",
+        "x": 256,
+        "y": 176,
+        "state": {"initial": "north", "states": ["north", "west", "south"]},
+        "reset_policy": "north",
+        "anchor_policy": "forbidden",
+        "parameters": {"required_state": "west", "rotation_frames": 18}
+      },
+      {
+        "logical_id": "V04_GLOBAL_COMMIT",
+        "type": "boss_commit_terminal",
+        "x": 160,
+        "y": 32,
+        "state": {"initial": "sealed", "states": ["sealed", "open", "committed"]},
+        "reset_policy": "sealed",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["V04_CHANNEL_A", "V04_CHANNEL_B", "V04_CHANNEL_C", "V04_REFLECTOR"], "interact_frames": 48}
+      }
+    ],
+    "enemies": [],
+    "hazards": [
+      {
+        "logical_id": "V04_SCANLINE_A",
+        "type": "scheduled_scanline_field",
+        "x": 0,
+        "y": 80,
+        "state": {"initial": "safe", "states": ["safe", "warning", "active"]},
+        "reset_policy": "safe",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_modulo_120": [40, 55], "width": 320, "height": 8}
+      },
+      {
+        "logical_id": "V04_SCANLINE_B",
+        "type": "scheduled_scanline_field",
+        "x": 0,
+        "y": 144,
+        "state": {"initial": "safe", "states": ["safe", "warning", "active"]},
+        "reset_policy": "safe",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_modulo_120": [80, 95], "width": 320, "height": 8}
+      }
+    ],
+    "carryables": [],
+    "boss_components": [
+      {
+        "logical_id": "V04_SCHEDULER_CORE",
+        "type": "boss_core",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "allocating", "states": ["allocating", "overcommitted", "halted"]},
+        "reset_policy": "allocating",
+        "anchor_policy": "forbidden",
+        "parameters": {"damageable": false, "cycle_frames": 120}
+      },
+      {
+        "logical_id": "V04_CLOCK_RING",
+        "type": "boss_clock",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "zone_a", "states": ["zone_a", "zone_b", "zone_c"]},
+        "reset_policy": "zone_a",
+        "anchor_policy": "forbidden",
+        "parameters": {"zone_frames": 40, "authoritative_source": "68000 frame modulo 120"}
+      },
+      {
+        "logical_id": "V04_ARBITER",
+        "type": "boss_channel_arbiter",
+        "x": 160,
+        "y": 80,
+        "state": {"initial": "strict", "states": ["strict", "rotated", "final"]},
+        "reset_policy": "strict",
+        "anchor_policy": "forbidden",
+        "parameters": {"miss_policy": "clear only the missed channel latch"}
+      }
+    ]
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "V04_O1_SERVICE_A",
+        "type": "scheduled_interact",
+        "depends_on": [],
+        "condition": "V04_CHANNEL_A latched during its visible window",
+        "deadline_frame": 520,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "V04_O2_SERVICE_B",
+        "type": "scheduled_interact",
+        "depends_on": [],
+        "condition": "V04_CHANNEL_B latched during its visible window",
+        "deadline_frame": 560,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "V04_O3_SERVICE_C_REFLECT",
+        "type": "scheduled_interact_and_redirect",
+        "depends_on": [],
+        "condition": "V04_CHANNEL_C latched and V04_REFLECTOR west",
+        "deadline_frame": 600,
+        "role": "echo_3"
+      },
+      {
+        "objective_id": "V04_O4_CROSS",
+        "type": "traverse",
+        "depends_on": ["V04_O1_SERVICE_A", "V04_O2_SERVICE_B", "V04_O3_SERVICE_C_REFLECT"],
+        "condition": "current reaches V04_GLOBAL_COMMIT while all latches overlap",
+        "deadline_frame": 665,
+        "role": "current"
+      },
+      {
+        "objective_id": "V04_O5_COMMIT",
+        "type": "non_damage_boss_progress",
+        "depends_on": ["V04_O4_CROSS"],
+        "condition": "current completes global commit",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "V04_SCHEDULER_CORE state is halted"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "V04_ROLE_CHANNEL_A",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 120, "action": "interact", "target": "V04_CHANNEL_A"},
+        {"frame": 360, "action": "refresh", "target": "V04_CHANNEL_A"}
+      ]
+    },
+    {
+      "role_id": "V04_ROLE_CHANNEL_B",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 160, "action": "interact", "target": "V04_CHANNEL_B"},
+        {"frame": 400, "action": "refresh", "target": "V04_CHANNEL_B"}
+      ]
+    },
+    {
+      "role_id": "V04_ROLE_CHANNEL_C",
+      "actor": "echo_3",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 200, "action": "interact", "target": "V04_CHANNEL_C"},
+        {"frame": 440, "action": "rotate", "target": "V04_REFLECTOR"}
+      ]
+    },
+    {
+      "role_id": "V04_ROLE_GLOBAL_COMMIT",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 510, "action": "cross_scheduled_route", "target": "V04_GLOBAL_COMMIT"},
+        {"frame": 638, "action": "interact", "target": "V04_GLOBAL_COMMIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "V04_ALT_ROTATE_OWNERSHIP",
+      "role_changes": "echoes rotate A to B, B to C, and C to A ownership",
+      "constraints": ["each interaction remains inside its modulo-120 window", "reflector remains coupled to channel C owner"],
+      "echo_cost": 3
+    },
+    {
+      "id": "V04_ALT_CURRENT_REFLECTOR",
+      "role_changes": "echo_3 services only C while current rotates reflector en route to commit",
+      "constraints": ["reflector rotation finishes before final latch overlap", "current preserves 48 frames for commit"],
+      "echo_cost": 3
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "V04_FAIL_WINDOW",
+      "condition": "a channel interaction starts outside its modulo-120 service window",
+      "visual": "missed zone and exact 120-frame window remain on timeline",
+      "audio": "channel-specific muted tick",
+      "timeline": "names channel, attempted frame, and next valid window"
+    },
+    {
+      "id": "V04_FAIL_OVERLAP",
+      "condition": "a latched channel expires before current reaches V04_GLOBAL_COMMIT",
+      "visual": "first expired channel darkens while other latches remain visible",
+      "audio": "one layer drops from the scheduler motif",
+      "timeline": "marks latch expiry and current route position"
+    }
+  ],
+  "boss_phases": [
+    {
+      "phase_id": "V04_PHASE_STATIC_ALLOCATION",
+      "entry_condition": "encounter frame equals 0",
+      "frame_window": [0, 239],
+      "attacks": [
+        {"pattern": "A-B-C scanline pulse", "period_frames": 120},
+        {"pattern": "single zone bolt at active terminal", "period_frames": 40}
+      ],
+      "required_progress": "demonstrate one valid service on each channel",
+      "exit_condition": "all three channel histories contain one valid service"
+    },
+    {
+      "phase_id": "V04_PHASE_ROTATED_WINDOWS",
+      "entry_condition": "phase one progress complete",
+      "frame_window": [240, 479],
+      "attacks": [
+        {"pattern": "B-C-A active-zone rotation", "period_frames": 120},
+        {"pattern": "paired horizontal scanlines", "frames": [280, 400]}
+      ],
+      "required_progress": "refresh all latches and rotate V04_REFLECTOR west",
+      "exit_condition": "three refreshed latches and reflector west overlap"
+    },
+    {
+      "phase_id": "V04_PHASE_GLOBAL_COMMIT",
+      "entry_condition": "all required channel states overlap",
+      "frame_window": [480, 719],
+      "attacks": [
+        {"pattern": "visible safe-zone migration", "period_frames": 30},
+        {"pattern": "commit interruption bolt", "frames": [576, 636, 696]}
+      ],
+      "required_progress": "cross final route and hold 48-frame global commit",
+      "exit_condition": "V04_GLOBAL_COMMIT reaches committed"
+    }
+  ],
+  "budgets": {
+    "cpu_percent": 52,
+    "dma_words": 1680,
+    "dma_queue_entries": 24,
+    "hardware_sprites": 48,
+    "sprites_per_scanline": 15,
+    "actors": 4,
+    "enemies": 0,
+    "projectiles": 18,
+    "devices": 5,
+    "carryables": 0,
+    "hazards": 2,
+    "boss_components": 3,
+    "effects": 22
+  },
+  "replays": {
+    "canonical": "V04_CANONICAL",
+    "failure": "V04_FAILURE_MISSED_WINDOW",
+    "stress": "V04_STRESS_ALL_CHANNELS",
+    "phase_regression": "V04_PHASE_BOUNDARIES"
+  },
+  "progression": {
+    "requires": ["V03"],
+    "unlocks": ["S01", "SECTOR_SOUND", "ECHO_CAP_4", "Z80_SOUND_ACCESS"]
+  },
+  "narrative": {
+    "briefing": "ONLY ONE ZONE MAY EXECUTE AT A TIME.",
+    "success": "THE SCHEDULE WAS FULL. THE CURRENT STILL RAN.",
+    "failure": "A MISSED WINDOW IS VISIBLE, NOT RANDOM.",
+    "echo_hint": "ASSIGN ONE PROCESS TO EACH CHANNEL AND CROSS THEIR OVERLAP."
+  }
+}

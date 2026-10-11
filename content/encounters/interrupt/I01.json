@@ -1,0 +1,239 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "I01",
+  "numeric_id": 501,
+  "name": "PRIORITY INVERSION",
+  "kind": "primary",
+  "campaign_order": 17,
+  "sector": {
+    "id": "INTERRUPT",
+    "name": "INTERRUPT",
+    "theme": "controlled raster corruption around a deterministic target arbiter"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#.......#..........#",
+      "#..###..#..####....#",
+      "#..###.....####....#",
+      "#.......#..........#",
+      "#.......#..........#",
+      "#..................#",
+      "#..........#.......#",
+      "#..........#.......#",
+      "#....####..#..###..#",
+      "#....####.....###..#",
+      "#..........#.......#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [24, 48],
+    "reset_policy": "rebuild sentry, target queue, shield, reflector, cell, socket, port, shots, then apply one approved shield-socket anchor"
+  },
+  "echoes": {
+    "cap": 6,
+    "minimum": 5,
+    "first_clear_range": [5, 8],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_INTERRUPT_PRIORITY_01",
+    "music_id": "MUS_INTERRUPT_PRIORITY",
+    "tempo_bpm": 160,
+    "visual_layers": ["split_scroll", "priority_numbers", "aim_history", "raster_windows"]
+  },
+  "mechanics": ["stable_target_priority", "interrupt_windows", "shield", "beam_reflection", "power_cell", "anchor", "sentry_redirection"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "I01_INTERRUPT_BEACON",
+        "type": "visibility_beacon",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "dark", "states": ["dark", "visible"]},
+        "reset_policy": "dark",
+        "anchor_policy": "forbidden",
+        "parameters": {"visible_windows": [[120, 149], [300, 329], [480, 509]], "priority_bonus": 100}
+      },
+      {
+        "logical_id": "I01_SHIELD",
+        "type": "shield_emitter",
+        "x": 112,
+        "y": 176,
+        "state": {"initial": "off", "states": ["off", "active"]},
+        "reset_policy": "off",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_while_held": true, "covers": "I01_CELL_ROUTE"}
+      },
+      {
+        "logical_id": "I01_REFLECTOR",
+        "type": "beam_reflector",
+        "x": 208,
+        "y": 80,
+        "state": {"initial": "north", "states": ["north", "east", "west"]},
+        "reset_policy": "north",
+        "anchor_policy": "forbidden",
+        "parameters": {"required_state": "west", "redirects": "I01_SENTRY"}
+      },
+      {
+        "logical_id": "I01_SHIELD_SOCKET",
+        "type": "power_socket",
+        "x": 240,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "powered"]},
+        "reset_policy": "empty unless approved anchor applies",
+        "anchor_policy": {"allowed": true, "record_type": "socket_powered", "max_records": 1, "idempotent_state": "powered"},
+        "parameters": {"accepts": "I01_CELL", "stabilizes": "I01_SHIELD"}
+      },
+      {
+        "logical_id": "I01_PORT",
+        "type": "interrupt_port",
+        "x": 272,
+        "y": 48,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["I01_SHIELD_SOCKET", "I01_REFLECTOR"], "opening_frames": 18}
+      },
+      {
+        "logical_id": "I01_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 24}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "I01_SENTRY",
+        "type": "sentry",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "tracking", "states": ["tracking", "charging", "firing", "redirected"]},
+        "reset_policy": "tracking",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "beacon priority bonus then visible class then distance then actor logical id", "fire_period_frames": 36, "projectile_speed_px": 4}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "I01_CELL_ROUTE",
+        "type": "dense_fire_lane",
+        "x": 96,
+        "y": 160,
+        "state": {"initial": "armed", "states": ["armed", "shielded"]},
+        "reset_policy": "armed",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 160, "height": 32, "telegraph_frames": 15}
+      },
+      {
+        "logical_id": "I01_RASTER_CUT",
+        "type": "scheduled_raster_hazard",
+        "x": 0,
+        "y": 96,
+        "state": {"initial": "safe", "states": ["safe", "active"]},
+        "reset_policy": "safe",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_windows": [[210, 224], [390, 404], [570, 584]], "width": 320, "height": 8}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "I01_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "socketed"]},
+        "reset_policy": "grounded unless anchored socket suppresses ordinary spawn",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 70}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "I01_O0_ANCHOR", "type": "anchor_optional", "depends_on": [], "condition": "I01_SHIELD_SOCKET may begin powered through one approved record", "deadline_frame": 0, "role": "prelude_current"},
+      {"objective_id": "I01_O1_PRIORITY", "type": "distract", "depends_on": [], "condition": "echo_1 occupies I01_INTERRUPT_BEACON during declared windows", "deadline_frame": 600, "role": "echo_1"},
+      {"objective_id": "I01_O2_SHIELD", "type": "maintain_state", "depends_on": [], "condition": "echo_2 shields carrier route", "deadline_frame": 650, "role": "echo_2"},
+      {"objective_id": "I01_O3_REFLECT", "type": "redirect", "depends_on": ["I01_O1_PRIORITY"], "condition": "echo_3 turns I01_REFLECTOR west while sentry tracks beacon", "deadline_frame": 620, "role": "echo_3"},
+      {"objective_id": "I01_O4_CARRY", "type": "carry", "depends_on": ["I01_O2_SHIELD"], "condition": "echo_4 sockets I01_CELL if socket is not anchored", "deadline_frame": 630, "role": "echo_4"},
+      {"objective_id": "I01_O5_PORT", "type": "interact", "depends_on": ["I01_O3_REFLECT", "I01_O4_CARRY"], "condition": "echo_5 opens I01_PORT", "deadline_frame": 670, "role": "echo_5"},
+      {"objective_id": "I01_O6_EXIT", "type": "interact", "depends_on": ["I01_O5_PORT"], "condition": "current commits I01_EXIT", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "I01_O6_EXIT complete"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "I01_ROLE_PRIORITY", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 120, "action": "hold_position", "target": "I01_INTERRUPT_BEACON"}, {"frame": 300, "action": "return_to", "target": "I01_INTERRUPT_BEACON"}, {"frame": 480, "action": "return_to", "target": "I01_INTERRUPT_BEACON"}]},
+    {"role_id": "I01_ROLE_SHIELD", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 330, "action": "hold_interact", "target": "I01_SHIELD"}]},
+    {"role_id": "I01_ROLE_REFLECT", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "rotate", "target": "I01_REFLECTOR"}]},
+    {"role_id": "I01_ROLE_CARRY", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 220, "action": "pick_up", "target": "I01_CELL"}, {"frame": 510, "action": "socket", "target": "I01_SHIELD_SOCKET"}]},
+    {"role_id": "I01_ROLE_PORT", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 570, "action": "interact", "target": "I01_PORT"}]},
+    {"role_id": "I01_ROLE_COMMIT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 650, "action": "interact", "target": "I01_EXIT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "I01_ALT_ANCHORED_SHIELD",
+      "role_changes": "anchor I01_SHIELD_SOCKET powered and move echo_4 to port duty while echo_5 owns final shield refresh",
+      "constraints": ["one anchor record only", "beacon target priority remains active during redirection"],
+      "echo_cost": 5
+    },
+    {
+      "id": "I01_ALT_CARRIER_PORT_SWAP",
+      "role_changes": "echo_4 and echo_5 exchange carry and port roles",
+      "constraints": ["carrier enters only under echo_2 shield", "port action follows socket power"],
+      "echo_cost": 5
+    }
+  ],
+  "failure_signals": [
+    {"id": "I01_FAIL_PRIORITY", "condition": "I01_SENTRY selects carrier or current instead of beacon echo", "visual": "every visible actor shows deterministic priority rank", "audio": "target-change interrupt cue", "timeline": "records ranking tuple at selection"},
+    {"id": "I01_FAIL_RASTER", "condition": "required actor crosses I01_RASTER_CUT during active window", "visual": "15-frame corruption band and actor route overlap freeze", "audio": "raster cut noise with flash equivalent", "timeline": "marks active interval"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 62,
+    "dma_words": 2020,
+    "dma_queue_entries": 31,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 1,
+    "projectiles": 24,
+    "devices": 6,
+    "carryables": 1,
+    "hazards": 2,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "I01_CANONICAL",
+    "failure": "I01_FAILURE_TARGET_PRIORITY",
+    "stress": "I01_STRESS_DENSE_SENTRY",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["M04", "ECHO_CAP_6"],
+    "unlocks": ["I02", "TARGET_PRIORITY_OVERLAY"]
+  },
+  "narrative": {
+    "briefing": "MAKE THE HIGHEST PRIORITY ACTOR THE LEAST IMPORTANT.",
+    "success": "THE INTERRUPT SERVICED A DECOY.",
+    "failure": "TARGET ORDER IS DATA YOU CAN PLAN AROUND.",
+    "echo_hint": "PUT ONE ECHO ON THE BEACON AT EVERY INTERRUPT WINDOW."
+  }
+}

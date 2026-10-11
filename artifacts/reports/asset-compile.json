@@ -1,0 +1,609 @@
+{
+  "animations": {
+    "count": 13,
+    "entries": [
+      {
+        "id": "cur_idle",
+        "loop_code": 1,
+        "source_file": "actor_current.json",
+        "steps": 2,
+        "total_ticks": 24
+      },
+      {
+        "id": "cur_walk",
+        "loop_code": 1,
+        "source_file": "actor_current.json",
+        "steps": 2,
+        "total_ticks": 10
+      },
+      {
+        "id": "cur_shot",
+        "loop_code": 0,
+        "source_file": "actor_current.json",
+        "steps": 2,
+        "total_ticks": 6
+      },
+      {
+        "id": "echo_1_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 19
+      },
+      {
+        "id": "echo_2_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 21
+      },
+      {
+        "id": "echo_3_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 25
+      },
+      {
+        "id": "echo_4_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 31
+      },
+      {
+        "id": "echo_5_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 33
+      },
+      {
+        "id": "echo_6_anim",
+        "loop_code": 1,
+        "source_file": "echoes.json",
+        "steps": 2,
+        "total_ticks": 39
+      },
+      {
+        "id": "switch_cycle",
+        "loop_code": 0,
+        "source_file": "devices.json",
+        "steps": 2,
+        "total_ticks": 15
+      },
+      {
+        "id": "door_cycle",
+        "loop_code": 0,
+        "source_file": "devices.json",
+        "steps": 2,
+        "total_ticks": 9
+      },
+      {
+        "id": "term_cycle",
+        "loop_code": 1,
+        "source_file": "devices.json",
+        "steps": 2,
+        "total_ticks": 30
+      },
+      {
+        "id": "term_complete",
+        "loop_code": 0,
+        "source_file": "devices.json",
+        "steps": 2,
+        "total_ticks": 9
+      }
+    ]
+  },
+  "art_direction": "Severe cartridge-space industrial architecture: black void, pale circuitry, deep rust, cold cobalt, strong silhouettes, controlled motion, and deliberate negative space.",
+  "budget_failures": [],
+  "budgets": {
+    "animations": {
+      "headroom": 19,
+      "limit": 32,
+      "status": "PASS",
+      "unit": "animations",
+      "used": 13
+    },
+    "cram_words": {
+      "headroom": 0,
+      "limit": 64,
+      "status": "PASS",
+      "unit": "words",
+      "used": 64
+    },
+    "rom_bundle_bytes": {
+      "headroom": 57464,
+      "limit": 65536,
+      "status": "PASS",
+      "unit": "bytes",
+      "used": 8072
+    },
+    "sprite_frames": {
+      "headroom": 45,
+      "limit": 64,
+      "status": "PASS",
+      "unit": "frames",
+      "used": 19
+    },
+    "sprite_pieces_per_frame": {
+      "headroom": 8,
+      "limit": 16,
+      "status": "PASS",
+      "unit": "pieces",
+      "used": 8
+    },
+    "unique_tiles": {
+      "headroom": 397,
+      "limit": 512,
+      "status": "PASS",
+      "unit": "tiles",
+      "used": 115
+    },
+    "vram_largest_map_bytes": {
+      "headroom": 1856,
+      "limit": 4096,
+      "status": "PASS",
+      "unit": "bytes",
+      "used": 2240
+    },
+    "vram_tile_bytes": {
+      "headroom": 20896,
+      "limit": 24576,
+      "status": "PASS",
+      "unit": "bytes",
+      "used": 3680
+    }
+  },
+  "claims": {
+    "binary_format_validation": true,
+    "deterministic_generation": true,
+    "emulator_rendering": false,
+    "runtime_integration": false,
+    "source_validation": true,
+    "subjective_visual_review": false
+  },
+  "compiler": {
+    "name": "RECURSION 94 deterministic Genesis art compiler",
+    "runtime": "Python standard library only",
+    "version": "1.0.0"
+  },
+  "identity": "BOOT",
+  "outputs": {
+    "recursion94_art.bin": {
+      "bytes": 8072,
+      "sha256": "4992b3cb89e7ad2ac1b9d82a7eac859831cdd2f95c01b7d9dc82dd294a1a84e9"
+    },
+    "recursion94_art.inc.asm": {
+      "bytes": 8954,
+      "sha256": "91e2e07944d9c949f3854e36025bbf53e6ab389be3fd63f441b508012fe86522"
+    },
+    "recursion94_art_animations.bin": {
+      "bytes": 536,
+      "sha256": "528de17846d301e3382721c367c73017578af899df6c4036b859b6bb8273ae96"
+    },
+    "recursion94_art_palettes.bin": {
+      "bytes": 128,
+      "sha256": "a58d792c0c36af353d63efcd52c5e925d3fd267e541456b1a0b5b1487520a64c"
+    },
+    "recursion94_art_sprites.bin": {
+      "bytes": 1344,
+      "sha256": "ea028c1c69fb87c87c56ed5e208250da3ded2efa0206a455c4c3243c4abe3db7"
+    },
+    "recursion94_art_tilemaps.bin": {
+      "bytes": 2288,
+      "sha256": "e31daa4b1c8edc574e6acef4eca00ac193e1af9d74c6d9151d9d019ad9a9ea4c"
+    },
+    "recursion94_art_tiles.bin": {
+      "bytes": 3680,
+      "sha256": "2fa47ac81969670eb0e6f063a4b6bce049b1dd933072a2f587fe0d3ba87c6340"
+    }
+  },
+  "palettes": {
+    "bank_words": 16,
+    "definitions": [
+      {
+        "emitted_opaque_colors": 15,
+        "id": "boot_world",
+        "mode": "reduce",
+        "slot": 0,
+        "source_opaque_colors": 18,
+        "source_to_index": {
+          "#05070A": 1,
+          "#0A1018": 1,
+          "#111B25": 2,
+          "#182631": 4,
+          "#18395F": 5,
+          "#223440": 4,
+          "#24558A": 8,
+          "#2C4350": 7,
+          "#3C5862": 10,
+          "#4C1D16": 3,
+          "#526F74": 10,
+          "#6F8989": 12,
+          "#713025": 6,
+          "#91A4A0": 13,
+          "#994634": 9,
+          "#B5C2B8": 14,
+          "#C36345": 11,
+          "#D8DCCB": 15
+        },
+        "words_hex": [
+          "$0000",
+          "$0200",
+          "$0220",
+          "$0224",
+          "$0422",
+          "$0642",
+          "$0226",
+          "$0442",
+          "$0842",
+          "$0248",
+          "$0664",
+          "$046A",
+          "$0886",
+          "$08A8",
+          "$0AAA",
+          "$0CCC"
+        ]
+      },
+      {
+        "emitted_opaque_colors": 12,
+        "id": "current",
+        "mode": "exact",
+        "slot": 1,
+        "source_opaque_colors": 12,
+        "source_to_index": {
+          "#05070A": 1,
+          "#13253A": 2,
+          "#1A4F7D": 3,
+          "#2379B4": 4,
+          "#333C40": 7,
+          "#44A4D5": 5,
+          "#53746A": 6,
+          "#6E291F": 10,
+          "#A8B4AD": 9,
+          "#C7623F": 8,
+          "#D8DCCB": 11,
+          "#E0A94C": 12
+        },
+        "words_hex": [
+          "$0000",
+          "$0000",
+          "$0422",
+          "$0642",
+          "$0A62",
+          "$0CA4",
+          "$0664",
+          "$0442",
+          "$046A",
+          "$0AAA",
+          "$0226",
+          "$0CCC",
+          "$04AC"
+        ]
+      },
+      {
+        "emitted_opaque_colors": 15,
+        "id": "echo",
+        "mode": "exact",
+        "slot": 2,
+        "source_opaque_colors": 15,
+        "source_to_index": {
+          "#05070A": 1,
+          "#13202B": 11,
+          "#1C4264": 8,
+          "#39759A": 9,
+          "#46645C": 10,
+          "#4C95B8": 2,
+          "#5F2925": 13,
+          "#6E82BD": 3,
+          "#7C4437": 14,
+          "#8B72AC": 4,
+          "#9B974A": 7,
+          "#A86682": 5,
+          "#AFC3C0": 12,
+          "#B8744F": 6,
+          "#E2E4D5": 15
+        },
+        "words_hex": [
+          "$0000",
+          "$0000",
+          "$0A84",
+          "$0A86",
+          "$0A68",
+          "$086A",
+          "$046A",
+          "$0488",
+          "$0642",
+          "$0864",
+          "$0664",
+          "$0222",
+          "$0AAA",
+          "$0226",
+          "$0446",
+          "$0CCC"
+        ]
+      },
+      {
+        "emitted_opaque_colors": 15,
+        "id": "ui_devices",
+        "mode": "exact",
+        "slot": 3,
+        "source_opaque_colors": 15,
+        "source_to_index": {
+          "#05070A": 1,
+          "#111820": 2,
+          "#245A88": 5,
+          "#26323A": 3,
+          "#3D85AC": 6,
+          "#42675A": 7,
+          "#46545A": 4,
+          "#65261E": 11,
+          "#68A078": 8,
+          "#7A4F63": 14,
+          "#93402F": 12,
+          "#AAB5AE": 10,
+          "#C4623E": 9,
+          "#D9A74C": 15,
+          "#E0E1D2": 13
+        },
+        "words_hex": [
+          "$0000",
+          "$0000",
+          "$0220",
+          "$0422",
+          "$0444",
+          "$0842",
+          "$0A84",
+          "$0464",
+          "$0686",
+          "$046A",
+          "$0AAA",
+          "$0226",
+          "$0248",
+          "$0CCC",
+          "$0646",
+          "$04AC"
+        ]
+      }
+    ],
+    "emitted_banks": 4,
+    "format": "Genesis 9-bit 0000 BBB0 GGG0 RRR0",
+    "transparent_index": 0
+  },
+  "provenance": {
+    "creator": "RECURSION 94 project",
+    "external_sources": [],
+    "method": "repository-authored JSON pixel matrices",
+    "origin": "original",
+    "rights": "Original project work; no third-party art incorporated",
+    "source_files": [
+      {
+        "path": "art/actor_current.json",
+        "semantic_sha256": "af006e54cdc64dfac172b7fcee56944697b749c0661b9b4931959cff96d08361"
+      },
+      {
+        "path": "art/devices.json",
+        "semantic_sha256": "cfd12a227a2e3fe7edbb493a81b9e1adcd1fddb8c694195c07fe6a843e77d0fe"
+      },
+      {
+        "path": "art/echoes.json",
+        "semantic_sha256": "5f6a2da7840ad3f4d7d74258b5d7a432c8701860c6f0191e09ca87a8c8f09c60"
+      },
+      {
+        "path": "art/font_ui.json",
+        "semantic_sha256": "1078234359f455d4c20aa123bbb64e3e5e49786bfbe01537927711d83c74edda"
+      },
+      {
+        "path": "art/industrial.json",
+        "semantic_sha256": "73a09bf6ebbff647a91bce6d34d8148586b14804f5796506352612fe63910a82"
+      },
+      {
+        "path": "art/manifest.json",
+        "semantic_sha256": "c8740caeafb48596b4bce22951a47fcfa3c8566ce4bd2745705a8d69cff1dd5b"
+      },
+      {
+        "path": "art/palettes.json",
+        "semantic_sha256": "fa53081b8c326b0cb72206b6aaeea86c657685e5fbd60164c9f30c9d90fb9c81"
+      },
+      {
+        "path": "art/ui.json",
+        "semantic_sha256": "8e4ccccdcdc0a0ffa72968a99ba996afb9219718ecc09785728be2cd7961fd59"
+      },
+      {
+        "path": "maps/boot_chamber.json",
+        "semantic_sha256": "20789f99f706fa502b9d4c03bcd470de8f8f52a218003685bfbb08a9660b2acd"
+      }
+    ],
+    "source_semantic_sha256": "0e770b76640aff4f1ed4269d7dddeaf2d49d77fc7949417433c6f871e0040d46"
+  },
+  "schema": "recursion94.asset_compile_report",
+  "schema_version": 1,
+  "sprites": {
+    "frame_count": 19,
+    "frames": [
+      {
+        "height": 16,
+        "id": "cur_idle0",
+        "pieces": 4,
+        "source_file": "actor_current.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "cur_idle1",
+        "pieces": 4,
+        "source_file": "actor_current.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "cur_step0",
+        "pieces": 4,
+        "source_file": "actor_current.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "cur_step1",
+        "pieces": 4,
+        "source_file": "actor_current.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "cur_fire",
+        "pieces": 4,
+        "source_file": "actor_current.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_1",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_2",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_3",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_4",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_5",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_6",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "echo_phase",
+        "pieces": 4,
+        "source_file": "echoes.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "switch_off",
+        "pieces": 4,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 16,
+        "id": "switch_on",
+        "pieces": 4,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 32,
+        "id": "door_closed",
+        "pieces": 8,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 32,
+        "id": "door_open",
+        "pieces": 8,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 24,
+        "id": "term_idle",
+        "pieces": 6,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 24,
+        "id": "term_active",
+        "pieces": 6,
+        "source_file": "devices.json",
+        "width": 16
+      },
+      {
+        "height": 24,
+        "id": "term_done",
+        "pieces": 6,
+        "source_file": "devices.json",
+        "width": 16
+      }
+    ],
+    "mapping_model": "bounded 1x1-cell hardware-sprite pieces",
+    "maximum_pieces_per_frame": 8,
+    "palette_slots": {
+      "0": 0,
+      "1": 20,
+      "2": 28,
+      "3": 42
+    },
+    "piece_count": 90,
+    "priority_pieces": 90
+  },
+  "status": "PASS",
+  "tilemaps": {
+    "attribute_coverage": {
+      "horizontal_flip_entries": 145,
+      "palette_slots": {
+        "0": 1118,
+        "1": 0,
+        "2": 0,
+        "3": 2
+      },
+      "priority_entries": 206,
+      "vertical_flip_entries": 27
+    },
+    "count": 1,
+    "maps": [
+      {
+        "bytes": 2240,
+        "entries": 1120,
+        "height_tiles": 28,
+        "id": "boot_chamber",
+        "source_file": "boot_chamber.json",
+        "width_tiles": 40
+      }
+    ]
+  },
+  "tiles": {
+    "bytes": 3680,
+    "format": "8x8 4bpp, 32 bytes",
+    "input_cells": 164,
+    "reuse": {
+      "both": 0,
+      "exact": 24,
+      "horizontal": 25,
+      "vertical": 1
+    },
+    "transparent_tile_index": 0,
+    "unique_tiles_including_transparent": 115
+  }
+}

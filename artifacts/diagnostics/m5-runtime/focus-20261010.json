@@ -1,0 +1,21 @@
+{
+  "collector_sha256": "e38c75b2b3819f565c452d2ec4e993bda7121bf9737c15b1645c89efb9e6d7fa",
+  "evidence_type": "passive_host_foreground_observation",
+  "guest_writes": false,
+  "input_transport_changed": false,
+  "mask_calls": 88,
+  "schema": "r94-m5-input-focus-diagnostic-v1",
+  "script_sha256": "4b1a9fa03422c6dec6d7a0b778b78dfd4b098e4dc3b0f677a3f19800201a0450",
+  "transitions": [
+    {
+      "desired_mask": 2,
+      "foreground_pid": 58300,
+      "foreground_window": 6295708,
+      "mask_call": 1,
+      "owned_is_foreground": true,
+      "owned_window": 6295708,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:44:23.403274+00:00"
+    }
+  ]
+}

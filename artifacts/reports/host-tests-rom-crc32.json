@@ -1,0 +1,31 @@
+{
+  "binary_checks": [
+    {
+      "configuration": "debug",
+      "gate_passed": true,
+      "sha256": "d8c89274bdcb2a919284f84c38202ae96ae4a27b7bd5ba418597325db190bf8d",
+      "status": "pass"
+    },
+    {
+      "configuration": "release",
+      "gate_passed": true,
+      "sha256": "fbd170380aa3d2f8cc8ae57ef0c501476a65259e3382559d79490d101cec864f",
+      "status": "pass"
+    }
+  ],
+  "pending_release_suites": {},
+  "release_gate_passed": false,
+  "requested_suite": "Rom",
+  "runs": [
+    {
+      "errors": 0,
+      "failures": 0,
+      "path": "tests/rom",
+      "skipped": 0,
+      "status": "pass",
+      "tests_run": 11
+    }
+  ],
+  "schema": 1,
+  "status": "pass"
+}

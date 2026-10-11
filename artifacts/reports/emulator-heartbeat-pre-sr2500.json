@@ -1,0 +1,127 @@
+{
+  "checks": [
+    {
+      "check": "rom_static_and_hash",
+      "detail": "sha256 8de3e2a0fa9d2a21c2ebd0d9baa0ecf51b9945d3c29b2f5d7aba26878c79af1a",
+      "status": "pass"
+    },
+    {
+      "check": "gdb_breakpoint",
+      "detail": "breakpoint 0003B6 stops 3",
+      "status": "pass"
+    },
+    {
+      "check": "vblank_pc",
+      "detail": "ROM vector and audited PC $000003B6",
+      "status": "pass"
+    },
+    {
+      "check": "sample_shape",
+      "detail": "4 complete debug ABI samples",
+      "status": "pass"
+    },
+    {
+      "check": "debug_magic",
+      "detail": "all samples contain ASCII R94D",
+      "status": "pass"
+    },
+    {
+      "check": "debug_abi",
+      "detail": "ABI version 1, size 1024",
+      "status": "pass"
+    },
+    {
+      "check": "boot_stage",
+      "detail": "all samples reached boot stage 4",
+      "status": "pass"
+    },
+    {
+      "check": "fatal_and_hardware_flags",
+      "detail": "fatal code and hardware flags remain zero",
+      "status": "pass"
+    },
+    {
+      "check": "heartbeat_monotonic",
+      "detail": "heartbeat [0, 1, 2, 3]",
+      "status": "pass"
+    },
+    {
+      "check": "frame_counter_monotonic",
+      "detail": "frame counter [0, 1, 2, 3]",
+      "status": "pass"
+    },
+    {
+      "check": "frame_token_monotonic",
+      "detail": "frame token [0, 1, 2, 3]",
+      "status": "pass"
+    },
+    {
+      "check": "seqlock_monotonic_even",
+      "detail": "sequence [0, 2, 4, 6]",
+      "status": "pass"
+    },
+    {
+      "check": "transcript_commands",
+      "detail": "transcript contains repeated RAM reads, stops, and VBlank PC",
+      "status": "pass"
+    }
+  ],
+  "evidence_type": "independent_blastem_gdb_debug_abi",
+  "observed": {
+    "final": {
+      "abi_size": 1024,
+      "abi_version": 1,
+      "boot_stage": 4,
+      "fatal_code": 0,
+      "frame_counter": 3,
+      "frame_token": 3,
+      "hardware_flags": 0,
+      "heartbeat": 3,
+      "last_vdp_status": 21000,
+      "magic_hex": "52393444",
+      "raw_hex": "5239344400010400000000060000000300000003000300000004000052080000",
+      "sequence": 6
+    },
+    "frame_counter": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "frame_token": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "heartbeat": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "sample_count": 4,
+    "sequence": [
+      0,
+      2,
+      4,
+      6
+    ],
+    "vblank_pc": 950
+  },
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "8de3e2a0fa9d2a21c2ebd0d9baa0ecf51b9945d3c29b2f5d7aba26878c79af1a",
+    "current_file_binding": false
+  },
+  "schema": 1,
+  "scope_limit": "The source audit's OS screenshot helper timed out after the GDB RAM proof completed; that timeout does not alter these validated debugger samples. Screenshot evidence is tracked separately. This report proves Milestone 1 boot/VBlank heartbeat only, not later gameplay gates.",
+  "source": {
+    "report_path": "artifacts/m1_audit/runtime_evidence.json",
+    "report_sha256": "6e3a0e55d617dcdcbd86f4e38996efa983b3476e2f7845b53945ca7e3c17801c",
+    "report_status": "error",
+    "transcript_path": "artifacts/m1_audit/gdb_transcript.log",
+    "transcript_sha256": "47ee80f8de2eeae5f6d6895a3c78dafbb902c622fcdc2dbc1ac9e532590ccbfe"
+  },
+  "status": "stale"
+}

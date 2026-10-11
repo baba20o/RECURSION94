@@ -1,0 +1,389 @@
+{
+  "schema": "recursion94.pixel_asset",
+  "schema_version": 1,
+  "asset_id": "font_ui",
+  "kind": "font",
+  "palette": "ui_devices",
+  "provenance_id": "original_project",
+  "frames": [
+    {
+      "id": "f_space",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "........", "........", "........", "........", "........", "........", "........"]
+    },
+    {
+      "id": "f_a",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w...w..", ".wwwww..", ".w...w..", ".w...w..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_b",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwww...", ".w...w..", ".w...w..", ".wwww...", ".w...w..", ".w...w..", ".wwww...", "........"]
+    },
+    {
+      "id": "f_c",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..wwww..", ".w......", ".w......", ".w......", ".w......", ".w......", "..wwww..", "........"]
+    },
+    {
+      "id": "f_d",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwww...", ".w...w..", ".w...w..", ".w...w..", ".w...w..", ".w...w..", ".wwww...", "........"]
+    },
+    {
+      "id": "f_e",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", ".w......", ".w......", ".wwww...", ".w......", ".w......", ".wwwww..", "........"]
+    },
+    {
+      "id": "f_f",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", ".w......", ".w......", ".wwww...", ".w......", ".w......", ".w......", "........"]
+    },
+    {
+      "id": "f_g",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..wwww..", ".w......", ".w......", ".w.www..", ".w...w..", ".w...w..", "..wwww..", "........"]
+    },
+    {
+      "id": "f_h",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", ".w...w..", ".wwwww..", ".w...w..", ".w...w..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_i",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", "...w....", "...w....", "...w....", "...w....", "...w....", "..www...", "........"]
+    },
+    {
+      "id": "f_j",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["...www..", "....w...", "....w...", "....w...", "....w...", ".w..w...", "..ww....", "........"]
+    },
+    {
+      "id": "f_k",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w..w...", ".w.w....", ".ww.....", ".w.w....", ".w..w...", ".w...w..", "........"]
+    },
+    {
+      "id": "f_l",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w......", ".w......", ".w......", ".w......", ".w......", ".w......", ".wwwww..", "........"]
+    },
+    {
+      "id": "f_m",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".ww.ww..", ".w.w.w..", ".w.w.w..", ".w...w..", ".w...w..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_n",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".ww..w..", ".ww..w..", ".w.w.w..", ".w..ww..", ".w..ww..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_o",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w...w..", ".w...w..", ".w...w..", ".w...w..", "..www...", "........"]
+    },
+    {
+      "id": "f_p",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwww...", ".w...w..", ".w...w..", ".wwww...", ".w......", ".w......", ".w......", "........"]
+    },
+    {
+      "id": "f_q",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w...w..", ".w...w..", ".w.w.w..", ".w..w...", "..ww.w..", "........"]
+    },
+    {
+      "id": "f_r",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwww...", ".w...w..", ".w...w..", ".wwww...", ".w.w....", ".w..w...", ".w...w..", "........"]
+    },
+    {
+      "id": "f_s",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..wwww..", ".w......", ".w......", "..www...", ".....w..", ".....w..", ".wwww...", "........"]
+    },
+    {
+      "id": "f_t",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", "...w....", "...w....", "...w....", "...w....", "...w....", "...w....", "........"]
+    },
+    {
+      "id": "f_u",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", ".w...w..", ".w...w..", ".w...w..", ".w...w..", "..www...", "........"]
+    },
+    {
+      "id": "f_v",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", ".w...w..", ".w...w..", ".w...w..", "..w.w...", "...w....", "........"]
+    },
+    {
+      "id": "f_w",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", ".w...w..", ".w.w.w..", ".w.w.w..", ".ww.ww..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_x",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", "..w.w...", "...w....", "..w.w...", ".w...w..", ".w...w..", "........"]
+    },
+    {
+      "id": "f_y",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".w...w..", ".w...w..", "..w.w...", "...w....", "...w....", "...w....", "...w....", "........"]
+    },
+    {
+      "id": "f_z",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", ".....w..", "....w...", "...w....", "..w.....", ".w......", ".wwwww..", "........"]
+    },
+    {
+      "id": "f_0",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w..ww..", ".w.w.w..", ".ww..w..", ".w...w..", "..www...", "........"]
+    },
+    {
+      "id": "f_1",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["...w....", "..ww....", ".w.w....", "...w....", "...w....", "...w....", ".wwwww..", "........"]
+    },
+    {
+      "id": "f_2",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".....w..", "....w...", "...w....", "..w.....", ".wwwww..", "........"]
+    },
+    {
+      "id": "f_3",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwww...", ".....w..", ".....w..", "..www...", ".....w..", ".....w..", ".wwww...", "........"]
+    },
+    {
+      "id": "f_4",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["....w...", "...ww...", "..w.w...", ".w..w...", ".wwwww..", "....w...", "....w...", "........"]
+    },
+    {
+      "id": "f_5",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", ".w......", ".w......", ".wwww...", ".....w..", ".....w..", ".wwww...", "........"]
+    },
+    {
+      "id": "f_6",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w......", ".w......", ".wwww...", ".w...w..", ".w...w..", "..www...", "........"]
+    },
+    {
+      "id": "f_7",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".wwwww..", ".....w..", "....w...", "...w....", "..w.....", "..w.....", "..w.....", "........"]
+    },
+    {
+      "id": "f_8",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w...w..", "..www...", ".w...w..", ".w...w..", "..www...", "........"]
+    },
+    {
+      "id": "f_9",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["..www...", ".w...w..", ".w...w..", "..wwww..", ".....w..", ".....w..", "..www...", "........"]
+    },
+    {
+      "id": "f_colon",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "...w....", "...w....", "........", "...w....", "...w....", "........", "........"]
+    },
+    {
+      "id": "f_dash",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "........", "........", ".wwwww..", "........", "........", "........", "........"]
+    },
+    {
+      "id": "f_slash",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": [".....w..", "....w...", "....w...", "...w....", "..w.....", "..w.....", ".w......", "........"]
+    },
+    {
+      "id": "f_period",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["........", "........", "........", "........", "........", "..ww....", "..ww....", "........"]
+    },
+    {
+      "id": "f_bang",
+      "width": 8,
+      "height": 8,
+      "origin_x": 0,
+      "origin_y": 0,
+      "priority": true,
+      "pixels": ["...w....", "...w....", "...w....", "...w....", "...w....", "........", "...w....", "........"]
+    }
+  ],
+  "animations": []
+}

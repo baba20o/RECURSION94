@@ -1,0 +1,228 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "S03",
+  "numeric_id": 303,
+  "name": "COUNTERPOINT",
+  "kind": "primary",
+  "campaign_order": 11,
+  "sector": {
+    "id": "SOUND",
+    "name": "SOUND",
+    "theme": "layered waveform corridor with shielded sentry"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#....#........#....#",
+      "#....#..####..#....#",
+      "#.......####.......#",
+      "#....#........#....#",
+      "#....#........#....#",
+      "#..................#",
+      "#....#........#....#",
+      "#....#........#....#",
+      "#.......####.......#",
+      "#....#..####..#....#",
+      "#....#........#....#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 112},
+    "exit": {"x": 288, "y": 112}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [36, 66],
+    "reset_policy": "restore lure target, pulse gate, cell, socket, turret, shield emitter, projectiles, and receiver"
+  },
+  "echoes": {
+    "cap": 4,
+    "minimum": 4,
+    "first_clear_range": [4, 6],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_SOUND_COUNTERPOINT_03",
+    "music_id": "MUS_SOUND_COUNTERPOINT",
+    "tempo_bpm": 120,
+    "authoritative_phase_source": "68000 phrase and frame counters",
+    "visual_layers": ["role_waveforms", "shield_arc", "turret_aim", "cell_trace"]
+  },
+  "mechanics": ["audible_lure", "pulse_gate", "carryable_power_cell", "sentry", "shield_emitter", "suppression", "receiver"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "S03_PULSE_GATE",
+        "type": "pulse_door",
+        "x": 112,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"open_window_modulo_120": [30, 74], "phase_source": "68000"}
+      },
+      {
+        "logical_id": "S03_GATE_CONTROL",
+        "type": "phase_hold_terminal",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "released", "states": ["released", "held"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"extends_gate_frames": 120}
+      },
+      {
+        "logical_id": "S03_SHIELD",
+        "type": "shield_emitter",
+        "x": 208,
+        "y": 48,
+        "state": {"initial": "active", "states": ["active", "suppressed", "restarting"]},
+        "reset_policy": "active",
+        "anchor_policy": "forbidden",
+        "parameters": {"suppression_hits": 3, "suppressed_frames": 150, "protects": ["S03_SENTRY"]}
+      },
+      {
+        "logical_id": "S03_SOCKET",
+        "type": "power_socket",
+        "x": 256,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "occupied", "powered"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"accepts": "S03_CELL", "power_frames": 36}
+      },
+      {
+        "logical_id": "S03_RECEIVER",
+        "type": "exit_receiver",
+        "x": 288,
+        "y": 112,
+        "state": {"initial": "locked", "states": ["locked", "armed", "complete"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["S03_SOCKET", "S03_SHIELD"], "interact_frames": 30}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "S03_PURSUER",
+        "type": "pursuer",
+        "x": 144,
+        "y": 160,
+        "state": {"initial": "listening", "states": ["listening", "investigating", "chasing"]},
+        "reset_policy": "listening at x=144 y=160",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "loudest recent event then logical actor id", "hearing_radius_px": 128}
+      },
+      {
+        "logical_id": "S03_SENTRY",
+        "type": "sentry",
+        "x": 208,
+        "y": 112,
+        "state": {"initial": "shielded_tracking", "states": ["shielded_tracking", "exposed_tracking", "firing", "disabled"]},
+        "reset_policy": "shielded_tracking",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "nearest visible then oldest echo", "fire_period_frames": 42, "projectile_speed_px": 3}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "S03_CROSS_FIRE",
+        "type": "turret_fire_lane",
+        "x": 176,
+        "y": 104,
+        "state": {"initial": "armed", "states": ["armed", "suppressed"]},
+        "reset_policy": "armed",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 96, "height": 16, "telegraph_frames": 18}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "S03_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "dropped", "socketed"]},
+        "reset_policy": "grounded at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 76, "drop_on_damage": true}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "S03_O1_LURE", "type": "distract", "depends_on": [], "condition": "echo_1 holds S03_PURSUER west with repeating noise", "deadline_frame": 560, "role": "echo_1"},
+      {"objective_id": "S03_O2_GATE", "type": "maintain_state", "depends_on": [], "condition": "echo_2 holds S03_GATE_CONTROL through carrier crossing", "deadline_frame": 600, "role": "echo_2"},
+      {"objective_id": "S03_O3_CARRY", "type": "carry", "depends_on": ["S03_O1_LURE", "S03_O2_GATE"], "condition": "echo_3 sockets S03_CELL", "deadline_frame": 620, "role": "echo_3"},
+      {"objective_id": "S03_O4_SUPPRESS", "type": "combat_device", "depends_on": [], "condition": "echo_4 suppresses S03_SHIELD and redirects or disables S03_SENTRY", "deadline_frame": 640, "role": "echo_4"},
+      {"objective_id": "S03_O5_RECEIVE", "type": "interact", "depends_on": ["S03_O3_CARRY", "S03_O4_SUPPRESS"], "condition": "current completes S03_RECEIVER", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "S03_O5_RECEIVE complete"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "S03_ROLE_LURE", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 120, "action": "fire_pattern", "target": "S03_PURSUER"}, {"frame": 300, "action": "repeat_pattern", "target": "S03_PURSUER"}]},
+    {"role_id": "S03_ROLE_GATE", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 180, "action": "hold_interact", "target": "S03_GATE_CONTROL"}]},
+    {"role_id": "S03_ROLE_CARRIER", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 150, "action": "pick_up", "target": "S03_CELL"}, {"frame": 470, "action": "socket", "target": "S03_SOCKET"}]},
+    {"role_id": "S03_ROLE_SUPPRESSOR", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 260, "action": "fire_burst", "target": "S03_SHIELD"}, {"frame": 410, "action": "fire", "target": "S03_SENTRY"}]},
+    {"role_id": "S03_ROLE_RECEIVER", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 540, "action": "interact", "target": "S03_RECEIVER"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "S03_ALT_REDIRECT_TURRET",
+      "role_changes": "echo_4 rotates the exposed sentry into the Pursuer lane instead of disabling it",
+      "constraints": ["shield suppressed first", "redirected shots cannot intersect carrier path"],
+      "echo_cost": 4
+    },
+    {
+      "id": "S03_ALT_CURRENT_CARRIER",
+      "role_changes": "current carries the cell while echo_3 waits at S03_RECEIVER",
+      "constraints": ["current avoids damage and preserves receiver timing", "lure and gate roles unchanged"],
+      "echo_cost": 4
+    }
+  ],
+  "failure_signals": [
+    {"id": "S03_FAIL_LURE", "condition": "S03_PURSUER leaves echo_1 and enters carrier path", "visual": "lure waveform and target line collapse", "audio": "lure layer mutes", "timeline": "marks first louder competing event"},
+    {"id": "S03_FAIL_SHIELD", "condition": "S03_SENTRY remains shielded when carrier enters S03_CROSS_FIRE", "visual": "shield dependency flashes over fire lane", "audio": "shielded turret warning", "timeline": "names suppression role collapse"},
+    {"id": "S03_FAIL_CELL", "condition": "S03_CELL drops after damage", "visual": "cell owner and drop coordinate remain visible", "audio": "cell drop cue", "timeline": "marks projectile source and owner"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 54,
+    "dma_words": 1760,
+    "dma_queue_entries": 26,
+    "hardware_sprites": 54,
+    "sprites_per_scanline": 16,
+    "actors": 5,
+    "enemies": 2,
+    "projectiles": 20,
+    "devices": 5,
+    "carryables": 1,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "S03_CANONICAL",
+    "failure": "S03_FAILURE_ROLE_COLLAPSE",
+    "stress": "S03_STRESS_COUNTERPOINT_FULL",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["S02"],
+    "unlocks": ["S04", "ECHO_CAP_4", "SHIELD_SUPPRESSION"]
+  },
+  "narrative": {
+    "briefing": "FIVE LINES MUST COEXIST WITHOUT BECOMING NOISE.",
+    "success": "COUNTERPOINT OPENED A SINGLE SAFE CORRIDOR.",
+    "failure": "THE FIRST SILENT ROLE BROKE THE ARRANGEMENT.",
+    "echo_hint": "LURE. GATE. CARRY. SUPPRESS. RECEIVE."
+  }
+}

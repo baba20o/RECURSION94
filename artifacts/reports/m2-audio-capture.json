@@ -1,0 +1,112 @@
+{
+  "capture": {
+    "bytes": 1144,
+    "emulator_process_id": 148440,
+    "facts": {
+      "duration_seconds": 3.888526077097506,
+      "ended": true,
+      "header_total_samples": 171484,
+      "parsed_wait_samples": 171484,
+      "psg_audible_volume_writes": 17,
+      "psg_tone_value_count": 5,
+      "psg_writes": 59,
+      "sn76489_clock": 3579545,
+      "version_hex": "00000150",
+      "wait_commands": 113,
+      "ym2612_clock": 7670453,
+      "ym2612_writes": 272,
+      "ym_frequency_value_count": 9,
+      "ym_key_off": 16,
+      "ym_key_on": 17
+    },
+    "format": "VGM",
+    "launch_flags": [
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "path": "artifacts/audio/recursion94-m2-20260726-104841.vgm",
+    "profile": {
+      "audio_profile_sha256_before_paths": "c9b71cca8fc24ab8872b5b98c8e31be823f9205bd298a3c5092c3f54b02a1edd",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/blastem/blastem.cfg",
+      "runtime_copy": {
+        "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/blastem/blastem.cfg",
+        "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+        "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+        "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+        "status": "pass",
+        "temporary_copy_removed_after_session": true,
+        "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/blastem"
+      },
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/blastem/blastem.cfg",
+        "config_sha256": "4e4fb20a753117df08d5f45dfe306fe23648b399ae4fc09a7b815e0234d8f625",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m2-audio-9r55bjgp/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Projects/RECURSION94/artifacts/audio"
+      },
+      "sha256": "4e4fb20a753117df08d5f45dfe306fe23648b399ae4fc09a7b815e0234d8f625",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "requested_seconds": 4.0,
+    "serialized_lock": {
+      "acquired_utc": "2026-07-26T14:47:59.321625+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "sha256": "dbcae3e3fbb44897599d794c6615f08c0da631c9a77f247a5707f5152beb08a6",
+    "started_utc": "2026-07-26T14:47:59.318626+00:00",
+    "toggle_binding": "M -> ui.vgm_log",
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "checks": [
+    {
+      "check": "vgm_clocks",
+      "detail": "SN76489/YM2612 clocks 3579545/7670453",
+      "status": "pass"
+    },
+    {
+      "check": "bounded_audible_duration",
+      "detail": "171484 samples (3.889 seconds)",
+      "status": "pass"
+    },
+    {
+      "check": "header_timing_matches_stream",
+      "detail": "header/parsed samples 171484/171484",
+      "status": "pass"
+    },
+    {
+      "check": "ym2612_activity",
+      "detail": "writes/key-on/key-off/frequencies 272/17/16/9",
+      "status": "pass"
+    },
+    {
+      "check": "psg_activity",
+      "detail": "writes/audible-volume/tone-values 59/17/5",
+      "status": "pass"
+    },
+    {
+      "check": "non_silent_dynamic_stream",
+      "detail": "timed stream contains audible events from both chips",
+      "status": "pass"
+    }
+  ],
+  "evidence_type": "blastem_vgm_ym2612_psg_capture",
+  "notes": [
+    "VGM is a playable chip-command capture, not a claim of human listening.",
+    "Dynamic YM2612 and PSG events are parsed independently to reject silence."
+  ],
+  "rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+  "schema": 1,
+  "scope": "Milestone2",
+  "status": "pass"
+}

@@ -1,0 +1,304 @@
+; Milestone 5 deterministic vocabulary extension proposal.
+; This file is intentionally not included by gameplay.asm or main.asm.
+; It requires game/engine_layout.asm and gameplay/gameplay_layout.asm first.
+
+VOCAB_STATE_BASE                equ     $00FF1600
+VOCAB_MAGIC                     equ     VOCAB_STATE_BASE+$00
+VOCAB_VERSION                   equ     VOCAB_STATE_BASE+$04
+VOCAB_BYTES                     equ     VOCAB_STATE_BASE+$06
+VOCAB_PROJECTION_LENGTH         equ     VOCAB_STATE_BASE+$08
+VOCAB_FLAGS                     equ     VOCAB_STATE_BASE+$0A
+VOCAB_RESULT                    equ     VOCAB_STATE_BASE+$0C
+VOCAB_OVERFLOW_FLAGS            equ     VOCAB_STATE_BASE+$0E
+VOCAB_UPDATE_UNITS              equ     VOCAB_STATE_BASE+$10
+VOCAB_UPDATE_PEAK               equ     VOCAB_STATE_BASE+$12
+VOCAB_INTERACTION_RESULT        equ     VOCAB_STATE_BASE+$14
+VOCAB_STAGE_ID                  equ     VOCAB_STATE_BASE+$16
+VOCAB_STAGE_FLAGS               equ     VOCAB_STATE_BASE+$18
+VOCAB_STAGE_ATTEMPTS            equ     VOCAB_STATE_BASE+$1A
+VOCAB_STAGE_FINAL_TICK          equ     VOCAB_STATE_BASE+$1C
+VOCAB_STAGE_OPTIONAL_METRIC     equ     VOCAB_STATE_BASE+$1E
+VOCAB_STAGE_ECHO_COUNT          equ     VOCAB_STATE_BASE+$20
+VOCAB_STAGE_RANK                equ     VOCAB_STATE_BASE+$21
+VOCAB_ANCHOR_COUNT              equ     VOCAB_STATE_BASE+$22
+VOCAB_ANCHOR_CAPACITY           equ     VOCAB_STATE_BASE+$23
+VOCAB_BEAM_COUNT                equ     VOCAB_STATE_BASE+$24
+VOCAB_ACTIVE_ENEMY_COUNT        equ     VOCAB_STATE_BASE+$25
+VOCAB_ACTIVE_PROJECTILE_COUNT   equ     VOCAB_STATE_BASE+$26
+VOCAB_HEADER_RESERVED           equ     VOCAB_STATE_BASE+$27
+
+VOCAB_ANCHOR_BASE               equ     VOCAB_STATE_BASE+$28
+VOCAB_ANCHOR_TYPE               equ     $00
+VOCAB_ANCHOR_LOGICAL_ID         equ     $01
+VOCAB_ANCHOR_STATE              equ     $02
+VOCAB_ANCHOR_PARAM              equ     $04
+VOCAB_ANCHOR_BYTES              equ     $08
+VOCAB_ANCHOR_LIMIT              equ     2
+VOCAB_ANCHOR_END                equ     VOCAB_ANCHOR_BASE+(VOCAB_ANCHOR_LIMIT*VOCAB_ANCHOR_BYTES)
+
+; Eight authoritative extension bytes exist for every frozen actor slot.
+VOCAB_ACTOR_BASE                equ     VOCAB_STATE_BASE+$40
+VOCAB_ACTOR_FLAGS               equ     $00
+VOCAB_ACTOR_DASH_TIMER          equ     $02
+VOCAB_ACTOR_DASH_COOLDOWN       equ     $03
+VOCAB_ACTOR_INVULN_TIMER        equ     $04
+VOCAB_ACTOR_CARRY_SLOT          equ     $05
+VOCAB_ACTOR_SHIELD_TIMER        equ     $06
+VOCAB_ACTOR_LAST_ACTION         equ     $07
+VOCAB_ACTOR_BYTES               equ     $08
+VOCAB_ACTOR_END                 equ     VOCAB_ACTOR_BASE+(ACTOR_CAPACITY*VOCAB_ACTOR_BYTES)
+
+; Target cache is physical enemy slot -> physical actor slot, or $FF.
+VOCAB_ENEMY_TARGET_BASE         equ     VOCAB_ACTOR_END
+VOCAB_ENEMY_TARGET_BYTES        equ     ENEMY_CAPACITY
+VOCAB_ENEMY_TARGET_END          equ     VOCAB_ENEMY_TARGET_BASE+VOCAB_ENEMY_TARGET_BYTES
+
+; Beam cache records are bounded render/collision facts rebuilt every step.
+VOCAB_BEAM_BASE                 equ     VOCAB_ENEMY_TARGET_END
+VOCAB_BEAM_X                    equ     $00
+VOCAB_BEAM_Y                    equ     $02
+VOCAB_BEAM_DIRECTION            equ     $04
+VOCAB_BEAM_LENGTH               equ     $05
+VOCAB_BEAM_SOURCE               equ     $06
+VOCAB_BEAM_FLAGS                equ     $07
+VOCAB_BEAM_BYTES                equ     $08
+VOCAB_BEAM_LIMIT                equ     8
+VOCAB_BEAM_END                  equ     VOCAB_BEAM_BASE+(VOCAB_BEAM_LIMIT*VOCAB_BEAM_BYTES)
+
+; Campaign ABI v3 state extends the projected prefix. Immutable ROM pointers
+; remain outside the projection; only bounded identity, completion, and
+; rising-edge dependency latches participate in deterministic state hashes.
+VOCAB_CAMPAIGN_BASE             equ     VOCAB_STATE_BASE+$00C8
+VOCAB_CAMPAIGN_FLAGS            equ     VOCAB_CAMPAIGN_BASE+$00
+VOCAB_CAMPAIGN_DIRECTORY_INDEX  equ     VOCAB_CAMPAIGN_BASE+$02
+VOCAB_CAMPAIGN_ECHO_CAP         equ     VOCAB_CAMPAIGN_BASE+$03
+VOCAB_CAMPAIGN_SEMANTIC_COUNT   equ     VOCAB_CAMPAIGN_BASE+$04
+VOCAB_CAMPAIGN_GROUP_COUNT      equ     VOCAB_CAMPAIGN_BASE+$05
+VOCAB_CAMPAIGN_EDGE_COUNT       equ     VOCAB_CAMPAIGN_BASE+$06
+VOCAB_CAMPAIGN_COMPLETION_OBJECT equ   VOCAB_CAMPAIGN_BASE+$07
+VOCAB_CAMPAIGN_COMPLETION_FIELD equ    VOCAB_CAMPAIGN_BASE+$08
+VOCAB_CAMPAIGN_COMPLETION_FLAGS equ    VOCAB_CAMPAIGN_BASE+$09
+VOCAB_CAMPAIGN_COMPLETION_MASK  equ     VOCAB_CAMPAIGN_BASE+$0A
+VOCAB_CAMPAIGN_COMPLETION_VALUE equ    VOCAB_CAMPAIGN_BASE+$0C
+VOCAB_CAMPAIGN_DEPENDENCY_LATCH_BASE equ VOCAB_CAMPAIGN_BASE+$0E
+VOCAB_CAMPAIGN_DEPENDENCY_LATCH_BYTES equ 32
+VOCAB_CAMPAIGN_EVENT_FLAGS      equ     VOCAB_CAMPAIGN_BASE+$2E
+VOCAB_CAMPAIGN_LAST_INTERACTION_ACTOR equ VOCAB_CAMPAIGN_BASE+$30
+VOCAB_CAMPAIGN_LAST_INTERACTION_OBJECT equ VOCAB_CAMPAIGN_BASE+$31
+VOCAB_TIMELINE_UI_FLAGS         equ     VOCAB_CAMPAIGN_BASE+$32
+VOCAB_TIMELINE_UI_CURSOR        equ     VOCAB_CAMPAIGN_BASE+$34
+VOCAB_TIMELINE_UI_START_PREVIOUS equ    VOCAB_CAMPAIGN_BASE+$35
+VOCAB_CAMPAIGN_RESERVED_BASE    equ     VOCAB_CAMPAIGN_BASE+$36
+VOCAB_CAMPAIGN_END              equ     VOCAB_STATE_BASE+$0100
+
+VOCAB_CAMPAIGN_FLAG_ACTIVE      equ     $0001
+VOCAB_CAMPAIGN_FLAG_PROFILE_VALID equ   $0002
+VOCAB_CAMPAIGN_FLAG_COMPLETE    equ     $0004
+VOCAB_CAMPAIGN_FLAG_CONTRACT_ERROR equ   $0008
+VOCAB_CAMPAIGN_EVENT_DEPENDENCY equ     $0001
+VOCAB_CAMPAIGN_EVENT_COMPLETION equ     $0002
+VOCAB_CAMPAIGN_EVENT_DAMAGE     equ     $0004
+
+VOCAB_TIMELINE_UI_FLAG_OPEN     equ     $0001
+VOCAB_TIMELINE_UI_FLAG_WAIT_RELEASE equ $0002
+
+; Derived ROM pointers and evaluation scratch are explicitly not projected.
+VOCAB_CAMPAIGN_DERIVED_BASE     equ     VOCAB_CAMPAIGN_END
+VOCAB_CAMPAIGN_PROFILE_PTR      equ     VOCAB_CAMPAIGN_DERIVED_BASE+$00
+VOCAB_CAMPAIGN_SEMANTIC_PTR     equ     VOCAB_CAMPAIGN_DERIVED_BASE+$04
+VOCAB_CAMPAIGN_GROUP_PTR        equ     VOCAB_CAMPAIGN_DERIVED_BASE+$08
+VOCAB_CAMPAIGN_EDGE_PTR         equ     VOCAB_CAMPAIGN_DERIVED_BASE+$0C
+VOCAB_CAMPAIGN_DERIVED_END      equ     VOCAB_CAMPAIGN_DERIVED_BASE+$10
+; Frozen semantic-record geometry aliases used by simulation and rendering.
+; The generator asserts these against every emitted ABI-v3 table.
+VOCAB_CAMPAIGN_SEMANTIC_BYTES   equ     16
+VOCAB_CAMPAIGN_SEMANTIC_OBJECT  equ     0
+VOCAB_CAMPAIGN_SEMANTIC_FLAGS   equ     14
+VOCAB_CAMPAIGN_GEOMETRY_WIDTH_SHIFT equ 5
+VOCAB_CAMPAIGN_GEOMETRY_WIDTH_MASK equ $07E0
+VOCAB_CAMPAIGN_GEOMETRY_HEIGHT_MASK equ $F800
+
+; The projected prefix is copied verbatim after the frozen M3 projection.
+VOCAB_PROJECTION_BYTES          equ     VOCAB_CAMPAIGN_END-VOCAB_STATE_BASE
+VOCAB_PROJECTION_LIMIT          equ     304
+VOCAB_SCRATCH_BASE              equ     VOCAB_CAMPAIGN_DERIVED_END
+VOCAB_STATE_END                 equ     $00FF1800
+VOCAB_STATE_BYTES_VALUE         equ     VOCAB_STATE_END-VOCAB_STATE_BASE
+
+VOCAB_MAGIC_VALUE               equ     $52393556      ; "R95V"
+VOCAB_VERSION_VALUE             equ     $0001
+
+VOCAB_FLAG_INITIALIZED          equ     $0001
+VOCAB_FLAG_PHASE_ACTIVE         equ     $0002
+VOCAB_FLAG_ANCHOR_DIRTY         equ     $0004
+VOCAB_FLAG_STAGE_COMPLETE       equ     $0008
+VOCAB_FLAG_BUDGET_EXCEEDED      equ     $0010
+VOCAB_FLAG_CURRENT_DESTROYED    equ     $0020
+
+VOCAB_OVERFLOW_INTERACTION      equ     $0001
+VOCAB_OVERFLOW_BEAM             equ     $0002
+VOCAB_OVERFLOW_TARGET           equ     $0004
+VOCAB_OVERFLOW_ANCHOR           equ     $0008
+VOCAB_OVERFLOW_UPDATE           equ     $0010
+
+VOCAB_RESULT_OK                 equ     $0000
+VOCAB_RESULT_DASHED             equ     $0001
+VOCAB_RESULT_PHASED             equ     $0002
+VOCAB_RESULT_PICKED_UP          equ     $0003
+VOCAB_RESULT_DROPPED            equ     $0004
+VOCAB_RESULT_SOCKETED           equ     $0005
+VOCAB_RESULT_ACTIVATED          equ     $0006
+VOCAB_RESULT_HACKED             equ     $0007
+VOCAB_RESULT_REPAIRED           equ     $0008
+VOCAB_RESULT_NO_TARGET          equ     $0009
+VOCAB_RESULT_COOLDOWN           equ     $000A
+VOCAB_RESULT_INVALID            equ     $000B
+VOCAB_RESULT_POOL_FULL          equ     $000C
+VOCAB_RESULT_ANCHOR_FULL        equ     $000D
+VOCAB_RESULT_ANCHOR_FORBIDDEN   equ     $000E
+VOCAB_RESULT_STAGE_COMPLETE     equ     $000F
+
+VOCAB_ACTOR_FLAG_DASHING        equ     $0001
+VOCAB_ACTOR_FLAG_PHASED         equ     $0002
+VOCAB_ACTOR_FLAG_INVULNERABLE   equ     $0004
+VOCAB_ACTOR_FLAG_CARRYING       equ     $0008
+VOCAB_ACTOR_FLAG_SHIELDED       equ     $0010
+VOCAB_ACTOR_FLAG_HURT           equ     $0020
+VOCAB_NO_SLOT                   equ     $FF
+
+VOCAB_DASH_TICKS                equ     6
+VOCAB_DASH_COOLDOWN_TICKS       equ     24
+VOCAB_DASH_INVULN_TICKS         equ     VOCAB_DASH_TICKS
+VOCAB_DAMAGE_INVULN_TICKS       equ     30
+VOCAB_DASH_CARDINAL_SPEED       equ     $00000600
+VOCAB_DASH_DIAGONAL_SPEED       equ     $00000440
+VOCAB_INTERACTION_RANGE         equ     16
+VOCAB_INTERACTION_RANGE_16_8    equ     VOCAB_INTERACTION_RANGE*256
+VOCAB_OBJECT_HALF_EXTENT_16_8   equ     8*256
+
+VOCAB_PARAM_KIND_MASK           equ     $FF00
+VOCAB_PARAM_LINK_MASK           equ     $00FF
+
+VOCAB_DEVICE_PRESSURE_SWITCH    equ     $0100
+VOCAB_DEVICE_TIMED_SWITCH       equ     $0200
+VOCAB_DEVICE_DOOR               equ     $0300
+VOCAB_DEVICE_SOCKET             equ     $0400
+VOCAB_DEVICE_CONVEYOR           equ     $0500
+VOCAB_DEVICE_BEAM_EMITTER       equ     $0600
+VOCAB_DEVICE_REFLECTOR          equ     $0700
+VOCAB_DEVICE_SHIELD_EMITTER     equ     $0800
+VOCAB_DEVICE_HACK_TERMINAL      equ     $0900
+VOCAB_DEVICE_REPAIR_TERMINAL    equ     $0A00
+VOCAB_DEVICE_SECURITY_NODE      equ     $0B00
+
+VOCAB_DEVICE_STATE_ACTIVE       equ     $0001
+VOCAB_DEVICE_STATE_OPEN         equ     $0002
+VOCAB_DEVICE_STATE_HACKED       equ     $0004
+VOCAB_DEVICE_STATE_DISABLED     equ     $0008
+VOCAB_DEVICE_STATE_ANCHORED     equ     $0010
+VOCAB_DEVICE_STATE_OCCUPIED     equ     $0020
+VOCAB_DEVICE_STATE_DIRECTION_MASK equ   $00C0
+VOCAB_DEVICE_STATE_DIRECTION_SHIFT equ  6
+; Authored completion masks may request this high, terminal-safe bit. The
+; collision controller latches it only when the current actor fully clears an
+; open door leaf during an active dash.
+VOCAB_DEVICE_STATE_DASH_ROUTE   equ     $1000
+VOCAB_TIMED_SWITCH_TICKS        equ     120
+VOCAB_CONVEYOR_SPEED            equ     $00000080
+; Hack terminals reuse otherwise-static device velocity words as deterministic
+; hold ownership/touch metadata. Canonical reset restores both longs to zero.
+VOCAB_DEVICE_HOLD_OWNER         equ     OBJECT_VX+2
+VOCAB_DEVICE_HOLD_TOUCHED       equ     OBJECT_VY+2
+
+VOCAB_CARRYABLE_POWER_CELL      equ     $0100
+VOCAB_CARRY_STATE_CARRIED       equ     $0001
+VOCAB_CARRY_STATE_SOCKETED      equ     $0002
+
+VOCAB_PROJECTILE_STATE_PLAYER   equ     $0001
+VOCAB_PROJECTILE_STATE_ENEMY    equ     $0002
+VOCAB_PROJECTILE_STATE_REFLECTED equ    $0004
+VOCAB_PROJECTILE_STATE_HIT      equ     $0008
+VOCAB_PROJECTILE_DAMAGE_MASK    equ     $00FF
+VOCAB_PROJECTILE_OWNER_SHIFT    equ     8
+VOCAB_PROJECTILE_HALF_EXTENT_16_8 equ  4*256
+
+VOCAB_ENEMY_TURRET              equ     $0100
+VOCAB_ENEMY_PURSUER             equ     $0200
+VOCAB_ENEMY_GUARD               equ     $0300
+VOCAB_ENEMY_KIND_MASK           equ     $FF00
+VOCAB_ENEMY_HEALTH_MASK         equ     $FF00
+VOCAB_ENEMY_HEALTH_SHIFT        equ     8
+VOCAB_ENEMY_STATE_ALERT         equ     $0001
+VOCAB_ENEMY_STATE_DISABLED      equ     $0002
+VOCAB_ENEMY_SPEED               equ     $00000100
+VOCAB_ENEMY_PROJECTILE_SPEED    equ     $00000280
+VOCAB_ENEMY_PROJECTILE_DIAGONAL_SPEED equ $000001C0
+VOCAB_TURRET_FIRE_TICKS         equ     45
+VOCAB_GUARD_DETECTION_RANGE     equ     96
+VOCAB_GUARD_DETECTION_RANGE_16_8 equ    VOCAB_GUARD_DETECTION_RANGE*256
+
+VOCAB_HAZARD_DAMAGE_FIELD       equ     $0100
+VOCAB_HAZARD_SHIELD_FIELD       equ     $0200
+VOCAB_HAZARD_CONVEYOR_FIELD     equ     $0300
+VOCAB_HAZARD_KIND_MASK          equ     $FF00
+VOCAB_HAZARD_RADIUS_DEFAULT     equ     12
+; Hazard-only alias in the shared object-state word. WARNING is visible but
+; nonlethal; type-specific attempt latches use OBJECT_TIMER, not named state.
+VOCAB_HAZARD_STATE_WARNING      equ     $0010
+
+VOCAB_BEAM_DIRECTION_RIGHT      equ     0
+VOCAB_BEAM_DIRECTION_DOWN       equ     1
+VOCAB_BEAM_DIRECTION_LEFT       equ     2
+VOCAB_BEAM_DIRECTION_UP         equ     3
+VOCAB_BEAM_FLAG_REFLECTED       equ     $01
+VOCAB_BEAM_FLAG_BLOCKED         equ     $02
+VOCAB_BEAM_EMITTER_LIMIT        equ     4
+VOCAB_REFLECTOR_LIMIT           equ     8
+VOCAB_BEAM_STEP_PIXELS          equ     8
+VOCAB_BEAM_MAX_STEPS            equ     20
+
+VOCAB_ANCHOR_NONE               equ     $00
+VOCAB_ANCHOR_DEVICE_STATE       equ     $01
+VOCAB_ANCHOR_SOCKETED_CELL      equ     $02
+VOCAB_ANCHOR_CONVEYOR_DIRECTION equ    $03
+VOCAB_ANCHOR_SECURITY_NODE      equ     $04
+VOCAB_ANCHOR_ECHO_PROTECTION    equ     $05
+
+VOCAB_STAGE_FLAG_CLEARED        equ     $0001
+VOCAB_STAGE_FLAG_OPTIMIZED      equ     $0002
+VOCAB_STAGE_FLAG_TRANSCENDENT   equ     $0004
+VOCAB_RANK_NONE                 equ     $00
+VOCAB_RANK_STABLE               equ     $01
+VOCAB_RANK_OPTIMIZED            equ     $02
+VOCAB_RANK_TRANSCENDENT         equ     $03
+VOCAB_OPTIMIZED_ATTEMPT_MAX     equ     3
+VOCAB_OPTIMIZED_ECHO_MAX        equ     2
+VOCAB_TRANSCENDENT_ATTEMPT_MAX  equ     2
+VOCAB_TRANSCENDENT_ECHO_MAX     equ     1
+VOCAB_TRANSCENDENT_TIME_MIN     equ     240
+
+; Abstract update units intentionally over-count comparisons and writes.
+VOCAB_CPU_UNIT_LIMIT            equ     4096
+VOCAB_CPU_ACTOR_UNITS           equ     ACTOR_CAPACITY*8
+VOCAB_CPU_PROJECTILE_UNITS      equ     PROJECTILE_CAPACITY*(ENEMY_CAPACITY+ACTOR_CAPACITY)
+VOCAB_CPU_DEVICE_UNITS          equ     DEVICE_CAPACITY*(ACTOR_CAPACITY+DEVICE_CAPACITY)
+VOCAB_CPU_ENEMY_UNITS           equ     ENEMY_CAPACITY*ACTOR_CAPACITY
+VOCAB_CPU_HAZARD_UNITS          equ     HAZARD_CAPACITY*ACTOR_CAPACITY
+VOCAB_CPU_BEAM_UNITS            equ     VOCAB_BEAM_EMITTER_LIMIT*VOCAB_BEAM_MAX_STEPS*VOCAB_REFLECTOR_LIMIT
+VOCAB_CPU_WORST_UNITS           equ     VOCAB_CPU_ACTOR_UNITS+VOCAB_CPU_PROJECTILE_UNITS+VOCAB_CPU_DEVICE_UNITS+VOCAB_CPU_ENEMY_UNITS+VOCAB_CPU_HAZARD_UNITS+VOCAB_CPU_BEAM_UNITS
+
+        assert  VOCAB_STATE_BASE=GAMEPLAY_CONTROL_BASE+GAMEPLAY_CONTROL_BYTES_VALUE,"vocabulary state must follow frozen gameplay control"
+        assert  VOCAB_STATE_END=ENGINE_CONTROL_END,"vocabulary state must end at frozen actor boundary"
+        assert  VOCAB_STATE_BYTES_VALUE=$0200,"vocabulary extension must use exactly 512 bytes"
+        assert  VOCAB_ANCHOR_END<=VOCAB_ACTOR_BASE,"anchor records overlap actor extensions"
+        assert  VOCAB_ACTOR_END=VOCAB_ENEMY_TARGET_BASE,"actor extension layout drift"
+        assert  VOCAB_ENEMY_TARGET_END=VOCAB_BEAM_BASE,"target cache layout drift"
+        assert  VOCAB_BEAM_END=VOCAB_CAMPAIGN_BASE,"beam/campaign state layout drift"
+        assert  VOCAB_CAMPAIGN_DEPENDENCY_LATCH_BASE+VOCAB_CAMPAIGN_DEPENDENCY_LATCH_BYTES<=VOCAB_CAMPAIGN_EVENT_FLAGS,"campaign dependency latch overflow"
+        assert  VOCAB_CAMPAIGN_END-VOCAB_STATE_BASE=$0100,"campaign projection prefix size drift"
+        assert  VOCAB_PROJECTION_BYTES<=VOCAB_PROJECTION_LIMIT,"vocabulary projection tail exceeds 304 bytes"
+        assert  ENGINE_PROJECTION_SCHEMA_BYTES+VOCAB_PROJECTION_BYTES<=$1000,"extended projection exceeds frozen 4 KiB region"
+        assert  VOCAB_BEAM_END<=VOCAB_STATE_END,"beam cache overflows extension RAM"
+        assert  VOCAB_CAMPAIGN_DERIVED_END<=VOCAB_STATE_END,"campaign derived state overflows extension RAM"
+        assert  VOCAB_ANCHOR_LIMIT<=2,"anchor design exceeds campaign contract"
+        assert  VOCAB_CPU_WORST_UNITS<=VOCAB_CPU_UNIT_LIMIT,"vocabulary abstract CPU bound exceeded"

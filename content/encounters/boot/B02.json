@@ -1,0 +1,235 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "B02",
+  "numeric_id": 102,
+  "name": "DEAD LETTER",
+  "kind": "primary",
+  "campaign_order": 2,
+  "sector": {
+    "id": "BOOT",
+    "name": "BOOT",
+    "theme": "black execution lane with bone-white cover"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#....###...........#",
+      "#....###...........#",
+      "#.............###..#",
+      "#.............###..#",
+      "#..................#",
+      "#..###.............#",
+      "#..###.............#",
+      "#...........###....#",
+      "#...........###....#",
+      "#..................#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [84, 120],
+    "reset_policy": "restore sentry, rear node, projectiles, and cover damage; retain replay slots"
+  },
+  "echoes": {
+    "cap": 2,
+    "minimum": 1,
+    "first_clear_range": [1, 2],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_BOOT_BONE_02",
+    "music_id": "MUS_BOOT_PULSE",
+    "tempo_bpm": 80,
+    "visual_layers": ["aim_line", "cover_plane", "impact_runes"]
+  },
+  "mechanics": ["basic_shooting", "cover", "optional_dash", "sentry_targeting", "breakable_security_node"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "B02_REAR_NODE",
+        "type": "breakable_security_node",
+        "x": 272,
+        "y": 48,
+        "state": {"initial": "armored_front", "states": ["armored_front", "exposed_rear", "destroyed"]},
+        "reset_policy": "armored_front",
+        "anchor_policy": "forbidden",
+        "parameters": {"health": 2, "damage_arc": "west-facing rear only"}
+      },
+      {
+        "logical_id": "B02_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"unlock_source": "B02_REAR_NODE", "interact_frames": 18}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "B02_SENTRY_A",
+        "type": "sentry",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "tracking", "states": ["tracking", "charging", "firing", "cooldown", "disabled"]},
+        "reset_policy": "tracking",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "nearest visible then oldest echo then logical actor id", "charge_frames": 24, "fire_period_frames": 48, "projectile_speed_px": 3}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "B02_FIRE_LANE",
+        "type": "sentry_fire_lane",
+        "x": 96,
+        "y": 104,
+        "state": {"initial": "armed", "states": ["armed", "occupied"]},
+        "reset_policy": "armed",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 128, "height": 16, "telegraph_frames": 24}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "B02_O1_DRAW_AIM",
+        "type": "distract",
+        "depends_on": [],
+        "condition": "B02_SENTRY_A targets echo_1 west of x=112",
+        "deadline_frame": 280,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "B02_O2_REAR_SHOT",
+        "type": "destroy",
+        "depends_on": ["B02_O1_DRAW_AIM"],
+        "condition": "two valid rear hits destroy B02_REAR_NODE",
+        "deadline_frame": 610,
+        "role": "current"
+      },
+      {
+        "objective_id": "B02_O3_EXIT",
+        "type": "interact",
+        "depends_on": ["B02_O2_REAR_SHOT"],
+        "condition": "current commits B02_EXIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "B02_O3_EXIT complete"
+  },
+  "stage_completion": {
+    "object": "B02_EXIT",
+    "completion_state": {"field": "state", "mask": 5, "value": 5}
+  },
+  "dependency_policy": [
+    {
+      "consumer": "B02_EXIT",
+      "policy": "ALL",
+      "conditions": [
+        {
+          "provider": "B02_REAR_NODE",
+          "completion_state": {"field": "health", "mask": 255, "value": 0}
+        }
+      ],
+      "completion_state": {"field": "state", "mask": 1, "value": 1},
+      "duration_frames": 0
+    }
+  ],
+  "canonical_role_schedule": [
+    {
+      "role_id": "B02_ROLE_DECOY",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 72, "action": "move_to", "target": "B02_FIRE_LANE"},
+        {"frame": 126, "action": "fire", "target": "B02_SENTRY_A"},
+        {"frame": 174, "action": "fire", "target": "B02_SENTRY_A"}
+      ]
+    },
+    {
+      "role_id": "B02_ROLE_FLANKER",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 148, "action": "move_via_cover", "target": "B02_REAR_NODE"},
+        {"frame": 390, "action": "fire_twice", "target": "B02_REAR_NODE"},
+        {"frame": 520, "action": "interact", "target": "B02_EXIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "B02_ALT_ECHO_SHOOTER",
+      "role_changes": "current records the west decoy path first, then the replayed echo lands the rear shots while current draws aim",
+      "constraints": ["rear shots must occur while sentry yaw is west", "dash is optional"],
+      "echo_cost": 1
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "B02_FAIL_FRONT_ARMOR",
+      "condition": "projectile strikes B02_REAR_NODE from east-facing armored arc",
+      "visual": "aim line freezes and the rear armor arc flashes",
+      "audio": "dry armor ricochet",
+      "timeline": "marks shot angle and active sentry target"
+    },
+    {
+      "id": "B02_FAIL_TARGET_SWAP",
+      "condition": "current becomes B02_SENTRY_A target before clearing the fire lane",
+      "visual": "target line changes to current identity color",
+      "audio": "ascending lock warning",
+      "timeline": "marks deterministic distance tie-break"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 25,
+    "dma_words": 560,
+    "dma_queue_entries": 8,
+    "hardware_sprites": 18,
+    "sprites_per_scanline": 7,
+    "actors": 3,
+    "enemies": 1,
+    "projectiles": 8,
+    "devices": 2,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 10
+  },
+  "replays": {
+    "canonical": "B02_CANONICAL",
+    "failure": "B02_FAILURE_FRONT_ARMOR",
+    "stress": "B02_STRESS_EIGHT_PROJECTILES",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["B01"],
+    "unlocks": ["B03", "PULSE_FIRE", "DASH_OPTION"]
+  },
+  "narrative": {
+    "briefing": "SECURITY READS THE LOUDEST PROCESS.",
+    "success": "THE LETTER ARRIVED FROM BEHIND.",
+    "failure": "FRONT ARMOR IS A QUESTION, NOT AN ANSWER.",
+    "echo_hint": "WRITE A DECOY THAT KEEPS FIRING WEST."
+  }
+}

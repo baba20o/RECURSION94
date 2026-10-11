@@ -1,0 +1,234 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "M03",
+  "numeric_id": 403,
+  "name": "COMPACTION",
+  "kind": "primary",
+  "campaign_order": 15,
+  "sector": {
+    "id": "MEMORY",
+    "name": "MEMORY",
+    "theme": "amber dependency lattice with two legal anchor targets"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#....#........#....#",
+      "#....#..####..#....#",
+      "#.......####.......#",
+      "#....#........#....#",
+      "#....#..####..#....#",
+      "#.......####.......#",
+      "#..................#",
+      "#.......####.......#",
+      "#....#..####..#....#",
+      "#....#........#....#",
+      "#.......####.......#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [24, 54],
+    "reset_policy": "rebuild all state, then apply exactly one whitelisted conveyor-direction or lock-destroyed anchor"
+  },
+  "echoes": {
+    "cap": 5,
+    "minimum": 5,
+    "first_clear_range": [5, 8],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_MEMORY_COMPACT_03",
+    "music_id": "MUS_MEMORY_COMPACTION",
+    "tempo_bpm": 140,
+    "visual_layers": ["anchor_comparison", "conveyor_trace", "beam_path", "shield_state"]
+  },
+  "mechanics": ["anchor_choice", "conveyor", "redirectable_beam", "shield_emitter", "warden_lure", "power_cell", "optimization"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "M03_CONVEYOR_CONTROL",
+        "type": "conveyor_direction_switch",
+        "x": 64,
+        "y": 48,
+        "state": {"initial": "forward", "states": ["forward", "reverse"]},
+        "reset_policy": "forward unless approved anchor applies",
+        "anchor_policy": {"allowed": true, "record_type": "conveyor_direction", "max_records": 1, "idempotent_state": "reverse"},
+        "parameters": {"controls": ["M03_CONVEYOR"]}
+      },
+      {
+        "logical_id": "M03_LOCK",
+        "type": "breakable_lock",
+        "x": 144,
+        "y": 48,
+        "state": {"initial": "intact", "states": ["intact", "damaged", "destroyed"]},
+        "reset_policy": "intact unless approved anchor applies",
+        "anchor_policy": {"allowed": true, "record_type": "lock_destroyed", "max_records": 1, "idempotent_state": "destroyed"},
+        "parameters": {"health": 4, "alternative_anchor_target": true}
+      },
+      {
+        "logical_id": "M03_SHIELD",
+        "type": "shield_emitter",
+        "x": 208,
+        "y": 48,
+        "state": {"initial": "off", "states": ["off", "active"]},
+        "reset_policy": "off",
+        "anchor_policy": "forbidden",
+        "parameters": {"active_while_held": true}
+      },
+      {
+        "logical_id": "M03_PRISM",
+        "type": "redirectable_prism",
+        "x": 208,
+        "y": 144,
+        "state": {"initial": "north", "states": ["north", "east", "west"]},
+        "reset_policy": "north",
+        "anchor_policy": "forbidden",
+        "parameters": {"safe_state": "west", "rotation_frames": 18}
+      },
+      {
+        "logical_id": "M03_SOCKET",
+        "type": "power_socket",
+        "x": 256,
+        "y": 176,
+        "state": {"initial": "empty", "states": ["empty", "powered"]},
+        "reset_policy": "empty",
+        "anchor_policy": "forbidden",
+        "parameters": {"accepts": "M03_CELL"}
+      },
+      {
+        "logical_id": "M03_TERMINAL",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"requires": ["M03_SOCKET", "M03_PRISM", "M03_SHIELD"], "interact_frames": 24}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "M03_WARDEN",
+        "type": "warden",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "guarding", "states": ["guarding", "investigating", "chasing"]},
+        "reset_policy": "guarding at x=160 y=112",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "carrier then nearest visible then logical id"}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "M03_CONVEYOR",
+        "type": "conveyor",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "eastbound", "states": ["eastbound", "westbound"]},
+        "reset_policy": "derive from M03_CONVEYOR_CONTROL after anchors",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 112, "height": 16, "speed_px_per_frame": 1}
+      },
+      {
+        "logical_id": "M03_BEAM",
+        "type": "redirected_laser",
+        "x": 176,
+        "y": 144,
+        "state": {"initial": "north_path", "states": ["north_path", "west_path"]},
+        "reset_policy": "north_path",
+        "anchor_policy": "forbidden",
+        "parameters": {"max_segments": 10, "source": "M03_PRISM"}
+      }
+    ],
+    "carryables": [
+      {
+        "logical_id": "M03_CELL",
+        "type": "power_cell",
+        "x": 64,
+        "y": 176,
+        "state": {"initial": "grounded", "states": ["grounded", "carried", "socketed"]},
+        "reset_policy": "grounded at x=64 y=176",
+        "anchor_policy": "forbidden",
+        "parameters": {"carry_speed_percent": 72}
+      }
+    ],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "M03_O0_ANCHOR", "type": "anchor_choice", "depends_on": [], "condition": "exactly one of M03_CONVEYOR_CONTROL reverse or M03_LOCK destroyed persists", "deadline_frame": 0, "role": "prelude_current"},
+      {"objective_id": "M03_O1_SHIELD", "type": "maintain_state", "depends_on": ["M03_O0_ANCHOR"], "condition": "echo_1 holds M03_SHIELD over crossing", "deadline_frame": 650, "role": "echo_1"},
+      {"objective_id": "M03_O2_LURE", "type": "distract", "depends_on": [], "condition": "echo_2 lures M03_WARDEN north", "deadline_frame": 600, "role": "echo_2"},
+      {"objective_id": "M03_O3_CARRY", "type": "carry", "depends_on": ["M03_O0_ANCHOR", "M03_O2_LURE"], "condition": "echo_3 sockets M03_CELL", "deadline_frame": 630, "role": "echo_3"},
+      {"objective_id": "M03_O4_REDIRECT", "type": "redirect", "depends_on": [], "condition": "echo_4 rotates M03_PRISM west", "deadline_frame": 610, "role": "echo_4"},
+      {"objective_id": "M03_O5_TERMINAL", "type": "interact", "depends_on": ["M03_O1_SHIELD", "M03_O3_CARRY", "M03_O4_REDIRECT"], "condition": "echo_5 arms M03_TERMINAL", "deadline_frame": 670, "role": "echo_5"},
+      {"objective_id": "M03_O6_EXIT", "type": "traverse_and_interact", "depends_on": ["M03_O5_TERMINAL"], "condition": "current crosses and commits", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "M03_O6_EXIT complete with one anchor record"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "M03_ROLE_ANCHOR", "actor": "prelude_current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 140, "action": "reverse", "target": "M03_CONVEYOR_CONTROL"}, {"frame": 220, "action": "anchor_state", "target": "M03_CONVEYOR_CONTROL"}]},
+    {"role_id": "M03_ROLE_SHIELD", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 330, "action": "hold_interact", "target": "M03_SHIELD"}]},
+    {"role_id": "M03_ROLE_LURE", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 260, "action": "fire_pattern", "target": "M03_WARDEN"}]},
+    {"role_id": "M03_ROLE_CARRY", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 180, "action": "pick_up", "target": "M03_CELL"}, {"frame": 500, "action": "socket", "target": "M03_SOCKET"}]},
+    {"role_id": "M03_ROLE_REDIRECT", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "rotate", "target": "M03_PRISM"}]},
+    {"role_id": "M03_ROLE_TERMINAL", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 540, "action": "interact", "target": "M03_TERMINAL"}]},
+    {"role_id": "M03_ROLE_CURRENT", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 650, "action": "commit", "target": "M03_TERMINAL"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "M03_ALT_LOCK_ANCHOR",
+      "role_changes": "anchor M03_LOCK destroyed and assign echo_5 to reverse the conveyor during the clear",
+      "constraints": ["only one anchor record", "conveyor control must remain reversed through carrier crossing"],
+      "echo_cost": 5
+    }
+  ],
+  "failure_signals": [
+    {"id": "M03_FAIL_ANCHOR_CHOICE", "condition": "chosen anchor leaves more serial work than the schedule can contain", "visual": "comparison view highlights extra role and lost overlap", "audio": "anchor comparison cue", "timeline": "shows alternative dependency cost without changing state"},
+    {"id": "M03_FAIL_ROLE", "condition": "shield, lure, carry, redirect, or terminal role drops before commit", "visual": "first failed dependency flashes in role color", "audio": "matching role layer mutes", "timeline": "names first causal collapse"}
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 62,
+    "dma_words": 2010,
+    "dma_queue_entries": 31,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 1,
+    "projectiles": 18,
+    "devices": 6,
+    "carryables": 1,
+    "hazards": 2,
+    "boss_components": 0,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "M03_CANONICAL",
+    "failure": "M03_FAILURE_ANCHOR_CHOICE",
+    "stress": "M03_STRESS_ALL_ROLES",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["M02", "ANCHOR_CAP_1"],
+    "unlocks": ["M04", "ANCHOR_COMPARISON"]
+  },
+  "narrative": {
+    "briefing": "ANCHOR THE MOST EXPENSIVE DEPENDENCY.",
+    "success": "COMPACTION LEFT ROOM FOR THE CURRENT PROCESS.",
+    "failure": "BOTH ANCHORS ARE VALID. ONLY ONE IS CHEAP.",
+    "echo_hint": "COMPARE THE CONVEYOR ROLE AGAINST THE LOCK ROLE."
+  }
+}

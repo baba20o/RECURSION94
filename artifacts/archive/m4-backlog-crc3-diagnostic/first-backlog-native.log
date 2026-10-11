@@ -1,0 +1,60 @@
+200: move #$2700, SR
+> breakpoint $2C4
+68K Breakpoint 0 set at $2C4
+> breakpoint $525A
+68K Breakpoint 1 set at $525A
+> breakpoint $2FE
+68K Breakpoint 2 set at $2FE
+> breakpoint $163A
+68K Breakpoint 3 set at $163A
+> breakpoint $17E4
+68K Breakpoint 4 set at $17E4
+> breakpoint $53C2
+68K Breakpoint 5 set at $53C2
+> commands 0
+>> printf "R94B M %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> continue
+>> end
+> commands 1
+>> printf "R94B R %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> continue
+>> end
+> commands 2
+>> printf "R94B E %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> continue
+>> end
+> commands 3
+>> printf "R94B V %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> continue
+>> end
+> commands 4
+>> printf "R94B W %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> continue
+>> end
+> commands 5
+>> printf "R94B X %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF140E].w [$FFF014].w [$FF900A]
+.w [$FF831E].w [$FF8320].w [$FFF018].w [$FFF008].l [$FFF01C].w [$FFF032].w
+>> printf "R94B COMPLETE\n"
+>> end
+> continue
+R94B V 11c5a4f 0 0 0 0 0 0 0 4 0 0 0
+R94B W 11c98b5 1 0 0 1 0 0 0 4 2 5200 0
+R94B M 11c9af3 1 0 0 0 0 0 0 4 2 5200 0
+R94B V 11d272b 1 0 0 0 0 0 0 4 2 5200 0
+R94B W 11d6601 2 0 0 1 0 0 0 4 4 5208 0
+R94B R 11e3c7d 2 1 0 1 0 0 0 4 4 5208 0
+R94B E 125bdd3 2 1 0 1 1 0 1 4 4 5208 0
+R94B M 125bfcb 2 1 0 0 1 0 1 4 4 5208 0
+R94B R 12710f1 2 2 0 0 1 0 1 4 4 5208 0
+R94B X 1271861 2 2 0 0 1 0 1 4 4 5208 0
+R94B COMPLETE
+68K Breakpoint 5 hit
+53C2: ori.w #4, ADR_FF8308.l
+> quit
+Saved SRAM to C:/Users/GodLife/AppData/Local/Temp/r94-backlog-crc3-native-8yccto7j/session-data/saves/recursion94-debug\
+save.sram

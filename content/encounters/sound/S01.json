@@ -1,0 +1,245 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "S01",
+  "numeric_id": 301,
+  "name": "NOISE FLOOR",
+  "kind": "primary",
+  "campaign_order": 9,
+  "sector": {
+    "id": "SOUND",
+    "name": "SOUND",
+    "theme": "waveform machinery with visible acoustic rings"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#..................#",
+      "#..#####...........#",
+      "#..#####...........#",
+      "#............####..#",
+      "#............####..#",
+      "#..................#",
+      "#....####..........#",
+      "#....####..........#",
+      "#..........#####...#",
+      "#..........#####...#",
+      "#..................#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 32, "y": 176},
+    "exit": {"x": 288, "y": 48}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [54, 90],
+    "reset_policy": "restore Pursuer patrol, acoustic history, pulse gate, exit, projectiles, and actors"
+  },
+  "echoes": {
+    "cap": 4,
+    "minimum": 2,
+    "first_clear_range": [2, 3],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_SOUND_WAVE_01",
+    "music_id": "MUS_SOUND_NOISE_FLOOR",
+    "tempo_bpm": 120,
+    "authoritative_phase_source": "68000 frame counter",
+    "visual_layers": ["sound_rings", "target_line", "pulse_gate", "waveform_plane"]
+  },
+  "mechanics": ["sound_sensitive_enemy", "audible_lure", "pulse_gate", "silent_route", "deterministic_targeting"],
+  "entities": {
+    "devices": [
+      {
+        "logical_id": "S01_PULSE_GATE",
+        "type": "pulse_door",
+        "x": 224,
+        "y": 96,
+        "state": {"initial": "closed", "states": ["closed", "visual_warning", "open"]},
+        "reset_policy": "closed",
+        "anchor_policy": "forbidden",
+        "parameters": {"phase_cycle_frames": 120, "open_window": [72, 101], "phase_source": "68000"}
+      },
+      {
+        "logical_id": "S01_GATE_HOLD",
+        "type": "phase_hold_terminal",
+        "x": 80,
+        "y": 48,
+        "state": {"initial": "released", "states": ["released", "held"]},
+        "reset_policy": "released",
+        "anchor_policy": "forbidden",
+        "parameters": {"extends_gate_frames": 90, "controls": ["S01_PULSE_GATE"]}
+      },
+      {
+        "logical_id": "S01_EXIT",
+        "type": "exit_terminal",
+        "x": 288,
+        "y": 48,
+        "state": {"initial": "locked", "states": ["locked", "armed", "committed"]},
+        "reset_policy": "locked",
+        "anchor_policy": "forbidden",
+        "parameters": {"interact_frames": 18}
+      }
+    ],
+    "enemies": [
+      {
+        "logical_id": "S01_PURSUER",
+        "type": "pursuer",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "listening", "states": ["listening", "investigating", "chasing", "returning"]},
+        "reset_policy": "listening at x=160 y=112",
+        "anchor_policy": "forbidden",
+        "parameters": {"target_order": "loudest event then earliest event frame then actor logical id", "hearing_radius_px": 144, "chase_speed_px": 2}
+      }
+    ],
+    "hazards": [
+      {
+        "logical_id": "S01_RESONANT_FLOOR",
+        "type": "noise_amplifier",
+        "x": 96,
+        "y": 144,
+        "state": {"initial": "quiet", "states": ["quiet", "ringing"]},
+        "reset_policy": "quiet",
+        "anchor_policy": "forbidden",
+        "parameters": {"width": 96, "height": 32, "movement_noise_radius_px": 96}
+      }
+    ],
+    "carryables": [],
+    "boss_components": []
+  },
+  "objective_graph": {
+    "nodes": [
+      {
+        "objective_id": "S01_O1_AUTHOR_LURE",
+        "type": "distract",
+        "depends_on": [],
+        "condition": "echo_1 produces repeating fire events west of S01_PURSUER",
+        "deadline_frame": 420,
+        "role": "echo_1"
+      },
+      {
+        "objective_id": "S01_O2_HOLD_GATE",
+        "type": "maintain_state",
+        "depends_on": [],
+        "condition": "echo_2 holds S01_GATE_HOLD through the next open window",
+        "deadline_frame": 560,
+        "role": "echo_2"
+      },
+      {
+        "objective_id": "S01_O3_SILENT_ROUTE",
+        "type": "traverse",
+        "depends_on": ["S01_O1_AUTHOR_LURE", "S01_O2_HOLD_GATE"],
+        "condition": "current crosses S01_PULSE_GATE without creating the loudest event",
+        "deadline_frame": 660,
+        "role": "current"
+      },
+      {
+        "objective_id": "S01_O4_COMMIT",
+        "type": "interact",
+        "depends_on": ["S01_O3_SILENT_ROUTE"],
+        "condition": "current commits S01_EXIT",
+        "deadline_frame": 719,
+        "role": "current"
+      }
+    ],
+    "completion": "S01_O4_COMMIT complete"
+  },
+  "canonical_role_schedule": [
+    {
+      "role_id": "S01_ROLE_LURE",
+      "actor": "echo_1",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 120, "action": "fire", "target": "S01_RESONANT_FLOOR"},
+        {"frame": 180, "action": "fire", "target": "S01_RESONANT_FLOOR"},
+        {"frame": 240, "action": "fire", "target": "S01_RESONANT_FLOOR"}
+      ]
+    },
+    {
+      "role_id": "S01_ROLE_GATE",
+      "actor": "echo_2",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 210, "action": "move_to", "target": "S01_GATE_HOLD"},
+        {"frame": 280, "action": "hold_interact", "target": "S01_GATE_HOLD"}
+      ]
+    },
+    {
+      "role_id": "S01_ROLE_SILENT",
+      "actor": "current",
+      "start_frame": 0,
+      "end_frame": 719,
+      "actions": [
+        {"frame": 390, "action": "walk_without_fire", "target": "S01_PULSE_GATE"},
+        {"frame": 590, "action": "interact", "target": "S01_EXIT"}
+      ]
+    }
+  ],
+  "alternative_routes": [
+    {
+      "id": "S01_ALT_LATE_CURRENT_LURE",
+      "role_changes": "current produces the final lure while echo_1 takes the silent exit route",
+      "constraints": ["echo_1 route must already be fully recorded", "current lure begins after gate hold is stable"],
+      "echo_cost": 2
+    }
+  ],
+  "failure_signals": [
+    {
+      "id": "S01_FAIL_TARGET",
+      "condition": "S01_PURSUER changes target from lure echo to current",
+      "visual": "visible sound rings and target line freeze at retarget frame",
+      "audio": "pursuer cue changes channel with the target",
+      "timeline": "lists competing event loudness and stable tie-break"
+    },
+    {
+      "id": "S01_FAIL_PHASE",
+      "condition": "current reaches S01_PULSE_GATE outside its open phase",
+      "visual": "68000 phase window is drawn over the blocked gate",
+      "audio": "phase miss tick",
+      "timeline": "marks authoritative phase; playback position is not consulted"
+    }
+  ],
+  "boss_phases": [],
+  "budgets": {
+    "cpu_percent": 38,
+    "dma_words": 1240,
+    "dma_queue_entries": 18,
+    "hardware_sprites": 34,
+    "sprites_per_scanline": 11,
+    "actors": 5,
+    "enemies": 1,
+    "projectiles": 10,
+    "devices": 3,
+    "carryables": 0,
+    "hazards": 1,
+    "boss_components": 0,
+    "effects": 20
+  },
+  "replays": {
+    "canonical": "S01_CANONICAL",
+    "failure": "S01_FAILURE_RETARGET",
+    "stress": "S01_STRESS_SOUND_RINGS",
+    "phase_regression": null
+  },
+  "progression": {
+    "requires": ["V04"],
+    "unlocks": ["S02", "AUDIBLE_LURE", "SOUND_RING_OVERLAY"]
+  },
+  "narrative": {
+    "briefing": "A RECORDING CAN AUTHOR NOISE.",
+    "success": "THE PURSUER HEARD THE WRONG FUTURE.",
+    "failure": "LOUDNESS AND TARGET ORDER ARE BOTH VISIBLE.",
+    "echo_hint": "FIRE WEST IN A REPEATING PATTERN. WALK EAST IN SILENCE."
+  }
+}

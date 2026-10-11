@@ -1,0 +1,61 @@
+Noncanonical failed native regular diagnostic; no gameplay or timing evidence.
+ROM profile: pool / 25a74bd2d9314f2f1a2e5c9c49279449e1d1f78c8bcd7189600073b7a0ae6152
+Symbols: ea8d8637ad5beb337a22266041dd5d05506e2f67b4471c617c1449a0a7827728
+Original timeout: 180 seconds; unchanged.
+Requested output: checkpoint-pool-25a74bd2-tick59-tick61-20261010.{json,log}
+Outcome: READY reached at initial VBlank but exact empty prompt was absent.
+Only the returned console tail below survives; the complete console was not
+retained by the older shared console helper. Owned emulator was cleaned up.
+No further retry launched following this second pre-gameplay host failure.
+
+tools.m2_evidence.EvidenceFailure: native debugger marker timed out: R94P READY; console tail:
+>> if [$FFF010].l < $3B
+>>> continue
+>>> else
+>>> printf "R94P VP %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w
+>>> continue
+>>> end
+>> end
+> commands 18
+>> if [$FFF010].l < $3B
+>>> continue
+>>> else
+>>> printf "R94P VS %x %x %x %x %x\n" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w
+>>> continue
+>>> end
+>> end
+> commands 19
+>> printf "R94P VO %x %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l
+>> continue
+>> end
+> commands 20
+>> if [$FFF010].l < $3B
+>>> continue
+>>> else
+>>> printf "R94P VK %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w
+>>> continue
+>>> end
+>> end
+> commands 21
+>> if [$FFF018].w < $4
+>>> continue
+>>> else
+>>> if [$FFF010].l < $3B
+>>>> continue
+>>>> else
+>>>> printf "R94P DP %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF1410].w [$FF141A].l [$FFF050].l [$FF1418]
+.w [$FFF05C].w [$FF1420].w [$FFF056].w [$FF8324].w [$FF8322].w
+>>>> printf "R94P VX %x %x %x %x %x\n" cycle [$FFF010].l [$FFF008].l [$FFF032].w [$FFF014].w
+>>>> if [$FFF010].l < $3E
+>>>>> continue
+>>>>> else
+>>>>> printf "R94P COMPLETE\n"
+>>>>> end
+>>>> end
+>>> end
+>> end
+> continue
+R94P READY
+68K Breakpoint 15 hit
+169A: movem.l d0-d7/a0-a6, -(a7)
+> oug)

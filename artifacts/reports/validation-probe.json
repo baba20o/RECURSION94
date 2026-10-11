@@ -1,0 +1,132 @@
+{
+  "gates": [
+    {
+      "exit_code": 0,
+      "gate": "safe_clean",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "pinned_toolchain",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "host_unit_tests",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "detail": "evidence report does not exist",
+      "gate": "emulator_debug_heartbeat",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "evidence report does not exist",
+      "gate": "boot_screenshot_evidence",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "hardware event logs do not expose the stable debug RAM ABI",
+      "exit_code": 1,
+      "gate": "bounded_headless_emulator",
+      "required": true,
+      "status": "fail"
+    },
+    {
+      "detail": "authoritative replay engine and canonical campaign fixtures are absent",
+      "gate": "deterministic_replays",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "runtime save journal/corruption round-trip evidence is absent",
+      "gate": "save_integrity",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "CPU/VBlank/DMA/sprite/pool/Z80 runtime measurements are absent",
+      "gate": "hardware_budgets",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "fifteen stages, five bosses, and twenty verified replays are absent",
+      "gate": "campaign_content",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "input, sprite, DMA, Z80, YM2612, and PSG fixtures are not all proven",
+      "gate": "controller_video_audio_bringup",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "required deterministic captures and independent rubric reviews are absent",
+      "gate": "visual_qa",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "required deterministic audio captures and listening reviews are absent",
+      "gate": "audio_qa",
+      "required": true,
+      "status": "pending"
+    },
+    {
+      "detail": "release red-team and zero-critical/high-defect gates have not run",
+      "gate": "red_team",
+      "required": true,
+      "status": "pending"
+    }
+  ],
+  "license_limitations": [
+    "vasm 2.0f is under a non-commercial upstream license for this target; commercial distribution clearance is unresolved"
+  ],
+  "release_complete": false,
+  "resume_commands": [
+    ".\\tools\\build.ps1 -Configuration Debug",
+    ".\\tools\\build.ps1 -Configuration Release",
+    ".\\tools\\test.ps1",
+    ".\\tools\\validate.ps1"
+  ],
+  "schema": 1,
+  "scope": "Release",
+  "status": "FAIL",
+  "summary": {
+    "failed": 1,
+    "passed": 7,
+    "pending": 10,
+    "required": 18
+  }
+}

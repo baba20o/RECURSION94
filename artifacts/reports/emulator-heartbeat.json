@@ -1,0 +1,141 @@
+{
+  "checks": [
+    {
+      "check": "source_report_status",
+      "detail": "source status/checks pass/31",
+      "status": "pass"
+    },
+    {
+      "check": "current_rom_binding",
+      "detail": "source/current SHA-256 c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460/c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+      "status": "pass"
+    },
+    {
+      "check": "sample_count",
+      "detail": "8 decoded samples",
+      "status": "pass"
+    },
+    {
+      "check": "debug_identity",
+      "detail": "R94D ABI 1/$0400 across current samples",
+      "status": "pass"
+    },
+    {
+      "check": "safe_running_state",
+      "detail": "running stage, fatal clear, hardware flags clear",
+      "status": "pass"
+    },
+    {
+      "check": "authoritative_heartbeat_progression",
+      "detail": "heartbeat/frame [2, 3, 4, 5, 6, 7, 8, 9]/[2, 3, 4, 5, 6, 7, 8, 9]",
+      "status": "pass"
+    },
+    {
+      "check": "seqlock_progression",
+      "detail": "sequences [4, 6, 8, 10, 12, 14, 16, 18]",
+      "status": "pass"
+    },
+    {
+      "check": "controller_sample_progression",
+      "detail": "controller samples [2, 3, 4, 5, 6, 7, 8, 9]",
+      "status": "pass"
+    },
+    {
+      "check": "vblank_breakpoint_transcript",
+      "detail": "breakpoint 00001648, stops 16",
+      "status": "pass"
+    },
+    {
+      "check": "transcript_binding",
+      "detail": "actual/reported transcript SHA-256 044969baf8a98f659c525056010fef3e03383ad6cf4e606b7dc7fb0ea5f350d9/044969baf8a98f659c525056010fef3e03383ad6cf4e606b7dc7fb0ea5f350d9",
+      "status": "pass"
+    },
+    {
+      "check": "portable_runtime_isolation",
+      "detail": "live source used temporary bundled configuration",
+      "status": "pass"
+    }
+  ],
+  "evidence_type": "current_m2_blastem_gdb_heartbeat_derivative",
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460"
+  },
+  "rom_sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460",
+  "samples": [
+    {
+      "controller_samples": 2,
+      "fatal_code": 0,
+      "frame_counter": 2,
+      "heartbeat": 2,
+      "label": "baseline",
+      "sequence": 4
+    },
+    {
+      "controller_samples": 3,
+      "fatal_code": 0,
+      "frame_counter": 3,
+      "heartbeat": 3,
+      "label": "right_first",
+      "sequence": 6
+    },
+    {
+      "controller_samples": 4,
+      "fatal_code": 0,
+      "frame_counter": 4,
+      "heartbeat": 4,
+      "label": "right_second",
+      "sequence": 8
+    },
+    {
+      "controller_samples": 5,
+      "fatal_code": 0,
+      "frame_counter": 5,
+      "heartbeat": 5,
+      "label": "right_release",
+      "sequence": 10
+    },
+    {
+      "controller_samples": 6,
+      "fatal_code": 0,
+      "frame_counter": 6,
+      "heartbeat": 6,
+      "label": "left_right_neutral",
+      "sequence": 12
+    },
+    {
+      "controller_samples": 7,
+      "fatal_code": 0,
+      "frame_counter": 7,
+      "heartbeat": 7,
+      "label": "horizontal_release",
+      "sequence": 14
+    },
+    {
+      "controller_samples": 8,
+      "fatal_code": 0,
+      "frame_counter": 8,
+      "heartbeat": 8,
+      "label": "up_down_neutral",
+      "sequence": 16
+    },
+    {
+      "controller_samples": 9,
+      "fatal_code": 0,
+      "frame_counter": 9,
+      "heartbeat": 9,
+      "label": "final_neutral",
+      "sequence": 18
+    }
+  ],
+  "schema": 1,
+  "scope": "Milestone2",
+  "scope_limit": "This derives boot/VBlank heartbeat proof from the current live M2 GDB samples. Screenshot, gameplay, and release determinism remain separate gates.",
+  "source": {
+    "report_path": "artifacts/reports/m2-controller.json",
+    "report_sha256": "d06f3c00031ee069c01c222f953c7eed99e433016034e3054f26395d48941149",
+    "transcript_path": "artifacts/traces/m2-gdb-transcript.log",
+    "transcript_sha256": "044969baf8a98f659c525056010fef3e03383ad6cf4e606b7dc7fb0ea5f350d9"
+  },
+  "status": "pass"
+}

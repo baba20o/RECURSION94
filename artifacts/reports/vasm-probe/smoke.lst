@@ -1,0 +1,18 @@
+Sections:
+00: "org0001:0" (0-4)
+
+
+Source: "tests\toolchain\smoke68k.asm"
+                            	     1:         org     $000000
+                            	     2: 
+                            	     3: SmokeStart:
+00:00000000 7001            	     4:         moveq   #1,d0
+00:00000002 4E75            	     5:         rts
+                            	     6: 
+
+
+Symbols by name:
+SmokeStart                       A:00000000
+
+Symbols by value:
+00000000 SmokeStart

@@ -1,0 +1,76 @@
+{
+  "baseline_kind": "pre_repair_frozen_failure",
+  "checks": [
+    {
+      "check": "accurately_labeled_controller_driven_review",
+      "detail": "independent automated controller-driven playability review; not literal human testing",
+      "status": "pass"
+    },
+    {
+      "check": "controller_transcript_has_no_debugger_state_writes",
+      "detail": "debugger RAM/register/PC write packets []",
+      "status": "pass"
+    },
+    {
+      "check": "four_canonical_controller_states_have_native_frames",
+      "detail": "zero/reset/open/stable native frames are preserved",
+      "status": "pass"
+    },
+    {
+      "check": "blocked_path_has_required_native_frame",
+      "detail": "EvidenceFailure: blocked_path native ui.screenshot validation failed: EvidenceFailure: BlastEm ui.screenshot changed 0 PNGs; exactly one required",
+      "status": "fail"
+    },
+    {
+      "check": "visual_gate_passed",
+      "detail": "section 42 rubric and five-frame completeness both fail",
+      "status": "fail"
+    }
+  ],
+  "classification": "Independent automated controller-driven playability review. This is not literal human hands-on testing.",
+  "evidence_type": "independent_controller_driven_b01_playability_review",
+  "limitations": [
+    "This historical baseline is bound to the captured pre-repair ROM, not a later workspace build.",
+    "The fifth required native frame is absent.",
+    "The successful process/profile metadata was not serialized before the fifth-session failure and is intentionally not invented.",
+    "Input was automated through the real configured controller path; no person physically held a controller."
+  ],
+  "observations": [
+    {
+      "area": "controller_path",
+      "evidence": "Five isolated fresh-process transcript sections preserve the controller-driven runs with no debugger state writes.",
+      "status": "pass"
+    },
+    {
+      "area": "zero_reset_open_stable",
+      "evidence": "Four native frames and exact request/key-down/key-up tick schedules are hash-bound to their transcript sections.",
+      "status": "pass"
+    },
+    {
+      "area": "blocked_path",
+      "evidence": "Guest state reached ticks 101/102/103/104, current remained at X=108 with the door closed, but F12 produced no PNG.",
+      "status": "fail"
+    },
+    {
+      "area": "visual_readability",
+      "evidence": "All captured scenes contain sub-4 rubric categories and critical gameplay-readability defects.",
+      "status": "fail"
+    }
+  ],
+  "provenance": {
+    "archived_failure_sha256": "f0943f2886745c1d3b777c1775863fa5027fc7bb1979e6eb1274087856978371",
+    "transcript_sha256": "c8d8226579734d1a579471719132fc8336942169e23523daa2f109d614828135",
+    "visual_report_schema": "r94-m4-visual-evidence-v1",
+    "visual_report_status": "fail"
+  },
+  "reviewed_screenshots": [
+    "artifacts/screenshots/m4-before-repair-zero-echo.png",
+    "artifacts/screenshots/m4-before-repair-reset-trace.png",
+    "artifacts/screenshots/m4-before-repair-echo-door-open.png",
+    "artifacts/screenshots/m4-before-repair-program-stable.png"
+  ],
+  "rom_sha256": "9cbc580892e2530bfb48e3d0da865a75f287e16f811ee47cb42515cafd153104",
+  "schema": "r94-m4-controller-playability-review-v1",
+  "scope": "Milestone4",
+  "status": "fail"
+}

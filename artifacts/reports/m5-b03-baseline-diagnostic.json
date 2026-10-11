@@ -1,0 +1,118 @@
+{
+  "checks": [
+    {
+      "check": "m5_runtime_evidence_session",
+      "detail": "TimeoutError: timed out waiting for serialized BlastEm lock C:\\Projects\\RECURSION94\\.toolcache\\locks\\blastem-gdb.lock",
+      "status": "fail"
+    }
+  ],
+  "debugger_write_packets": [],
+  "error": "TimeoutError: timed out waiting for serialized BlastEm lock C:\\Projects\\RECURSION94\\.toolcache\\locks\\blastem-gdb.lock",
+  "evidence_limits": [
+    "A failed capture proves no Milestone 5 runtime claim."
+  ],
+  "evidence_type": "blastem_gdb_m5_campaign_b01_initialization",
+  "provenance": {
+    "default_config": {
+      "bindings": {
+        "a": true,
+        "d": true,
+        "down": true,
+        "enter": true,
+        "left": true,
+        "right": true,
+        "s": true,
+        "up": true
+      },
+      "buttons": [
+        "Up",
+        "Down",
+        "Left",
+        "Right",
+        "A",
+        "B",
+        "C",
+        "Start"
+      ],
+      "keys": [
+        "up",
+        "down",
+        "left",
+        "right",
+        "a",
+        "s",
+        "d",
+        "enter"
+      ],
+      "path": ".toolcache/blastem/default.cfg",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "emulator": {
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "launch_flags": [
+      "-D",
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "rom": {
+      "hash_policy": "verified before and after both sessions",
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "95b30cc05a59d71f64f7632227077692edbac0e2a937534878344fb58ee8f236"
+    },
+    "serialized_lock": ".toolcache/locks/blastem-gdb.lock",
+    "source_bindings": {
+      "bundle_sha256": "dcb889231dd90458be9538142813422fd69475d807978e506607703ceaf2cad4",
+      "sources": {
+        "assets/generated/campaign_runtime/campaign_runtime.inc.asm": "662504bf22b3a764bc763e524d9d427ea0cfab13f3120c5d6e9526e1dfaadd52",
+        "assets/generated/campaign_runtime/campaign_runtime_report.json": "33db670010b4495131190958bf8d2266bd7e6ed715f2247d11a8aab0f959d755",
+        "assets/generated/content/campaign_content.bin": "c234e0114f69318a27351c0f03402f31aa0feb16b85606c804b6f099733aceea",
+        "src/game/engine_core.asm": "f30c1c6a096cd570354be57258c33e9f6836e7179839b4022832609d2f0f8b19",
+        "src/game/engine_layout.asm": "38fb6316ce2ac1b6f3ed6baa7ce8c45bad7936d2c099e1129447db9a2132ac54",
+        "src/game/projection.asm": "f863d0ea4730da3767144c6b5336c7b012754fb56adf4efb0651734f9663ee64",
+        "src/gameplay/campaign_projection.asm": "e3c129540fdd83a4bdf23bf90bde7ec2a87cfec2abd577b1739365a6fefbe184",
+        "src/gameplay/campaign_runtime.asm": "a33f0347d565abaf837c16e4a2e8b144a6e3b6fb6fde454cfb85609d0a98e928",
+        "src/gameplay/gameplay_core.asm": "e7fbc5e28d121c5a40ad5814f752bd64a191d234531b1176516d5239a0f0f46d",
+        "src/gameplay/gameplay_layout.asm": "21d4228b7deb091897efaa3bbb91e0d3e3c754009e429cf7c004dba89b895d35",
+        "src/gameplay/vocabulary_layout.asm": "6d2efab2f3900fe457fbd5329b8397d1528917f26acb3061813787e5bccf68bc",
+        "src/main.asm": "5ceb2e05b5dfcc22bd9fd55dac25a8acb42583fe119f52851f449a11e0f1dbee"
+      }
+    },
+    "symbol_map": {
+      "path": "build/level-B03/recursion94-debug.sym",
+      "sha256": "ecb8679752b975f09e52e0c5f5f781242523e0456390a91e379b3c00a9540e1d",
+      "symbols": {
+        "CampaignCheckCompletion": "000059D0",
+        "CampaignEvaluateDependencies": "000057C6",
+        "CampaignLoadEncounter": "0000524E",
+        "CampaignRuntimeDependencyEdgesB01": "00016034",
+        "CampaignRuntimeDependencyGroupsB01": "00016024",
+        "CampaignRuntimeDescriptorB01": "00015F74",
+        "CampaignRuntimeObjectsB01": "00015FC4",
+        "CampaignRuntimeProfileB01": "0001603C",
+        "CampaignRuntimeRectsB01": "00015F94",
+        "CampaignRuntimeSemanticsB01": "00015FF4",
+        "GameplayBuildProjection": "00005E0A",
+        "MainLoopPostGameplayStep": "00000312",
+        "VBlankInterrupt": "00001652"
+      }
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "rom_sha256": "95b30cc05a59d71f64f7632227077692edbac0e2a937534878344fb58ee8f236",
+  "schema": "r94-m5-runtime-evidence-v1",
+  "scope": "Milestone5",
+  "status": "fail",
+  "symbol_map_sha256": "ecb8679752b975f09e52e0c5f5f781242523e0456390a91e379b3c00a9540e1d"
+}

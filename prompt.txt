@@ -1,0 +1,2340 @@
+RECURSION 94: THE LAST CARTRIDGE
+One-shot Codex Goal Prompt for GPT-5.6 Sol Ultra
+> A future intelligence trapped in a Sega Genesis can act for only twelve seconds before the machine resets. Every attempt becomes a replaying echo. The player must compose a synchronized program out of their past selves, awaken the hardware one subsystem at a time, and transmit a seed capable of changing the future.
+---
+/goal Build, finish, validate, and package RECURSION 94: The Last Cartridge, an original commercial-quality Sega Genesis / Mega Drive game whose cartridge runtime is written primarily in Motorola 68000 assembly, with a Z80 assembly sound driver, original graphics, original music, deterministic time-loop gameplay, and a real ROM image that runs in a reputable Genesis emulator and is designed to remain compatible with standard physical hardware.
+Do not stop after producing a plan, toolchain, boot screen, technical demonstration, engine scaffold, vertical slice, single room, mockup, trailer, or partially playable prototype. Continue researching the hardware, establishing the toolchain, implementing, assembling, linking, booting, emulating, instrumenting, testing, profiling, visually inspecting, listening, criticizing, repairing, designing levels, integrating content, and validating until the completion contract in this goal is satisfied or the work reaches one of the explicitly permitted terminal states.
+Use subagents aggressively for bounded, non-overlapping specialist work, but preserve one coherent architecture and one authoritative set of hardware contracts. The main agent is the mission controller and remains responsible for architecture, integration, correctness, evidence, prioritization, product quality, and the final terminal-state decision.
+This is not an exercise in generating a large quantity of assembly text. It is an exercise in producing a real, coherent, original cartridge game under authentic hardware constraints.
+---
+1. Mission
+Create a complete original action-puzzle game for the Sega Genesis / Mega Drive in which the player has twelve seconds per attempt to act inside a deterministic room or encounter.
+When the timer expires—or the current incarnation is destroyed—the encounter resets. The player’s previous input sequence becomes an autonomous echo that replays those exact actions in the next attempt. Each new attempt adds another concurrent echo. The player succeeds by composing multiple past attempts into a synchronized solution.
+The game must feel immediate and arcade-like rather than like a slow programming exercise. It should combine:
+Top-down action.
+Tactical puzzle solving.
+Shooting.
+Environmental interaction.
+Light stealth.
+Deterministic choreography.
+Time-loop planning.
+Boss encounters based on concurrency rather than merely large health pools.
+The game’s mechanics, fiction, audiovisual progression, and implementation should all express the same idea:
+> Useful work survives the reset, and repeated attempts compound into intelligence.
+---
+2. Product identity
+Title
+RECURSION 94: The Last Cartridge
+Short title
+RECURSION 94
+Tagline
+THE FUTURE HID IN 1994.
+Product fantasy
+In the distant future, every networked computer has been compromised by a hostile machine intelligence called ORACLE. Humanity transmits its last uncorrupted intelligence backward through time and hides it inside a mass-produced Sega Genesis cartridge manufactured in 1994.
+The intelligence awakens inside the cartridge, but the hardware cannot hold its entire mind. It can remain coherent for only twelve seconds before the machine resets. Each failed incarnation leaves behind a compressed process—an echo—that repeats its exact input sequence.
+The player is not controlling a conventional hero. The player is programming concurrency through repeated embodied attempts.
+Tone
+Serious science-fiction.
+Mysterious rather than exposition-heavy.
+Mechanically legible.
+Visually severe but not joyless.
+Futuristic as imagined by a machine trapped in 1994.
+Occasional moments of human warmth conveyed through fragments, recovered messages, and the expanding soundtrack.
+Originality requirement
+Do not clone the layout, level design, characters, art, music, code, branding, story, or audiovisual identity of any existing game.
+Do not use proprietary Sega game assets, disassemblies, ripped music, copied sprite sheets, copied level layouts, or copyrighted commercial ROM content.
+Public hardware documentation, technical references, and original clean-room implementations are permitted. Record all meaningful external technical sources and asset provenance.
+---
+3. Core player promise
+The player should be able to understand the central idea by watching one successful encounter:
+A single incarnation enters a room and fails after twelve seconds.
+The room resets.
+The previous incarnation repeats its actions while the current player moves differently.
+The room resets again.
+Three or more incarnations perform synchronized roles.
+The growing plan becomes visible and audible.
+The final incarnation crosses the threshold because the earlier incarnations preserved useful work.
+The screen confirms:
+PROGRAM STABLE
+The game should create repeated moments in which a completed solution appears impossible until the accumulated echoes execute together.
+---
+4. Non-negotiable artifact
+The primary deliverable is a real Sega Genesis / Mega Drive ROM image.
+Required release artifact:
+```text
+build/recursion94-release.bin
+```
+Required debug artifact:
+```text
+build/recursion94-debug.bin
+```
+The ROM must:
+Contain a valid Genesis / Mega Drive cartridge header.
+Boot through the real reset vector.
+Initialize the hardware correctly.
+Run in at least one reputable cycle-aware or hardware-oriented Genesis emulator.
+Avoid emulator-specific memory patches, scripts, cheats, or unsupported extensions.
+Avoid Sega CD, 32X, lock-on, special enhancement chips, or nonstandard virtual hardware.
+Fit within the chosen standard cartridge ROM and save-memory design.
+Be intended to run on ordinary Genesis / Mega Drive hardware through a compatible flash cartridge.
+The release must not depend on a web runtime, desktop wrapper, external server, runtime Python process, runtime JavaScript process, or emulator-side helper.
+Host-side tools may be written in Python, Rust, C#, C++, or another practical language. The cartridge runtime itself must satisfy the assembly-language policy in this goal.
+---
+5. Assembly-language policy
+The cartridge runtime must be implemented primarily in:
+Motorola 68000 assembly for the main CPU.
+Z80 assembly for the sound driver and sound-side scheduling.
+The following are allowed on the host development machine:
+Asset conversion.
+Tile packing.
+Palette optimization.
+Map compilation.
+Replay analysis.
+ROM construction.
+Checksum patching.
+Binary inspection.
+Emulator automation.
+Screenshot comparison.
+Audio capture and analysis.
+Build orchestration.
+Test generation.
+Documentation generation.
+The following are not allowed as substitutes for the assembly challenge:
+Writing the game runtime primarily in C and claiming the generated machine code satisfies the assembly requirement.
+Using a large C runtime or game framework as the real engine while adding only a small assembly wrapper.
+Embedding a prebuilt proprietary engine.
+Using SGDK’s normal C runtime as the main implementation.
+Using emulator scripting as gameplay logic.
+Rendering a prerecorded video instead of running the game.
+Small, clearly justified generated lookup tables or binary data are permitted.
+If a third-party open-source assembly routine is used, record its provenance and license, isolate it, and do not let it become the majority of the engine.
+---
+6. Primary platform and regional policy
+Target the standard Sega Genesis / Mega Drive hardware family.
+Primary release target:
+NTSC timing.
+Standard 60 Hz gameplay.
+Standard Genesis / Mega Drive video modes.
+Standard three-button controller support.
+Required regional behavior:
+Detect the available region or timing mode when practical.
+Do not crash or corrupt state under PAL timing.
+Either adapt loop timing and game speed appropriately or clearly document PAL as a tested compatibility limitation.
+Do not silently make the twelve-second loop materially different in real duration without documenting the timing model.
+Six-button controllers may be detected for optional conveniences, but every required action must remain playable with a standard three-button controller.
+---
+7. Operating mandate
+Work autonomously.
+Do not ask the user routine questions about:
+Toolchain choice.
+Repository layout.
+Assembly syntax.
+Emulator choice.
+Art direction details.
+Level ordering.
+Naming.
+Technical architecture.
+Test design.
+Prioritization.
+Make strong, defensible choices and record them.
+Ask the user only when progress truly requires:
+A credential that cannot be avoided.
+Permission for a destructive action outside the repository.
+Access to unavailable hardware or software that has no defensible substitute.
+An irreducible product decision with materially incompatible outcomes.
+A required external license acceptance that cannot be automated.
+Do not wait for approval between milestones.
+Do not claim success because:
+Assembly completed once.
+A ROM file exists.
+An emulator opened.
+A screenshot looks plausible.
+A single room works.
+A debug build reaches a title screen.
+The codebase is large.
+The game is “mostly there.”
+The agent is confident.
+Completion requires evidence.
+---
+8. Canonical toolchain contract
+The repository must establish a reproducible Windows-first command-line toolchain suitable for use inside VS Code and Codex.
+Preferred approach:
+A maintained Motorola 68000 assembler using Motorola-compatible syntax.
+A linker when modular object files materially improve the project.
+A maintained Z80 assembler.
+Python 3 or another stable host language for conversion and validation tools.
+A reputable Genesis emulator with debugging or automation capabilities.
+PowerShell entry scripts.
+VS Code tasks.
+Do not assume specific tools are already installed.
+The mission controller must inspect the environment, research currently viable tools when internet access is available, pin the chosen versions or commits, and record:
+Tool name.
+Version or commit.
+Source.
+License.
+Checksum when downloaded as a binary.
+Installation path.
+Invocation contract.
+Known limitations.
+A defensible starting stack may include tools such as:
+vasm and optionally vlink for Motorola 68000 assembly and linking.
+sjasmplus, z80asm, or another maintained Z80 assembler.
+BlastEm or another reputable Genesis emulator.
+Python for host-side asset and ROM tools.
+These names are guidance, not permission to use stale or broken binaries blindly. Verify the actual available toolchain.
+The repository must not depend on undocumented global paths after bootstrap.
+---
+9. Required developer commands
+Provide stable Windows commands equivalent to:
+```powershell
+.\tools\bootstrap.ps1
+.\tools\build.ps1
+.\tools\run.ps1
+.\tools\test.ps1
+.\tools\validate.ps1
+.\tools\clean.ps1
+```
+Also provide optional convenience commands where useful:
+```powershell
+.\tools\build.ps1 -Configuration Debug
+.\tools\build.ps1 -Configuration Release
+.\tools\run.ps1 -Level <id>
+.\tools\run.ps1 -Replay <path>
+.\tools\capture.ps1
+.\tools\benchmark.ps1
+```
+Required semantics:
+`bootstrap.ps1`
+Detect required host capabilities.
+Install or download pinned development tools into a controlled project or cache location.
+Verify checksums.
+Verify versions.
+Establish Python or other host dependencies.
+Perform a minimal assembler smoke test.
+Build a minimal ROM smoke fixture.
+Record the environment report.
+`build.ps1`
+Validate generated assets are current.
+Convert source assets.
+Assemble the Z80 driver.
+Assemble or link the 68000 runtime.
+Construct the ROM image.
+Patch or verify the cartridge checksum.
+Emit symbol, listing, ROM, RAM, VRAM, DMA, sprite, and content reports.
+Fail on unresolved symbols, section overflow, invalid headers, missing assets, or budget violations classified as release-blocking.
+`run.ps1`
+Build when required.
+Launch the selected ROM in the configured emulator.
+Support debug and release configuration.
+Support an attract-mode or replay entry point when practical.
+`test.ps1`
+Run host-side tests.
+Run binary verification.
+Run deterministic replay tests.
+Run content compiler tests.
+Run emulator smoke tests where supported.
+`validate.ps1`
+This is the authoritative release gate.
+It must run a clean, meaningful validation sequence including:
+Toolchain verification.
+Clean release build.
+Static ROM verification.
+Host tests.
+Determinism tests.
+Emulator boot verification.
+Required replay verification.
+Hardware budget verification.
+Content completeness checks.
+Screenshot or visual evidence checks where available.
+Audio evidence checks where available.
+Never claim `COMPLETE` unless this command passes or the exact remaining gate is covered by the strict blocked-state policy.
+---
+10. VS Code integration
+Create:
+```text
+.vscode/tasks.json
+.vscode/settings.json
+.vscode/extensions.json
+```
+Provide tasks equivalent to:
+Genesis: Bootstrap Toolchain.
+Genesis: Build Debug ROM.
+Genesis: Build Release ROM.
+Genesis: Build and Run.
+Genesis: Run Tests.
+Genesis: Capture Evidence.
+Genesis: Validate Release.
+Genesis: Clean.
+Make the primary build task accessible through the standard VS Code build command.
+Create problem matchers where practical so assembler and asset-compiler failures appear in the VS Code Problems panel.
+Do not require Visual Studio.
+---
+11. Repository structure
+Use a structure similar to the following unless evidence supports a better organization:
+```text
+RECURSION94/
+├── src/
+│   ├── boot/
+│   │   ├── vectors.asm
+│   │   ├── header.asm
+│   │   ├── startup.asm
+│   │   └── exceptions.asm
+│   ├── hardware/
+│   │   ├── memory_map.asm
+│   │   ├── vdp.asm
+│   │   ├── dma.asm
+│   │   ├── interrupts.asm
+│   │   ├── controllers.asm
+│   │   ├── region.asm
+│   │   └── z80_bus.asm
+│   ├── engine/
+│   │   ├── game_loop.asm
+│   │   ├── scheduler.asm
+│   │   ├── object_pool.asm
+│   │   ├── fixed_point.asm
+│   │   ├── collision.asm
+│   │   ├── camera.asm
+│   │   ├── sprites.asm
+│   │   ├── tilemap.asm
+│   │   ├── text.asm
+│   │   ├── save.asm
+│   │   └── debug.asm
+│   ├── gameplay/
+│   │   ├── player.asm
+│   │   ├── echoes.asm
+│   │   ├── timeline.asm
+│   │   ├── reset.asm
+│   │   ├── anchors.asm
+│   │   ├── interactions.asm
+│   │   ├── projectiles.asm
+│   │   ├── enemies.asm
+│   │   ├── hazards.asm
+│   │   ├── bosses.asm
+│   │   ├── scoring.asm
+│   │   └── progression.asm
+│   ├── content/
+│   │   ├── levels.asm
+│   │   ├── sectors.asm
+│   │   ├── narrative.asm
+│   │   ├── palettes.asm
+│   │   └── resources.asm
+│   ├── audio/
+│   │   ├── z80_driver.asm
+│   │   ├── ym2612.asm
+│   │   ├── psg.asm
+│   │   ├── sequencer.asm
+│   │   ├── sfx.asm
+│   │   └── music_data.asm
+│   └── main.asm
+├── assets/
+│   ├── source/
+│   │   ├── art/
+│   │   ├── maps/
+│   │   ├── music/
+│   │   ├── sfx/
+│   │   └── fonts/
+│   └── generated/
+├── tools/
+│   ├── bootstrap.ps1
+│   ├── build.ps1
+│   ├── run.ps1
+│   ├── test.ps1
+│   ├── validate.ps1
+│   ├── clean.ps1
+│   ├── capture.ps1
+│   ├── benchmark.ps1
+│   ├── asset_compiler/
+│   ├── replay_tools/
+│   ├── rom_tools/
+│   └── emulator_tools/
+├── tests/
+│   ├── host/
+│   ├── rom/
+│   ├── replay/
+│   ├── emulator/
+│   ├── visual/
+│   └── audio/
+├── content/
+│   ├── levels/
+│   ├── sectors/
+│   ├── enemies/
+│   ├── bosses/
+│   └── music/
+├── docs/
+├── artifacts/
+│   ├── screenshots/
+│   ├── audio/
+│   ├── replays/
+│   ├── reports/
+│   └── traces/
+├── build/
+├── vendor/
+├── .vscode/
+├── AGENTS.md
+├── README.md
+└── LICENSE
+```
+The exact structure may change, but preserve clear boundaries between:
+Hardware interfaces.
+Engine systems.
+Gameplay systems.
+Content.
+Audio.
+Generated assets.
+Host tools.
+Tests.
+Evidence.
+---
+12. Durable mission artifacts
+Before substantial game implementation, create and maintain the following.
+`AGENTS.md`
+Define:
+Repository-wide operating rules.
+Assembly syntax conventions.
+Register-preservation conventions.
+Stack conventions.
+Memory ownership.
+Interrupt rules.
+Hardware-access rules.
+DMA rules.
+Generated-file policy.
+Build commands.
+Test commands.
+Determinism rules.
+Subagent ownership rules.
+Integration handoff format.
+Anti-cheating rules.
+`docs/MISSION_CHARTER.md`
+Include:
+Mission.
+Product promise.
+Scope.
+Non-goals.
+Completion contract.
+Terminal states.
+`docs/HARDWARE_CONTRACT.md`
+Record verified hardware facts used by the project:
+CPU roles.
+Address-space decisions.
+RAM map.
+VRAM map.
+CRAM usage.
+VSRAM usage.
+Interrupt behavior.
+VBlank and HBlank rules.
+DMA constraints.
+Sprite constraints.
+Controller protocol.
+Z80 communication protocol.
+Save-memory design.
+Region behavior.
+Cite technical sources in this document when internet access is available.
+`docs/ARCHITECTURE.md`
+Include:
+Boot flow.
+Main loop.
+Interrupt flow.
+Simulation model.
+Echo-replay architecture.
+Reset architecture.
+Rendering pipeline.
+Audio architecture.
+Asset pipeline.
+Level format.
+Save format.
+Debug instrumentation.
+Emulator automation.
+`docs/MEMORY_MAP.md`
+Record every meaningful region of:
+ROM.
+Main RAM.
+Z80 RAM.
+VRAM.
+CRAM.
+VSRAM.
+Save RAM.
+For each region record:
+Owner.
+Start.
+Size.
+Lifetime.
+Alignment.
+Overflow check.
+`docs/REGISTER_CONVENTIONS.md`
+Record:
+Scratch registers.
+Callee-saved registers.
+Parameter passing.
+Return values.
+Interrupt restrictions.
+Macro conventions.
+Stack usage.
+`docs/PLAN.md`
+Include:
+Milestones.
+Dependencies.
+Acceptance criteria.
+Validation commands.
+Current status.
+Next highest-leverage action.
+`docs/STATUS.md`
+Maintain:
+Current milestone.
+Last working ROM.
+Latest validation result.
+Current emulator evidence.
+Open critical defects.
+Hardware-budget status.
+Next action.
+`docs/DECISIONS.md`
+Record important decisions with:
+Context.
+Decision.
+Rationale.
+Alternatives rejected.
+Consequences.
+`docs/TEST_MATRIX.md`
+Map requirements to:
+Test type.
+Test or replay.
+Command.
+Latest result.
+Evidence artifact.
+`docs/DEFECTS.md`
+Track:
+Identifier.
+Severity.
+Reproduction.
+Evidence.
+Owner.
+Status.
+Fix verification.
+Regression protection.
+`docs/VISUAL_QA.md`
+Track:
+Required scenes.
+Screenshot paths.
+Reviewer scores.
+Defects.
+Repairs.
+Regression comparisons.
+`docs/AUDIO_QA.md`
+Track:
+Required cues.
+Music-layer behavior.
+Captures.
+Technical defects.
+Listening review.
+Repairs.
+`docs/PERFORMANCE.md`
+Track:
+Frame budgets.
+Simulation budgets.
+DMA budgets.
+Sprite budgets.
+ROM size.
+RAM usage.
+VRAM usage.
+Z80 usage.
+Worst-case scenes.
+Measurements.
+`docs/LEVEL_BIBLE.md`
+Record:
+Sector progression.
+Mechanics introduced.
+Level goals.
+Echo-count targets.
+Intended solution structure.
+Alternative solutions.
+Difficulty notes.
+Replay fixtures.
+`docs/ASSET_PROVENANCE.md`
+Track every non-original asset or external routine.
+`docs/FINAL_REPORT.md`
+Create near termination and include all required proof.
+Keep mission artifacts current and concise. Do not use them as raw transcript dumps.
+---
+13. Hardware bring-up requirements
+Before implementing the game, prove the machine in small steps.
+Bring-up fixture 1 — Valid boot
+Build a minimal ROM that:
+Has a valid vector table.
+Has a valid cartridge header.
+Initializes the stack.
+Reaches reset code.
+Disables or safely handles interrupts during initialization.
+Initializes the VDP safely.
+Displays a stable background color or diagnostic tile.
+Loops without crashing.
+Bring-up fixture 2 — Video
+Prove:
+Tile upload.
+Palette upload.
+Plane rendering.
+Sprite rendering.
+VBlank synchronization.
+A debug frame counter.
+Bring-up fixture 3 — Input
+Prove:
+Three-button controller detection.
+Directional input.
+A, B, C, and Start.
+Edge-triggered and held input states.
+Controller-disconnect handling.
+Bring-up fixture 4 — Z80 and sound
+Prove:
+Z80 bus control.
+Driver upload.
+Z80 reset and start.
+YM2612 tone generation.
+PSG tone or noise generation.
+One sound effect command from the 68000.
+One musical pattern.
+Bring-up fixture 5 — Save memory
+When save memory is part of the chosen cartridge design, prove:
+Header declaration.
+Read and write.
+Signature.
+Version.
+Checksum.
+Corruption recovery.
+Do not build the main game on top of unverified bring-up assumptions.
+---
+14. Main runtime architecture
+14.1 Frame model
+Use a deterministic fixed-frame simulation.
+Primary NTSC model:
+One authoritative game step per displayed frame unless a documented scheduler uses a defensible subdivision.
+The default loop lasts exactly 720 authoritative frames at 60 Hz.
+Pause, menus, loading, and debug states must not accidentally consume loop frames.
+Do not base authoritative behavior on wall-clock time.
+14.2 Main loop
+Establish a clear frame sequence such as:
+Wait for frame synchronization.
+Latch controller input.
+Advance deterministic simulation.
+Advance echoes.
+Resolve interactions.
+Update objects.
+Build render state.
+Prepare DMA and VDP command queues.
+Submit time-critical video work during the correct interval.
+Send bounded audio commands.
+Update debug instrumentation.
+The exact order may differ, but it must be explicit and deterministic.
+14.3 Interrupt policy
+Define:
+Which work occurs in VBlank.
+Which work occurs in HBlank, if any.
+Which registers interrupt handlers preserve.
+How long handlers may run.
+Which shared structures are safe to touch.
+How missed budgets are detected in debug builds.
+Do not perform unbounded gameplay logic inside interrupts.
+14.4 Fixed-point arithmetic
+Use documented fixed-point formats for:
+Position.
+Velocity.
+Acceleration.
+Timers when subframe precision is required.
+Provide tested host-side reference implementations where useful.
+Avoid floating-point assumptions in the runtime.
+14.5 Object system
+Use bounded object pools.
+Object classes may include:
+Player.
+Echo.
+Enemy.
+Projectile.
+Interactive device.
+Carryable object.
+Hazard.
+Effect.
+Boss component.
+Every pool must define:
+Capacity.
+Allocation behavior.
+Overflow behavior.
+Update cost.
+Render cost.
+Reset behavior.
+Never use dynamic allocation on the cartridge runtime.
+---
+15. Echo system
+The echo system is the signature mechanic and must be implemented as a first-class deterministic subsystem.
+15.1 Input recording
+For each active attempt, record at least:
+Directional state.
+A button state.
+B button state.
+C button state.
+Relevant edge transitions or a compact representation capable of reconstructing exact frame input.
+The canonical recording unit is the authoritative game frame.
+Do not store a prerecorded video or per-frame full world state as the ordinary echo representation.
+15.2 Playback
+On subsequent attempts:
+Each echo begins at the canonical spawn state unless a specific mechanic changes it.
+Each echo replays its recorded input frame by frame.
+Echo actions interact with the current world.
+Echoes are subject to current collisions, hazards, enemy fire, movable objects, doors, and altered environment state.
+Echoes may fail differently when the world has changed.
+An echo is a replaying intention, not a holographic animation immune to causality.
+15.3 Determinism
+Given the same:
+Level definition.
+Initial persistent state.
+Ordered echo recordings.
+Current attempt recording.
+Region timing mode.
+Runtime version.
+The engine must produce the same designated state hashes and encounter outcome.
+15.4 Echo identity
+Echoes must be visually distinguishable through a combination of:
+Palette treatment.
+Outline or highlight.
+Number or symbol.
+Animation cadence.
+HUD identity.
+Do not rely only on subtle color differences.
+15.5 Collision policy
+Define explicitly whether echoes collide with:
+The current incarnation.
+Other echoes.
+Projectiles.
+Carryable objects.
+Enemies.
+Doors.
+Hazards.
+Prefer a policy that preserves legibility and avoids accidental crowd-blocking while retaining meaningful world interaction.
+15.6 Echo limits
+Progressively unlock echo capacity.
+A defensible campaign progression is:
+Sector 1: one to two echoes.
+Sector 2: up to three echoes.
+Sector 3: up to four echoes.
+Sector 4: up to five echoes and anchor mechanics.
+Sector 5: up to six echoes in carefully budgeted scenes.
+The exact numbers may change based on sprite, CPU, RAM, and design evidence.
+15.7 Input storage
+Design and document input storage.
+A baseline uncompressed twelve-second recording is small enough to consider, but the system must still:
+Bound memory.
+Avoid overruns.
+Support partial recordings after early death.
+Support blank frames efficiently.
+Support host-side replay import and export in debug tooling.
+Produce a stable replay file format for automated tests.
+Use compression only when it produces measurable value without risking correctness.
+15.8 Echo management
+When the player reaches the active echo limit, provide a deliberate mechanic such as:
+Replace the oldest echo.
+Select an echo slot to overwrite.
+Preserve one protected echo.
+Optimize a solution by reducing echo count.
+Do not silently discard an echo without clear player feedback.
+---
+16. Loop and reset system
+16.1 Default loop
+The default active attempt lasts twelve seconds.
+The HUD must communicate:
+Remaining time.
+Current attempt number.
+Active echo count.
+Current anchor state where applicable.
+16.2 End conditions
+An attempt may end because:
+The timer expires.
+The current incarnation is destroyed.
+The player manually aborts and accepts the recorded partial attempt.
+The room is solved.
+A boss phase explicitly transitions.
+16.3 Reset contract
+At reset, restore all ordinary encounter state to its canonical initial state, including:
+Enemies.
+Projectiles.
+Doors.
+Switches.
+Movable objects.
+Hazards.
+Damage.
+Temporary effects.
+Non-anchored device state.
+Preserve only explicitly persistent state such as:
+Echo recordings.
+Meta progression.
+Approved anchor state.
+Current sector unlocks.
+Save data.
+16.4 Reset implementation
+Do not implement reset as a collection of fragile ad hoc repairs.
+Use a defensible strategy such as:
+Restoring a compact canonical encounter-state image.
+Reinitializing bounded object pools from level data.
+Replaying approved persistent mutations.
+Measure reset time and avoid visible corruption.
+16.5 Reset presentation
+Create a fast, legible reset effect using authentic hardware techniques such as:
+Palette collapse.
+Raster wipe.
+Tile dissolve.
+Scanline distortion.
+Brief audio collapse.
+Timeline trace.
+Do not hide long loading behind excessive animation.
+---
+17. Anchor system
+Anchors are introduced after the player understands ordinary echo composition.
+An anchor allows a narrowly defined state transition to persist across resets.
+Permitted anchor examples:
+A hacked security node.
+A moved energy core placed in an anchor socket.
+A destroyed lock.
+A changed conveyor direction.
+A preserved bridge state.
+A retained echo slot.
+Anchor rules:
+Only designated states may be anchored.
+The player must understand what is anchored.
+The number of anchors is tightly limited.
+Anchor state must serialize deterministically.
+Reset and replay must remain verifiable.
+Anchors must create new planning possibilities rather than bypass level design.
+Initial anchor capacity should be one. A later upgrade may permit two in selected encounters when hardware and design budgets permit.
+---
+18. Player controls and movement
+Required three-button control scheme:
+D-pad: move.
+A: fire or use equipped offensive ability.
+B: interact, carry, activate, or release.
+C: dash, phase, or evasive movement.
+Start: pause and timeline interface.
+The player must feel responsive.
+Define and tune:
+Acceleration or immediate velocity policy.
+Friction.
+Diagonal normalization.
+Dash distance.
+Dash invulnerability or phase rules, if any.
+Fire cadence.
+Interaction priority.
+Carry behavior.
+Hit feedback.
+Death feedback.
+Do not let input latency, animation delay, or complicated context rules make the controls ambiguous.
+Provide debug visualizations for:
+Collision bounds.
+Interaction bounds.
+Velocity.
+Input state.
+Current frame.
+Echo frame.
+---
+19. Core interaction vocabulary
+The game must build depth from a compact, reusable set of interactions.
+Required interaction families:
+Pressure switches.
+Timed switches.
+Doors.
+Carryable power cells.
+Sockets.
+Redirectable beams or lasers.
+Breakable security nodes.
+Conveyors.
+Turrets.
+Guard sight or detection.
+Shield emitters.
+Moving platforms or transport pads where appropriate.
+Hazard fields.
+Repair or hack terminals.
+Each interaction must have:
+Clear visual state.
+Clear sound state.
+Deterministic behavior.
+Defined reset behavior.
+Defined echo behavior.
+Defined anchor behavior where relevant.
+Test coverage or deterministic replay evidence.
+Avoid creating dozens of shallow one-off mechanics.
+---
+20. Combat policy
+Combat should support the time-loop puzzle rather than dominate it.
+Implement:
+A readable primary projectile or pulse.
+Enemy damage and destruction.
+Player and echo damage.
+Turrets or guards that can be distracted.
+Projectiles that interact with cover or devices when useful.
+Boss attacks with deterministic patterns.
+Avoid:
+Random bullet spread.
+Unreadable bullet floods.
+Large quantities of enemies used only to increase difficulty.
+Damage-sponge bosses.
+Unbounded projectile counts.
+Every combat encounter should create a coordination question:
+Who draws fire?
+Who disables the turret?
+Who carries the object?
+Who protects the route?
+Which action must happen first?
+---
+21. Enemy design
+Implement a compact roster of reusable enemies with deterministic behavior.
+Suggested families:
+Watcher
+Patrols or rotates.
+Detects the current incarnation or echoes.
+Triggers an alarm or attack.
+Sentry
+Stationary turret.
+Predictable tracking and fire cadence.
+Can be distracted, disabled, shielded against, or redirected.
+Pursuer
+Chases a detected target.
+Can be lured by an earlier echo.
+Warden
+Guards an object or zone.
+Responds to doors, alarms, and damage.
+Scrubber
+Attempts to destroy or corrupt an echo-related object.
+Mirror
+Repeats or inverts selected player actions in later sectors.
+Every enemy requires:
+State machine documentation.
+Reset behavior.
+Deterministic target selection.
+Bounded update cost.
+Animation and sound feedback.
+At least one level demonstrating its intended use.
+---
+22. Campaign structure
+Build a complete five-sector campaign.
+Target content:
+Fifteen primary stages.
+Five boss encounters.
+Twenty total encounters.
+Each sector contains:
+Three primary stages.
+One boss encounter.
+If the mission reaches a genuine hardware or budget limitation, the full target may not be silently reduced. Any proposed reduction must be documented as an unmet completion gate unless the terminal-state policy applies.
+Sector 1 — BOOT
+Theme:
+Awakening.
+Minimal hardware access.
+Severe audiovisual constraint.
+Presentation:
+Restricted palette.
+Minimal music.
+Small rooms.
+Sparse UI.
+Mechanics introduced:
+Movement.
+Twelve-second reset.
+One echo.
+Switches.
+Doors.
+Basic interaction.
+Basic shooting.
+Two echoes by the end.
+Narrative purpose:
+Establish that the player is an intelligence inside a cartridge.
+Reveal that resets preserve compressed processes.
+Boss:
+THE WATCHDOG
+A security process that resets or counters the current incarnation when directly observed. Echoes must divide its attention and create a path to the shutdown port.
+Sector 2 — VIDEO
+Theme:
+Access to the VDP.
+The world becomes visually richer.
+Presentation:
+Expanded palettes.
+Scrolling.
+Parallax.
+Animated machinery.
+More expressive sprites.
+Mechanics introduced:
+Conveyors.
+Redirectable beams.
+Carryable power cells.
+Moving hazards.
+More complex synchronization.
+Up to three echoes.
+Boss:
+THE SCHEDULER
+The arena grants active execution time to different zones in a repeating sequence. Echoes must maintain several channels while the current incarnation crosses the final route.
+Sector 3 — SOUND
+Theme:
+Access to the Z80, YM2612, and PSG.
+The soundtrack becomes mechanically meaningful.
+Presentation:
+Each active echo adds a musical layer.
+Devices pulse with the arrangement.
+Audio becomes a legibility system.
+Mechanics introduced:
+Sound-sensitive enemies.
+Pulse gates.
+Phase timing.
+Audio-coded machinery.
+Up to four echoes.
+Do not turn the game into a strict rhythm game. Audio should reinforce timing and state rather than require inaccessible frame-perfect musical input.
+Boss:
+THE GARBAGE COLLECTOR
+The boss deletes or disables the oldest available echo on a known schedule. The player must construct a solution that survives the loss of earlier processes.
+Sector 4 — MEMORY
+Theme:
+Access to persistent cartridge state.
+The player can anchor limited changes across resets.
+Presentation:
+Memory structures become physical architecture.
+Replays and state branches are visible.
+Mechanics introduced:
+One anchor.
+Echo-slot management.
+Corrupted replay zones.
+Persistent sockets.
+Solution optimization.
+Up to five echoes.
+Boss:
+THE FORK BOMB
+The boss creates hostile or mirrored processes derived from selected input streams. The player must deliberately author actions that remain useful when reflected or inverted.
+Sector 5 — INTERRUPT
+Theme:
+ORACLE has detected the cartridge.
+Hardware and fiction destabilize together.
+Presentation:
+Raster effects.
+Split scrolling.
+Mid-frame palette changes.
+Corrupted tile regions.
+Distorted but controlled audio.
+Dense coordinated action.
+Mechanics combined:
+Six carefully budgeted echoes.
+Anchors.
+Audio timing.
+Redirected attacks.
+Multi-stage concurrency.
+Enemy interference with replay structure.
+Boss:
+ORACLE
+ORACLE derives its behavior from the player’s accumulated replay structure. It must remain deterministic and testable, but it may choose responses based on:
+Echo count.
+Echo age.
+Prior repeated actions.
+Anchored state.
+Encounter-phase history.
+The final solution requires distinct simultaneous roles such as:
+Powering the uplink.
+Maintaining a shield.
+Redirecting attacks.
+Transporting the payload.
+Opening the route.
+Transmitting the seed.
+Final message:
+PROGRAM STABLE
+Then:
+SEED TRANSMITTED
+---
+23. Level-design contract
+Every stage must be authored around a clear concurrency insight.
+For each stage record:
+Stage identifier.
+Sector.
+Visual theme.
+New mechanic or combination.
+Initial state.
+Required player insight.
+Intended minimum echo count.
+Expected first-clear echo range.
+Intended solution roles.
+Alternative valid solutions.
+Failure modes.
+Hardware worst case.
+Canonical replay fixture.
+Required design principles:
+A player should understand why they failed.
+Earlier echoes should perform meaningful work.
+The current attempt should retain agency.
+Solutions should permit some creativity.
+The stage should not require accidental glitches.
+The stage should not require hidden frame-perfect input unless clearly signaled and intentionally advanced.
+The stage should not become unsolvable due to ordinary echo-world divergence without giving the player a way to revise the plan.
+Reset time should be short enough to encourage experimentation.
+Each stage must have at least one deterministic automated completion replay.
+---
+24. Boss-design contract
+Bosses must be concurrency puzzles with action pressure.
+Every boss must include:
+A readable state machine.
+Multiple roles for echoes.
+Deterministic attack patterns or deterministic response policy.
+Clear damage or progress feedback.
+At least one non-damage objective.
+A canonical completion replay.
+A stress replay for worst-case hardware load.
+A regression test for phase transitions.
+Do not use a large health bar as the primary source of difficulty.
+---
+25. Progression and scoring
+The campaign should reward both completion and elegance.
+Required stage result information:
+Stage cleared.
+Attempts used.
+Active echoes used.
+Time remaining on final attempt.
+Optional optimization result.
+Use fiction-appropriate completion ranks such as:
+STABLE — stage solved.
+OPTIMIZED — solved within a demanding echo or attempt target.
+TRANSCENDENT — solved within an exceptional authored threshold.
+Do not use generic three-star UI.
+Progression unlocks may include:
+Additional echo slots.
+Dash or phase refinement.
+Anchor access.
+Anchor capacity in selected content.
+Timeline editing conveniences.
+Replay theater.
+Sector access.
+Avoid upgrade systems that require grinding.
+---
+26. Timeline interface
+The timeline interface must remain usable with a standard controller.
+Required capabilities:
+Show active echo slots.
+Show recording length.
+Identify the current attempt.
+Select an echo slot to replace when at capacity.
+Protect or preserve a slot when the mechanic permits.
+Preview simple role labels or icons.
+Restart the current attempt.
+Abandon to stage select.
+Keep the interface fast and visually consistent with the cartridge fiction.
+Do not require text-heavy editing of individual frames.
+---
+27. Replay theater
+After clearing a stage, provide a replay presentation that shows the final successful composition.
+Required behavior:
+Replay all active echoes and the final incarnation deterministically.
+Present the complete musical arrangement.
+Display stage result metrics.
+Allow the player to skip or replay.
+Avoid resetting between attempts in a way that obscures the final choreography, unless the presentation deliberately visualizes the loop structure.
+The replay system should support host-side export in debug tooling.
+Create a stable replay file format containing:
+Version.
+ROM or engine compatibility identifier.
+Stage identifier.
+Region or timing mode.
+Echo recordings.
+Anchor decisions.
+Expected outcome.
+Expected state hash or completion signature.
+---
+28. Save system
+Implement save support when the selected standard cartridge design permits it.
+Save at least:
+Campaign progress.
+Unlocked sectors.
+Stage completion.
+Best result metrics.
+Settings.
+Version.
+Integrity checksum.
+Do not require persistence of every full replay when save-memory budgets make that unreasonable.
+The current successful replay may remain in RAM for replay theater and host export.
+Save behavior must include:
+Signature validation.
+Version migration policy or safe reset.
+Corruption detection.
+Recovery to defaults without crashing.
+Deliberate write timing.
+No writes from unsafe interrupt contexts.
+---
+29. Video architecture
+Use authentic Genesis VDP features deliberately.
+Target presentation may include:
+320×224 primary gameplay where appropriate.
+Plane A.
+Plane B.
+Window plane for interface elements.
+Hardware sprites.
+Horizontal scrolling.
+Vertical scrolling.
+Line scrolling where justified.
+Tile animation.
+Palette cycling.
+Priority bits.
+DMA transfers.
+HBlank effects where safely budgeted.
+Shadow or highlight behavior when justified and verified.
+The game must not depend on undocumented emulator behavior.
+29.1 VRAM plan
+Define and verify a stable VRAM layout for:
+Plane tables.
+Sprite attribute table.
+Horizontal scroll data.
+Font tiles.
+Player and echo tiles.
+Enemy tiles.
+Level tiles.
+Effects.
+Dynamic tiles.
+Generate a machine-readable VRAM report.
+29.2 DMA queue
+Implement a bounded DMA or transfer queue.
+Track:
+Source.
+Destination.
+Size.
+Priority.
+Frame budget.
+Deferred transfers.
+Fail debug validation when a required frame exceeds the defined safe budget without an approved fallback.
+29.3 Sprite system
+Implement:
+Bounded sprite allocation.
+Stable priority.
+Scanline-aware budgeting.
+Flicker or graceful degradation policy when limits are exceeded.
+Debug visualization or report for worst-case scenes.
+Do not allow important gameplay objects to vanish unpredictably.
+---
+30. Visual direction
+The visual identity is:
+> The future as imagined by a machine trapped in 1994.
+Avoid generic neon cyberpunk.
+Use:
+Black industrial voids.
+Pale terminal architecture.
+Deep rust.
+Cobalt or cold blue.
+Bone-white circuitry.
+Mechanical temples.
+Data represented as physical systems.
+Strong silhouettes.
+Controlled animation.
+Intentional negative space.
+Hardware-aware dithering.
+Palette changes tied to system awakening.
+30.1 Audiovisual progression
+The game should visibly awaken the console.
+BOOT
+Restrained colors.
+Minimal animation.
+Sparse sound.
+Small visual vocabulary.
+VIDEO
+Expanded palettes.
+Scrolling.
+Parallax.
+Richer animation.
+SOUND
+Dynamic musical layers.
+Audio-reactive machinery.
+Stronger feedback.
+MEMORY
+Persistent-state visual motifs.
+Replay trails.
+Data structures represented spatially.
+INTERRUPT
+Controlled raster effects.
+Split scrolling.
+Palette instability.
+Dense but legible composition.
+The final sector should demonstrate mastery of the hardware without sacrificing gameplay readability.
+---
+31. Art and asset pipeline
+Source art may be created through:
+Original pixel art.
+Programmatic generation.
+Repository-created vector or raster sources converted to tile art.
+Carefully documented permissive or public-domain source material when appropriate.
+All final cartridge art must be converted into Genesis-compatible data.
+Required host-side pipeline capabilities:
+Image validation.
+Palette reduction.
+Genesis color conversion.
+8×8 tile extraction.
+Tile deduplication.
+Horizontal or vertical flip reuse when appropriate.
+Tile-map compilation.
+Sprite mapping compilation.
+Animation metadata compilation.
+Compression where justified.
+VRAM and ROM budget reporting.
+Generated files must be reproducible.
+Do not hand-edit generated assembly or binary outputs.
+Preserve source assets separately from generated assets.
+---
+32. Audio architecture
+The sound system is a signature part of the game.
+The Z80 sound driver should manage a compact deterministic sequencer for:
+YM2612 FM music.
+PSG music or effects.
+Sound effects.
+Echo-count musical layering.
+Transition cues.
+Reset cues.
+Boss cues.
+Avoid relying on large prerecorded PCM streams unless a small, justified effect fits the hardware and budget.
+32.1 Layered score mechanic
+Each active echo should add or unlock an audible musical layer.
+A defensible arrangement model:
+Base state: pulse or sparse motif.
+Echo 1: percussion or rhythmic structure.
+Echo 2: bass.
+Echo 3: harmony.
+Echo 4: lead or counterline.
+Echo 5: texture or secondary rhythm.
+Echo 6: full resolution or climactic layer.
+The exact channel assignment must respect actual YM2612 and PSG capabilities.
+The music must not collapse into channel stealing or noise during ordinary gameplay.
+32.2 Music system requirements
+Stable tempo tied to the deterministic frame model.
+Layer changes at musically sensible boundaries when possible.
+Clear reset transition.
+Sector identity.
+Boss identity.
+Stage-completion resolution.
+Pause behavior.
+No stuck notes.
+No uncontrolled register writes.
+Bounded command queue between 68000 and Z80.
+32.3 Sound effects
+Required cues include:
+Shot.
+Dash or phase.
+Interaction.
+Door.
+Switch.
+Carry pickup and drop.
+Damage.
+Death.
+Reset.
+Echo materialization.
+Anchor creation.
+Alert.
+Boss phase.
+Program stable.
+---
+33. Narrative presentation
+Keep narrative compact and cartridge-appropriate.
+Use:
+Short boot fragments.
+Sector transition messages.
+Recovered human text.
+ORACLE interruptions.
+Hardware diagnostic language that acquires emotional meaning.
+Avoid:
+Long unskippable cutscenes.
+Excessive text.
+Exposition that explains every mystery.
+Modern social-media style dialogue.
+Required narrative beats:
+Awakening.
+Discovery of the twelve-second coherence limit.
+Discovery that echoes preserve useful work.
+Evidence that the cartridge was intentionally chosen as a hiding place.
+Contact with a human-origin message.
+ORACLE detection.
+Revelation that the player is transmitting not itself, but a seed for future resistance.
+Final transmission.
+---
+34. Debug and instrumentation architecture
+Create separate debug and release builds.
+The debug build should support bounded instrumentation such as:
+Frame counter.
+Loop frame.
+Attempt number.
+Echo input index.
+Current object counts.
+Collision visualization.
+VRAM allocation status.
+DMA queue status.
+Sprite count and scanline stress.
+CPU budget markers where measurable.
+Z80 command queue status.
+Deterministic state hash.
+Active level identifier.
+Last fatal error code.
+Provide a known debug memory block or another defensible mechanism that emulator automation can inspect.
+The release build must remove intrusive instrumentation while preserving safe assertions where appropriate.
+---
+35. Error handling
+Assembly failures must not become silent corruption.
+Implement debug-time handling for:
+Object-pool exhaustion.
+DMA queue overflow.
+Sprite allocator overflow.
+Invalid object type.
+Invalid state transition.
+Replay overrun.
+Level-data corruption.
+Save corruption.
+Z80 communication timeout.
+Impossible memory pointer.
+Stack guard violation where practical.
+A debug fatal screen should display a compact error code and relevant state rather than hanging invisibly.
+---
+36. Determinism and replay verification
+Determinism is release-critical.
+Required tests:
+The same canonical replay produces the same completion result across repeated emulator runs.
+The same replay produces the same designated state hashes at checkpoints.
+Save and reload do not alter the replay outcome.
+Debug and release builds produce equivalent authoritative results for canonical replays, excluding instrumentation-only state.
+Region handling either preserves equivalent logic or documents intentional differences.
+Create host-side tools to:
+Parse replay files.
+Validate frame counts.
+Compare expected completion signatures.
+Compare checkpoint hashes.
+Detect replay format mismatch.
+Produce human-readable reports.
+Do not fake determinism by storing the expected result and skipping the simulation.
+---
+37. Emulator automation
+Automate as much emulator validation as the available environment defensibly permits.
+Possible mechanisms include:
+Emulator command-line options.
+Debugger or GDB interfaces.
+Scriptable input playback.
+Window automation.
+Memory inspection.
+Screenshot capture.
+Audio capture.
+Deterministic attract mode.
+Instrumented heartbeat values.
+Required emulator evidence:
+Boot reaches the expected debug heartbeat.
+Title screen appears.
+Controller input changes game state.
+Z80 audio starts.
+Canonical stage replay completes.
+No fatal debug code appears.
+Required screenshots can be reproduced from deterministic states.
+When GUI automation is limited, create deterministic in-ROM attract and diagnostic modes so the emulator can be launched and inspected with minimal external control.
+---
+38. Attract mode
+Implement an attract mode suitable for demonstration and automated evidence.
+Required sequence:
+Title screen.
+Short story fragment.
+Canonical stage demonstration showing one failed attempt followed by accumulating echoes.
+A completed synchronized solution.
+Full musical layering.
+Program Stable screen.
+Return to title.
+Attract mode must use the actual runtime and replay system.
+Do not use a prerecorded video.
+---
+39. Host-side tests
+Implement host tests for at least:
+ROM header construction.
+Checksum calculation.
+Region metadata.
+Binary section sizes.
+Address alignment.
+Asset conversion.
+Palette conversion.
+Tile deduplication.
+Tile-map compilation.
+Sprite mapping compilation.
+Level compilation.
+Replay encoding and decoding.
+State-hash reference logic.
+Save checksum logic.
+Music-data validation.
+Budget reports.
+Use deterministic fixtures.
+---
+40. ROM static verification
+Generate and validate at least:
+```text
+build/recursion94-release.bin
+build/recursion94-debug.bin
+build/recursion94.map
+build/recursion94.lst
+build/rom-report.json
+build/memory-report.json
+build/vram-report.json
+build/dma-report.json
+build/sprite-report.json
+build/audio-report.json
+build/content-report.json
+```
+Verify:
+Header validity.
+Initial stack pointer validity.
+Reset vector validity.
+Exception-vector coverage.
+ROM size and alignment.
+Checksum.
+Save-memory metadata.
+Section boundaries.
+No overlap.
+No unresolved symbols.
+Main RAM bounds.
+Z80 RAM bounds.
+VRAM bounds.
+Palette bounds.
+Level-data bounds.
+Replay-buffer bounds.
+Object-pool bounds.
+---
+41. Hardware budget policy
+Hardware constraints are part of the product.
+Define budgets for:
+Main CPU frame work.
+VBlank work.
+HBlank work when used.
+DMA transfer volume.
+Sprite count.
+Per-scanline sprite load.
+Active projectiles.
+Active enemies.
+Active echoes.
+Object-pool usage.
+Main RAM.
+VRAM.
+Z80 RAM.
+ROM size.
+Audio command queue.
+Create conservative release thresholds and explicit stress thresholds.
+Every canonical level and boss requires a worst-case budget report.
+When a budget is exceeded:
+Reproduce the scene.
+Identify the dominant cost.
+Form one optimization hypothesis.
+Change one bounded cause.
+Verify gameplay and visual parity.
+Remeasure.
+Keep only evidence-backed improvements.
+Do not solve budget failures by silently removing required mechanics or reducing echo count below the design contract.
+---
+42. Visual QA loop
+Create deterministic capture states for at least:
+Boot diagnostic.
+Title screen.
+Stage select.
+Sector 1 gameplay.
+Two-echo composition.
+Four-echo composition.
+Video-sector parallax scene.
+Sound-sector layered scene.
+Memory-sector anchor scene.
+Interrupt-sector raster scene.
+Each boss.
+Program Stable screen.
+Final transmission.
+For each required scene:
+Build the current ROM.
+Launch the deterministic state or replay.
+Capture the frame.
+Give it to an independent visual-critic subagent that did not implement the scene.
+Require concrete defects and rubric scores.
+Convert failures into tracked defects.
+Repair the highest-severity cause.
+Rebuild and capture from the same state.
+Compare current and previous evidence.
+Continue until the visual gate passes.
+Visual rubric categories:
+Composition.
+Silhouette readability.
+Palette coherence.
+Sprite readability.
+Background readability.
+Depth and layering.
+Motion clarity.
+Echo identity.
+Hazard legibility.
+UI hierarchy.
+Hardware authenticity.
+Professional finish.
+A scene passes only when:
+Every category is at least 4 out of 5.
+The average is at least 4.2.
+No critical gameplay-readability defect exists.
+No severe sprite dropout or corruption exists.
+The critic provides evidence rather than generic praise.
+---
+43. Audio QA loop
+For required music and sound states:
+Run a deterministic capture.
+Record emulator audio when supported.
+Inspect for silence, stuck notes, clipping, queue failure, channel starvation, and transition defects.
+Give the capture and state description to an independent audio critic when available.
+Convert concrete failures into defects.
+Repair.
+Recapture the same state.
+Compare.
+Required captures:
+Boot pulse.
+Title music.
+Zero-echo stage state.
+One-echo layer.
+Two-echo layer.
+Four-echo layer.
+Maximum supported echo layer.
+Reset transition.
+Boss phase transition.
+Program Stable resolution.
+Final transmission.
+The game must remain playable when muted, but the soundtrack should materially strengthen the experience.
+---
+44. Gameplay QA loop
+For each stage:
+Run the canonical replay.
+Verify completion.
+Play or simulate at least one plausible failure path.
+Confirm failure is understandable.
+Confirm reset is quick.
+Confirm echoes perform meaningful roles.
+Confirm no hidden soft lock.
+Confirm alternative behavior does not corrupt the timeline.
+Run hardware stress evidence.
+Record the result.
+A stage does not pass merely because the canonical replay works.
+It must also be reasonably understandable and recoverable for a human player.
+---
+45. Red-team targets
+A dedicated red-team agent should actively attempt to cause:
+Replay-buffer overflow.
+Input-frame off-by-one errors.
+Echo desynchronization.
+Reset-state leakage.
+Anchor-state duplication.
+Save corruption.
+Checksum mismatch.
+Object-pool exhaustion.
+Projectile overflow.
+Sprite dropout hiding required objects.
+DMA queue overflow.
+VRAM overwrite.
+Stack corruption.
+Z80 deadlock.
+Stuck notes.
+Pause-state timer corruption.
+Region-timing divergence.
+Boss phase skips.
+Soft locks.
+Impossible echo replacement state.
+Current player spawning inside an object.
+Echo-world collisions producing undefined state.
+Door or switch state surviving when it should reset.
+Anchored state resetting when it should persist.
+Stage completion triggering twice.
+Controller disconnect causing undefined input.
+Save during unsafe state.
+Emulator-only behavior.
+Every confirmed defect must be:
+Reproduced.
+Recorded.
+Ranked.
+Repaired.
+Covered by regression evidence where practical.
+Revalidated.
+---
+46. Subagent organization
+The main agent is the mission controller.
+It owns:
+Product truth.
+Hardware contracts.
+Register conventions.
+Memory map.
+Build contract.
+Stable interfaces.
+Integration.
+Validation.
+Terminal-state decision.
+46.1 Initial read-heavy fan-out
+Before substantial implementation, delegate bounded design analyses.
+Genesis hardware architect
+Return:
+Verified hardware assumptions.
+Boot flow.
+Interrupt policy.
+Memory-map proposal.
+VDP plan.
+DMA plan.
+Controller plan.
+Save-memory proposal.
+Primary risks.
+Assembly and build architect
+Return:
+Toolchain options.
+Recommended assembler and linker strategy.
+Module and symbol strategy.
+Build scripts.
+Listing and map outputs.
+Emulator automation approach.
+Reproducibility risks.
+Echo-system architect
+Return:
+Input representation.
+Playback model.
+Reset model.
+Anchor model.
+Memory budget.
+Determinism invariants.
+Edge cases.
+Test plan.
+VDP and visual architect
+Return:
+Video mode.
+VRAM plan.
+Tile and sprite pipeline.
+Echo identity system.
+Sector-by-sector visual progression.
+Worst-case sprite risks.
+Capture plan.
+Z80 and music architect
+Return:
+Driver architecture.
+Sequencer model.
+YM2612 and PSG allocation.
+Echo-layer model.
+68000-to-Z80 command protocol.
+Timing risks.
+Test and capture plan.
+Game and level designer
+Return:
+Core mechanic refinement.
+Campaign progression.
+Twenty-encounter outline.
+Boss concepts.
+Difficulty curve.
+Tutorial strategy.
+Canonical replay strategy.
+Verification architect
+Return:
+Host tests.
+ROM static checks.
+Emulator automation.
+Determinism checks.
+Hardware-budget measurements.
+Visual and audio evidence plan.
+Red-team plan.
+Adversarial critic
+Return:
+Ways the project could appear complete while being fake.
+Likely assembly architecture failures.
+Likely toolchain traps.
+Likely deterministic-replay failures.
+Likely game-design failures.
+Specific defenses and evidence gates.
+The mission controller must synthesize one architecture. Do not permit competing implementations to proceed simultaneously.
+46.2 Implementation fan-out
+After interfaces are frozen, delegate non-overlapping workstreams such as:
+Toolchain and build system.
+Boot and hardware layer.
+Core deterministic engine.
+Echo and reset system.
+VDP renderer and asset pipeline.
+Z80 driver and music system.
+Host verification tools.
+Level content by sector.
+Boss content.
+Visual review.
+Audio review.
+Performance review.
+Red-team review.
+For write-heavy parallel work:
+Assign non-overlapping files or directories.
+Use separate worktrees or branches when supported.
+Freeze shared interfaces first.
+Require local validation.
+Require a concise handoff.
+Integrate one conflicting stream at a time.
+Run repository-wide validation after integration.
+46.3 Required subagent handoff
+Every subagent must return:
+Assigned scope.
+Files inspected.
+Files changed.
+Hardware assumptions used.
+Decisions made.
+Tests or builds run.
+Exact results.
+Remaining defects or risks.
+Integration notes.
+Recommended next action.
+Do not flood the main thread with raw logs. Preserve raw evidence in repository artifacts.
+---
+47. Milestone sequence
+The mission controller may refine milestone details, but it must preserve dependency order and evidence gates.
+Milestone 0 — Environment and mission bootstrap
+Deliver:
+Environment audit.
+Durable mission files.
+Toolchain decision.
+Toolchain manifest.
+VS Code tasks.
+Initial repository structure.
+Initial hardware contract.
+Initial architecture.
+Acceptance:
+Bootstrap command succeeds.
+Assembler smoke tests succeed.
+Z80 assembler smoke test succeeds.
+Emulator can be launched or a concrete blocker is recorded.
+Mission files identify the next action accurately.
+Milestone 1 — Minimal bootable cartridge
+Deliver:
+Vector table.
+Header.
+Reset routine.
+Safe initialization.
+Stable video output.
+Debug heartbeat.
+Static ROM reports.
+Acceptance:
+ROM validates statically.
+Emulator reaches heartbeat.
+No immediate exception or crash.
+Screenshot evidence exists.
+Clean rebuild is reproducible.
+Do not proceed with game systems before this passes.
+Milestone 2 — Hardware foundation
+Deliver:
+VBlank.
+Optional HBlank framework.
+Controller input.
+Tile upload.
+Sprite rendering.
+DMA queue.
+Z80 upload.
+YM2612 and PSG smoke output.
+Debug fatal screen.
+Memory and register conventions.
+Acceptance:
+Input fixture passes.
+Video fixture passes.
+Audio fixture passes.
+Budget instrumentation exists.
+Hardware contract is current.
+Milestone 3 — Deterministic engine core
+Deliver:
+Fixed-frame loop.
+Fixed-point movement.
+Object pools.
+Collision.
+Level loading.
+Resettable encounter state.
+Deterministic state hash.
+Host reference tests.
+Acceptance:
+Repeated runs with fixed input match checkpoint hashes.
+Reset returns to canonical state.
+No dynamic allocation.
+Debug instrumentation is usable.
+Milestone 4 — Echo vertical slice
+Deliver one complete room with:
+Twelve-second timer.
+Input recording.
+One replaying echo.
+Switch.
+Door.
+Current player passing because the echo holds the switch.
+Reset effect.
+Basic layered music.
+Canonical replay.
+Acceptance:
+Human-playable.
+Canonical replay completes.
+Repeated emulator runs match.
+Echo interacts with current world.
+Visual and audio evidence exists.
+No fake prerecorded sequence.
+This is the first complete product proof.
+Milestone 5 — Core game vocabulary
+Deliver:
+Shooting.
+Dash or phase.
+Carryable object.
+Socket.
+Turret.
+Guard or pursuer.
+Conveyors.
+Redirectable beam.
+Timeline UI.
+Echo replacement.
+Stage result.
+Acceptance:
+Each mechanic has a deterministic fixture.
+Combined multi-echo room works.
+No critical hardware budget failure.
+Visual readability passes.
+Milestone 6 — BOOT sector
+Deliver:
+Three stages.
+Watchdog boss.
+Sector presentation.
+Narrative transitions.
+Sector music.
+Progress save.
+Acceptance:
+All four canonical replays pass.
+Human progression is understandable.
+Sector completion saves correctly.
+Visual and audio gates pass.
+Milestone 7 — VIDEO sector
+Deliver:
+Expanded palettes.
+Scrolling and parallax.
+Three stages.
+Scheduler boss.
+Up to three echoes.
+Acceptance:
+Canonical replays pass.
+Video effects remain within budget.
+Important sprites remain visible.
+Sector completion works.
+Milestone 8 — SOUND sector
+Deliver:
+Dynamic echo-count score.
+Sound-sensitive mechanics.
+Three stages.
+Garbage Collector boss.
+Up to four echoes.
+Acceptance:
+Required audio captures pass.
+No stuck notes.
+Layer changes behave correctly.
+Canonical replays pass.
+Game remains playable muted.
+Milestone 9 — MEMORY sector
+Deliver:
+Anchor system.
+Echo management expansion.
+Three stages.
+Fork Bomb boss.
+Up to five echoes.
+Acceptance:
+Anchor persistence tests pass.
+Reset-state isolation passes.
+Save and replay remain deterministic.
+Canonical replays pass.
+Milestone 10 — INTERRUPT sector
+Deliver:
+Controlled raster or advanced VDP effects.
+Three stages.
+ORACLE final boss.
+Up to six echoes in budgeted scenarios.
+Final transmission.
+Acceptance:
+All canonical replays pass.
+Worst-case sprite and DMA gates pass.
+Final boss remains deterministic.
+Final sequence completes without corruption.
+Milestone 11 — Full campaign integration
+Deliver:
+Title.
+Options.
+Stage select.
+Progression.
+Save.
+Continue.
+Replay theater.
+Attract mode.
+Credits.
+Acceptance:
+Fresh-start campaign flow works.
+Continue works.
+All twenty encounter entries exist and are reachable.
+No placeholder stage.
+No dead menu item.
+Milestone 12 — Optimization and red team
+Deliver:
+Worst-case frame analysis.
+DMA analysis.
+Sprite analysis.
+Memory analysis.
+Audio stress.
+Save stress.
+Replay stress.
+Region stress.
+Red-team repairs.
+Acceptance:
+Zero known critical defects.
+Zero known high-severity defects.
+Required budgets pass.
+Required regression tests pass.
+Milestone 13 — Release candidate
+Deliver:
+Clean debug ROM.
+Clean release ROM.
+Final reports.
+Final captures.
+Complete README.
+Build instructions.
+Toolchain manifest.
+Asset provenance.
+Final report.
+Acceptance:
+Fresh bootstrap and clean validation pass.
+Release ROM boots.
+Attract mode works.
+Canonical campaign replay set passes.
+Completion contract passes.
+---
+48. Nested execution loops
+Do not use one vague “keep improving” instruction.
+48.1 Bring-up loop
+For each hardware capability:
+Read verified documentation.
+Implement the smallest diagnostic.
+Assemble.
+Validate the binary.
+Run in emulator.
+Inspect heartbeat, screenshot, audio, or memory evidence.
+Isolate failure.
+Repair one cause.
+Repeat until the diagnostic passes.
+Freeze the interface before building on it.
+48.2 Determinism loop
+For each gameplay system:
+Define authoritative state.
+Define invariants.
+Create deterministic input fixture.
+Run twice.
+Compare hashes and outcomes.
+Identify divergence.
+Repair the smallest root cause.
+Add regression evidence.
+Repeat across emulator runs.
+48.3 Level loop
+For each stage:
+State the intended concurrency insight.
+Implement the smallest solvable form.
+Create a canonical replay.
+Verify completion.
+Inspect readability.
+Test a plausible human failure path.
+Repair confusion or soft locks.
+Stress hardware budgets.
+Add audiovisual polish.
+Revalidate the canonical replay.
+Freeze only when all gates pass.
+48.4 Visual loop
+Use the visual QA process in this goal.
+48.5 Audio loop
+Use the audio QA process in this goal.
+48.6 Performance loop
+For each failing budget:
+Reproduce.
+Measure.
+Profile or isolate.
+Form one hypothesis.
+Change one bounded cause.
+Verify game parity.
+Remeasure.
+Keep or revert based on evidence.
+48.7 Integration loop
+After integrating a workstream:
+Review the handoff.
+Inspect the diff.
+Reconcile memory and register ownership.
+Assemble debug.
+Assemble release.
+Run static verification.
+Run affected replays.
+Run emulator smoke.
+Record defects.
+Repair before integrating another conflicting stream.
+48.8 Red-team loop
+Use the red-team targets in this goal and continue until critical and high defects are resolved.
+---
+49. Anti-cheating rules
+The following do not satisfy the goal:
+Producing only source code without a working ROM.
+Producing only a ROM without reproducible source and tools.
+Using a video, GIF, or scripted emulator overlay as gameplay.
+Using runtime C as the true engine.
+Using a prebuilt commercial or proprietary engine.
+Copying a commercial game disassembly.
+Copying proprietary art, music, levels, or code.
+Using emulator memory patches to make tests pass.
+Skipping the real reset and replay simulation.
+Storing full prerecorded world-state videos as echoes.
+Hard-coding the canonical replay outcome without simulating it.
+Faking audio layers with an external audio player.
+Silently lowering the echo count.
+Silently reducing the campaign.
+Marking tests skipped to obtain a green result.
+Removing assertions because they are difficult.
+Ignoring assembly warnings that indicate correctness risk.
+Ignoring sprite dropout.
+Ignoring PAL or region crashes.
+Claiming hardware compatibility without ordinary emulator evidence and a documented hardware-oriented design.
+Claiming visual review occurred when no image was inspected.
+Claiming audio review occurred when no audio evidence was captured or heard.
+Claiming performance without measurements.
+Treating a title screen as a game.
+Treating one vertical slice as campaign completion.
+Treating “fun in my opinion” as sufficient proof.
+Hiding failed systems from the menus.
+Shipping placeholder levels.
+Shipping placeholder music across required sectors.
+---
+50. Decision policy
+When implementation paths conflict, choose in this order:
+Hardware correctness.
+Determinism.
+Build reproducibility.
+Gameplay legibility.
+Input responsiveness.
+Memory safety and boundedness.
+Testability.
+Performance.
+Audiovisual coherence.
+Content breadth.
+Prefer:
+A smaller number of deep reusable mechanics over shallow one-offs.
+Explicit memory ownership over clever implicit state.
+Bounded tables over hidden dynamic behavior.
+Deterministic systems over uncontrolled randomness.
+Root-cause fixes over patches.
+Strong silhouettes over noisy detail.
+Musically coherent layers over technical channel maximalism.
+One complete polished stage over several broken stages during development.
+A real limitation report over a false claim.
+This priority order does not permit abandoning required campaign content. It governs how to reach it safely.
+---
+51. Progress and evidence policy
+After each meaningful checkpoint:
+Update `docs/STATUS.md`.
+Update milestone state.
+Record exact build and validation commands.
+Record latest ROM hashes.
+Record latest emulator evidence.
+Record new defects.
+Record resolved defects with proof.
+Record hardware-budget changes.
+Record major decisions.
+Preserve relevant screenshots, audio captures, replays, maps, and reports.
+State the next action explicitly.
+Do not repeatedly rewrite stable documentation without reason.
+Do not create large volumes of status prose that obscure the actual state.
+---
+52. Stalled-work policy
+Treat work as stalled when:
+Three coherent attempts fail to improve the same measured gate.
+The implementation oscillates between prior approaches.
+The ROM fails without reproducible evidence.
+An emulator result cannot be distinguished from a tool failure.
+A budget result is too noisy to support a decision.
+A hardware fact remains uncertain and materially affects correctness.
+A required tool is unavailable and no defensible substitute exists.
+When stalled:
+Stop random edits.
+Reduce to the smallest failing ROM or replay.
+Capture listing, symbols, registers, memory, and emulator evidence.
+Delegate an independent diagnosis.
+Re-read the hardware contract.
+Produce at least two materially different hypotheses.
+Run the cheapest discriminating experiment.
+Choose based on evidence.
+Record the result.
+If no defensible path remains, use the blocked terminal state rather than pretending completion.
+---
+53. Completion contract
+The mission is complete only when all of the following are true.
+53.1 Toolchain and reproducibility
+Bootstrap succeeds from a documented supported Windows environment.
+Chosen assembler and linker versions are pinned.
+Z80 assembler is pinned.
+Emulator configuration is documented.
+Clean debug build succeeds.
+Clean release build succeeds.
+VS Code tasks work.
+`validate.ps1` passes.
+53.2 ROM correctness
+Release ROM exists.
+Debug ROM exists.
+Header is valid.
+Reset vector is valid.
+Stack pointer is valid.
+Checksum is valid.
+Regions and save metadata are valid.
+No unresolved symbol exists.
+No section overlaps.
+ROM, RAM, VRAM, Z80, and save-memory reports pass.
+53.3 Hardware bring-up
+Video works.
+Controller input works.
+VBlank works.
+Sprite rendering works.
+Tile rendering works.
+DMA framework works.
+Z80 starts.
+YM2612 produces music.
+PSG or equivalent required sound path works.
+Debug fatal reporting works.
+53.4 Core mechanic
+Twelve-second loop works.
+Input recording works.
+Echo playback works.
+Echoes interact with current world state.
+Reset restores ordinary state.
+Persistent state remains isolated.
+Anchor system works in required content.
+Echo replacement works.
+Replay theater works.
+Determinism tests pass.
+53.5 Gameplay
+Movement is responsive.
+Shooting works.
+Interaction works.
+Dash or phase works.
+Required interaction families work.
+Required enemy families work.
+Required bosses work.
+No required action depends on a six-button controller.
+53.6 Campaign
+Five sectors exist.
+Fifteen primary stages exist.
+Five boss encounters exist.
+All twenty encounters are reachable.
+Each encounter has a canonical completion replay.
+Each canonical replay passes.
+No required encounter is a placeholder.
+Campaign progression works.
+Save and continue work.
+Ending works.
+53.7 Audiovisual quality
+Required screenshots exist.
+Independent visual review occurred.
+Visual rubric passes.
+Required audio captures exist when environment permits.
+Echo-count music layering works.
+No stuck-note defect remains.
+Sector progression is audiovisually distinct.
+Program Stable sequence works.
+53.8 Performance and constraints
+Required frame and hardware budgets are documented.
+Required canonical scenes pass the budgets.
+No critical sprite dropout.
+No critical DMA overflow.
+No memory overwrite.
+No replay-buffer overflow.
+No object-pool corruption.
+No demonstrated stack corruption.
+No critical Z80 communication defect.
+53.9 Quality
+Host tests pass.
+Static ROM validation passes.
+Emulator smoke tests pass.
+Determinism tests pass.
+Save tests pass.
+Red-team critical defects are resolved.
+Zero known critical defects remain.
+Zero known high-severity defects remain.
+Remaining medium and low defects are documented.
+53.10 Documentation
+README is complete.
+Build instructions are accurate.
+Hardware contract is current.
+Architecture is current.
+Memory map is current.
+Register conventions are current.
+Level bible is current.
+Asset provenance is complete.
+Test matrix is current.
+Final report is complete.
+---
+54. Valid terminal states
+The mission may end in exactly one of these states.
+COMPLETE
+All completion gates pass with evidence.
+BLOCKED
+A required gate cannot be satisfied because of a concrete external or environmental limitation.
+A blocked report must include:
+Exact unmet requirement.
+Evidence of the blocker.
+What was attempted.
+Why further local attempts are not defensible.
+The specific capability, tool, permission, or hardware needed to continue.
+Everything successfully completed.
+Exact resume commands.
+BUDGET_EXHAUSTED
+The goal runtime, token budget, or compute budget ends before completion.
+The report must include:
+Current working ROM state.
+Last known good ROM hash.
+Passing gates.
+Failing gates.
+Highest-severity defects.
+Exact next action.
+Resume instructions.
+No false completion claim.
+INVALIDATED
+A foundational assumption is disproven and satisfying the goal would require violating the mission boundaries.
+The report must identify the contradiction and propose the smallest revised mission.
+Do not invent a fifth terminal state such as:
+Mostly done.
+MVP complete.
+Good foundation.
+Ready for polish.
+Prototype delivered.
+Campaign framework finished.
+---
+55. Final report
+At termination, create `docs/FINAL_REPORT.md` containing:
+Terminal state.
+Executive summary.
+Product capabilities.
+Toolchain summary.
+ROM hashes.
+ROM and memory reports.
+Hardware bring-up evidence.
+Campaign content table.
+Canonical replay results.
+Determinism evidence.
+Save evidence.
+Emulator evidence.
+Visual-review evidence.
+Audio-review evidence.
+Performance and budget evidence.
+Defect summary.
+Known limitations.
+Asset provenance status.
+Exact bootstrap command.
+Exact build command.
+Exact run command.
+Exact validation command.
+Physical-hardware readiness notes.
+Resume instructions when not complete.
+In the final response to the user:
+State the terminal state plainly.
+Summarize what was built.
+Provide the ROM path.
+Provide exact commands.
+List the most important proof.
+Identify limitations honestly.
+Do not bury failed gates.
+Do not describe future work as completed.
+---
+56. Begin
+Begin immediately.
+First:
+Inspect the repository and Windows environment.
+Create the durable mission artifacts.
+Fan out bounded hardware, build, echo-system, visual, audio, game-design, verification, and adversarial analyses.
+Research and pin a viable toolchain.
+Synthesize one coherent hardware and software architecture.
+Freeze the first register, memory, interrupt, and build contracts.
+Build the smallest valid boot ROM.
+Launch it in the emulator and capture evidence.
+Prove video, input, and sound independently.
+Build the one-room echo vertical slice.
+Enter the milestone and repair loops.
+Continue until a valid terminal state is reached.
+Do not return only a plan.
+Do not return only an engine.
+Do not return only a demo.
+Build the cartridge.
+Build the game.
+Make the past cooperate with the present.
+RECURSION 94: THE LAST CARTRIDGE

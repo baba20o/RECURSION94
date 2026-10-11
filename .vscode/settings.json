@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "*.asm": "m68k",
+    "*.inc": "m68k"
+  },
+  "files.exclude": {
+    ".toolcache": true,
+    "assets/generated": true
+  },
+  "search.exclude": {
+    ".toolcache": true,
+    "build": true,
+    "assets/generated": true
+  },
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4
+}
+

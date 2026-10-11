@@ -1,0 +1,1306 @@
+{
+  "analysis": {
+    "conclusion": "frame 3 entered VBlank later than frame 2 after a mask-7 renderer span; the same four 440-word DMA transfers then crossed the VBlank exit boundary",
+    "dma_calls": {
+      "2": [
+        {
+          "commit_words": 320,
+          "cycle": 27665579,
+          "destination": 61440,
+          "frame": 2,
+          "phase": "DS",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "commit_words": 360,
+          "cycle": 27683961,
+          "destination": 49152,
+          "frame": 2,
+          "phase": "DS",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "commit_words": 400,
+          "cycle": 27690415,
+          "destination": 49280,
+          "frame": 2,
+          "phase": "DS",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "commit_words": 440,
+          "cycle": 27696869,
+          "destination": 49408,
+          "frame": 2,
+          "phase": "DS",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "3": [
+        {
+          "commit_words": 320,
+          "cycle": 28618053,
+          "destination": 61440,
+          "frame": 3,
+          "phase": "DS",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "commit_words": 360,
+          "cycle": 28636400,
+          "destination": 49152,
+          "frame": 3,
+          "phase": "DS",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "commit_words": 400,
+          "cycle": 28642868,
+          "destination": 49280,
+          "frame": 3,
+          "phase": "DS",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "commit_words": 440,
+          "cycle": 28649322,
+          "destination": 49408,
+          "frame": 3,
+          "phase": "DS",
+          "source": 16746144,
+          "words": 40
+        }
+      ]
+    },
+    "dominant_component": {
+      "frame2_gameplay_plus_renderer_cpu_cycles": 124036,
+      "gameplay_cpu_cycles": [
+        43082,
+        43062
+      ],
+      "largest_measured_component": "renderer_masked",
+      "ntsc_frame_cpu_cycles_floor": 128005,
+      "renderer_masked_cpu_cycles": [
+        81030,
+        80974
+      ]
+    },
+    "entry_phase_comparison": {
+      "consecutive_entry_delta_master_clocks": 952474,
+      "frame2_entry_cycle_master": 27654981,
+      "frame2_phase_mod_nominal_frame": 773781,
+      "frame3_entry_cycle_master": 28607455,
+      "frame3_phase_mod_nominal_frame": 830215,
+      "frame3_relative_lateness_growth_cpu_cycles_rational": "56434/7",
+      "frame3_relative_lateness_growth_master_clocks": 56434,
+      "nominal_ntsc_frame_master_clocks": 896040
+    },
+    "errors": [],
+    "input_binding": {
+      "expected_mask": 1,
+      "observed_d0_masks": [
+        1,
+        1
+      ],
+      "observed_gameplay_call_masks": [
+        1,
+        1
+      ]
+    },
+    "marker_counts": {
+      "DE": 8,
+      "DS": 8,
+      "HS": 2,
+      "ME": 2,
+      "MS": 2,
+      "PQ": 2,
+      "Q": 8,
+      "QE": 2,
+      "RE": 2,
+      "RH": 2,
+      "RS": 2,
+      "SP": 2,
+      "VA": 2,
+      "VC": 2,
+      "VE": 2,
+      "VK": 2,
+      "VO": 1,
+      "VP": 2,
+      "VS": 2,
+      "VX": 2
+    },
+    "origin_signature": {
+      "counter": 0,
+      "cycle": 28670658,
+      "d0": 0,
+      "d1": 8,
+      "frame": 3,
+      "phase": "VO",
+      "sequence": 5
+    },
+    "phase_spans": {
+      "dma_calls": {
+        "2": [
+          {
+            "delta_cpu_cycles_ceil": 1988,
+            "delta_cpu_cycles_exact": 1988,
+            "delta_master_clocks": 13916,
+            "end_cycle_master": 27679495,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27665579
+          },
+          {
+            "delta_cpu_cycles_ceil": 648,
+            "delta_cpu_cycles_exact": 648,
+            "delta_master_clocks": 4536,
+            "end_cycle_master": 27688497,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27683961
+          },
+          {
+            "delta_cpu_cycles_ceil": 648,
+            "delta_cpu_cycles_exact": 648,
+            "delta_master_clocks": 4536,
+            "end_cycle_master": 27694951,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27690415
+          },
+          {
+            "delta_cpu_cycles_ceil": 646,
+            "delta_cpu_cycles_exact": 646,
+            "delta_master_clocks": 4522,
+            "end_cycle_master": 27701391,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27696869
+          }
+        ],
+        "3": [
+          {
+            "delta_cpu_cycles_ceil": 1983,
+            "delta_cpu_cycles_exact": 1983,
+            "delta_master_clocks": 13881,
+            "end_cycle_master": 28631934,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28618053
+          },
+          {
+            "delta_cpu_cycles_ceil": 650,
+            "delta_cpu_cycles_exact": 650,
+            "delta_master_clocks": 4550,
+            "end_cycle_master": 28640950,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28636400
+          },
+          {
+            "delta_cpu_cycles_ceil": 648,
+            "delta_cpu_cycles_exact": 648,
+            "delta_master_clocks": 4536,
+            "end_cycle_master": 28647404,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28642868
+          },
+          {
+            "delta_cpu_cycles_ceil": 648,
+            "delta_cpu_cycles_exact": 648,
+            "delta_master_clocks": 4536,
+            "end_cycle_master": 28653858,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28649322
+          }
+        ]
+      },
+      "gameplay": {
+        "1": {
+          "delta_cpu_cycles_ceil": 43082,
+          "delta_cpu_cycles_exact": 43082,
+          "delta_master_clocks": 301574,
+          "end_cycle_master": 27085085,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 26783511
+        },
+        "2": {
+          "delta_cpu_cycles_ceil": 43062,
+          "delta_cpu_cycles_exact": 43062,
+          "delta_master_clocks": 301434,
+          "end_cycle_master": 28037951,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 27736517
+        }
+      },
+      "renderer_masked": {
+        "1": {
+          "delta_cpu_cycles_ceil": 81030,
+          "delta_cpu_cycles_exact": 81030,
+          "delta_master_clocks": 567210,
+          "end_cycle_master": 27654563,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 27087353
+        },
+        "2": {
+          "delta_cpu_cycles_ceil": 80974,
+          "delta_cpu_cycles_exact": 80974,
+          "delta_master_clocks": 566818,
+          "end_cycle_master": 28607051,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 28040233
+        }
+      },
+      "renderer_subphases": {
+        "1": {
+          "build_hud": {
+            "delta_cpu_cycles_ceil": 15588,
+            "delta_cpu_cycles_exact": 15588,
+            "delta_master_clocks": 109116,
+            "end_cycle_master": 27197911,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27088795
+          },
+          "build_sat": {
+            "delta_cpu_cycles_ceil": 59048,
+            "delta_cpu_cycles_exact": 59048,
+            "delta_master_clocks": 413336,
+            "end_cycle_master": 27611247,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27197911
+          },
+          "post_publish_result": {
+            "delta_cpu_cycles_ceil": 46,
+            "delta_cpu_cycles_exact": 46,
+            "delta_master_clocks": 322,
+            "end_cycle_master": 27654563,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27654241
+          },
+          "prebuild_validation": {
+            "delta_cpu_cycles_ceil": 206,
+            "delta_cpu_cycles_exact": 206,
+            "delta_master_clocks": 1442,
+            "end_cycle_master": 27088795,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27087353
+          },
+          "prepare_reset_overlay": {
+            "delta_cpu_cycles_ceil": 1960,
+            "delta_cpu_cycles_exact": 1960,
+            "delta_master_clocks": 13720,
+            "end_cycle_master": 27624967,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27611247
+          },
+          "queue_begin_enqueue_publish": {
+            "delta_cpu_cycles_ceil": 4182,
+            "delta_cpu_cycles_exact": 4182,
+            "delta_master_clocks": 29274,
+            "end_cycle_master": 27654241,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27624967
+          }
+        },
+        "2": {
+          "build_hud": {
+            "delta_cpu_cycles_ceil": 15586,
+            "delta_cpu_cycles_exact": 15586,
+            "delta_master_clocks": 109102,
+            "end_cycle_master": 28150777,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28041675
+          },
+          "build_sat": {
+            "delta_cpu_cycles_ceil": 59050,
+            "delta_cpu_cycles_exact": 59050,
+            "delta_master_clocks": 413350,
+            "end_cycle_master": 28564127,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28150777
+          },
+          "post_publish_result": {
+            "delta_cpu_cycles_ceil": 48,
+            "delta_cpu_cycles_exact": 48,
+            "delta_master_clocks": 336,
+            "end_cycle_master": 28607051,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28606715
+          },
+          "prebuild_validation": {
+            "delta_cpu_cycles_ceil": 206,
+            "delta_cpu_cycles_exact": 206,
+            "delta_master_clocks": 1442,
+            "end_cycle_master": 28041675,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28040233
+          },
+          "prepare_reset_overlay": {
+            "delta_cpu_cycles_ceil": 1960,
+            "delta_cpu_cycles_exact": 1960,
+            "delta_master_clocks": 13720,
+            "end_cycle_master": 28577847,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28564127
+          },
+          "queue_begin_enqueue_publish": {
+            "delta_cpu_cycles_ceil": 4124,
+            "delta_cpu_cycles_exact": 4124,
+            "delta_master_clocks": 28868,
+            "end_cycle_master": 28606715,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28577847
+          }
+        }
+      },
+      "vblank": {
+        "2": {
+          "ack_to_commit": {
+            "delta_cpu_cycles_ceil": 904,
+            "delta_cpu_cycles_exact": 904,
+            "delta_master_clocks": 6328,
+            "end_cycle_master": 27662863,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27656535
+          },
+          "commit_to_post_dma": {
+            "delta_cpu_cycles_ceil": 7814,
+            "delta_cpu_cycles_exact": 7814,
+            "delta_master_clocks": 54698,
+            "end_cycle_master": 27717561,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27662863
+          },
+          "entry_to_ack": {
+            "delta_cpu_cycles_ceil": 222,
+            "delta_cpu_cycles_exact": 222,
+            "delta_master_clocks": 1554,
+            "end_cycle_master": 27656535,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27654981
+          },
+          "entry_to_exit_status": {
+            "delta_cpu_cycles_ceil": 8994,
+            "delta_cpu_cycles_exact": 8994,
+            "delta_master_clocks": 62958,
+            "end_cycle_master": 27717939,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27654981
+          },
+          "entry_to_rte_opcode": {
+            "delta_cpu_cycles_ceil": 9944,
+            "delta_cpu_cycles_exact": 9944,
+            "delta_master_clocks": 69608,
+            "end_cycle_master": 27724589,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27654981
+          },
+          "post_dma_to_exit_status": {
+            "delta_cpu_cycles_ceil": 54,
+            "delta_cpu_cycles_exact": 54,
+            "delta_master_clocks": 378,
+            "end_cycle_master": 27717939,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 27717561
+          },
+          "renderer_restore_to_entry": {
+            "delta_cpu_cycles_ceil": 60,
+            "delta_cpu_cycles_exact": null,
+            "delta_master_clocks": 418,
+            "end_cycle_master": 27654981,
+            "master_remainder_mod_7": 5,
+            "start_cycle_master": 27654563
+          }
+        },
+        "3": {
+          "ack_to_commit": {
+            "delta_cpu_cycles_ceil": 904,
+            "delta_cpu_cycles_exact": 904,
+            "delta_master_clocks": 6328,
+            "end_cycle_master": 28615351,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28609023
+          },
+          "commit_to_post_dma": {
+            "delta_cpu_cycles_ceil": 7797,
+            "delta_cpu_cycles_exact": 7797,
+            "delta_master_clocks": 54579,
+            "end_cycle_master": 28669930,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28615351
+          },
+          "entry_to_ack": {
+            "delta_cpu_cycles_ceil": 224,
+            "delta_cpu_cycles_exact": 224,
+            "delta_master_clocks": 1568,
+            "end_cycle_master": 28609023,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28607455
+          },
+          "entry_to_exit_status": {
+            "delta_cpu_cycles_ceil": 8979,
+            "delta_cpu_cycles_exact": 8979,
+            "delta_master_clocks": 62853,
+            "end_cycle_master": 28670308,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28607455
+          },
+          "entry_to_rte_opcode": {
+            "delta_cpu_cycles_ceil": 9975,
+            "delta_cpu_cycles_exact": 9975,
+            "delta_master_clocks": 69825,
+            "end_cycle_master": 28677280,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28607455
+          },
+          "post_dma_to_exit_status": {
+            "delta_cpu_cycles_ceil": 54,
+            "delta_cpu_cycles_exact": 54,
+            "delta_master_clocks": 378,
+            "end_cycle_master": 28670308,
+            "master_remainder_mod_7": 0,
+            "start_cycle_master": 28669930
+          },
+          "renderer_restore_to_entry": {
+            "delta_cpu_cycles_ceil": 58,
+            "delta_cpu_cycles_exact": null,
+            "delta_master_clocks": 404,
+            "end_cycle_master": 28607455,
+            "master_remainder_mod_7": 5,
+            "start_cycle_master": 28607051
+          }
+        }
+      }
+    },
+    "queue_records": {
+      "2": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 32768,
+          "frame": 2,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 32769,
+          "frame": 2,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 32769,
+          "frame": 2,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 32769,
+          "frame": 2,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "3": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 32768,
+          "frame": 3,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 32769,
+          "frame": 3,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 32769,
+          "frame": 3,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 32769,
+          "frame": 3,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ]
+    },
+    "status": "pass"
+  },
+  "bounds": {
+    "authoritative_frames_observed": [
+      2,
+      3
+    ],
+    "debugger_guest_writes": 0,
+    "expected_dma_calls_per_frame": 4,
+    "input": "held Up for the exact first two canonical gameplay calls",
+    "maximum_dma_calls": 8,
+    "maximum_observed_frame": 3
+  },
+  "canonical": false,
+  "command_script": "breakpoint $2F2\nbreakpoint $2F6\nbreakpoint $8A78\nbreakpoint $8AD6\nbreakpoint $8ADA\nbreakpoint $8ADE\nbreakpoint $8AE2\nbreakpoint $8BA4\nbreakpoint $8BFC\nbreakpoint $167C\nbreakpoint $169E\nbreakpoint $124C\nbreakpoint $1422\nbreakpoint $14C8\nbreakpoint $16C2\nbreakpoint $16FC\nbreakpoint $170E\nbreakpoint $171E\nbreakpoint $1832\ncommands 0\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P MS %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF9800].b d0 sr\ncontinue\nend\nend\ncommands 1\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P ME %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 sr\ncontinue\nend\nend\ncommands 2\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P RS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 3\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P RH %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 4\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P HS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 5\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P SP %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 6\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P PQ %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 7\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P QE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 8\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P RE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nend\nend\ncommands 9\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $1\nprintf \"R94P READY\\n\"\nelse\nprintf \"R94P VE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FFF014].w\ncontinue\nend\nend\nend\ncommands 10\nif [$FFF010].l < $1\ncontinue\nelse\nprintf \"R94P VA %x %x %x %x\\n\" cycle [$FFF010].l [$FFF01C].w [$FFF008].l\ncontinue\nend\nend\ncommands 11\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P VC %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF9004].l\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w\ncontinue\nend\nend\ncommands 12\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P DS %x %x %x %x %x %x\\n\" cycle [$FFF010].l a0 d0 d1 [$FF9008].w\ncontinue\nend\nend\ncommands 13\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P DE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w d0 d1\ncontinue\nend\nend\ncommands 14\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P VP %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w\ncontinue\nend\nend\ncommands 15\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P VS %x %x %x %x %x\\n\" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w\ncontinue\nend\nend\ncommands 16\nprintf \"R94P VO %x %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l\ncontinue\nend\ncommands 17\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P VK %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w\ncontinue\nend\nend\ncommands 18\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $2\ncontinue\nelse\nprintf \"R94P VX %x %x %x %x %x\\n\" cycle [$FFF010].l [$FFF008].l [$FFF032].w [$FFF014].w\nif [$FFF010].l < $3\ncontinue\nelse\nprintf \"R94P COMPLETE\\n\"\nend\nend\nend\nend\ncontinue\n",
+  "command_script_sha256": "d27c6995a3d74221b2191707a7e7d79dac0298e12ecd7cef05d0042c067e6df3",
+  "completed_utc": "2026-08-31T00:52:53.128438+00:00",
+  "console_geometry": {
+    "cursor_x": 0,
+    "cursor_y": 272,
+    "height": 9001,
+    "width": 120
+  },
+  "console_sha256": "a721a75eb3402ab26969cb0b4f1086a1c8e60bace6be5d12b1b3ffe44133eef6",
+  "diagnostic_only": true,
+  "evidence_type": "blastem_native_debugger_b03_vblank_phase_diagnostic",
+  "host_input": {
+    "guest_observation": {
+      "expected_mask": 1,
+      "observed_d0_masks": [
+        1,
+        1
+      ],
+      "observed_gameplay_call_masks": [
+        1,
+        1
+      ]
+    },
+    "key": {
+      "extended": true,
+      "name": "Up",
+      "scan_code": 72,
+      "virtual_key": 38
+    },
+    "pressed_before_first_continue": true,
+    "window": {
+      "class": "SDL_app",
+      "handle": 4132278,
+      "title": "RECURSION 94: THE LAST CARTRIDGE - BlastEm - 0.3 fps"
+    }
+  },
+  "limitations": [
+    "Noncanonical diagnostic only; it does not replace the two-session 1732-step gate.",
+    "Pinned BlastEm cycle evidence is not physical-hardware timing evidence.",
+    "Only the first two canonical held-Up authoritative calls and VBlank frames 2/3 are observed.",
+    "Debugger stops do not advance the emulated master-cycle counter, but this run is not a throughput claim."
+  ],
+  "pc_contract": {
+    "addresses": {
+      "dma_commit": 4684,
+      "dma_issue_end": 5320,
+      "dma_issue_start": 5154,
+      "gameplay_call": 754,
+      "gameplay_return": 758,
+      "renderer_hud_end_sat_start": 35546,
+      "renderer_hud_start": 35542,
+      "renderer_masked_end": 35836,
+      "renderer_masked_start": 35448,
+      "renderer_overlay_end_queue_start": 35554,
+      "renderer_queue_end": 35748,
+      "renderer_sat_end_overlay_start": 35550,
+      "vblank_ack_complete": 5790,
+      "vblank_common_checks": 5918,
+      "vblank_entry": 5756,
+      "vblank_exit_status_loaded": 5884,
+      "vblank_overrun_compare": 5902,
+      "vblank_post_dma": 5826,
+      "vblank_rte": 6194
+    },
+    "renderer_mask_end_derivation": "move.w d7,sr restore opcode; marker stops immediately before restore",
+    "renderer_mask_start_derivation": "instruction after move.w #$2700,sr at renderer entry+6",
+    "rom_windows": {
+      "dma_commit": {
+        "address": 4684,
+        "hex": "427900FF900A427900FF9008427900FF"
+      },
+      "dma_issue_end": {
+        "address": 5320,
+        "hex": "4E750C79FFFF00FFF0446706527900FF"
+      },
+      "dma_issue_start": {
+        "address": 5154,
+        "hex": "3401024200FF0042930033C200C00004"
+      },
+      "gameplay_call": {
+        "address": 754,
+        "hex": "610037020C400008671A0C4000096710"
+      },
+      "gameplay_return": {
+        "address": 758,
+        "hex": "0C400008671A0C40000967104A40672C"
+      },
+      "renderer_hud_end_sat_start": {
+        "address": 35546,
+        "hex": "6100F3A6610004EE610085007C0041F9"
+      },
+      "renderer_hud_start": {
+        "address": 35542,
+        "hex": "6100ECA46100F3A6610004EE61008500"
+      },
+      "renderer_masked_end": {
+        "address": 35836,
+        "hex": "46C74CDF7CF84E7523FCC000000000C0"
+      },
+      "renderer_masked_start": {
+        "address": 35448,
+        "hex": "0CB95239345600FF8300660001760C79"
+      },
+      "renderer_overlay_end_queue_start": {
+        "address": 35554,
+        "hex": "610085007C0041F900FF8000303CF000"
+      },
+      "renderer_queue_end": {
+        "address": 35748,
+        "hex": "4A46660A427900FF83227000604A0079"
+      },
+      "renderer_sat_end_overlay_start": {
+        "address": 35550,
+        "hex": "610004EE610085007C0041F900FF8000"
+      },
+      "vblank_ack_complete": {
+        "address": 5790,
+        "hex": "6100F63452B900FFF01052B900FFF00C"
+      },
+      "vblank_common_checks": {
+        "address": 5918,
+        "hex": "303900FF140833C000FFF048303900FF"
+      },
+      "vblank_entry": {
+        "address": 5756,
+        "hex": "48E7FFFE303900C000040C79000400FF"
+      },
+      "vblank_exit_status_loaded": {
+        "address": 5884,
+        "hex": "323900FFF01C02410008671602400008"
+      },
+      "vblank_overrun_compare": {
+        "address": 5902,
+        "hex": "0C79FFFF00FFF0326706527900FFF032"
+      },
+      "vblank_post_dma": {
+        "address": 5826,
+        "hex": "203900FFF0100240001F662823FCC07C"
+      },
+      "vblank_rte": {
+        "address": 6194,
+        "hex": "4E736100001061000028610000766100"
+      }
+    },
+    "symbol_bindings": {
+      "dma_commit": "DmaCommitPreparedQueue",
+      "dma_issue_start": "DmaIssueVramTransfer",
+      "gameplay_call": "MainLoopGameplayStepCall",
+      "gameplay_return": "MainLoopPostGameplayStepCall",
+      "vblank_entry": "VBlankInterrupt"
+    }
+  },
+  "provenance": {
+    "collector": {
+      "bytes": 53065,
+      "path": "tools/m5_budget_phase_diagnostic.py",
+      "sha256": "5ae21f9fc3d724b118cbf985fd16019ef7d1cb3931a705b2b2b40970c5741ca8"
+    },
+    "default_config": {
+      "bytes": 10171,
+      "path": ".toolcache/blastem/default.cfg",
+      "sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "emulator": {
+      "bytes": 12690147,
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_node": "732f5689d4381862da283c420b68f37ac320c1d8",
+      "version": "0.6.3-pre-732f5689d438"
+    },
+    "isolated_config": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/blastem/blastem.cfg",
+        "config_sha256": "36445295324698265b1da84dc96478276871dbcd4d6f2042e7f524a7f680c4b5",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/session-data/vgm"
+      },
+      "sha256": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "isolated_runtime": {
+      "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/blastem/blastem.cfg",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+      "status": "pass",
+      "temporary_copy_removed_after_session": true,
+      "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-phase-_j64pz7m/blastem"
+    },
+    "native_console_helper": {
+      "bytes": 53065,
+      "entrypoint": "--console-helper",
+      "path": "tools/m5_budget_phase_diagnostic.py",
+      "sha256": "5ae21f9fc3d724b118cbf985fd16019ef7d1cb3931a705b2b2b40970c5741ca8",
+      "staged_ready_marker": "R94P READY"
+    },
+    "rom": {
+      "bytes": 1048576,
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e"
+    },
+    "symbols": {
+      "bytes": 86514,
+      "path": "build/level-B03/recursion94-debug.sym",
+      "sha256": "09ec73f7671ce406d86334bec10a46a4f83d6bc7faa696c7a6e95b2391e87165"
+    },
+    "trace": {
+      "bytes": 10668,
+      "path": "artifacts/diagnostics/m5-budget/overrun-vblank-phase-frame2-frame3-20260830.log",
+      "sha256": "7b9882d3baed49388c7fce45f68cd40d5ea3ddfcf0f75d5822c139d6a71256db"
+    }
+  },
+  "read_only_contract": {
+    "allowed_commands": [
+      "breakpoint",
+      "commands",
+      "continue",
+      "else",
+      "end",
+      "if",
+      "printf"
+    ],
+    "command_policy_errors": [],
+    "guest_memory_writes": 0,
+    "guest_pc_writes": 0,
+    "guest_register_writes": 0,
+    "hardware_status_reads_by_debugger": 0,
+    "status_binding": "entry and exit VDP status are values already read by VBlankInterrupt"
+  },
+  "records": [
+    {
+      "cycle": 26783511,
+      "d0": 1,
+      "frame": 1,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 0
+    },
+    {
+      "cycle": 27085085,
+      "frame": 1,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 1
+    },
+    {
+      "cycle": 27087353,
+      "frame": 1,
+      "pending": 0,
+      "phase": "RS",
+      "sr": 9984,
+      "tick": 1
+    },
+    {
+      "cycle": 27088795,
+      "frame": 1,
+      "pending": 0,
+      "phase": "RH",
+      "sr": 9988,
+      "tick": 1
+    },
+    {
+      "cycle": 27197911,
+      "frame": 1,
+      "pending": 0,
+      "phase": "HS",
+      "sr": 9988,
+      "tick": 1
+    },
+    {
+      "cycle": 27611247,
+      "frame": 1,
+      "pending": 0,
+      "phase": "SP",
+      "sr": 9984,
+      "tick": 1
+    },
+    {
+      "cycle": 27624967,
+      "frame": 1,
+      "pending": 0,
+      "phase": "PQ",
+      "sr": 9984,
+      "tick": 1
+    },
+    {
+      "cycle": 27654241,
+      "frame": 1,
+      "pending": 1,
+      "phase": "QE",
+      "sr": 9984,
+      "tick": 1
+    },
+    {
+      "cycle": 27654563,
+      "frame": 1,
+      "pending": 1,
+      "phase": "RE",
+      "sr": 9988,
+      "tick": 1
+    },
+    {
+      "cycle": 27654981,
+      "frame": 1,
+      "phase": "VE",
+      "sr": 9732,
+      "tick": 1,
+      "token": 0
+    },
+    {
+      "cycle": 27656535,
+      "entry_status": 3624,
+      "frame": 1,
+      "phase": "VA",
+      "sequence": 3
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 27662863,
+      "frame": 2,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 1
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 32768,
+      "frame": 2,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 32769,
+      "frame": 2,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 32769,
+      "frame": 2,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 32769,
+      "frame": 2,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 320,
+      "cycle": 27665579,
+      "destination": 61440,
+      "frame": 2,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 27679495,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 2,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 27683961,
+      "destination": 49152,
+      "frame": 2,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 27688497,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 2,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 27690415,
+      "destination": 49280,
+      "frame": 2,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 27694951,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 2,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 27696869,
+      "destination": 49408,
+      "frame": 2,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 27701391,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 2,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 27717561,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 2,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 27717939,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 2,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 27718303,
+      "d0": 8,
+      "d1": 8,
+      "frame": 2,
+      "phase": "VK"
+    },
+    {
+      "counter": 0,
+      "cycle": 27724589,
+      "frame": 2,
+      "phase": "VX",
+      "sequence": 4,
+      "token": 1
+    },
+    {
+      "cycle": 27736517,
+      "d0": 1,
+      "frame": 2,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 1
+    },
+    {
+      "cycle": 28037951,
+      "frame": 2,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 2
+    },
+    {
+      "cycle": 28040233,
+      "frame": 2,
+      "pending": 0,
+      "phase": "RS",
+      "sr": 9984,
+      "tick": 2
+    },
+    {
+      "cycle": 28041675,
+      "frame": 2,
+      "pending": 0,
+      "phase": "RH",
+      "sr": 9988,
+      "tick": 2
+    },
+    {
+      "cycle": 28150777,
+      "frame": 2,
+      "pending": 0,
+      "phase": "HS",
+      "sr": 9988,
+      "tick": 2
+    },
+    {
+      "cycle": 28564127,
+      "frame": 2,
+      "pending": 0,
+      "phase": "SP",
+      "sr": 9984,
+      "tick": 2
+    },
+    {
+      "cycle": 28577847,
+      "frame": 2,
+      "pending": 0,
+      "phase": "PQ",
+      "sr": 9984,
+      "tick": 2
+    },
+    {
+      "cycle": 28606715,
+      "frame": 2,
+      "pending": 1,
+      "phase": "QE",
+      "sr": 9984,
+      "tick": 2
+    },
+    {
+      "cycle": 28607051,
+      "frame": 2,
+      "pending": 1,
+      "phase": "RE",
+      "sr": 9988,
+      "tick": 2
+    },
+    {
+      "cycle": 28607455,
+      "frame": 2,
+      "phase": "VE",
+      "sr": 9732,
+      "tick": 2,
+      "token": 0
+    },
+    {
+      "cycle": 28609023,
+      "entry_status": 3628,
+      "frame": 2,
+      "phase": "VA",
+      "sequence": 5
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 28615351,
+      "frame": 3,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 2
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 32768,
+      "frame": 3,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 32769,
+      "frame": 3,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 32769,
+      "frame": 3,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 32769,
+      "frame": 3,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 320,
+      "cycle": 28618053,
+      "destination": 61440,
+      "frame": 3,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 28631934,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 3,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 28636400,
+      "destination": 49152,
+      "frame": 3,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 28640950,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 3,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 28642868,
+      "destination": 49280,
+      "frame": 3,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 28647404,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 3,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 28649322,
+      "destination": 49408,
+      "frame": 3,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 28653858,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 3,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 28669930,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 3,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 28670308,
+      "entry_status": 3628,
+      "exit_status": 12804,
+      "frame": 3,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 28670658,
+      "d0": 0,
+      "d1": 8,
+      "frame": 3,
+      "phase": "VO",
+      "sequence": 5
+    },
+    {
+      "counter": 1,
+      "cycle": 28670994,
+      "d0": 0,
+      "d1": 8,
+      "frame": 3,
+      "phase": "VK"
+    },
+    {
+      "counter": 1,
+      "cycle": 28677280,
+      "frame": 3,
+      "phase": "VX",
+      "sequence": 6,
+      "token": 1
+    }
+  ],
+  "records_sha256": "45b73fb329d3a1d1308be6ad57396982ae0b5fe8b4b4ffed629d393f7dc5de4a",
+  "schema": "r94-m5-b03-budget-vblank-phase-diagnostic-v1",
+  "started_utc": "2026-08-31T00:52:08.459579+00:00",
+  "status": "diagnostic_pass"
+}

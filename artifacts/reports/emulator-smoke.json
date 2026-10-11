@@ -1,0 +1,96 @@
+{
+  "benchmark_caveat": "host wall time is emulator throughput only; it is not a Genesis CPU, VBlank, DMA, sprite, or audio hardware-budget measurement",
+  "checks": [
+    {
+      "gate": "static_rom",
+      "status": "pass"
+    },
+    {
+      "detail": "Windows access violation 0xC0000005 in BlastEm headless mode",
+      "frames_requested": 120,
+      "gate": "bounded_emulator_process",
+      "status": "fail"
+    },
+    {
+      "detail": "hardware event logs do not expose the stable debug RAM ABI",
+      "gate": "debug_heartbeat_observed",
+      "status": "pending"
+    },
+    {
+      "detail": "pinned BlastEm has no deterministic screenshot CLI",
+      "gate": "screenshot_evidence",
+      "status": "pending"
+    }
+  ],
+  "command": [
+    "<temporary-copy>/blastem.exe",
+    "-b",
+    "120",
+    "-e",
+    "artifacts/traces/emulator-smoke.events",
+    "build/recursion94-debug.bin"
+  ],
+  "emulator": ".toolcache/blastem/blastem.exe",
+  "event_log": {
+    "bytes": 0,
+    "path": "artifacts/traces/emulator-smoke.events",
+    "present": true,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "isolation": {
+    "controller_profile": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/blastem/blastem.cfg",
+        "config_sha256": "f0cd0a2bd2e5e5cbdf2dcc3a31f281bd0e924e42b7eb4fbaa8bf5f679a7d8d32",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/session-data/vgm"
+      },
+      "sha256": "f0cd0a2bd2e5e5cbdf2dcc3a31f281bd0e924e42b7eb4fbaa8bf5f679a7d8d32",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "runtime_copy": {
+      "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/blastem/blastem.cfg",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+      "status": "pass",
+      "temporary_copy_removed_after_session": true,
+      "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-emulator-probe-ki47ntnk/blastem"
+    },
+    "serialized_lock": {
+      "acquired_utc": "2026-07-26T15:38:28.503303+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "milestone_1_gate_passed": false,
+  "mode": "smoke",
+  "process": {
+    "output": "",
+    "return_code": 3221225477,
+    "return_code_hex": "0xC0000005",
+    "timed_out": false,
+    "wall_seconds": 1.4842466998379678
+  },
+  "release_gate_passed": false,
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "c689adf93f646c34809649d103cc7759d4b5adf19f5315b3ab99bafe883d2460"
+  },
+  "schema": 1,
+  "status": "fail"
+}

@@ -1,0 +1,11 @@
+UTC date: 2026-10-10
+Command: python3 -m unittest tests.emulator.test_m5_visual_evidence
+Working directory: /mnt/c/projects/recursion94
+First yield: 21 dots after 30.000933707 seconds; process session 47943
+Final yield: 16 additional dots after 24.512816072 seconds
+Exit code: 139 (SIGSEGV)
+Captured stdout/stderr: 37 dots total; no traceback
+BlastEm launched: no
+Runtime/generated assets changed: no
+Pinned ROM SHA-256: 140039e336ca8e1bc1a6042025d41a4190596c244e6a4cce98f1a3a325e7265e
+Pinned symbol SHA-256: b1010589d79ac0594d146001833185f1f4747a480e3929c80b71f9c6dd5fa8b0

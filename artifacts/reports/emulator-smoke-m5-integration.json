@@ -1,0 +1,57 @@
+{
+  "benchmark_caveat": "host wall time is emulator throughput only; it is not a Genesis CPU, VBlank, DMA, sprite, or audio hardware-budget measurement",
+  "checks": [
+    {
+      "gate": "static_rom",
+      "status": "pass"
+    },
+    {
+      "detail": "EvidenceFailure: Windows Known Folder lookup requires a native Windows process",
+      "frames_requested": 180,
+      "gate": "bounded_emulator_process",
+      "status": "fail"
+    },
+    {
+      "detail": "hardware event logs do not expose the stable debug RAM ABI",
+      "gate": "debug_heartbeat_observed",
+      "status": "pending"
+    },
+    {
+      "detail": "pinned BlastEm has no deterministic screenshot CLI",
+      "gate": "screenshot_evidence",
+      "status": "pending"
+    }
+  ],
+  "command": [
+    "<temporary-copy>/blastem.exe",
+    "-b",
+    "180",
+    "-e",
+    "artifacts/traces/emulator-smoke-m5-integration.log",
+    "build/recursion94-debug.bin"
+  ],
+  "emulator": ".toolcache/blastem/blastem.exe",
+  "event_log": {
+    "bytes": 0,
+    "path": "artifacts/traces/emulator-smoke-m5-integration.log",
+    "present": false,
+    "sha256": null
+  },
+  "isolation": {},
+  "milestone_1_gate_passed": false,
+  "mode": "smoke",
+  "process": {
+    "output": "EvidenceFailure: Windows Known Folder lookup requires a native Windows process",
+    "return_code": null,
+    "return_code_hex": null,
+    "timed_out": false,
+    "wall_seconds": 4.931981675326824e-05
+  },
+  "release_gate_passed": false,
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "482ea40e89c8fe10e46b962c6e90c10a85f2fce9e9178748630e75997b0acd88"
+  },
+  "schema": 1,
+  "status": "fail"
+}

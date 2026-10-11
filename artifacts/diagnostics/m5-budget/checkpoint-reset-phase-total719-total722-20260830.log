@@ -1,0 +1,906 @@
+# r94-m5-b03-budget-checkpoint-reset-phase-diagnostic-v1
+# NONCANONICAL RESET DIAGNOSTIC; native debugger; guest read-only
+----- COMMAND SCRIPT -----
+breakpoint $2F2
+breakpoint $2F6
+breakpoint $31C
+breakpoint $3D68
+breakpoint $39C4
+breakpoint $6A8A
+breakpoint $212C
+breakpoint $2344
+breakpoint $5600
+breakpoint $5614
+breakpoint $6A44
+breakpoint $6A48
+breakpoint $8AF0
+breakpoint $8CCE
+breakpoint $124C
+breakpoint $1422
+breakpoint $14C8
+breakpoint $167C
+breakpoint $169E
+breakpoint $16C2
+breakpoint $16FC
+breakpoint $170E
+breakpoint $171E
+breakpoint $1832
+commands 0
+if [$FF140E].w < $1
+if [$FF1410].w < $2CE
+continue
+else
+if [$FF1410].w < $2CF
+printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+continue
+else
+if [$FF1410].w < $2D0
+printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $0 $2
+printf "R94R INPUT RESET 02\n"
+else
+continue
+end
+end
+end
+else
+if [$FF140E].w < $2
+if [$FF1410].w < $2
+printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+continue
+else
+continue
+end
+else
+continue
+end
+end
+end
+commands 1
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R ME %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 [$FF1420].w
+continue
+else
+continue
+end
+end
+end
+commands 2
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R MR %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 [$FF1420].w [$FF141A].l [$FF151C].l
+continue
+else
+continue
+end
+end
+end
+commands 3
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R PS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w [$FF1408].w
+continue
+else
+continue
+end
+end
+end
+commands 4
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R PS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w [$FF1408].w
+continue
+else
+continue
+end
+end
+end
+commands 5
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R PE %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 d1 [$FF1420].w [$FF141A].l
+continue
+else
+continue
+end
+end
+end
+commands 6
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R ES %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w
+continue
+else
+continue
+end
+end
+end
+commands 7
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R EE %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 d1 [$FF1420].w
+continue
+else
+continue
+end
+end
+end
+commands 8
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R TS %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0
+continue
+else
+continue
+end
+end
+end
+commands 9
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R TE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0 d0
+continue
+else
+continue
+end
+end
+end
+commands 10
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R CS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0 d0
+continue
+else
+continue
+end
+end
+end
+commands 11
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R CE %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d1
+continue
+else
+continue
+end
+end
+end
+commands 12
+if [$FFF010].l < $2CF
+continue
+else
+if [$FFF010].l < $2D9
+printf "R94R RG %x %x %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF16C8].w [$FF1420].w [$FF830A].w [$FF8324].w [$FF831E].w
+continue
+else
+continue
+end
+end
+end
+commands 13
+if [$FFF010].l < $2E
+continue
+else
+if [$FFF010].l < $2F
+printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $1 $8
+printf "R94R INPUT 002E 08\n"
+else
+if [$FFF010].l < $43
+continue
+else
+if [$FFF010].l < $44
+printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $8 $0
+printf "R94R INPUT 0043 00\n"
+else
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R RR %x %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w [$FF900A].w d0 [$FF1420].w [$FF830A].w [$FF8324].w [$FF830C].w [$FF831E].w
+continue
+end
+end
+end
+end
+end
+end
+commands 17
+if [$FFF018].w < $4
+continue
+else
+if [$FFF010].l < $1
+printf "R94R READY\n"
+else
+if [$FFF010].l < $2CE
+continue
+else
+printf "R94R VE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w
+continue
+end
+end
+end
+end
+commands 18
+if [$FFF010].l < $2CE
+continue
+else
+printf "R94R VA %x %x %x %x\n" cycle [$FFF010].l [$FFF01C].w [$FFF008].l
+continue
+end
+end
+commands 14
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R VC %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF9004].l
+if [$FF9000].w < $1
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w
+end
+if [$FF9000].w < $2
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w
+end
+if [$FF9000].w < $3
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w
+end
+if [$FF9000].w < $4
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w
+end
+if [$FF9000].w < $5
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $4 [$FF9040].l [$FF9044].w [$FF9046].w [$FF9048].w [$FF904A].w
+end
+if [$FF9000].w < $6
+else
+printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $5 [$FF904C].l [$FF9050].w [$FF9052].w [$FF9054].w [$FF9056].w
+end
+continue
+end
+end
+commands 15
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R DS %x %x %x %x %x %x\n" cycle [$FFF010].l a0 d0 d1 [$FF9008].w
+continue
+end
+end
+commands 16
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R DE %x %x %x %x %x\n" cycle [$FFF010].l [$FF9008].w d0 d1
+continue
+end
+end
+commands 19
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R VP %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w
+continue
+end
+end
+commands 20
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R VS %x %x %x %x %x\n" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w
+continue
+end
+end
+commands 22
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R VK %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w
+continue
+end
+end
+commands 21
+printf "R94R VO %x %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l
+continue
+end
+commands 23
+if [$FFF018].w < $4
+continue
+else
+if [$FFF010].l < $2CF
+continue
+else
+printf "R94R VX %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FFF008].l [$FFF032].w [$FFF014].w [$FFF028].w
+if [$FF140E].w < $1
+if [$FFF010].l < $2D8
+continue
+else
+printf "R94R COMPLETE\n"
+end
+else
+if [$FF1410].w < $2
+if [$FFF010].l < $2D8
+continue
+else
+printf "R94R COMPLETE\n"
+end
+else
+printf "R94R COMPLETE\n"
+end
+end
+end
+end
+end
+continue
+----- CONSOLE TRANSCRIPT -----
+200: move #$2700, SR
+> breakpoint $2F2
+68K Breakpoint 0 set at $2F2
+> breakpoint $2F6
+68K Breakpoint 1 set at $2F6
+> breakpoint $31C
+68K Breakpoint 2 set at $31C
+> breakpoint $3D68
+68K Breakpoint 3 set at $3D68
+> breakpoint $39C4
+68K Breakpoint 4 set at $39C4
+> breakpoint $6A8A
+68K Breakpoint 5 set at $6A8A
+> breakpoint $212C
+68K Breakpoint 6 set at $212C
+> breakpoint $2344
+68K Breakpoint 7 set at $2344
+> breakpoint $5600
+68K Breakpoint 8 set at $5600
+> breakpoint $5614
+68K Breakpoint 9 set at $5614
+> breakpoint $6A44
+68K Breakpoint 10 set at $6A44
+> breakpoint $6A48
+68K Breakpoint 11 set at $6A48
+> breakpoint $8AF0
+68K Breakpoint 12 set at $8AF0
+> breakpoint $8CCE
+68K Breakpoint 13 set at $8CCE
+> breakpoint $124C
+68K Breakpoint 14 set at $124C
+> breakpoint $1422
+68K Breakpoint 15 set at $1422
+> breakpoint $14C8
+68K Breakpoint 16 set at $14C8
+> breakpoint $167C
+68K Breakpoint 17 set at $167C
+> breakpoint $169E
+68K Breakpoint 18 set at $169E
+> breakpoint $16C2
+68K Breakpoint 19 set at $16C2
+> breakpoint $16FC
+68K Breakpoint 20 set at $16FC
+> breakpoint $170E
+68K Breakpoint 21 set at $170E
+> breakpoint $171E
+68K Breakpoint 22 set at $171E
+> breakpoint $1832
+68K Breakpoint 23 set at $1832
+> commands 0
+>> if [$FF140E].w < $1
+>>> if [$FF1410].w < $2CE
+>>>> continue
+>>>> else
+>>>> if [$FF1410].w < $2CF
+>>>>> printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+>>>>> continue
+>>>>> else
+>>>>> if [$FF1410].w < $2D0
+>>>>>> printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+>>>>>> printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $0 $2
+>>>>>> printf "R94R INPUT RESET 02\n"
+>>>>>> else
+>>>>>> continue
+>>>>>> end
+>>>>> end
+>>>> end
+>>> else
+>>> if [$FF140E].w < $2
+>>>> if [$FF1410].w < $2
+>>>>> printf "R94R MS %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF9800].b d0 [$FF1420].w
+>>>>> continue
+>>>>> else
+>>>>> continue
+>>>>> end
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 1
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R ME %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 [$FF1420].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 2
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R MR %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 [$FF1420].w [$FF141A].l [$F
+F151C].l
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 3
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R PS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w [$FF1408].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 4
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R PS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w [$FF1408].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 5
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R PE %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 d1 [$FF1420].w [$FF141A].l
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 6
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R ES %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF1420].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 7
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R EE %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d0 d1 [$FF1420].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 8
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R TS %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 9
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R TE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0 d0
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 10
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R CS %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w a0 d0
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 11
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R CE %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w d1
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 12
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2D9
+>>>> printf "R94R RG %x %x %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014]
+.w [$FF900A].w [$FF9000].w [$FF9002].w [$FF16C8].w [$FF1420].w [$FF830A].w [$FF8324].w [$FF831E].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 13
+>> if [$FFF010].l < $2E
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2F
+>>>> printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $1 $8
+>>>> printf "R94R INPUT 002E 08\n"
+>>>> else
+>>>> if [$FFF010].l < $43
+>>>>> continue
+>>>>> else
+>>>>> if [$FFF010].l < $44
+>>>>>> printf "R94R HI %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w $8 $0
+>>>>>> printf "R94R INPUT 0043 00\n"
+>>>>>> else
+>>>>>> if [$FFF010].l < $2CF
+>>>>>>> continue
+>>>>>>> else
+>>>>>>> printf "R94R RR %x %x %x %x %x %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014]
+.w [$FF900A].w d0 [$FF1420].w [$FF830A].w [$FF8324].w [$FF830C].w [$FF831E].w
+>>>>>>> continue
+>>>>>>> end
+>>>>>> end
+>>>>> end
+>>>> end
+>>> end
+>> end
+> commands 17
+>> if [$FFF018].w < $4
+>>> continue
+>>> else
+>>> if [$FFF010].l < $1
+>>>> printf "R94R READY\n"
+>>>> else
+>>>> if [$FFF010].l < $2CE
+>>>>> continue
+>>>>> else
+>>>>> printf "R94R VE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w
+>>>>> continue
+>>>>> end
+>>>> end
+>>> end
+>> end
+> commands 18
+>> if [$FFF010].l < $2CE
+>>> continue
+>>> else
+>>> printf "R94R VA %x %x %x %x\n" cycle [$FFF010].l [$FFF01C].w [$FFF008].l
+>>> continue
+>>> end
+>> end
+> commands 14
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R VC %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FF900A].w [$FF9000].w [$FF900
+2].w [$FF9004].l
+>>> if [$FF9000].w < $1
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w
+>>>> end
+>>> if [$FF9000].w < $2
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w
+>>>> end
+>>> if [$FF9000].w < $3
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w
+>>>> end
+>>> if [$FF9000].w < $4
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w
+>>>> end
+>>> if [$FF9000].w < $5
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $4 [$FF9040].l [$FF9044].w [$FF9046].w [$FF9048].w [$FF904A].w
+>>>> end
+>>> if [$FF9000].w < $6
+>>>> else
+>>>> printf "R94R Q %x %x %x %x %x %x %x\n" [$FFF010].l $5 [$FF904C].l [$FF9050].w [$FF9052].w [$FF9054].w [$FF9056].w
+>>>> end
+>>> continue
+>>> end
+>> end
+> commands 15
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R DS %x %x %x %x %x %x\n" cycle [$FFF010].l a0 d0 d1 [$FF9008].w
+>>> continue
+>>> end
+>> end
+> commands 16
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R DE %x %x %x %x %x\n" cycle [$FFF010].l [$FF9008].w d0 d1
+>>> continue
+>>> end
+>> end
+> commands 19
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R VP %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w
+>>> continue
+>>> end
+>> end
+> commands 20
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R VS %x %x %x %x %x\n" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w
+>>> continue
+>>> end
+>> end
+> commands 22
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> printf "R94R VK %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w
+>>> continue
+>>> end
+>> end
+> commands 21
+>> printf "R94R VO %x %x %x %x %x %x\n" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l
+>> continue
+>> end
+> commands 23
+>> if [$FFF018].w < $4
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2CF
+>>>> continue
+>>>> else
+>>>> printf "R94R VX %x %x %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w [$FFF008].l [$FFF032].w [$FFF0
+14].w [$FFF028].w
+>>>> if [$FF140E].w < $1
+>>>>> if [$FFF010].l < $2D8
+>>>>>> continue
+>>>>>> else
+>>>>>> printf "R94R COMPLETE\n"
+>>>>>> end
+>>>>> else
+>>>>> if [$FF1410].w < $2
+>>>>>> if [$FFF010].l < $2D8
+>>>>>>> continue
+>>>>>>> else
+>>>>>>> printf "R94R COMPLETE\n"
+>>>>>>> end
+>>>>>> else
+>>>>>> printf "R94R COMPLETE\n"
+>>>>>> end
+>>>>> end
+>>>> end
+>>> end
+>> end
+> continue
+R94R READY
+68K Breakpoint 17 hit
+167C: movem.l d0-d7/a0-a6, -(a7)
+> continue
+R94R HI 3ff1d1f 2e 0 2e 1 8
+R94R INPUT 002E 08
+68K Breakpoint 13 hit
+8CCE: move d7, SR
+> continue
+R94R HI 51e3f5b 43 0 43 8 0
+R94R INPUT 0043 00
+68K Breakpoint 13 hit
+8CCE: move d7, SR
+> continue
+R94R VE 27e36049 2ce 0 2ce 2600 0
+R94R VA 27e36669 2ce e28 59d
+R94R VC 27e37f21 2cf 0 2ce 1 4 4 1b8
+R94R Q 2cf 0 ff8000 f000 140 8000 0
+R94R Q 2cf 1 ff8600 c000 28 8001 0
+R94R Q 2cf 2 ff8650 c080 28 8001 0
+R94R Q 2cf 3 ff86a0 c100 28 8001 0
+R94R DS 27e389af 2cf ff8000 f000 140 140
+R94R DE 27e3bfef 2cf 140 70000000 1ffe
+R94R DS 27e3d161 2cf ff8600 c000 28 168
+R94R DE 27e3e319 2cf 168 40000000 1ffe
+R94R DS 27e3ea97 2cf ff8650 c080 28 190
+R94R DE 27e3fc4f 2cf 190 40800000 1ffe
+R94R DS 27e403cd 2cf ff86a0 c100 28 1b8
+R94R DE 27e41577 2cf 1b8 41000000 1ffe
+R94R VP 27e4543f 2cf 1b8 1b8 0 0
+R94R VS 27e455b9 2cf 3208 e28 0
+R94R VK 27e45725 2cf 8 8 0
+R94R VX 27e46fb3 2cf 0 2ce 59e 0 1 1b8
+R94R MS 27e49b3b 2cf 0 2ce 0 0 c
+R94R ME 27e8d483 2cf 0 2cf 0 c
+R94R RG 27e8dd6d 2cf 0 2cf 2700 0 0 0 0 3 c 0 c 0
+R94R RR 27f04d19 2cf 0 2cf 2704 0 1 0 c 0 c 0 0
+R94R VE 27f10c6d 2cf 0 2cf 2600 0
+R94R VA 27f1128d 2cf e28 59f
+R94R VC 27f12b45 2d0 0 2cf 1 4 4 1b8
+R94R Q 2d0 0 ff8000 f000 140 8000 0
+R94R Q 2d0 1 ff8600 c000 28 8001 0
+R94R Q 2d0 2 ff8650 c080 28 8001 0
+R94R Q 2d0 3 ff86a0 c100 28 8001 0
+R94R DS 27f135d3 2d0 ff8000 f000 140 140
+R94R DE 27f16c28 2d0 140 70000000 1ffe
+R94R DS 27f17d9a 2d0 ff8600 c000 28 168
+R94R DE 27f18f52 2d0 168 40000000 1ffe
+R94R DS 27f196d0 2d0 ff8650 c080 28 190
+R94R DE 27f1a888 2d0 190 40800000 1ffe
+R94R DS 27f1b006 2d0 ff86a0 c100 28 1b8
+R94R DE 27f1c1b0 2d0 1b8 41000000 1ffe
+R94R VP 27f20078 2d0 1b8 1b8 0 0
+R94R VS 27f201f2 2d0 3208 e28 0
+R94R VK 27f2035e 2d0 8 8 0
+R94R VX 27f21bec 2d0 0 2cf 5a0 0 1 1b8
+R94R MS 27f24774 2d0 0 2cf 0 0 c
+R94R HI 27f24774 2d0 0 2cf 0 2
+R94R INPUT RESET 02
+68K Breakpoint 0 hit
+2F2: bsr ADR_39F6
+> continue
+R94R PS 27f67b44 2d0 0 2d0 c 2
+R94R ES 27f680a0 2d0 0 2d0 c
+R94R EE 27fb95f8 2d0 0 2d0 e0e36 268db554 d
+R94R TS 27fb97e2 2d0 0 2d0 ff6e36
+R94R TE 27fbce22 2d0 0 2d0 ff6f36 e0100
+R94R CS 27fbd24a 2d0 0 2d0 ff6e36 e0100
+R94R CE 27fd5614 2d0 0 2d0 5186de7e
+R94R PE 27fd5a4a 2d0 0 2d0 ffff0f36 ae792181 d ae792181
+R94R ME 27fd5e72 2d0 0 2d0 8 d
+R94R VE 27feb8db 2d0 0 2d0 2600 0
+R94R VA 27febefb 2d0 e28 5a1
+R94R VC 27fed7b3 2d1 0 2d0 0 0 0 0
+R94R VP 27fedd2b 2d1 0 0 0 0
+R94R VS 27fedea5 2d1 320c e28 0
+R94R VK 27fee003 2d1 8 8 0
+R94R VX 27fef891 2d1 0 2d0 5a2 0 1 0
+R94R PS 280a09ed 2d1 1 0 0 1
+R94R ES 280a0f3b 2d1 1 0 0
+R94R VE 280c6537 2d1 1 0 2604 1
+R94R VA 280c6b57 2d1 e28 5a3
+R94R VC 280c840f 2d2 1 0 0 0 0 0
+R94R VP 280c8987 2d2 0 0 0 0
+R94R VS 280c8b01 2d2 320c e28 0
+R94R VK 280c8c5f 2d2 8 8 0
+R94R VX 280ca4ed 2d2 1 0 5a4 0 2 0
+R94R EE 280f661f 2d2 1 0 770e36 e63e8253 1
+R94R TS 280f6817 2d2 1 0 ff6e36
+R94R TE 280f9e49 2d2 1 0 ff6f36 770100
+R94R CS 280fa271 2d2 1 0 ff6e36 770100
+R94R CE 2811263b 2d2 1 0 958c2abf
+R94R PE 28112a71 2d2 1 0 ffff0f36 6a73d540 1 6a73d540
+R94R MR 2811318d 2d2 1 0 0 1 6a73d540 185710f5
+R94R RG 281148e0 2d2 1 0 2700 2 0 0 0 3 1 0 c 0
+R94R RR 28115654 2d2 1 0 2700 2 0 4 1 1 1 c 0
+R94R MS 281184a6 2d2 1 0 2 2 1
+R94R ME 281717aa 2d2 1 1 0 1
+R94R RG 28172086 2d2 1 1 2700 1 0 0 0 3 1 1 1 0
+R94R RR 281f2f2c 2d2 1 1 2704 1 1 0 1 1 1 b 0
+R94R VE 281f30c0 2d2 1 1 2604 1
+R94R VA 281f36e0 2d2 e20 5a5
+R94R VC 281f4f98 2d3 1 1 1 5 5 1e0
+R94R Q 2d3 0 ff8000 f000 140 8000 0
+R94R Q 2d3 1 ff8600 c000 28 8001 0
+R94R Q 2d3 2 ff8650 c080 28 8001 0
+R94R Q 2d3 3 ff86a0 c100 28 8001 0
+R94R Q 2d3 4 ff8740 c180 28 8002 0
+R94R DS 281f5a26 2d3 ff8000 f000 140 140
+R94R DE 28213bd6 2d3 140 70000000 1ffe
+R94R DS 28214f6a 2d3 ff8600 c000 28 168
+R94R DE 28219181 2d3 168 40000000 1ffe
+R94R DS 282198ff 2d3 ff8650 c080 28 190
+R94R DE 2821daa6 2d3 190 40800000 1ffe
+R94R DS 2821e224 2d3 ff86a0 c100 28 1b8
+R94R DE 28222473 2d3 1b8 41000000 1ffe
+R94R DS 28223807 2d3 ff8740 c180 28 1e0
+R94R DE 282279fb 2d3 1e0 41800000 1ffe
+R94R VP 2822b8d1 2d3 1e0 1e0 0 0
+R94R VS 2822ba4b 2d3 3220 e20 0
+R94R VK 2822bb47 2d3 3220 0 0
+R94R VX 2822d3c7 2d3 1 1 5a6 0 2 1e0
+R94R MS 2823025f 2d3 1 1 2 2 1
+R94R VE 2827bda4 2d3 1 1 2604 1
+R94R VA 2827c3c4 2d3 e08 5a7
+R94R VC 2827dc7c 2d4 1 1 0 0 0 0
+R94R VP 2827e1e6 2d4 0 0 0 0
+R94R VS 2827e36e 2d4 320c e08 0
+R94R VK 2827e4cc 2d4 8 8 0
+R94R VX 2827fd5a 2d4 1 1 5a8 0 2 0
+R94R ME 2828d668 2d4 1 2 0 1
+R94R RG 2828df52 2d4 1 2 2700 2 0 0 0 3 1 1 1 0
+R94R RR 2831088c 2d4 1 2 2704 2 1 0 1 1 1 a 0
+R94R VE 28356993 2d4 1 2 2600 1
+R94R VA 28356fb3 2d4 e28 5a9
+R94R VC 2835886b 2d5 1 2 1 6 6 208
+R94R Q 2d5 0 ff8000 f000 140 8000 0
+R94R Q 2d5 1 ff8600 c000 28 8001 0
+R94R Q 2d5 2 ff8650 c080 28 8001 0
+R94R Q 2d5 3 ff86a0 c100 28 8001 0
+R94R Q 2d5 4 ff86f0 c180 28 8002 0
+R94R Q 2d5 5 ff8740 c280 28 8002 0
+R94R DS 283592f9 2d5 ff8000 f000 140 140
+R94R DE 2835c94e 2d5 140 70000000 1ffe
+R94R DS 2835df12 2d5 ff8600 c000 28 168
+R94R DE 2835f0d8 2d5 168 40000000 1ffe
+R94R DS 2835f856 2d5 ff8650 c080 28 190
+R94R DE 28360a0e 2d5 190 40800000 1ffe
+R94R DS 2836118c 2d5 ff86a0 c100 28 1b8
+R94R DE 2836233d 2d5 1b8 41000000 1ffe
+R94R DS 28363901 2d5 ff86f0 c180 28 1e0
+R94R DE 28364ab9 2d5 1e0 41800000 1ffe
+R94R DS 28365237 2d5 ff8740 c280 28 208
+R94R DE 283663e8 2d5 208 42800000 1ffe
+R94R VP 2836ac5e 2d5 208 208 0 0
+R94R VS 2836add8 2d5 3208 e28 0
+R94R VK 2836af36 2d5 8 8 0
+R94R VX 2836c7c4 2d5 1 2 5aa 0 2 208
+R94R COMPLETE
+68K Breakpoint 23 hit
+1832: rte
+> quit
+Saved SRAM to C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-reset-csaeokr_/session-data/saves/recursion9
+4-debug\save.sram

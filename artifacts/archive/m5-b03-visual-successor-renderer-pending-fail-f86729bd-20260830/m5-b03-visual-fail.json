@@ -1,0 +1,223 @@
+{
+  "acceptance_status": "incomplete",
+  "error": "EvidenceFailure: node_disabled_door_open invalid ODD precommit boundary: {'status': 'fail', 'mode': 'odd_dma_precommit', 'queue_mode': 'invalid', 'observed': {'engine_state': 1, 'attempt': 2, 'tick': 197, 'debug_frame_counter': 2045, 'dma_frame_pending': 1}, 'expected_frame': 2045, 'successor_post_proven': True, 'successor_coordinate': True, 'target_renderer_identity': False, 'target_renderer_health': {'identity': True, 'coordinate': False, 'fault_flags_clear': True, 'fault_counters_clear': True, 'bounded_ledgers': True}, 'successor_renderer_health': {'identity': True, 'coordinate': True, 'fault_flags_clear': True, 'fault_counters_clear': True, 'bounded_ledgers': True}, 'empty_queue_before_noop_commit': False, 'successor_queue_shape_valid': True, 'detail': 'calculated ODD DMA entry is target-renderer/empty or exact successor-renderer/pending'}",
+  "evidence_type": "blastem_native_ui_screenshot_m5_b03_state_set",
+  "objective_only": {
+    "critic_handoff_required": true,
+    "rubric_review_performed": false,
+    "subjective_scores_emitted": false
+  },
+  "provenance": {
+    "default_config": {
+      "bindings": {
+        "a": true,
+        "d": true,
+        "down": true,
+        "enter": true,
+        "left": true,
+        "right": true,
+        "s": true,
+        "up": true
+      },
+      "buttons": [
+        "Up",
+        "Down",
+        "Left",
+        "Right",
+        "A",
+        "B",
+        "C",
+        "Start"
+      ],
+      "keys": [
+        "up",
+        "down",
+        "left",
+        "right",
+        "a",
+        "s",
+        "d",
+        "enter"
+      ],
+      "path": ".toolcache/blastem/default.cfg",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "dma_commit_call": {
+      "call_address": 5822,
+      "call_address_hex": "000016BE",
+      "derivation": "unique even bsr.w in the first 0x100 bytes of VBlankInterrupt whose signed PC-relative target is DmaCommitPreparedQueue",
+      "instruction_hex": "6100FB8C",
+      "post_commit_address": 5826,
+      "post_commit_address_hex": "000016C2",
+      "target_address": 4684,
+      "target_address_hex": "0000124C"
+    },
+    "emulator": {
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "fresh_processes_required": 5,
+    "lock": {
+      "acquired_utc": "2026-08-30T23:34:17.273580+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "native_platform": "Windows",
+    "pre_step_rom_binding": {
+      "address": "000002F2",
+      "instruction": "bsr.w GameplayStep",
+      "opcode": "6100",
+      "resolved_target": "000039F6",
+      "status": "pass",
+      "unique_matching_call_count": 1
+    },
+    "renderer_call": {
+      "call_address": 822,
+      "call_address_hex": "00000336",
+      "derivation": "decoded call exactly at MainLoopPostGameplayStep and required its target to equal GameplayRendererBuildAndQueue",
+      "encoding": "jsr_abs_l",
+      "instruction_hex": "4EB900008A6E",
+      "return_address": 828,
+      "return_address_hex": "0000033C",
+      "target_address": 35438,
+      "target_address_hex": "00008A6E"
+    },
+    "rom": {
+      "expected_sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e",
+      "hash_policy": "mandatory caller-supplied hash, rechecked before publish",
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e"
+    },
+    "schedule": {
+      "attempt_sha256": [
+        "8fd39913ce2f12f83ed266caf80cbf9672e4de16ef7c06ccc74e84dc41193449",
+        "6238befa2c454d23d5818563dc2955e3c78a2c260fc1421abea84a8eb6a8d3de",
+        "23d3d734ce56e00631fe481e34e93f2dfad75f6c73b48e7908cde00e714097d4"
+      ],
+      "capture_plan": [
+        {
+          "attempt": 2,
+          "name": "two_echo_armed",
+          "objective": "two replay echoes, both switches, armed node, closed door, hazard",
+          "output": "artifacts/screenshots/m5-b03-two-echo-armed.png",
+          "tick": 67
+        },
+        {
+          "attempt": 2,
+          "name": "node_disabled_door_open",
+          "objective": "echo-owned final node hit and dependency-opened door",
+          "output": "artifacts/screenshots/m5-b03-node-disabled-door-open.png",
+          "tick": 196
+        },
+        {
+          "attempt": 2,
+          "name": "dash_route_open",
+          "objective": "current actor east of the open door on the authored dash route",
+          "output": "artifacts/screenshots/m5-b03-dash-route-open.png",
+          "tick": 201
+        },
+        {
+          "attempt": 2,
+          "name": "terminal_hold_19",
+          "objective": "nineteenth uninterrupted current-only terminal hold step",
+          "output": "artifacts/screenshots/m5-b03-terminal-hold-19.png",
+          "tick": 291
+        },
+        {
+          "attempt": 2,
+          "name": "terminal_complete_20",
+          "objective": "twentieth hold step and PROGRAM_STABLE completion",
+          "output": "artifacts/screenshots/m5-b03-terminal-complete-20.png",
+          "tick": 292
+        }
+      ],
+      "framed_bundle_sha256": "4d25e7d39c2f98c161b044ff1017631df3e83eaf170ce1da43fea9417420cdfa",
+      "lengths": [
+        720,
+        720,
+        292
+      ],
+      "source_module": "tools.m5_b03_runtime_evidence",
+      "source_symbols": [
+        "ATTEMPT_0_INPUTS",
+        "ATTEMPT_1_INPUTS",
+        "ATTEMPT_2_INPUTS"
+      ]
+    },
+    "serialized_lock": ".toolcache/locks/blastem-gdb.lock",
+    "source_bindings": {
+      "algorithm": "SHA-256",
+      "bundle_sha256": "1aeef1929d92d9368405943883134de56777215e06cb76d22c5eebf07776a3e1",
+      "canonical_form": "sorted compact path-to-sha256 JSON",
+      "sources": {
+        "assets/generated/campaign_runtime/campaign_runtime.inc.asm": "47ec0b8d9308e43f040ddfa12e94bed87910ae8bfd08ecee7e6071bb68dcc294",
+        "assets/generated/campaign_runtime/campaign_runtime_report.json": "d6d9cdf9b7074050252e8d3854b5ef6764d48574689534f7a35f79309e76ed9b",
+        "assets/generated/content/campaign_content.bin": "cd1381f609962e315d11b34f4cdb21b8b7c43c4507eaca1abc5f85dc78170b56",
+        "assets/generated/content/campaign_content_report.json": "7f58cd921edb25ff730924c033cb89faa43120e474da8a7bb07d31551b021732",
+        "content/campaign.json": "b1c84119d945117ef285d2214a684e8ff9180f0a2883cda5630f068e66afbd15",
+        "content/encounters/boot/B03.json": "2af6f57b65edb5a04d2f2d0149c98c5e915ba6f5210d7e2edbf89ae78e7b7d93",
+        "src/boot/startup.asm": "7dfa3f64f7652663f66969ac3d05bbe602de6f94b6e5d49bacd58484bd3d6b90",
+        "src/game/engine_layout.asm": "38fb6316ce2ac1b6f3ed6baa7ce8c45bad7936d2c099e1129447db9a2132ac54",
+        "src/game/object_pool.asm": "1139edd853781b3469e1c44563f23371bb709fad26c00b82245ab41aff5f78e7",
+        "src/gameplay/actor_sim.asm": "b14b2388f1a516bd2d0fbbb411c0363a47f89a5866b3c81003eaedb155bdf671",
+        "src/gameplay/campaign_collision.asm": "fccd2f54db0128289fe9d43c9718dc0728facd32b63f3dd5a123c53a3d0fb33d",
+        "src/gameplay/campaign_runtime.asm": "1bb9da1afb50814800ab444bc75c679d3ca18ae2097e911227a0b422940335c8",
+        "src/gameplay/gameplay_core.asm": "df9b9056d65c7bbb987d7a42f56f9fa84bc01ec67db1d1d1fe15a842f7058a49",
+        "src/gameplay/replay.asm": "90994c2ba8662d48907b511c68565fe9a8a0964f948900a334dac56a74da50c2",
+        "src/gameplay/vocabulary_combat.asm": "558f30d2b94040444d9314b2e0e3693f8efc21cef99c0b5420220dc0f87ce8c4",
+        "src/gameplay/vocabulary_core.asm": "287f41939ce9b9301b969ccd44a6b299258f5f4cf4cb03364f64b9a1a42b1015",
+        "src/gameplay/vocabulary_interactions.asm": "ef7d5afd56f79b1c3003f2079a1d42560c077f5e129cb5f286e27e65a1ebfedc",
+        "src/gameplay/vocabulary_layout.asm": "2f3039ce461efa1740d19c76e413db76a34dcbc42caf4a3292706c6b64eb9d43",
+        "src/hardware/dma.asm": "4896a2f52472d75b183c682d663eec4daa4f7d0860918bd95173ab449fa57fdd",
+        "src/hardware/interrupts.asm": "4ea7fd946cea57285c2246647ad6553adc5d231fefd800375d99c51957486a00",
+        "src/render/gameplay_renderer.asm": "80227b19092f2381a79b0edffd09244e4a86b019862825f2e98da631d36a7600",
+        "src/render/gameplay_renderer_assets.asm": "72ff89b6707759109e0b3be572ff7dcf660ddf4f927ec79f1c8e6609013d8f5e",
+        "src/render/gameplay_renderer_core.asm": "a7e940877dac7e5638153c14fd8c8c3ca56fd1f579235f930151d38ce9e274d9",
+        "src/render/gameplay_renderer_hud.asm": "065b1f46b0603a4ac56646ccdd67e4c1cd1bde1c322af68405f8db6505aad61c",
+        "src/render/gameplay_renderer_layout.asm": "4cfbe795cd6ca1999cbd670d09cd1cfd8a6a30224edd1b2b57e0257fed81f061",
+        "src/render/gameplay_renderer_sprites.asm": "9d74e8dd46409d8e3613e719dccd4becffa40e82106cee74c7c694c3567769db",
+        "src/ui/timeline_control.asm": "7e973afaf3325f49af5dbabeef839d75b3ab488dd07192197952214dde10cb03",
+        "tools/m4_visual_evidence.py": "39af1390bde696a6649d789732971ea554edb2262729195ca97aabee3cba8601",
+        "tools/m5_b03_runtime_evidence.py": "e38c75b2b3819f565c452d2ec4e993bda7121bf9737c15b1645c89efb9e6d7fa",
+        "tools/m5_visual_evidence.py": "d16e7d98a907c5c9a1a942f9f5180df8a85683d105dd2d9ca19fd36eab1a44e0"
+      }
+    },
+    "symbol_map": {
+      "expected_sha256": "09ec73f7671ce406d86334bec10a46a4f83d6bc7faa696c7a6e95b2391e87165",
+      "path": "build/level-B03/recursion94-debug.sym",
+      "required_symbols": {
+        "CampaignCheckCompletion": "00005F6E",
+        "CampaignEvaluateDependencies": "00005C3E",
+        "CampaignLoadEncounter": "00005616",
+        "CampaignRuntimeDependencyEdgesB03": "0001731E",
+        "CampaignRuntimeDependencyGroupsB03": "000172EE",
+        "CampaignRuntimeDescriptorB03": "000171AE",
+        "CampaignRuntimeObjectsB03": "0001722E",
+        "CampaignRuntimeProfileB03": "0001733E",
+        "CampaignRuntimeRectsB03": "000171CE",
+        "CampaignRuntimeSemanticsB03": "0001728E",
+        "DEBUG_START_ENCOUNTER": "00000002",
+        "DmaCommitPreparedQueue": "0000124C",
+        "GameplayBuildProjection": "000069DA",
+        "GameplayRendererBuildAndQueue": "00008A6E",
+        "GameplayStep": "000039F6",
+        "MainLoopGameplayStepCall": "000002F2",
+        "MainLoopPostGameplayStep": "00000336",
+        "VBlankInterrupt": "0000167C"
+      },
+      "sha256": "09ec73f7671ce406d86334bec10a46a4f83d6bc7faa696c7a6e95b2391e87165"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "rom_sha256": "f86729bd27faf4c56bbb3e3a396607f54d1aa8bfa38b55b1e4de2b6d0e53b31e",
+  "schema": "r94-m5-b03-visual-evidence-v1",
+  "scope": "Milestone5/B03/native-visual-capture",
+  "status": "fail",
+  "symbol_map_sha256": "09ec73f7671ce406d86334bec10a46a4f83d6bc7faa696c7a6e95b2391e87165"
+}

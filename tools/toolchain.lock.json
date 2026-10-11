@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "tools": {
+    "python": {
+      "version": "3.12.10-embed-amd64",
+      "url": "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+      "sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "license": "Python-2.0"
+    },
+    "zig": {
+      "version": "0.14.1-x86_64-windows",
+      "url": "https://ziglang.org/download/0.14.1/zig-x86_64-windows-0.14.1.zip",
+      "sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "license": "MIT"
+    },
+    "vasm": {
+      "version": "2.0f",
+      "url": "http://server.owl.de/~frank/tags/vasm2_0f.tar.gz",
+      "sha256": "c84b2de1cbb87831795fe64a85c5d9a7002a766e3a7c30b0a2d7d5e99d878f49",
+      "license": "vasm non-commercial redistribution/use notice",
+      "build": "Zig cc 0.14.1, M68k backend, Motorola syntax, all upstream output modules"
+    },
+    "sjasmplus": {
+      "version": "1.23.1",
+      "url": "https://github.com/z00m128/sjasmplus/releases/download/v1.23.1/sjasmplus-1.23.1.win.zip",
+      "sha256": "fa0ca77e6e6dcdad77b2c64607b325dd6366844ab6438bfc97661fdfbc29aa35",
+      "license": "BSD-3-Clause"
+    },
+    "blastem": {
+      "version": "0.6.3-pre-732f5689d438",
+      "url": "https://www.retrodev.com/blastem/nightlies/blastem-win64-0.6.3-pre-732f5689d438.zip",
+      "sha256": "01dd73044d1333e40160da61da9e4ccb78fc5a100435b4d5f03ae4ba1f199a60",
+      "license": "GPL-3.0-or-later"
+    }
+  }
+}
+

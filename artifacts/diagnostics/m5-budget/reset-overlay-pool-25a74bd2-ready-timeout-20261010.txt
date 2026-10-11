@@ -1,0 +1,51 @@
+Noncanonical failed native diagnostic attempt; no gameplay or timing evidence.
+ROM profile: pool / 25a74bd2d9314f2f1a2e5c9c49279449e1d1f78c8bcd7189600073b7a0ae6152
+Symbols: ea8d8637ad5beb337a22266041dd5d05506e2f67b4471c617c1449a0a7827728
+Original timeout: 240 seconds; unchanged.
+Requested output: reset-overlay-pool-25a74bd2-total719-total724-20261010.{json,log}
+Outcome: helper failed waiting for exact READY marker plus empty debugger prompt.
+The existing failure path returned only the following final 40 console lines;
+the complete console was not retained. This is a preservation limitation,
+not a complete raw transcript. The owned emulator was cleaned up afterward.
+
+tools.m2_evidence.EvidenceFailure: console marker timeout 'R94R READY':
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2DB
+>>>> printf "R94R HE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 34
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2DB
+>>>> printf "R94R SE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> commands 35
+>> if [$FFF010].l < $2CF
+>>> continue
+>>> else
+>>> if [$FFF010].l < $2DB
+>>>> printf "R94R OE %x %x %x %x %x %x\n" cycle [$FFF010].l [$FF140E].w [$FF1410].w sr [$FFF014].w
+>>>> continue
+>>>> else
+>>>> continue
+>>>> end
+>>> end
+>> end
+> continue
+R94R READY
+68K Breakpoint 21 hit
+169A: movem.l d0-d7/a0-a6, -(a7)
+>  y

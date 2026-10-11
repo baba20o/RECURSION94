@@ -1,0 +1,202 @@
+# Status
+
+- **Current workstream:** 5 — core game vocabulary evidence freeze
+- **Frozen milestone evidence:** 0 — environment/bootstrap; 1 — minimal
+  cartridge; 2 — hardware foundation; 3 — deterministic engine core; 4 —
+  echo vertical slice. The M4 automated evidence freeze is complete; literal
+  human hands-on play and subjective listening are not claimed by it.
+- **Current M5 ROMs:** all images are 1,048,576 bytes. Canonical Debug
+  checksum/SHA-256: `$7343` /
+  `9c92b3f61fd8509110615e05caf57e36ed414187270a8e4a2201f90e294469df`;
+  symbol map:
+  `cd35ad45231f94aa32ade6bf8d4266899cb639efe54bf36e95745b48bc4030ce`.
+  Canonical Release checksum/SHA-256: `$E69C` /
+  `97cc2010df56a23c3516d027022b0c922c2b883dd4be521cd95d8b641d1047f1`;
+  symbol map:
+  `e1259708cab848abb4797284b7404a604b6ce42179e65e82fc1b1387a061f35f`.
+  The dedicated B03 Debug fixture checksum/SHA-256 is `$A64F` /
+  `25a74bd2d9314f2f1a2e5c9c49279449e1d1f78c8bcd7189600073b7a0ae6152`;
+  symbol map:
+  `ea8d8637ad5beb337a22266041dd5d05506e2f67b4471c617c1449a0a7827728`.
+  These add isolated whole-empty projection elision to the measured lookup,
+  sprite, and indexed-CRC repairs; three builds and independent statics pass,
+  with measured improvement and exact sampled parity, but remaining timing
+  failures. The source additionally contains a ten-loop gameplay high-water
+  repair with 100/100 affected native Windows host tests passing; its new ROM
+  builds, replay parity, and cycle measurements are pending. The ROM identities
+  above therefore describe the preceding measured candidate, not this newer
+  source revision.
+  The preceding
+  replay-proven images/symbols are preserved under
+  `artifacts/archive/m5-pre-timing-140039e3-20261010/`; their reports are not
+  current-candidate passes.
+- **Historical ROM identity:** the frozen M2–M4 Debug/Release hashes remain
+  `c689adf9...883d2460` and `0cf94ab5...90f9d43` under
+  `artifacts/archive/m4-frozen-roms-c689adf9-0cf94ab5/`. M5 validation checks
+  those immutable bytes and frozen reports as historical evidence; it never
+  relabels them as evidence for a current M5 ROM.
+- **Latest validation:** `.\tools\validate.ps1 -Scope Milestone3` — PASS
+  17/17; `.\tools\validate.ps1 -Scope Milestone4` — PASS 23/23. Both
+  required-gate summaries record zero failed and zero pending gates.
+- **Current focused host/static tests:** renderer plus M5 tests 203/203 after
+  the runtime repairs. On 2026-10-10 the project-local Windows Python reran
+  B01 evidence 7/7 and B03 evidence 18/18. Budget, visual, aggregate, and the
+  authoritative Windows all-suite count remain pending while their evidence
+  contracts settle. A WSL Python run crashed in the host interpreter; it is
+  not counted as passing evidence.
+- **Resumed collector tests:** Windows B03 input collector 22/22; Windows
+  aggregate module 55/55 before the added cycle gate, followed by both affected
+  cycle-gate tests 2/2. Visual collector 45/45 under WSL. Final Windows All
+  remains pending and none of these focused results substitutes for it.
+  The lookup-only candidate passes 19/19 controller/lookup tests including
+  warning-free assembly, and the combined Windows renderer/integration/lookup
+  rerun passes 58/58. A direct embedded-Python `-m unittest` invocation could
+  not import the repository; the passing rerun explicitly adds its root.
+  The sprite-loop candidate passes Windows renderer/integration/campaign
+  renderer tests 46/46. The indexed-CRC candidate passes the full native CRC
+  suite 25/25, including source binding, standalone original-68000 assembly,
+  table generation, arbitrary seeds, odd alignment, and full-width indices.
+  Whole-empty projection coverage expands that suite to 28/28, with a second
+  standalone assembly fixture covering projection, exact source binding,
+  reset initialization, prior active records, reuse, and malformed-domain
+  rejection. Runtime measurement remains separate.
+  Its first reset capture timed out before gameplay because READY was followed
+  by a nonempty debugger prompt (`>  y`). The exact 40-line failure tail is
+  preserved as `reset-overlay-pool-25a74bd2-ready-timeout-20261010.txt` in the
+  budget diagnostics; the original full console was not retained. The helper
+  now preserves full console data on timeout, with 31 diagnostic tests passing.
+  The prompt text's origin is unproven; no timing result is inferred from it.
+  A subsequent regular checkpoint attempt also stopped before gameplay at
+  READY (`> oug)`), preserved in
+  `checkpoint-pool-25a74bd2-ready-timeout-20261010.txt`. Both screen readers
+  include cells beyond the cursor on the final row, so stale screen cells are
+  a concrete alternative to extra input. A bounded READY-only raw-buffer,
+  cursor, and non-consuming input-queue snapshot is being prepared before
+  another timing run; no prompt or timing acceptance has been relaxed.
+  That READY-only snapshot was clean (cursor column 2, empty input queue),
+  so it did not reproduce or explain the suffixes. A subsequent fresh regular
+  and reset pair passes every unchanged protocol check; failures remain
+  preserved and are not timing evidence.
+- **Latest pre-optimization M5 budget/visual runs:** budget-v3 host coverage passes 58/58,
+  but its live run fails at authoritative total723 / physical frame725:
+  six DMA records /520 words reach a handler whose entry status lacks the
+  VBlank bit (PERF-002), despite a zero overrun counter. The failed evidence
+  is preserved in `artifacts/archive/m5-budget-v3-reset-overlay-late-vblank-140039e3-20261010/`.
+  Visual capture passes its first target internally, then fails closed when
+  the next target would be overwritten before native screenshot presentation.
+  Physical-frame drift grows from +143 at total1507 to +184 at total1636;
+  no final visual pass or retained first-target PNG is claimed.
+- **Emulator RAM evidence:** isolated Windows BlastEm sessions prove a standard
+  three-button pad and disconnect behavior, held/pressed/released edges,
+  opposite-axis neutralization, sprite movement, a 320-word required SAT DMA,
+  zero DMA errors, live Z80 sequencing, and advancing heartbeat/status
+- **Determinism evidence:** two fresh isolated BlastEm sessions observed every
+  authoritative tick 0–720, matched 13 independently recomputed CRC
+  checkpoints, remained active through 719, terminated at 720, restored all
+  16,384 pool/world bytes, and rebuilt the exact echo/current actor roster
+  through the shipped automatic timeout commit/reset path, with 26/26 live
+  gates and no debugger writes
+- **M4 runtime evidence:** the live 23/23 report records a real standard-pad
+  `Right×32 + neutral×8` partial attempt, Start+C reset, then
+  `Right×165 + Right+B`; the second attempt reaches `PROGRAM STABLE` at tick
+  166 with terminal CRC `$8762E745`, and fresh sessions reproduce it without
+  debugger writes.
+- **M4 visual evidence:** the 23/23 report binds five distinct exact 320×240
+  native PNGs: zero echo, reset trace, echo-held open door, program stable, and
+  a blocked current-only path. Structural decoding and the independent rubric
+  pass; the separate 7/7 controller-driven QA is automated and is not
+  represented as literal human hands-on testing.
+- **M4 audio evidence:** the 17/17 schema-v2 report binds a 1.4186-second VGM
+  with SHA-256
+  `92db7981f9804659e6b4bb200e6bc410ea092112c291b95626fd4364e42a86bb`.
+  It proves valid timing/clocks, audible chip-write events, the post-echo layer
+  transition, bounded percussion pulses, and clear driver faults. This is
+  structural capture analysis, not a subjective listening review.
+- **M4 budget evidence:** two fresh uninterrupted sessions naturally reach
+  tick 720. Each records 440 committed DMA words, 11 sprites, a maximum of
+  four sprites on one scanline, and zero renderer, queue, VBlank, DMA, audio,
+  or Z80 fault counters. The separate native-cycle report passes all 9/9
+  simulation, transition, and VBlank cycle-budget checks.
+- **M4 report freeze:** runtime 23/23, uninterrupted renderer budget 15/15,
+  native cycles 9/9, visual 23/23, audio 17/17 (`r94-m4-audio-evidence-v2`),
+  and controller-driven QA 7/7; all live reports are bound to the frozen Debug
+  ROM above.
+- **M5 B01 live evidence:** 11/11 checks pass in two fresh processes against
+  the preceding canonical Debug `b6401e90` (2026-10-10). The exact 120-step real-pad schedule,
+  ABI-v3 B01 initialization, extended projection CRCs, deterministic
+  checkpoints, source bundle, symbol map, and transcript are hash-bound, with
+  zero debugger writes.
+- **M5 B03 live evidence:** preceding-ROM `140039e3` recapture passes 15/15 evidence checks
+  and all 11 acceptance claims (2026-10-10). The native route uses two fresh
+  parity sessions plus a separate
+  zero-echo negative session and performs two exact 720-step timeout commits,
+  echo-owned security-node damage, door opening, current dash traversal, and a
+  20-step current-only terminal hold completing at tick 292. Exact replay RAM,
+  source, ROM/symbol, and transcript hashes are retained; debugger writes are
+  zero. The prior report, trace, and replay bytes are
+  preserved under `artifacts/archive/m5-b03-runtime-pre-140039e3-20261010/`.
+  Three resumed captures failed exact input proof at different held-key
+  samples; the second completed one full positive route before the other
+  session failed. Passive foreground polling found no sampled focus loss in
+  the third failure. Raw diagnostic evidence is under
+  `artifacts/diagnostics/m5-runtime/`; host input delivery is being isolated,
+  with no ROM edits or guest-state repair. The final collector reasserts held
+  keys before each next-frame proof, without release pulses or retry after a
+  mismatch, and succeeds through observed foreground changes. Its runtime
+  report SHA-256 is
+  `605f9118498908e1c263688abca72d833e993b27d22d00a08676577e7842798f`;
+  passive observer, focus log, raw report, and metadata enrichment are
+  explicitly disclosed and hash-bound in provenance.
+- **M5 aggregate validation:** `Milestone5` is a fail-closed scope with a
+  dedicated B03 build/static check and current-ROM B01/B03 gates. Hardware
+  budget, five-state objective visual capture, and an independent visual
+  critic remain required; M5 cannot pass while any is missing, stale, failed,
+  or semantically inconsistent. Release retains every later pending gate.
+- **M5 cycle budget:** the 2026-10-10 `140039e3` tick-60 diagnostic fits total
+  main-side work in one frame but measures 107,428 simulation cycles, above
+  the separate 83,203-cycle design threshold by 24,225 cycles (PERF-001).
+  Its zero-write diagnostic protocol passes, not the simulation budget.
+  A measured repair remains required; the counter/capacity report cannot
+  establish CPU-cycle compliance and the aggregate has a required pending
+  `m5_b03_native_cycle_budget` gate.
+- **Measured lookup repair:** B03 `9a741642` reduces tick60 to 101,332 cycles
+  (6,096 saved, still 18,129 over the limit). Six raw sprite/HUD/overlay
+  snapshots totalling 6,240 bytes and all measured projection CRCs match the
+  preceding ROM exactly. The post-reset renderer still overruns blank.
+  `lookup-only-timing-parity-140039e3-to-9a741642-20261010.json` records
+  protocol/parity PASS and budget FAIL.
+- **Measured sprite repair:** B03 `09be6696` reduces total722 SAT work by
+  5,072 cycles (55,148 to 50,076), while tick60 remains 101,332. All 6,240
+  captured sprite/HUD/overlay bytes and projection CRCs match the lookup
+  candidate. Reset-overlay overruns remain. The paired report
+  `sprite-loop-timing-parity-9a741642-to-09be6696-20261010.json` records
+  protocol/parity PASS and budget FAIL; tightened WAIT/IRQ diagnostic tests
+  pass 26/26. No M5 pass is claimed.
+- **Measured indexed-CRC repair:** B03 `c051995c` reduces tick60 by 4,638
+  cycles to 96,694 (still 13,491 above the limit). Projection costs 59,672;
+  all sampled CRCs and 6,240 renderer bytes match the sprite candidate.
+  Reset-overlay overruns remain.
+- **Measured empty-pool projection repair:** B03 `25a74bd2` reduces tick60
+  by 6,782 cycles to 89,912 (still 6,709 above the limit), with projection
+  52,890. The reset main interval saves 13,559 cycles; service cadence stays
+  at two VBlanks. Sampled CRCs and all 6,240 renderer bytes match. Ordinary
+  post-reset renderer overruns remain; gameplay scan bounds are next.
+- **Additional contract finding:** HW-003 records excess RUNNING interrupt
+  responsibilities under the repository's strict ISR policy. The historical
+  automated M4 reports remain intact, but do not waive that release blocker.
+- **Known tooling limitation:** BlastEm's hidden Windows `-b` headless path
+  exits with access violation `0xC0000005`; isolated GDB, screenshot, and VGM
+  sessions are the stronger passing runtime proof
+- **License limitation:** vasm 2.0f is usable here only for non-commercial
+  purposes unless written permission is obtained; commercial exploitation
+  requires permission or migration to the verified GNU Binutils path
+- **Next action:** optimize whole-empty projection and bounded gameplay scans
+  one measured cause at a time, preserving byte
+  parity and native remeasurement. Resolve both timing failures before
+  rerunning objective HUD/SAT captures and budget-v3, independently review the
+  visuals, run Windows All and `Milestone5`, then
+  freeze M5 only if every required gate passes
+
+This file records evidence, not aspiration. The release scope remains
+incomplete, and the deferred human-play and subjective-listening requirements
+remain explicit release work.

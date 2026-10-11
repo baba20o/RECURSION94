@@ -1,0 +1,178 @@
+{
+  "schema": "recursion94.encounter",
+  "schema_version": 1,
+  "id": "M04",
+  "numeric_id": 404,
+  "name": "THE FORK BOMB",
+  "kind": "boss",
+  "campaign_order": 16,
+  "sector": {
+    "id": "MEMORY",
+    "name": "MEMORY",
+    "theme": "mirrored branch arena with previewed hostile replay transforms"
+  },
+  "room": {
+    "width_px": 320,
+    "height_px": 224,
+    "collision_cell_px": 8,
+    "visual_metatile_px": 16,
+    "collision_bounds": {"min_x": 0, "min_y": 0, "max_x": 319, "max_y": 223},
+    "tile_grid": [
+      "####################",
+      "#....#........#....#",
+      "#..###........###..#",
+      "#..###........###..#",
+      "#......######......#",
+      "#......#....#......#",
+      "#..................#",
+      "#......#....#......#",
+      "#......######......#",
+      "#..###........###..#",
+      "#..###........###..#",
+      "#....#........#....#",
+      "#..................#",
+      "####################"
+    ],
+    "legend": {"#": "solid", ".": "walkable"},
+    "spawn": {"x": 160, "y": 192},
+    "exit": {"x": 160, "y": 32}
+  },
+  "loop": {
+    "authoritative_frames": 720,
+    "clear_window_frames": [24, 48],
+    "reset_policy": "restore selected source slot, transform preview, hostile fork, seals, shields, core, and all ordinary state"
+  },
+  "echoes": {
+    "cap": 5,
+    "minimum": 5,
+    "first_clear_range": [5, 9],
+    "first_clear_range_unit": "authored_attempts"
+  },
+  "presentation": {
+    "palette_id": "PAL_MEMORY_FORK_BOMB",
+    "music_id": "MUS_MEMORY_FORK",
+    "tempo_bpm": 140,
+    "visual_layers": ["mirror_preview", "branch_lattice", "hostile_path", "transform_table"]
+  },
+  "mechanics": ["mirror_enemy", "selected_input_transform", "symmetric_safe_authoring", "quarantine", "shield", "beam_reflection", "kill_token"],
+  "entities": {
+    "devices": [
+      {"logical_id": "M04_QUARANTINE_A", "type": "seal_terminal", "x": 64, "y": 64, "state": {"initial": "open", "states": ["open", "sealed"]}, "reset_policy": "open", "anchor_policy": "forbidden", "parameters": {"seal_frames": 36}},
+      {"logical_id": "M04_QUARANTINE_B", "type": "seal_terminal", "x": 256, "y": 64, "state": {"initial": "open", "states": ["open", "sealed"]}, "reset_policy": "open", "anchor_policy": "forbidden", "parameters": {"seal_frames": 36}},
+      {"logical_id": "M04_SHIELD", "type": "shield_emitter", "x": 64, "y": 176, "state": {"initial": "off", "states": ["off", "active"]}, "reset_policy": "off", "anchor_policy": "forbidden", "parameters": {"active_while_held": true}},
+      {"logical_id": "M04_REFLECTOR", "type": "beam_reflector", "x": 256, "y": 176, "state": {"initial": "north", "states": ["north", "west"]}, "reset_policy": "north", "anchor_policy": "forbidden", "parameters": {"required_state": "west", "rotation_frames": 18}},
+      {"logical_id": "M04_CORE_LOCK", "type": "boss_core_lock", "x": 160, "y": 64, "state": {"initial": "closed", "states": ["closed", "open"]}, "reset_policy": "closed", "anchor_policy": "forbidden", "parameters": {"requires": ["M04_QUARANTINE_A", "M04_QUARANTINE_B", "M04_SHIELD", "M04_REFLECTOR"]}},
+      {"logical_id": "M04_KILL_PORT", "type": "boss_upload_port", "x": 160, "y": 32, "state": {"initial": "sealed", "states": ["sealed", "ready", "writing", "verified"]}, "reset_policy": "sealed", "anchor_policy": "forbidden", "parameters": {"write_frames": 72, "non_damage_objective": true}}
+    ],
+    "enemies": [
+      {
+        "logical_id": "M04_HOSTILE_FORK",
+        "type": "mirror",
+        "x": 160,
+        "y": 112,
+        "state": {"initial": "preview", "states": ["preview", "replaying", "contained", "expired"]},
+        "reset_policy": "preview",
+        "anchor_policy": "forbidden",
+        "parameters": {"source_selection": "oldest unprotected selected slot then slot id", "transform": "horizontal movement inverted; fire preserved; interact ignored", "target_order": "current then nearest echo"}
+      }
+    ],
+    "hazards": [
+      {"logical_id": "M04_MIRROR_BEAM", "type": "reflected_laser", "x": 160, "y": 80, "state": {"initial": "vertical", "states": ["vertical", "west_contained"]}, "reset_policy": "vertical", "anchor_policy": "forbidden", "parameters": {"max_segments": 12}},
+      {"logical_id": "M04_FORK_ZONE", "type": "hostile_replay_collision_zone", "x": 96, "y": 96, "state": {"initial": "armed", "states": ["armed", "sealed"]}, "reset_policy": "armed", "anchor_policy": "forbidden", "parameters": {"width": 128, "height": 64}}
+    ],
+    "carryables": [],
+    "boss_components": [
+      {"logical_id": "M04_FORK_CORE", "type": "boss_core", "x": 160, "y": 112, "state": {"initial": "forking", "states": ["forking", "contained", "terminated"]}, "reset_policy": "forking", "anchor_policy": "forbidden", "parameters": {"damageable": false, "progress_source": "M04_KILL_PORT"}},
+      {"logical_id": "M04_TRANSFORM_ENGINE", "type": "boss_transformer", "x": 160, "y": 80, "state": {"initial": "previewing", "states": ["previewing", "executing", "locked"]}, "reset_policy": "previewing", "anchor_policy": "forbidden", "parameters": {"preview_frames": 120, "transform_is_displayed": true}},
+      {"logical_id": "M04_BRANCH_RING", "type": "boss_seal_ring", "x": 160, "y": 144, "state": {"initial": "open", "states": ["open", "half_sealed", "sealed"]}, "reset_policy": "open", "anchor_policy": "forbidden", "parameters": {"seal_sources": ["M04_QUARANTINE_A", "M04_QUARANTINE_B"]}}
+    ]
+  },
+  "objective_graph": {
+    "nodes": [
+      {"objective_id": "M04_O1_AUTHOR_SAFE", "type": "author_replay", "depends_on": [], "condition": "echo_1 contains no fire and follows previewed symmetric quarantine path", "deadline_frame": 360, "role": "echo_1"},
+      {"objective_id": "M04_O2_SEAL", "type": "interact", "depends_on": ["M04_O1_AUTHOR_SAFE"], "condition": "echo_2 seals M04_QUARANTINE_A and B", "deadline_frame": 580, "role": "echo_2"},
+      {"objective_id": "M04_O3_SHIELD", "type": "maintain_state", "depends_on": [], "condition": "echo_3 holds M04_SHIELD", "deadline_frame": 670, "role": "echo_3"},
+      {"objective_id": "M04_O4_REFLECT", "type": "redirect", "depends_on": [], "condition": "echo_4 turns M04_REFLECTOR west", "deadline_frame": 620, "role": "echo_4"},
+      {"objective_id": "M04_O5_OPEN_CORE", "type": "interact", "depends_on": ["M04_O2_SEAL", "M04_O3_SHIELD", "M04_O4_REFLECT"], "condition": "echo_5 opens M04_CORE_LOCK", "deadline_frame": 660, "role": "echo_5"},
+      {"objective_id": "M04_O6_KILL_TOKEN", "type": "non_damage_boss_progress", "depends_on": ["M04_O5_OPEN_CORE"], "condition": "current writes verified kill token", "deadline_frame": 719, "role": "current"}
+    ],
+    "completion": "M04_FORK_CORE state is terminated"
+  },
+  "canonical_role_schedule": [
+    {"role_id": "M04_ROLE_SAFE_AUTHOR", "actor": "echo_1", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 90, "action": "move_symmetric_no_fire", "target": "M04_FORK_ZONE"}, {"frame": 300, "action": "hold_center", "target": "M04_HOSTILE_FORK"}]},
+    {"role_id": "M04_ROLE_SEAL", "actor": "echo_2", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 250, "action": "interact", "target": "M04_QUARANTINE_A"}, {"frame": 420, "action": "interact", "target": "M04_QUARANTINE_B"}]},
+    {"role_id": "M04_ROLE_SHIELD", "actor": "echo_3", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 390, "action": "hold_interact", "target": "M04_SHIELD"}]},
+    {"role_id": "M04_ROLE_REFLECT", "actor": "echo_4", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 450, "action": "rotate", "target": "M04_REFLECTOR"}]},
+    {"role_id": "M04_ROLE_OPEN", "actor": "echo_5", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 540, "action": "interact", "target": "M04_CORE_LOCK"}]},
+    {"role_id": "M04_ROLE_KILL", "actor": "current", "start_frame": 0, "end_frame": 719, "actions": [{"frame": 630, "action": "interact", "target": "M04_KILL_PORT"}]}
+  ],
+  "alternative_routes": [
+    {
+      "id": "M04_ALT_SAFE_FIRE",
+      "role_changes": "echo_1 authors a single east-facing shot that the inverted fork redirects into a side lock",
+      "constraints": ["preview confirms transformed shot path", "shot cannot intersect any friendly route"],
+      "echo_cost": 5
+    }
+  ],
+  "failure_signals": [
+    {"id": "M04_FAIL_TRANSFORM", "condition": "hostile fork action damages a required actor or opens quarantine", "visual": "exact source input and transformed action preview side by side", "audio": "mirror inversion cue with visual equivalent", "timeline": "marks source frame, transform, and result"},
+    {"id": "M04_FAIL_CORE", "condition": "core lock dependency expires before kill-token write", "visual": "branch ring highlights first unsealed edge", "audio": "core reseal cue", "timeline": "names failed role"}
+  ],
+  "boss_phases": [
+    {
+      "phase_id": "M04_PHASE_PREVIEW",
+      "entry_condition": "encounter frame equals 0",
+      "frame_window": [0, 239],
+      "attacks": [{"pattern": "non-damaging transformed path preview", "frames": [0, 60, 120, 180]}, {"pattern": "cardinal memory pulse", "period_frames": 48}],
+      "required_progress": "author or select a safe echo_1 stream",
+      "exit_condition": "frame 240 instantiates M04_HOSTILE_FORK"
+    },
+    {
+      "phase_id": "M04_PHASE_FORK_EXECUTION",
+      "entry_condition": "hostile fork instantiated",
+      "frame_window": [240, 479],
+      "attacks": [{"pattern": "transformed source replay", "source": "echo_1 exact input frames"}, {"pattern": "mirror beam sweep", "period_frames": 90}],
+      "required_progress": "seal both quarantine terminals without hostile interference",
+      "exit_condition": "M04_BRANCH_RING sealed"
+    },
+    {
+      "phase_id": "M04_PHASE_TERMINATION",
+      "entry_condition": "quarantine sealed",
+      "frame_window": [480, 719],
+      "attacks": [{"pattern": "forked cardinal bolts", "period_frames": 45}, {"pattern": "core reseal checks", "frames": [570, 660]}],
+      "required_progress": "maintain shield, redirect beam, open core, write kill token",
+      "exit_condition": "M04_KILL_PORT verified"
+    }
+  ],
+  "budgets": {
+    "cpu_percent": 64,
+    "dma_words": 2040,
+    "dma_queue_entries": 32,
+    "hardware_sprites": 64,
+    "sprites_per_scanline": 16,
+    "actors": 7,
+    "enemies": 1,
+    "projectiles": 24,
+    "devices": 6,
+    "carryables": 0,
+    "hazards": 2,
+    "boss_components": 3,
+    "effects": 24
+  },
+  "replays": {
+    "canonical": "M04_CANONICAL",
+    "failure": "M04_FAILURE_TRANSFORM",
+    "stress": "M04_STRESS_FRIENDLY_HOSTILE",
+    "phase_regression": "M04_PHASE_BOUNDARIES"
+  },
+  "progression": {
+    "requires": ["M03", "ANCHOR_CAP_1"],
+    "unlocks": ["I01", "SECTOR_INTERRUPT", "ECHO_CAP_6", "ANCHOR_SELECTED_STATE"]
+  },
+  "narrative": {
+    "briefing": "YOUR INPUT WILL RETURN INVERTED AND HOSTILE.",
+    "success": "THE FORK INHERITED A USEFUL PROGRAM.",
+    "failure": "THE TRANSFORM WAS PREVIEWED BEFORE EXECUTION.",
+    "echo_hint": "AUTHOR ACTIONS THAT REMAIN SAFE WHEN REFLECTED."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "evidence_type": "manually_inspected_boot_screenshot",
+  "observations": [
+    "Mission controller independently inspected the corrected-ROM BlastEm window.",
+    "RECURSION 94, BOOT SEQUENCE STABLE, VIDEO LINK ACTIVE, VBLANK HEARTBEAT, and the tagline are legible.",
+    "Cyan VBlank heartbeat tile is visible; BlastEm title reports 60.3 fps; no immediate fatal screen or tile corruption is visible."
+  ],
+  "rom": {
+    "path": "build/recursion94-debug.bin",
+    "sha256": "8de3e2a0fa9d2a21c2ebd0d9baa0ecf51b9945d3c29b2f5d7aba26878c79af1a",
+    "current_file_binding": false
+  },
+  "schema": 1,
+  "scope_limit": "This proves one visible Milestone 1 diagnostic frame only. It is not the later independent visual-QA rubric, gameplay, or determinism gate.",
+  "screenshot": {
+    "bytes": 9417,
+    "height": 519,
+    "path": "artifacts/screenshots/m1-diagnostic-window-post-z80-fix.png",
+    "sha256": "cb4d99499eb936c0db1e277cced2168819cc6781e195e0490a46f4c1b1f09098",
+    "width": 656
+  },
+  "status": "stale"
+}

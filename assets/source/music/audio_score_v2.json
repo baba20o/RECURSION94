@@ -1,0 +1,321 @@
+{
+  "schema": "recursion94.audio_score",
+  "schema_version": 1,
+  "provenance": {
+    "author": "RECURSION 94 project",
+    "license": "original project asset",
+    "external_samples": false,
+    "description": "Original compact tracker motifs composed for the cartridge v2 audio contract."
+  },
+  "format": {
+    "rows": 16,
+    "ticks_per_row": 6,
+    "layers": [
+      "base",
+      "percussion",
+      "bass",
+      "harmony",
+      "lead",
+      "texture",
+      "resolution"
+    ],
+    "note_alphabet": ".123456789ABC",
+    "note_names": [
+      "REST",
+      "C",
+      "C_SHARP",
+      "D",
+      "D_SHARP",
+      "E",
+      "F",
+      "F_SHARP",
+      "G",
+      "G_SHARP",
+      "A",
+      "A_SHARP",
+      "B"
+    ]
+  },
+  "banks": [
+    {
+      "bank_id": 1,
+      "bank_key": "BANK_BOOT_PULSE",
+      "title": "Power-On Pulse",
+      "layers": {
+        "base": ["1..8", "..5.", "1..A", "..8."],
+        "percussion": ["1...", "1...", "1...", "1..."],
+        "bass": ["1...", "....", "8...", "...."],
+        "harmony": ["....", "....", "....", "...."],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 2,
+      "bank_key": "BANK_BOOT_WATCHDOG",
+      "title": "Watchdog Rotation",
+      "layers": {
+        "base": ["1.4.", "8.4.", "1.9.", "8.6."],
+        "percussion": ["1.1.", "1...", "1.1.", "1..."],
+        "bass": ["1...", "4...", "8...", "6..."],
+        "harmony": ["....", "....", "....", "...."],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 3,
+      "bank_key": "BANK_VIDEO_MOTION",
+      "title": "Bus Motion",
+      "layers": {
+        "base": ["158.", "A85.", "368.", "B86."],
+        "percussion": ["1.1.", "1.1.", "1.1.", "1.1."],
+        "bass": ["1..1", "A..A", "3..3", "B..B"],
+        "harmony": [".5.8", ".5.A", ".6.8", ".6.B"],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 4,
+      "bank_key": "BANK_VIDEO_RELAY",
+      "title": "Raster Relay",
+      "layers": {
+        "base": ["37A.", "A73.", "48B.", "B84."],
+        "percussion": ["1..1", ".1..", "1..1", ".1.."],
+        "bass": ["3...", "A...", "4...", "B..."],
+        "harmony": [".7.A", ".3.7", ".8.B", ".4.8"],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 5,
+      "bank_key": "BANK_VIDEO_PIPELINE",
+      "title": "Double Buffer Pipeline",
+      "layers": {
+        "base": ["16A6", "38B8", "5A15", "83A3"],
+        "percussion": ["1.11", "..1.", "1.11", "..1."],
+        "bass": ["1.1.", "3.3.", "5.5.", "8.8."],
+        "harmony": [".6.A", ".8.B", ".A.1", ".3.A"],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 6,
+      "bank_key": "BANK_VIDEO_SCHEDULER",
+      "title": "Scheduler Windows",
+      "layers": {
+        "base": ["159A", "37AB", "48B1", "6A13"],
+        "percussion": ["11.1", ".1.1", "11.1", ".1.1"],
+        "bass": ["1..9", "3..A", "4..B", "6..1"],
+        "harmony": [".5.A", ".7.B", ".8.1", ".A.3"],
+        "lead": ["....", "....", "....", "...."],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 7,
+      "bank_key": "BANK_SOUND_NOISE_FLOOR",
+      "title": "Noise Floor",
+      "layers": {
+        "base": ["1.58", "3.6A", "5.8B", "6.A1"],
+        "percussion": ["1.11", "1.1.", "1.11", "1.1."],
+        "bass": ["1...", "3...", "5...", "6..."],
+        "harmony": [".5.8", ".6.A", ".8.B", ".A.1"],
+        "lead": ["..A8", "..B9", "..1B", "..31"],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 8,
+      "bank_key": "BANK_SOUND_PHASE_LOCK",
+      "title": "Phase Lock",
+      "layers": {
+        "base": ["26A6", "48B8", "6A26", "84B8"],
+        "percussion": ["11..", "1.1.", "11..", "1.1."],
+        "bass": ["2.2.", "4.4.", "6.6.", "8.8."],
+        "harmony": [".6.A", ".8.B", ".A.2", ".B.4"],
+        "lead": ["A..6", "B..8", "2..A", "4..B"],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 9,
+      "bank_key": "BANK_SOUND_COUNTERPOINT",
+      "title": "Counterpoint",
+      "layers": {
+        "base": ["1358", "246A", "358B", "46A1"],
+        "percussion": ["1.1.", ".11.", "1.1.", ".11."],
+        "bass": ["1...", "2...", "3...", "4..."],
+        "harmony": ["..58", "..6A", "..8B", "..A1"],
+        "lead": ["A853", "B864", "1B85", "31A6"],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 10,
+      "bank_key": "BANK_SOUND_COLLECTOR",
+      "title": "Collector Scrub",
+      "layers": {
+        "base": ["1A81", "3B93", "51A5", "63B6"],
+        "percussion": ["111.", "1.1.", "111.", "1.1."],
+        "bass": ["1..1", "3..3", "5..5", "6..6"],
+        "harmony": [".A.8", ".B.9", ".1.A", ".3.B"],
+        "lead": ["A.65", "B.87", "1.A8", "3.BA"],
+        "texture": ["....", "....", "....", "...."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 11,
+      "bank_key": "BANK_MEMORY_WRITE",
+      "title": "Write Enable",
+      "layers": {
+        "base": ["15A8", "37B9", "5A1B", "8B31"],
+        "percussion": ["1..1", "1.1.", "1..1", "1.1."],
+        "bass": ["1.1.", "3.3.", "5.5.", "8.8."],
+        "harmony": [".5.A", ".7.B", ".A.1", ".B.3"],
+        "lead": ["A85.", "B97.", "1BA.", "31B."],
+        "texture": ["..5.", ".7..", "..A.", ".B.."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 12,
+      "bank_key": "BANK_MEMORY_BAD_SECTOR",
+      "title": "Bad Sector",
+      "layers": {
+        "base": ["1.49", "2.5A", "4.7B", "5.91"],
+        "percussion": ["1.11", "..1.", "1.11", "..1."],
+        "bass": ["1...", "2...", "4...", "5..."],
+        "harmony": [".4.9", ".5.A", ".7.B", ".9.1"],
+        "lead": ["94.1", "A5.2", "B7.4", "19.5"],
+        "texture": [".1..", "...1", ".1..", "...1"],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 13,
+      "bank_key": "BANK_MEMORY_COMPACTION",
+      "title": "Compaction",
+      "layers": {
+        "base": ["163A", "385B", "5A81", "8B93"],
+        "percussion": ["11.1", ".11.", "11.1", ".11."],
+        "bass": ["1..3", "3..5", "5..8", "8..9"],
+        "harmony": [".6.A", ".8.B", ".A.1", ".B.3"],
+        "lead": ["A631", "B853", "1A85", "3B98"],
+        "texture": ["..1.", "..3.", "..5.", "..8."],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 14,
+      "bank_key": "BANK_MEMORY_FORK",
+      "title": "Fork Bomb",
+      "layers": {
+        "base": ["1B51", "3A63", "5985", "6B96"],
+        "percussion": ["1111", "1.1.", "1111", "1.1."],
+        "bass": ["1..B", "3..A", "5..9", "6..B"],
+        "harmony": [".B.5", ".A.6", ".9.8", ".B.9"],
+        "lead": ["B51B", "A63A", "9859", "B96B"],
+        "texture": ["1...", ".1..", "..1.", "...1"],
+        "resolution": ["....", "....", "....", "...."]
+      }
+    },
+    {
+      "bank_id": 15,
+      "bank_key": "BANK_INTERRUPT_PRIORITY",
+      "title": "Priority Inversion",
+      "layers": {
+        "base": ["1248", "359A", "46AB", "581C"],
+        "percussion": ["11.1", "1.11", "11.1", "1.11"],
+        "bass": ["1.2.", "3.5.", "4.6.", "5.8."],
+        "harmony": [".4.8", ".9.A", ".A.B", ".1.C"],
+        "lead": ["84.1", "A9.3", "BA.4", "C1.5"],
+        "texture": ["..1.", ".1.1", "..1.", ".1.1"],
+        "resolution": ["1...", "3...", "4...", "5..."]
+      }
+    },
+    {
+      "bank_id": 16,
+      "bank_key": "BANK_INTERRUPT_NON_MASKABLE",
+      "title": "Non-Maskable",
+      "layers": {
+        "base": ["1C91", "3BA3", "5A85", "6896"],
+        "percussion": ["111.", ".111", "111.", ".111"],
+        "bass": ["1..C", "3..B", "5..A", "6..8"],
+        "harmony": [".C.9", ".B.A", ".A.8", ".8.9"],
+        "lead": ["C91C", "BA3B", "A85A", "8968"],
+        "texture": ["1.1.", ".1.1", "1.1.", ".1.1"],
+        "resolution": ["..9.", "..A.", "..8.", "..9."]
+      }
+    },
+    {
+      "bank_id": 17,
+      "bank_key": "BANK_INTERRUPT_VECTOR_TABLE",
+      "title": "Vector Table",
+      "layers": {
+        "base": ["1357", "2468", "3579", "468A"],
+        "percussion": ["1.11", "11.1", "1.11", "11.1"],
+        "bass": ["1...", "2...", "3...", "4..."],
+        "harmony": ["..57", "..68", "..79", "..8A"],
+        "lead": ["A864", "B975", "C1A6", "13B7"],
+        "texture": [".1..", "..1.", "...1", "1..."],
+        "resolution": ["5...", "6...", "7...", "8..."]
+      }
+    },
+    {
+      "bank_id": 18,
+      "bank_key": "BANK_INTERRUPT_ORACLE",
+      "title": "ORACLE Policy",
+      "layers": {
+        "base": ["1B84", "3C95", "5A17", "8B39"],
+        "percussion": ["1111", "11.1", "1111", "11.1"],
+        "bass": ["1..B", "3..C", "5..A", "8..B"],
+        "harmony": [".B.4", ".C.5", ".A.7", ".B.9"],
+        "lead": ["B841", "C953", "A175", "B398"],
+        "texture": ["1.1.", ".11.", "1.1.", ".11."],
+        "resolution": ["..4B", "..5C", "..7A", "..9B"]
+      }
+    },
+    {
+      "bank_id": 19,
+      "bank_key": "BANK_RESULTS",
+      "title": "Stable Result",
+      "layers": {
+        "base": ["158A", "8A15", "358B", "8B35"],
+        "percussion": ["1.1.", "1.1.", "1.1.", "1..."],
+        "bass": ["1...", "8...", "3...", "8..."],
+        "harmony": [".5.A", ".A.1", ".5.B", ".B.3"],
+        "lead": ["A851", "15A8", "B853", "35B8"],
+        "texture": ["..1.", "..8.", "..3.", "...."],
+        "resolution": ["1..5", "8..A", "3..5", "8..1"]
+      }
+    },
+    {
+      "bank_id": 20,
+      "bank_key": "BANK_FINAL",
+      "title": "Seed Transmission",
+      "layers": {
+        "base": ["1358", "5A13", "358B", "B135"],
+        "percussion": ["1111", "1.11", "1111", "1..."],
+        "bass": ["1.3.", "5.A.", "3.5.", "B.1."],
+        "harmony": [".5.8", ".A.3", ".8.B", ".1.5"],
+        "lead": ["A853", "31A5", "B853", "531B"],
+        "texture": ["1..1", ".1.1", "1..1", "...."],
+        "resolution": ["158A", "A135", "358B", "B531"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# Replay evidence and source-bundle hashes require byte-exact checkout on every
+# host, including Windows installations with core.autocrlf enabled.
+* -text

@@ -1,0 +1,152 @@
+{
+  "gates": [
+    {
+      "exit_code": 0,
+      "gate": "safe_clean",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "pinned_toolchain",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_build",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "host_unit_tests",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "debug_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "exit_code": 0,
+      "gate": "release_static_rom",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "emulator_debug_heartbeat",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "boot_screenshot_evidence",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "detail": "pinned BlastEm has no deterministic screenshot CLI",
+      "exit_code": 1,
+      "gate": "bounded_headless_emulator",
+      "required": false,
+      "status": "fail"
+    },
+    {
+      "gate": "m2_controller_ram",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m2_video_dma_ram",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m2_z80_audio_runtime",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m2_fatal_fixture",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m2_screenshot_evidence",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m2_audible_audio_evidence",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m3_host_reference",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_host_reference",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_live_runtime_and_canonical_replay",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_renderer_vblank_budget",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_m68000_cycle_budget",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_visual_evidence",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_audio_evidence",
+      "required": true,
+      "status": "pass"
+    },
+    {
+      "gate": "m4_human_play_qa",
+      "required": true,
+      "status": "pass"
+    }
+  ],
+  "license_limitations": [
+    "vasm 2.0f is under a non-commercial upstream license for this target; commercial distribution clearance is unresolved"
+  ],
+  "release_complete": false,
+  "resume_commands": [
+    ".\\tools\\build.ps1 -Configuration Debug",
+    ".\\tools\\build.ps1 -Configuration Release",
+    ".\\tools\\test.ps1",
+    ".\\tools\\validate.ps1 -Scope Milestone4"
+  ],
+  "schema": 1,
+  "scope": "Milestone4",
+  "status": "PASS",
+  "summary": {
+    "failed": 0,
+    "passed": 23,
+    "pending": 0,
+    "required": 23
+  }
+}

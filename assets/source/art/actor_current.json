@@ -1,0 +1,166 @@
+{
+  "schema": "recursion94.pixel_asset",
+  "schema_version": 1,
+  "asset_id": "current_actor",
+  "kind": "sprite",
+  "palette": "current",
+  "provenance_id": "original_project",
+  "frames": [
+    {
+      "id": "cur_idle0",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "......dddd......",
+        ".....deeed......",
+        "....dewwwed.....",
+        "....dewkwed.....",
+        "....dewwwed.....",
+        ".....dppd.......",
+        "....ccddcc......",
+        "...cdcyycdc.....",
+        "...cdbwwbdc.....",
+        "...cdbwwbdc.....",
+        "....cbwwbc......",
+        "....ccbbcc......",
+        "...dd....dd.....",
+        "..dd......dd....",
+        "................"
+      ]
+    },
+    {
+      "id": "cur_idle1",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "......dddd......",
+        ".....deeed......",
+        "....dewwwed.....",
+        "....deykwed.....",
+        "....dewwwed.....",
+        ".....dppd.......",
+        "...ccdggdcc.....",
+        "...cdcyycdc.....",
+        "...cdbwwbdc.....",
+        "...cdbwwbdc.....",
+        "....cbwwbc......",
+        "....ccbbcc......",
+        "...dd....dd.....",
+        "..dd......dd....",
+        "................"
+      ]
+    },
+    {
+      "id": "cur_step0",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "......dddd......",
+        ".....deeed......",
+        "....dewwwed.....",
+        "....dewkwed.....",
+        "....dewwwed.....",
+        ".....dppd.......",
+        "....ccddcc......",
+        "..ccdcoyydc.....",
+        "..c.dboowbdc....",
+        "....dbwwbdc.....",
+        "....cbwwbc......",
+        "....ccbbcc......",
+        ".....dd..dd.....",
+        "....dd....dd....",
+        "................"
+      ]
+    },
+    {
+      "id": "cur_step1",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "......dddd......",
+        ".....deeed......",
+        "....dewwwed.....",
+        "....dewkwed.....",
+        "....dewwwed.....",
+        ".....dppd.......",
+        "....ccddcc......",
+        ".....dcyycdcc...",
+        "....cdbwoobdc...",
+        "....cdbwwbd.....",
+        ".....cbwwbc.....",
+        ".....ccbbcc.....",
+        "....dd..dd......",
+        "...dd....dd.....",
+        "................"
+      ]
+    },
+    {
+      "id": "cur_fire",
+      "width": 16,
+      "height": 16,
+      "origin_x": 8,
+      "origin_y": 12,
+      "priority": true,
+      "pixels": [
+        "................",
+        "......dddd......",
+        ".....deeed......",
+        "....dewwwed.....",
+        "....deykwed.....",
+        "....dewwwed.....",
+        ".....dppd.......",
+        "....ccddcc......",
+        "...cdcyycdccoo..",
+        "...cdbwwbdoooy..",
+        "...cdbwwbdccoo..",
+        "....cbwwbc......",
+        "....ccbbcc......",
+        "...dd....dd.....",
+        "..dd......dd....",
+        "................"
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "id": "cur_idle",
+      "loop": "loop",
+      "steps": [
+        {"frame": "cur_idle0", "ticks": 18},
+        {"frame": "cur_idle1", "ticks": 6}
+      ]
+    },
+    {
+      "id": "cur_walk",
+      "loop": "loop",
+      "steps": [
+        {"frame": "cur_step0", "ticks": 5},
+        {"frame": "cur_step1", "ticks": 5}
+      ]
+    },
+    {
+      "id": "cur_shot",
+      "loop": "once",
+      "steps": [
+        {"frame": "cur_fire", "ticks": 4},
+        {"frame": "cur_idle0", "ticks": 2}
+      ]
+    }
+  ]
+}

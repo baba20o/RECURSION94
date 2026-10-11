@@ -1,0 +1,101 @@
+{
+  "baseline_kind": "post_repair_partial_native_failure",
+  "checks": [
+    {
+      "check": "accurately_labeled_controller_driven_review",
+      "detail": "independent automated controller-driven playability review; not literal human testing",
+      "status": "pass"
+    },
+    {
+      "check": "controller_window_input_only",
+      "detail": "debugger RAM/register/PC write packets []",
+      "status": "pass"
+    },
+    {
+      "check": "zero_reset_and_echo_door_paths_are_guest_observed",
+      "detail": "three controller-driven state/PNG bindings pass",
+      "status": "pass"
+    },
+    {
+      "check": "program_stable_state_is_guest_observed",
+      "detail": "terminal gameplay state passes; native frame capture does not",
+      "status": "pass"
+    },
+    {
+      "check": "renderer_and_vblank_budgets_are_clean",
+      "detail": "backlog/VBlank-overrun pairs are 0/0, 1/1, 2/5, 2/5",
+      "status": "fail"
+    },
+    {
+      "check": "all_five_required_native_frames_exist",
+      "detail": "three of five required post-repair native frames exist",
+      "status": "fail"
+    },
+    {
+      "check": "blocked_failure_path_was_reviewed",
+      "detail": "not attempted after stopping at the terminal capture blocker",
+      "status": "fail"
+    },
+    {
+      "check": "visual_gate_passed",
+      "detail": "incomplete frame set and prompt section 42 rubric failures",
+      "status": "fail"
+    }
+  ],
+  "classification": "Independent automated controller-driven playability review. This is not literal human hands-on testing.",
+  "evidence_type": "independent_controller_driven_b01_playability_review",
+  "limitations": [
+    "Only three of five required post-repair native frames exist.",
+    "The review is automated through the real configured controller path; no person physically held a controller.",
+    "Still screenshots do not prove animation cadence.",
+    "Audio is assessed by the separate M4 audio gate."
+  ],
+  "observations": [
+    {
+      "area": "zero_echo",
+      "evidence": "Attempt 0 tick 8 is bound to a fresh owned native frame with zero echoes and the door closed.",
+      "status": "pass"
+    },
+    {
+      "area": "reset_feedback",
+      "evidence": "RESET_ACTIVE is guest-observed and captured, but the effect clips actors and removes hazard/objective context.",
+      "status": "fail"
+    },
+    {
+      "area": "echo_door_causality",
+      "evidence": "Echo count 1, occupancy bit 0, door state 3, and a native open frame agree; actor overlap weakens visual clarity.",
+      "status": "partial"
+    },
+    {
+      "area": "program_stable",
+      "evidence": "Attempt 1 tick 166/result 1/terminal reason 0100 are guest-observed, but BlastEm produced no native PNG.",
+      "status": "fail"
+    },
+    {
+      "area": "renderer_budget",
+      "evidence": "Backlog/VBlank-overrun counters reach 2/5 by the echo-open and terminal states.",
+      "status": "fail"
+    },
+    {
+      "area": "blocked_path",
+      "evidence": "The coherent attempt stopped before this required path.",
+      "status": "fail"
+    }
+  ],
+  "provenance": {
+    "partial_trace_sha256": "30e98919ef1901d35f64b832d21e2568473d1c836408ceed4707c07e690ec5ed",
+    "source_binding_sha256": "3b498d8eb749207055aa80b33e03a77ac449aa1e079d36659d8bc1c7f3a08689",
+    "transcript_sha256": "a737944769f12f6ca5a748108ab27fb08d0a9f02ee1f49e6c14455f27c3a5660",
+    "visual_report_schema": "r94-m4-visual-evidence-v1",
+    "visual_report_status": "fail"
+  },
+  "reviewed_screenshots": [
+    "artifacts/screenshots/m4-zero-echo.png",
+    "artifacts/screenshots/m4-reset-trace.png",
+    "artifacts/screenshots/m4-echo-door-open.png"
+  ],
+  "rom_sha256": "9c9392fb4b5194d91aa4ec983718679a26b35579fab509e65155a502d87f2d0b",
+  "schema": "r94-m4-controller-playability-review-v1",
+  "scope": "Milestone4",
+  "status": "fail"
+}

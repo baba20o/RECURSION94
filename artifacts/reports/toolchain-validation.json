@@ -1,0 +1,65 @@
+{
+  "archives": {
+    "blastem": {
+      "actual_sha256": "01dd73044d1333e40160da61da9e4ccb78fc5a100435b4d5f03ae4ba1f199a60",
+      "expected_sha256": "01dd73044d1333e40160da61da9e4ccb78fc5a100435b4d5f03ae4ba1f199a60",
+      "path": ".toolcache/downloads/blastem-0.6.3-pre-732f5689d438-win64.zip",
+      "status": "pass"
+    },
+    "python": {
+      "actual_sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "expected_sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "path": ".toolcache/downloads/python-3.12.10-embed-amd64.zip",
+      "status": "pass"
+    },
+    "sjasmplus": {
+      "actual_sha256": "fa0ca77e6e6dcdad77b2c64607b325dd6366844ab6438bfc97661fdfbc29aa35",
+      "expected_sha256": "fa0ca77e6e6dcdad77b2c64607b325dd6366844ab6438bfc97661fdfbc29aa35",
+      "path": ".toolcache/downloads/sjasmplus-1.23.1-win.zip",
+      "status": "pass"
+    },
+    "vasm": {
+      "actual_sha256": "c84b2de1cbb87831795fe64a85c5d9a7002a766e3a7c30b0a2d7d5e99d878f49",
+      "expected_sha256": "c84b2de1cbb87831795fe64a85c5d9a7002a766e3a7c30b0a2d7d5e99d878f49",
+      "path": ".toolcache/downloads/vasm-2.0f.tar.gz",
+      "status": "pass"
+    },
+    "zig": {
+      "actual_sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "expected_sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "path": ".toolcache/downloads/zig-0.14.1-windows.zip",
+      "status": "pass"
+    }
+  },
+  "issues": [],
+  "license_limitations": [
+    "vasm 2.0f is pinned under its upstream non-commercial use notice; commercial Genesis distribution clearance is not established"
+  ],
+  "lock_sha256": "a949e9a3b532c22b7b091c69b84026d987235715c483e069ecfb88e4a4261ec6",
+  "schema": 1,
+  "smoke": {
+    "artifacts/reports/toolchain-smoke/smoke68k.bin": {
+      "bytes": 4,
+      "sha256": "af841c1d3eef93a81a3445ba358c37b149f4624bfe2af1175dfdcec99f0fa90f",
+      "status": "pass"
+    },
+    "artifacts/reports/toolchain-smoke/smokez80.bin": {
+      "bytes": 3,
+      "sha256": "e7e39756fd294c11d4c61dd9ea671dc45f34a2a663549a82b8a5eacf4f2aa1c3",
+      "status": "pass"
+    }
+  },
+  "status": "pass",
+  "versions": {
+    "python": "Python 3.12.10",
+    "sjasmplus": [
+      "1.23.1"
+    ],
+    "vasm": [
+      "vasm 2.0f (c) in 2002-2026 Volker Barthelmann",
+      "vasm M68k/CPU32/ColdFire cpu backend 2.8c (c) 2002-2026 Frank Wille",
+      "vasm motorola syntax module 3.19f (c) 2002-2026 Frank Wille",
+      "vasm test output module 1.0 (c) 2002 Volker Barthelmann"
+    ]
+  }
+}

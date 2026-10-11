@@ -1,0 +1,938 @@
+{
+  "analysis": {
+    "errors": [
+      "Q marker count 0 != 20"
+    ],
+    "marker_counts": {
+      "CE": 1,
+      "CS": 1,
+      "DE": 12,
+      "DS": 12,
+      "EE": 1,
+      "ES": 1,
+      "ME": 2,
+      "MS": 2,
+      "PE": 1,
+      "PS": 1,
+      "Q": 0,
+      "RE": 2,
+      "RS": 2,
+      "TE": 1,
+      "TS": 1,
+      "VA": 5,
+      "VC": 5,
+      "VE": 5,
+      "VK": 5,
+      "VO": 1,
+      "VP": 5,
+      "VS": 5,
+      "VX": 5
+    },
+    "status": "fail"
+  },
+  "bounds": {
+    "debugger_guest_writes": 0,
+    "input": "held Up; noncanonical after the canonical prefix",
+    "maximum_dma_calls": 20,
+    "maximum_vblanks": 5,
+    "post_ticks": [
+      59,
+      60
+    ],
+    "pre_ticks": [
+      58,
+      59
+    ],
+    "vblank_frames": [
+      59,
+      60,
+      61,
+      62,
+      63
+    ]
+  },
+  "canonical": false,
+  "command_script": "breakpoint $2F2\nbreakpoint $2F6\nbreakpoint $1BC0\nbreakpoint $1BD2\nbreakpoint $212C\nbreakpoint $2344\nbreakpoint $5600\nbreakpoint $5614\nbreakpoint $69DA\nbreakpoint $6A7A\nbreakpoint $8AD4\nbreakpoint $8C58\nbreakpoint $124C\nbreakpoint $1422\nbreakpoint $14C8\nbreakpoint $167C\nbreakpoint $169E\nbreakpoint $16C2\nbreakpoint $16FC\nbreakpoint $170E\nbreakpoint $171E\nbreakpoint $1832\ncommands 0\nif [$FF1410].w < $3A\ncontinue\nelse\nif [$FF1410].w < $3C\nprintf \"R94P MS %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF9800].b d0 sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 1\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P ME %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 8\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P PS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 9\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P PE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 4\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P ES %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 5\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P EE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 6\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P TS %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 7\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P TE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 2\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P CS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 3\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P CE %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 10\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P RS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 11\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P RE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 15\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $1\nprintf \"R94P READY\\n\"\nelse\nif [$FFF010].l < $3A\ncontinue\nelse\nprintf \"R94P VE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FFF014].w\ncontinue\nend\nend\nend\nend\ncommands 16\nif [$FFF010].l < $3A\ncontinue\nelse\nprintf \"R94P VA %x %x %x %x\\n\" cycle [$FFF010].l [$FFF01C].w [$FFF008].l\ncontinue\nend\nend\ncommands 12\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VC %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF9004].l\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w\ncontinue\nend\nend\ncommands 13\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P DS %x %x %x %x %x %x\\n\" cycle [$FFF010].l a0 d0 d1 [$FF9008].w\ncontinue\nend\nend\ncommands 14\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P DE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w d0 d1\ncontinue\nend\nend\ncommands 17\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VP %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w\ncontinue\nend\nend\ncommands 18\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VS %x %x %x %x %x\\n\" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w\ncontinue\nend\nend\ncommands 19\nprintf \"R94P VO %x %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l\ncontinue\nend\ncommands 20\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VK %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w\ncontinue\nend\nend\ncommands 21\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VX %x %x %x %x %x\\n\" cycle [$FFF010].l [$FFF008].l [$FFF032].w [$FFF014].w\nif [$FFF010].l < $3F\ncontinue\nelse\nprintf \"R94P COMPLETE\\n\"\nend\nend\nend\nend\ncontinue\n",
+  "command_script_sha256": "b037bebc7997a50b0fdcbf391b1443a1e10b8a2dd9f582c55a34b9ae216e1ba4",
+  "completed_utc": "2026-08-31T01:26:46.930853+00:00",
+  "console_geometry": {
+    "cursor_x": 0,
+    "cursor_y": 393,
+    "height": 9001,
+    "width": 120
+  },
+  "console_sha256": "e82422b7402e3b4cdbfea41b0fa26c4a4820f9e98be99f69e735579b67100303",
+  "diagnostic_only": true,
+  "evidence_type": "blastem_native_debugger_b03_tick60_checkpoint_phase",
+  "host_input": {
+    "input_injected_at_marker": "R94P READY",
+    "key": {
+      "extended": true,
+      "name": "Up",
+      "scan_code": 72,
+      "virtual_key": 38
+    },
+    "window": {
+      "class": "SDL_app",
+      "handle": 2952422,
+      "title": "RECURSION 94: THE LAST CARTRIDGE - BlastEm - 0.2 fps"
+    }
+  },
+  "limitations": [
+    "Noncanonical diagnostic only; it cannot satisfy the two-session budget gate.",
+    "Held Up diverges from the canonical B03 route after its canonical prefix.",
+    "Pinned BlastEm cycles are emulator evidence, not physical hardware timing.",
+    "Debugger stops do not advance the emulated master-cycle counter."
+  ],
+  "pc_contract": {
+    "addresses": {
+      "campaign_projection_end": 27258,
+      "campaign_projection_start": 27098,
+      "crc_end": 7122,
+      "crc_start": 7104,
+      "dma_commit": 4684,
+      "dma_issue_end": 5320,
+      "dma_issue_start": 5154,
+      "engine_projection_end": 9028,
+      "engine_projection_start": 8492,
+      "gameplay_call": 754,
+      "gameplay_return": 758,
+      "renderer_end": 35928,
+      "renderer_start": 35540,
+      "tail_end": 22036,
+      "tail_start": 22016,
+      "vblank_ack": 5790,
+      "vblank_common": 5918,
+      "vblank_entry": 5756,
+      "vblank_origin": 5902,
+      "vblank_post_dma": 5826,
+      "vblank_rte": 6194,
+      "vblank_status": 5884
+    },
+    "rom_windows": {
+      "campaign_projection_end": {
+        "address": 27258,
+        "hex": "4E750000066600000444066608880CCC"
+      },
+      "campaign_projection_start": {
+        "address": 27098,
+        "hex": "48E71F3E0CB95239355600FF16006664"
+      },
+      "crc_end": {
+        "address": 7122,
+        "hex": "4E754A40676E240808020000671A7400"
+      },
+      "crc_start": {
+        "address": 7104,
+        "hex": "2F09223CFFFFFFFF6100000A46812001"
+      },
+      "dma_commit": {
+        "address": 4684,
+        "hex": "427900FF900A427900FF9008427900FF"
+      },
+      "dma_issue_end": {
+        "address": 5320,
+        "hex": "4E750C79FFFF00FFF0446706527900FF"
+      },
+      "dma_issue_start": {
+        "address": 5154,
+        "hex": "3401024200FF0042930033C200C00004"
+      },
+      "engine_projection_end": {
+        "address": 9028,
+        "hex": "4E750C400E3667046000F87248E71710"
+      },
+      "engine_projection_start": {
+        "address": 8492,
+        "hex": "48E71F3E0079000200FF140A43F900FF"
+      },
+      "gameplay_call": {
+        "address": 754,
+        "hex": "610037020C400008671A0C4000096710"
+      },
+      "gameplay_return": {
+        "address": 758,
+        "hex": "0C400008671A0C40000967104A40672C"
+      },
+      "renderer_end": {
+        "address": 35928,
+        "hex": "46C74CDF7CF84E7523FCC000000000C0"
+      },
+      "renderer_start": {
+        "address": 35540,
+        "hex": "0CB95239345600FF8300660001760C79"
+      },
+      "tail_end": {
+        "address": 22036,
+        "hex": "4E7548E71F3E3E0041F900FF16C87000"
+      },
+      "tail_start": {
+        "address": 22016,
+        "hex": "43F900FF1600323C003F20D951C9FFFC"
+      },
+      "vblank_ack": {
+        "address": 5790,
+        "hex": "6100F63452B900FFF01052B900FFF00C"
+      },
+      "vblank_common": {
+        "address": 5918,
+        "hex": "303900FF140833C000FFF048303900FF"
+      },
+      "vblank_entry": {
+        "address": 5756,
+        "hex": "48E7FFFE303900C000040C79000400FF"
+      },
+      "vblank_origin": {
+        "address": 5902,
+        "hex": "0C79FFFF00FFF0326706527900FFF032"
+      },
+      "vblank_post_dma": {
+        "address": 5826,
+        "hex": "203900FFF0100240001F662823FCC07C"
+      },
+      "vblank_rte": {
+        "address": 6194,
+        "hex": "4E736100001061000028610000766100"
+      },
+      "vblank_status": {
+        "address": 5884,
+        "hex": "323900FFF01C02410008671602400008"
+      }
+    },
+    "symbol_bindings": {
+      "campaign_projection_start": "GameplayBuildProjection",
+      "crc_start": "Crc32IsoHdlc",
+      "dma_commit": "DmaCommitPreparedQueue",
+      "dma_issue_start": "DmaIssueVramTransfer",
+      "engine_projection_start": "EngineBuildProjection",
+      "gameplay_call": "MainLoopGameplayStepCall",
+      "gameplay_return": "MainLoopPostGameplayStepCall",
+      "tail_start": "VocabularyBuildProjectionTail",
+      "vblank_entry": "VBlankInterrupt"
+    }
+  },
+  "provenance": {
+    "collector": {
+      "bytes": 43529,
+      "path": "tools/m5_budget_checkpoint_phase_diagnostic.py",
+      "sha256": "c1cdd6877b5484a186e104d975009c2b6b0b83a35475cfbf1db857b79b0e4bbb"
+    },
+    "default_config": {
+      "bytes": 10171,
+      "path": ".toolcache/blastem/default.cfg",
+      "sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "emulator": {
+      "bytes": 12690147,
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_node": "732f5689d4381862da283c420b68f37ac320c1d8",
+      "version": "0.6.3-pre-732f5689d438"
+    },
+    "isolated_config": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/blastem/blastem.cfg",
+        "config_sha256": "2abf32890630f81288835d39d901eeea11c7f934193ec137387f06152e9193b4",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/session-data/vgm"
+      },
+      "sha256": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "isolated_runtime": {
+      "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/blastem/blastem.cfg",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+      "status": "pass",
+      "temporary_copy_removed_after_session": true,
+      "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-10p6u6qw/blastem"
+    },
+    "native_console_helper": {
+      "bytes": 65419,
+      "entrypoint": "--console-helper",
+      "path": "tools/m5_budget_phase_diagnostic.py",
+      "sha256": "b301679be642108e5598be0d3f72987f3ca2270d2d135f11fb57d215ee2aede1",
+      "staged_ready_marker": "R94P READY"
+    },
+    "rom": {
+      "bytes": 1048576,
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "2728497799e1673369c81d3e5e12759e45d44c1c4666e0fb2cc555fd2d20fc6f"
+    },
+    "symbols": {
+      "bytes": 86601,
+      "path": "build/level-B03/recursion94-debug.sym",
+      "sha256": "3f0f172dceec267267c5f841e7011de4477a2fb04a082476c138ada4f4cfb526"
+    },
+    "trace": {
+      "bytes": 14428,
+      "path": "artifacts/diagnostics/m5-budget/overrun-checkpoint-phase-tick59-tick60-20260830.log",
+      "sha256": "5ebb39331121269756385a99b66e911488fbd34339d416f42740d60193c843a5"
+    }
+  },
+  "read_only_contract": {
+    "allowed_commands": [
+      "breakpoint",
+      "commands",
+      "continue",
+      "else",
+      "end",
+      "if",
+      "printf"
+    ],
+    "command_policy_errors": [],
+    "console_contract_errors": [
+      "unknown or extra R94P console line"
+    ],
+    "guest_memory_writes": 0,
+    "guest_pc_writes": 0,
+    "guest_register_writes": 0,
+    "hardware_status_reads_by_debugger": 0
+  },
+  "records": [
+    {
+      "cycle": 78722380,
+      "frame": 58,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 58,
+      "token": 0
+    },
+    {
+      "cycle": 78723948,
+      "entry_status": 3624,
+      "frame": 58,
+      "phase": "VA",
+      "sequence": 117
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 78730276,
+      "frame": 59,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 58
+    },
+    {
+      "commit_words": 320,
+      "cycle": 78732978,
+      "destination": 61440,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 78746887,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 78751353,
+      "destination": 49152,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 78755889,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 78757807,
+      "destination": 49280,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 78762343,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78764261,
+      "destination": 49408,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78768783,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78784855,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 59,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 78785233,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 59,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 78785597,
+      "d0": 8,
+      "d1": 8,
+      "frame": 59,
+      "phase": "VK"
+    },
+    {
+      "counter": 0,
+      "cycle": 78791883,
+      "frame": 59,
+      "phase": "VX",
+      "sequence": 118,
+      "token": 1
+    },
+    {
+      "cycle": 78803027,
+      "d0": 1,
+      "frame": 59,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 58
+    },
+    {
+      "cycle": 79104461,
+      "frame": 59,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 59
+    },
+    {
+      "cycle": 79106743,
+      "frame": 59,
+      "pending": 0,
+      "phase": "RS",
+      "sr": 9984,
+      "tick": 59
+    },
+    {
+      "cycle": 79593999,
+      "frame": 59,
+      "pending": 1,
+      "phase": "RE",
+      "sr": 9988,
+      "tick": 59
+    },
+    {
+      "cycle": 79618425,
+      "frame": 59,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 59,
+      "token": 0
+    },
+    {
+      "cycle": 79619993,
+      "entry_status": 3624,
+      "frame": 59,
+      "phase": "VA",
+      "sequence": 119
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 79626321,
+      "frame": 60,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 59
+    },
+    {
+      "commit_words": 320,
+      "cycle": 79629023,
+      "destination": 61440,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 79642911,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 79647377,
+      "destination": 49152,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 79651913,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 79653831,
+      "destination": 49280,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 79658367,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 79660285,
+      "destination": 49408,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 79664807,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 79680879,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 60,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 79681257,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 60,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 79681621,
+      "d0": 8,
+      "d1": 8,
+      "frame": 60,
+      "phase": "VK"
+    },
+    {
+      "counter": 0,
+      "cycle": 79687907,
+      "frame": 60,
+      "phase": "VX",
+      "sequence": 120,
+      "token": 1
+    },
+    {
+      "cycle": 79699051,
+      "d0": 1,
+      "frame": 60,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 59
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 79999505,
+      "frame": 60,
+      "phase": "PS",
+      "sr": 9472,
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 80000751,
+      "frame": 60,
+      "phase": "ES",
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "crc": 4120685516,
+      "cycle": 80333895,
+      "frame": 60,
+      "length": 6426166,
+      "phase": "EE",
+      "tick": 60
+    },
+    {
+      "cycle": 80334357,
+      "destination": 16739894,
+      "frame": 60,
+      "phase": "TS",
+      "tick": 60
+    },
+    {
+      "cycle": 80348245,
+      "destination": 16740150,
+      "frame": 60,
+      "length": 6422784,
+      "phase": "TE",
+      "tick": 60
+    },
+    {
+      "cycle": 80349225,
+      "frame": 60,
+      "length": 6426422,
+      "phase": "CS",
+      "source": 16736256,
+      "tick": 60
+    },
+    {
+      "cycle": 80514570,
+      "frame": 60,
+      "phase": "VE",
+      "sr": 9736,
+      "tick": 60,
+      "token": 0
+    },
+    {
+      "cycle": 80516138,
+      "entry_status": 3624,
+      "frame": 60,
+      "phase": "VA",
+      "sequence": 121
+    },
+    {
+      "build_depth": 0,
+      "build_words": 0,
+      "cycle": 80522466,
+      "frame": 61,
+      "pending": 0,
+      "phase": "VC",
+      "published_depth": 0,
+      "tick": 60
+    },
+    {
+      "commit_words": 0,
+      "cycle": 80523866,
+      "debug_words": 0,
+      "depth": 0,
+      "frame": 61,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 80524244,
+      "entry_status": 3624,
+      "exit_status": 12812,
+      "frame": 61,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 80524594,
+      "d0": 8,
+      "d1": 8,
+      "frame": 61,
+      "phase": "VK"
+    },
+    {
+      "counter": 0,
+      "cycle": 80530880,
+      "frame": 61,
+      "phase": "VX",
+      "sequence": 122,
+      "token": 1
+    },
+    {
+      "cycle": 81410624,
+      "frame": 61,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 60,
+      "token": 1
+    },
+    {
+      "cycle": 81412192,
+      "entry_status": 3624,
+      "frame": 61,
+      "phase": "VA",
+      "sequence": 123
+    },
+    {
+      "build_depth": 0,
+      "build_words": 0,
+      "cycle": 81418520,
+      "frame": 62,
+      "pending": 0,
+      "phase": "VC",
+      "published_depth": 0,
+      "tick": 60
+    },
+    {
+      "commit_words": 0,
+      "cycle": 81419920,
+      "debug_words": 0,
+      "depth": 0,
+      "frame": 62,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 81420298,
+      "entry_status": 3624,
+      "exit_status": 12812,
+      "frame": 62,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 81420662,
+      "d0": 8,
+      "d1": 8,
+      "frame": 62,
+      "phase": "VK"
+    },
+    {
+      "counter": 0,
+      "cycle": 81426934,
+      "frame": 62,
+      "phase": "VX",
+      "sequence": 124,
+      "token": 2
+    },
+    {
+      "crc": 3440894069,
+      "cycle": 81879358,
+      "frame": 62,
+      "phase": "CE",
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "crc": 3440894069,
+      "cycle": 81880520,
+      "frame": 62,
+      "length": 3440840502,
+      "phase": "PE",
+      "tick": 60
+    },
+    {
+      "cycle": 81881864,
+      "frame": 62,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 60
+    },
+    {
+      "cycle": 81884146,
+      "frame": 62,
+      "pending": 0,
+      "phase": "RS",
+      "sr": 9984,
+      "tick": 60
+    },
+    {
+      "cycle": 82370352,
+      "frame": 62,
+      "pending": 1,
+      "phase": "RE",
+      "sr": 9988,
+      "tick": 60
+    },
+    {
+      "cycle": 82370772,
+      "frame": 62,
+      "phase": "VE",
+      "sr": 9732,
+      "tick": 60,
+      "token": 2
+    },
+    {
+      "cycle": 82372340,
+      "entry_status": 3624,
+      "frame": 62,
+      "phase": "VA",
+      "sequence": 125
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 82378668,
+      "frame": 63,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 60
+    },
+    {
+      "commit_words": 320,
+      "cycle": 82381370,
+      "destination": 61440,
+      "frame": 63,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 82395307,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 63,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 82399773,
+      "destination": 49152,
+      "frame": 63,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 82404309,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 63,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 82406227,
+      "destination": 49280,
+      "frame": 63,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 82410763,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 63,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 82412681,
+      "destination": 49408,
+      "frame": 63,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 82417203,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 63,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 82433275,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 63,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 82433653,
+      "entry_status": 3624,
+      "exit_status": 12800,
+      "frame": 63,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 82434003,
+      "d0": 0,
+      "d1": 8,
+      "frame": 63,
+      "phase": "VO",
+      "sequence": 125
+    },
+    {
+      "counter": 1,
+      "cycle": 82434339,
+      "d0": 0,
+      "d1": 8,
+      "frame": 63,
+      "phase": "VK"
+    },
+    {
+      "counter": 1,
+      "cycle": 82440625,
+      "frame": 63,
+      "phase": "VX",
+      "sequence": 126,
+      "token": 3
+    }
+  ],
+  "records_sha256": "b655ed37f2a2c3237dda06c708b81904e047fb09d933ab275263b586dd57ccf8",
+  "schema": "r94-m5-b03-budget-checkpoint-phase-diagnostic-v1",
+  "started_utc": "2026-08-31T01:25:59.972543+00:00",
+  "status": "diagnostic_fail"
+}

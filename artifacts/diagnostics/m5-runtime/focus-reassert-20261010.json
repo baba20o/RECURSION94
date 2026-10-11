@@ -1,0 +1,127 @@
+{
+  "collector_sha256": "ef402b2fa6811ba6aed9bb743b2a05cd130d3f60dc9bed4757cff5be3a60d1b1",
+  "evidence_type": "passive_host_foreground_observation",
+  "guest_writes": false,
+  "input_transport_changed": false,
+  "mask_calls": 3707,
+  "schema": "r94-m5-input-focus-diagnostic-v1",
+  "script_sha256": "4b1a9fa03422c6dec6d7a0b778b78dfd4b098e4dc3b0f677a3f19800201a0450",
+  "transitions": [
+    {
+      "desired_mask": 2,
+      "foreground_pid": 24444,
+      "foreground_window": 331424,
+      "mask_call": 1,
+      "owned_is_foreground": false,
+      "owned_window": 6032386,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:11.735304+00:00"
+    },
+    {
+      "desired_mask": 1,
+      "foreground_pid": 30708,
+      "foreground_window": 6163458,
+      "mask_call": 242,
+      "owned_is_foreground": true,
+      "owned_window": 6163458,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:20.225201+00:00"
+    },
+    {
+      "desired_mask": 0,
+      "foreground_pid": 13488,
+      "foreground_window": 131544,
+      "mask_call": 803,
+      "owned_is_foreground": false,
+      "owned_window": 6163458,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:30.306785+00:00"
+    },
+    {
+      "desired_mask": 0,
+      "foreground_pid": 0,
+      "foreground_window": 0,
+      "mask_call": 809,
+      "owned_is_foreground": false,
+      "owned_window": 6163458,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:30.405772+00:00"
+    },
+    {
+      "desired_mask": 0,
+      "foreground_pid": 64752,
+      "foreground_window": 21827190,
+      "mask_call": 810,
+      "owned_is_foreground": false,
+      "owned_window": 6163458,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:30.425152+00:00"
+    },
+    {
+      "desired_mask": 8,
+      "foreground_pid": 13488,
+      "foreground_window": 131544,
+      "mask_call": 1757,
+      "owned_is_foreground": false,
+      "owned_window": 6163458,
+      "tracked_pressed": [
+        "Right"
+      ],
+      "utc": "2026-10-10T23:50:50.538739+00:00"
+    },
+    {
+      "desired_mask": 1,
+      "foreground_pid": 13488,
+      "foreground_window": 789762,
+      "mask_call": 1975,
+      "owned_is_foreground": false,
+      "owned_window": 1577046,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:50:57.988748+00:00"
+    },
+    {
+      "desired_mask": 1,
+      "foreground_pid": 13488,
+      "foreground_window": 131544,
+      "mask_call": 1989,
+      "owned_is_foreground": false,
+      "owned_window": 1577046,
+      "tracked_pressed": [
+        "Up"
+      ],
+      "utc": "2026-10-10T23:50:58.383138+00:00"
+    },
+    {
+      "desired_mask": 1,
+      "foreground_pid": 13488,
+      "foreground_window": 789762,
+      "mask_call": 2018,
+      "owned_is_foreground": false,
+      "owned_window": 1577046,
+      "tracked_pressed": [
+        "Up"
+      ],
+      "utc": "2026-10-10T23:50:59.166470+00:00"
+    },
+    {
+      "desired_mask": 0,
+      "foreground_pid": 13488,
+      "foreground_window": 131544,
+      "mask_call": 3597,
+      "owned_is_foreground": false,
+      "owned_window": 1577046,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:51:30.667580+00:00"
+    },
+    {
+      "desired_mask": 0,
+      "foreground_pid": 24444,
+      "foreground_window": 65344260,
+      "mask_call": 3603,
+      "owned_is_foreground": false,
+      "owned_window": 1577046,
+      "tracked_pressed": [],
+      "utc": "2026-10-10T23:51:30.797251+00:00"
+    }
+  ]
+}

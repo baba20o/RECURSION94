@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://recursion94.invalid/schemas/m4-cycle-evidence.schema.json",
+  "title": "RECURSION 94 M4 native 68000 cycle evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "scope",
+    "evidence_type",
+    "status",
+    "rom_sha256",
+    "capture_utc",
+    "budgets",
+    "native_debugger_semantics",
+    "pc_contract",
+    "checks",
+    "sessions",
+    "provenance",
+    "guest_write_commands",
+    "limitations"
+  ],
+  "properties": {
+    "schema": {"const": "r94-m4-native-cycle-evidence-v1"},
+    "scope": {"const": "Milestone4"},
+    "evidence_type": {
+      "const": "blastem_native_debugger_m68000_cycle_budget"
+    },
+    "status": {"enum": ["pass", "fail"]},
+    "rom_sha256": {"$ref": "#/$defs/sha256"},
+    "capture_utc": {"type": "string", "minLength": 20},
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "master_clocks_per_m68k_cycle",
+        "ntsc_frame_cpu_cycles",
+        "main_release_percent",
+        "main_release_limit_cpu_cycles",
+        "reset_transition_limit_cpu_cycles",
+        "vblank_release_percent",
+        "vblank_release_limit_cpu_cycles"
+      ],
+      "properties": {
+        "master_clocks_per_m68k_cycle": {"const": 7},
+        "ntsc_frame_cpu_cycles": {"const": 128005},
+        "main_release_percent": {"const": 65},
+        "main_release_limit_cpu_cycles": {"const": 83203},
+        "reset_transition_limit_cpu_cycles": {"const": 256010},
+        "vblank_release_percent": {"const": 70},
+        "vblank_release_limit_cpu_cycles": {"const": 12996}
+      }
+    },
+    "native_debugger_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transport",
+        "gdb_used",
+        "redirected_stdio_supported",
+        "redirected_stdio_probe_result",
+        "cycle_expression",
+        "short_cycle_expression",
+        "short_cycle_expression_supported",
+        "short_cycle_probe_result",
+        "cycle_units",
+        "breakpoint_condition_semantics",
+        "command_list_semantics",
+        "breakpoint_overhead",
+        "vblank_marker_boot_stage_symbol",
+        "vblank_marker_boot_stage_value",
+        "vblank_marker_condition_semantics",
+        "vblank_running_scope"
+      ],
+      "properties": {
+        "transport": {
+          "const": "Win32 AttachConsole/CONIN$/CONOUT$"
+        },
+        "gdb_used": {"const": false},
+        "redirected_stdio_supported": {"const": false},
+        "redirected_stdio_probe_result": {"type": "string"},
+        "cycle_expression": {"const": "cycle"},
+        "short_cycle_expression": {"const": "c"},
+        "short_cycle_expression_supported": {"const": false},
+        "short_cycle_probe_result": {"const": "Failed to eval c"},
+        "cycle_units": {"const": "Genesis master clocks"},
+        "breakpoint_condition_semantics": {"type": "string"},
+        "command_list_semantics": {"type": "string"},
+        "breakpoint_overhead": {"type": "string"},
+        "vblank_marker_boot_stage_symbol": {
+          "const": "DEBUG_BOOT_STAGE"
+        },
+        "vblank_marker_boot_stage_value": {"const": 4},
+        "vblank_marker_condition_semantics": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vblank_running_scope": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "pc_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "addresses",
+        "main_start_derivation",
+        "main_end_derivation",
+        "terminal_reset_derivation",
+        "vblank_derivation",
+        "projection_derivation",
+        "rom_bytes"
+      ],
+      "properties": {
+        "addresses": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "main_start",
+            "terminal_step_end",
+            "reset_start",
+            "reset_end",
+            "main_renderer",
+            "main_end",
+            "vblank_entry",
+            "vblank_rte",
+            "projection_entry",
+            "projection_checkpoint_return"
+          ],
+          "properties": {
+            "main_start": {"$ref": "#/$defs/address"},
+            "terminal_step_end": {"$ref": "#/$defs/address"},
+            "reset_start": {"$ref": "#/$defs/address"},
+            "reset_end": {"$ref": "#/$defs/address"},
+            "main_renderer": {"$ref": "#/$defs/address"},
+            "main_end": {"$ref": "#/$defs/address"},
+            "vblank_entry": {"$ref": "#/$defs/address"},
+            "vblank_rte": {"$ref": "#/$defs/address"},
+            "projection_entry": {"$ref": "#/$defs/address"},
+            "projection_checkpoint_return": {
+              "$ref": "#/$defs/address"
+            }
+          }
+        },
+        "main_start_derivation": {"type": "object"},
+        "main_end_derivation": {"type": "object"},
+        "terminal_reset_derivation": {"type": "object"},
+        "vblank_derivation": {"type": "object"},
+        "projection_derivation": {"type": "object"},
+        "rom_bytes": {
+          "type": "object",
+          "minProperties": 10,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9A-F]{4}$"
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {"$ref": "#/$defs/check"}
+    },
+    "sessions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        {
+          "allOf": [
+            {"$ref": "#/$defs/session"},
+            {
+              "properties": {
+                "session_id": {"const": "main-1"},
+                "mode": {"const": "main"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/session"},
+            {
+              "properties": {
+                "session_id": {"const": "main-2"},
+                "mode": {"const": "main"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/session"},
+            {
+              "properties": {
+                "session_id": {"const": "vblank-1"},
+                "mode": {"const": "vblank"}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/session"},
+            {
+              "properties": {
+                "session_id": {"const": "vblank-2"},
+                "mode": {"const": "vblank"}
+              }
+            }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rom",
+        "emulator",
+        "default_config",
+        "symbols",
+        "collector",
+        "schema",
+        "launcher",
+        "toolchain_lock",
+        "trace",
+        "platform",
+        "session_config_sha256"
+      ],
+      "properties": {
+        "rom": {"$ref": "#/$defs/file"},
+        "emulator": {"$ref": "#/$defs/file"},
+        "default_config": {"$ref": "#/$defs/file"},
+        "symbols": {"$ref": "#/$defs/file"},
+        "collector": {"$ref": "#/$defs/file"},
+        "schema": {"$ref": "#/$defs/file"},
+        "launcher": {"$ref": "#/$defs/file"},
+        "toolchain_lock": {"$ref": "#/$defs/file"},
+        "trace": {"$ref": "#/$defs/file"},
+        "platform": {
+          "type": "object",
+          "required": ["os_name", "platform", "python"],
+          "properties": {
+            "os_name": {"type": "string"},
+            "platform": {"type": "string"},
+            "python": {"type": "string"}
+          }
+        },
+        "session_config_sha256": {
+          "type": "object",
+          "minProperties": 4,
+          "maxProperties": 4,
+          "additionalProperties": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "guest_write_commands": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "contract_errors": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "address": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 16777215
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check", "status", "detail"],
+      "properties": {
+        "check": {"type": "string", "minLength": 1},
+        "status": {"enum": ["pass", "fail"]},
+        "detail": {"type": "string", "minLength": 1}
+      }
+    },
+    "file": {
+      "type": "object",
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "version": {"type": "string"},
+        "revision": {"type": "string"}
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "cycle", "frame", "attempt"],
+      "properties": {
+        "phase": {"enum": ["S", "G", "C", "D", "R", "E"]},
+        "cycle": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "frame": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "tick": {"type": "integer", "minimum": 0, "maximum": 720},
+        "attempt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "checkpoints": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "attempt_length": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 720
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "mode",
+        "status",
+        "started_utc",
+        "completed_utc",
+        "process_id",
+        "launch_flags",
+        "debugger_transport",
+        "gdb_port_opened",
+        "command_script",
+        "command_script_sha256",
+        "command_policy_errors",
+        "console_sha256",
+        "console_policy_errors",
+        "console_geometry",
+        "script_input_records",
+        "quit_input_records",
+        "records",
+        "records_sha256",
+        "interrupt_records",
+        "interrupt_records_sha256",
+        "measurement",
+        "isolated_runtime",
+        "isolated_config"
+      ],
+      "properties": {
+        "session_id": {"type": "string", "minLength": 1},
+        "mode": {"enum": ["main", "vblank"]},
+        "status": {"enum": ["pass", "fail"]},
+        "started_utc": {"type": "string", "minLength": 20},
+        "completed_utc": {"type": "string", "minLength": 20},
+        "process_id": {"type": "integer", "minimum": 1},
+        "launch_flags": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "debugger_transport": {"const": "native_win32_console"},
+        "gdb_port_opened": {"const": false},
+        "command_script": {"type": "string", "minLength": 1},
+        "command_script_sha256": {"$ref": "#/$defs/sha256"},
+        "command_policy_errors": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "console_sha256": {"$ref": "#/$defs/sha256"},
+        "console_policy_errors": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "console_geometry": {"type": "object"},
+        "script_input_records": {"type": "integer", "minimum": 1},
+        "quit_input_records": {"type": "integer", "minimum": 1},
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/record"}
+        },
+        "records_sha256": {"$ref": "#/$defs/sha256"},
+        "interrupt_records": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/record"}
+        },
+        "interrupt_records_sha256": {"$ref": "#/$defs/sha256"},
+        "measurement": {
+          "type": "object",
+          "required": ["status", "counter_wrap_count"]
+        },
+        "isolated_runtime": {"type": "object"},
+        "isolated_config": {"type": "object"}
+      }
+    }
+  }
+}

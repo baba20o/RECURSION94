@@ -1,0 +1,34 @@
+# Regenerable build products (checked-in evidence keeps its original bytes)
+/build/
+/assets/generated/
+
+# Project-local downloaded tools
+/.toolcache/
+
+# Local scratch/export duplicates, not release artifacts
+/a.out
+/src.zip
+/artifacts/m1_audit/
+/artifacts/.m5-b03-visual-staging-*/
+/artifacts/reports/environment.json
+
+# Local credentials (never publish)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python/editor residue
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+
+# Save states and emulator-local files
+*.state
+*.gst
+*.srm
+blastem.cfg
+

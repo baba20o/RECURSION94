@@ -1,0 +1,651 @@
+{
+  "checks": [
+    {
+      "check": "two_fresh_owned_sessions",
+      "detail": "process IDs [117236, 151792]; isolated runtimes ['C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/blastem', 'C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/blastem']",
+      "status": "pass"
+    },
+    {
+      "check": "uninterrupted_main_side_measurement",
+      "detail": "each session used one continue and only the GameplayCommitAndReset breakpoint; no post-step, DMA, or VBlank breakpoint occurred",
+      "status": "pass"
+    },
+    {
+      "check": "read_only_gdb",
+      "detail": "G/M/P/X packets []",
+      "status": "pass"
+    },
+    {
+      "check": "natural_tick_720_timeout_boundary",
+      "detail": "terminal observations [{'magic': 1379480645, 'abi_version': 1, 'control_bytes': 1024, 'state': 2, 'attempt': 0, 'tick': 720, 'terminal_reason': 1, 'last_error': 0, 'overflow_flags': 0}, {'magic': 1379480645, 'abi_version': 1, 'control_bytes': 1024, 'state': 2, 'attempt': 0, 'tick': 720, 'terminal_reason': 1, 'last_error': 0, 'overflow_flags': 0}]",
+      "status": "pass"
+    },
+    {
+      "check": "stopped_reads_are_consistent",
+      "detail": "all four blocks matched across two reads while the CPU was stopped",
+      "status": "pass"
+    },
+    {
+      "check": "runtime_debug_health",
+      "detail": "debug observations [{'magic': 1379480644, 'abi_version': 1, 'abi_size': 1024, 'sequence': 1440, 'heartbeat': 720, 'frame_counter': 720, 'frame_token': 0, 'fatal_code': 0, 'boot_stage': 4, 'hardware_flags': 0}, {'magic': 1379480644, 'abi_version': 1, 'abi_size': 1024, 'sequence': 1440, 'heartbeat': 720, 'frame_counter': 720, 'frame_token': 0, 'fatal_code': 0, 'boot_stage': 4, 'hardware_flags': 0}]",
+      "status": "pass"
+    },
+    {
+      "check": "renderer_abi_and_terminal_alignment",
+      "detail": "renderer ABI valid, current fault flags clear, and last completed build is tick 719",
+      "status": "pass"
+    },
+    {
+      "check": "all_cumulative_fault_counters_zero",
+      "detail": "fault counters [{'session_id': 'session_1', 'renderer_backlog_frames': 12, 'vblank_overrun_count': 0, 'renderer_dropped_sprites': 0, 'renderer_dma_rejects': 0, 'dma_overflow_count': 0, 'dma_deferred_count': 0, 'dma_required_drop_count': 0, 'dma_invalid_count': 0}, {'session_id': 'session_2', 'renderer_backlog_frames': 12, 'vblank_overrun_count': 0, 'renderer_dropped_sprites': 0, 'renderer_dma_rejects': 0, 'dma_overflow_count': 0, 'dma_deferred_count': 0, 'dma_required_drop_count': 0, 'dma_invalid_count': 0}]",
+      "status": "fail"
+    },
+    {
+      "check": "terminal_queue_fully_committed",
+      "detail": "DMA queue controls [{'published_depth': 0, 'build_depth': 0, 'build_words': 0, 'commit_words': 440, 'frame_pending': 0, 'reserved_0': 0, 'reserved_1': 0}, {'published_depth': 0, 'build_depth': 0, 'build_words': 0, 'commit_words': 440, 'frame_pending': 0, 'reserved_0': 0, 'reserved_1': 0}]",
+      "status": "pass"
+    },
+    {
+      "check": "dma_capacities_in_bounds",
+      "detail": "DMA capacities [{'words_frame': 440, 'words_max': 440, 'debug_depth': 0, 'high_water': 4, 'published_depth': 0, 'build_depth': 0, 'build_words': 0, 'commit_words': 440}, {'words_frame': 440, 'words_max': 440, 'debug_depth': 0, 'high_water': 4, 'published_depth': 0, 'build_depth': 0, 'build_words': 0, 'commit_words': 440}]; limits 2048 words/32 entries",
+      "status": "pass"
+    },
+    {
+      "check": "renderer_capacities_in_bounds",
+      "detail": "renderer capacities [{'renderer_sprites': 11, 'debug_sprites': 11, 'renderer_scanline': 4, 'debug_scanline': 4, 'scanline_pixels': 72}, {'renderer_sprites': 11, 'debug_sprites': 11, 'renderer_scanline': 4, 'debug_scanline': 4, 'scanline_pixels': 72}]; limits 64 sprites/20 per scanline/320 pixels",
+      "status": "pass"
+    },
+    {
+      "check": "fresh_session_budget_reproducibility",
+      "detail": "budget signatures equal: True",
+      "status": "pass"
+    },
+    {
+      "check": "exact_hash_bindings_and_no_drift",
+      "detail": "ROM, expected ROM, emulator, source config, per-session configs, symbol map, collector, schema, and transcript are SHA-256 bound and unchanged",
+      "status": "pass"
+    }
+  ],
+  "debugger_write_packets": [],
+  "evidence_type": "blastem_gdb_m4_uninterrupted_renderer_vblank_budget",
+  "limitations": [
+    "The gate covers two neutral-input, NTSC Debug-ROM B01 attempts from startup through the natural tick-720 timeout breakpoint. It observes ordinary renderer commits through renderer tick 719.",
+    "The gate reads cumulative renderer/DMA/VBlank counters and bounded capacity telemetry. It is not a CPU-cycle profiler and does not quantify remaining VBlank or simulation headroom.",
+    "The gate does not cover PAL double-step frames, reset/completion DMA, Program Stable, other encounters, visual correctness, physical hardware, or Release-ROM equivalence.",
+    "A pass cannot waive a nonzero counter from any other genuinely uninterrupted run of the same hashes; such a result is a real fault until explained and fixed."
+  ],
+  "provenance": {
+    "captured_utc": "2026-07-26T10:16:13.326487+00:00",
+    "collector": {
+      "path": "tools/m4_budget_evidence.py",
+      "sha256": "bdbfc5337c6887cd734e2fd37081075d1b73414aa7b8941cd42651a249ab79c1"
+    },
+    "default_config": {
+      "path": ".toolcache/blastem/default.cfg",
+      "sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "emulator": {
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+    },
+    "hash_verification": {
+      "before_after": {
+        "collector": {
+          "after": "bdbfc5337c6887cd734e2fd37081075d1b73414aa7b8941cd42651a249ab79c1",
+          "before": "bdbfc5337c6887cd734e2fd37081075d1b73414aa7b8941cd42651a249ab79c1"
+        },
+        "default_config": {
+          "after": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "before": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+        },
+        "emulator": {
+          "after": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+          "before": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803"
+        },
+        "report_schema": {
+          "after": "361c3863e0259bf350816fa4597ec72e2166f5ce3d30af78518f5da84bf642bd",
+          "before": "361c3863e0259bf350816fa4597ec72e2166f5ce3d30af78518f5da84bf642bd"
+        },
+        "rom": {
+          "after": "3e71953c2afc67f0edc6d542449197a40c666363b717ff73418e1d94084b2b4e",
+          "before": "3e71953c2afc67f0edc6d542449197a40c666363b717ff73418e1d94084b2b4e"
+        },
+        "symbol_map": {
+          "after": "3f83c8dcec14219e583127438b5c4f4ff7e2b4caacf754a7b94625d55277ba38",
+          "before": "3f83c8dcec14219e583127438b5c4f4ff7e2b4caacf754a7b94625d55277ba38"
+        }
+      },
+      "drift": [],
+      "status": "pass"
+    },
+    "launch_flags": [
+      "-D",
+      "-g",
+      "-m",
+      "gen",
+      "-r",
+      "U"
+    ],
+    "lock": {
+      "acquired_utc": "2026-07-26T10:16:13.338487+00:00",
+      "path": "C:/Projects/RECURSION94/.toolcache/locks/blastem-gdb.lock"
+    },
+    "report_schema": {
+      "id": "r94-m4-uninterrupted-budget-evidence-v1",
+      "path": "tools/report_schemas/m4-budget-evidence.schema.json",
+      "sha256": "361c3863e0259bf350816fa4597ec72e2166f5ce3d30af78518f5da84bf642bd"
+    },
+    "rom": {
+      "expected_sha256": "3e71953c2afc67f0edc6d542449197a40c666363b717ff73418e1d94084b2b4e",
+      "hash_policy": "mandatory invocation hash; verified before and after both sessions",
+      "path": "build/recursion94-debug.bin",
+      "sha256": "3e71953c2afc67f0edc6d542449197a40c666363b717ff73418e1d94084b2b4e"
+    },
+    "serialized_lock": ".toolcache/locks/blastem-gdb.lock",
+    "symbol_map": {
+      "path": "build/recursion94-debug.sym",
+      "sha256": "3f83c8dcec14219e583127438b5c4f4ff7e2b4caacf754a7b94625d55277ba38",
+      "symbols": {
+        "DEBUG_ABI_SIZE": "00FFF006",
+        "DEBUG_ABI_VERSION": "00FFF004",
+        "DEBUG_BASE": "00FFF000",
+        "DEBUG_BOOT_STAGE": "00FFF018",
+        "DEBUG_DMA_DEFERRED_COUNT": "00FFF042",
+        "DEBUG_DMA_INVALID_COUNT": "00FFF046",
+        "DEBUG_DMA_OVERFLOW_COUNT": "00FFF030",
+        "DEBUG_DMA_QUEUE_DEPTH": "00FFF02C",
+        "DEBUG_DMA_QUEUE_HIGH_WATER": "00FFF02E",
+        "DEBUG_DMA_REQUIRED_DROP_COUNT": "00FFF044",
+        "DEBUG_DMA_WORDS_FRAME": "00FFF028",
+        "DEBUG_DMA_WORDS_MAX": "00FFF02A",
+        "DEBUG_FATAL_CODE": "00FFF016",
+        "DEBUG_FRAME_COUNTER": "00FFF010",
+        "DEBUG_FRAME_TOKEN": "00FFF014",
+        "DEBUG_HARDWARE_FLAGS": "00FFF01A",
+        "DEBUG_HEARTBEAT": "00FFF00C",
+        "DEBUG_MAGIC": "00FFF000",
+        "DEBUG_SEQUENCE": "00FFF008",
+        "DEBUG_SPRITE_COUNT": "00FFF024",
+        "DEBUG_SPRITE_SCANLINE_MAX": "00FFF026",
+        "DEBUG_VBLANK_OVERRUN_COUNT": "00FFF032",
+        "DMA_QUEUE_BASE": "00FF9000",
+        "DMA_QUEUE_BUILD_DEPTH": "00FF9002",
+        "DMA_QUEUE_BUILD_WORDS": "00FF9004",
+        "DMA_QUEUE_COMMIT_WORDS": "00FF9008",
+        "DMA_QUEUE_FRAME_PENDING": "00FF900A",
+        "DMA_QUEUE_PUBLISHED_DEPTH": "00FF9000",
+        "DmaCommitPreparedQueue": "00001206",
+        "ENGINE_ATTEMPT": "00FF140E",
+        "ENGINE_CONTROL_BASE": "00FF1400",
+        "ENGINE_LAST_ERROR": "00FF1414",
+        "ENGINE_MAGIC": "00FF1400",
+        "ENGINE_OVERFLOW_FLAGS": "00FF1416",
+        "ENGINE_STATE": "00FF1408",
+        "ENGINE_TERMINAL_REASON": "00FF1412",
+        "ENGINE_TICK": "00FF1410",
+        "GameplayCommitAndReset": "0000324A",
+        "MainLoopPostGameplayStep": "000002F6",
+        "RENDERER_BACKLOG_FRAMES": "00FF831E",
+        "RENDERER_BYTES": "00FF8306",
+        "RENDERER_DMA_REJECTS": "00FF831C",
+        "RENDERER_DROPPED_SPRITES": "00FF831A",
+        "RENDERER_FLAGS": "00FF8308",
+        "RENDERER_LAST_ATTEMPT": "00FF830A",
+        "RENDERER_LAST_RESULT": "00FF8322",
+        "RENDERER_LAST_TICK": "00FF8320",
+        "RENDERER_MAGIC": "00FF8300",
+        "RENDERER_SCANLINE_MAX": "00FF8316",
+        "RENDERER_SCANLINE_PIXEL_MAX": "00FF8318",
+        "RENDERER_SPRITE_COUNT": "00FF8314",
+        "RENDERER_STATE_BASE": "00FF8300",
+        "RENDERER_STATE_USED_END": "00FF8324",
+        "RENDERER_VERSION": "00FF8304",
+        "VBlankInterrupt": "00001636"
+      }
+    },
+    "transcript": {
+      "commands": 22,
+      "path": "artifacts/traces/m4-renderer-budget-gdb-transcript.log",
+      "sha256": "3dedfdb8b6bfa1c3d98ef0b8c5532482a6c51c0df4cde29e40e8ad296e5b7714"
+    },
+    "user_config_preflight": {
+      "known_folder": "C:/Users/GodLife/AppData/Local",
+      "lookup": "SHGetKnownFolderPath(FOLDERID_LocalAppData)",
+      "override_absent": true,
+      "override_path": "C:/Users/GodLife/AppData/Local/blastem/blastem.cfg",
+      "status": "pass"
+    }
+  },
+  "rom_sha256": "3e71953c2afc67f0edc6d542449197a40c666363b717ff73418e1d94084b2b4e",
+  "schema": "r94-m4-uninterrupted-budget-evidence-v1",
+  "scope": "Milestone4",
+  "sessions": [
+    {
+      "metadata": {
+        "controller_profile": {
+          "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+          "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+          "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/blastem/blastem.cfg",
+          "port_1_assignment": "gamepad3.1",
+          "session_isolation": {
+            "config_in_exe_dir": true,
+            "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/blastem/blastem.cfg",
+            "config_sha256": "ca02d552130d7b720556c9c47cd1aae49d283fc57d3f13129c6d0d3fa651c43c",
+            "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/session-data/saves/$ROMNAME",
+            "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/session-data/screenshots",
+            "status": "pass",
+            "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/session-data/vgm"
+          },
+          "sha256": "ca02d552130d7b720556c9c47cd1aae49d283fc57d3f13129c6d0d3fa651c43c",
+          "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "status": "pass"
+        },
+        "input_injection": "none",
+        "launch_flags": [
+          "-D",
+          "-g",
+          "-m",
+          "gen",
+          "-r",
+          "U"
+        ],
+        "process_id": 117236,
+        "profile_cleanup_verified": true,
+        "resume_count": 1,
+        "runtime_copy": {
+          "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/blastem/blastem.cfg",
+          "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+          "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+          "status": "pass",
+          "temporary_copy_removed_after_session": true,
+          "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_1-xgo8avdn/blastem"
+        },
+        "started_utc": "2026-07-26T10:16:13.338487+00:00",
+        "terminal_breakpoint_address": "0000324A",
+        "terminal_breakpoint_symbol": "GameplayCommitAndReset",
+        "transcript_policy": {
+          "breakpoint_packets": [
+            "Z0,324a,2"
+          ],
+          "continue_packets": 1,
+          "debugger_write_packets": [],
+          "forbidden_breakpoint_symbols_observed": [],
+          "interrupt_packets": 0,
+          "measured_interval": "one uninterrupted continue from pre-run debugger halt to the natural timeout commit entry",
+          "measured_interval_transcript": [
+            "> c",
+            "< S05"
+          ],
+          "status": "pass",
+          "terminal_breakpoint_packet": "Z0,324a,2"
+        },
+        "transcript_sha256": "0a2d5080cc5cab6b7882116d93e76dc169cac3a8dc9391b496087acac0a082e0"
+      },
+      "observation": {
+        "blocks": {
+          "debug_budget": {
+            "address": "00FFF000",
+            "bytes": 72,
+            "raw_hex": "5239344400010400000005A0000002D0000002D000000000000400005208000000010000000B000401B801B800000004000000000002034C0001003F000002D00000000000000000",
+            "sha256": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e"
+          },
+          "dma_queue_control": {
+            "address": "00FF9000",
+            "bytes": 16,
+            "raw_hex": "000000000000000001B8000000000000",
+            "sha256": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c"
+          },
+          "engine_control": {
+            "address": "00FF1400",
+            "bytes": 80,
+            "raw_hex": "5239344500010400000200030000000002D00001000000000E36D09A9B1702D0000D00000000010100000000014000E00000200000007000000200040000000001000101010000000100010101000000",
+            "sha256": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed"
+          },
+          "renderer_state": {
+            "address": "00FF8300",
+            "bytes": 36,
+            "raw_hex": "5239345600010500000100000000FFFFFFFFFFFF000B0004004800000000000C02CF0000",
+            "sha256": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          }
+        },
+        "debug": {
+          "abi_size": 1024,
+          "abi_version": 1,
+          "boot_stage": 4,
+          "dma_deferred_count": 0,
+          "dma_invalid_count": 0,
+          "dma_overflow_count": 0,
+          "dma_queue_depth": 0,
+          "dma_queue_high_water": 4,
+          "dma_required_drop_count": 0,
+          "dma_words_frame": 440,
+          "dma_words_max": 440,
+          "fatal_code": 0,
+          "frame_counter": 720,
+          "frame_token": 0,
+          "hardware_flags": 0,
+          "heartbeat": 720,
+          "last_vdp_status": 21000,
+          "magic": 1379480644,
+          "magic_ascii": "R94D",
+          "sequence": 1440,
+          "sprite_count": 11,
+          "sprite_scanline_max": 4,
+          "vblank_overrun_count": 0,
+          "z80_timeout_count": 0
+        },
+        "dma_queue": {
+          "build_depth": 0,
+          "build_words": 0,
+          "commit_words": 440,
+          "frame_pending": 0,
+          "published_depth": 0,
+          "reserved_0": 0,
+          "reserved_1": 0
+        },
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 13,
+          "checkpoint_tick": 720,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 2,
+          "state_crc": 3499793175,
+          "terminal_reason": 1,
+          "tick": 720
+        },
+        "read_consistency": {
+          "cpu_state": "stopped at main-side GameplayCommitAndReset entry with interrupt mask inherited from MainLoop",
+          "first_block_sha256": {
+            "debug_budget": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e",
+            "dma_queue_control": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c",
+            "engine_control": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed",
+            "renderer_state": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          },
+          "second_block_sha256": {
+            "debug_budget": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e",
+            "dma_queue_control": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c",
+            "engine_control": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed",
+            "renderer_state": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          },
+          "status": "pass"
+        },
+        "renderer": {
+          "backlog_frames": 12,
+          "bytes": 1280,
+          "dma_rejects": 0,
+          "dropped_sprites": 0,
+          "flags": 1,
+          "last_attempt": 0,
+          "last_result": 0,
+          "last_tick": 719,
+          "magic": 1379480662,
+          "magic_ascii": "R94V",
+          "overlay_clear_destination": 65535,
+          "overlay_trace_destination": 65535,
+          "reset_phase": 0,
+          "reset_previous_row": 65535,
+          "scanline_max": 4,
+          "scanline_pixel_max": 72,
+          "sprite_count": 11,
+          "version": 1
+        }
+      },
+      "session_id": "session_1"
+    },
+    {
+      "metadata": {
+        "controller_profile": {
+          "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+          "device_profile_sha256_before_paths": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+          "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/blastem/blastem.cfg",
+          "port_1_assignment": "gamepad3.1",
+          "session_isolation": {
+            "config_in_exe_dir": true,
+            "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/blastem/blastem.cfg",
+            "config_sha256": "e674f9eb6a13aba1ae6e4ca49b0237623746421dc1cabdaf1d227bacbbc7203a",
+            "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/session-data/saves/$ROMNAME",
+            "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/session-data/screenshots",
+            "status": "pass",
+            "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/session-data/vgm"
+          },
+          "sha256": "e674f9eb6a13aba1ae6e4ca49b0237623746421dc1cabdaf1d227bacbbc7203a",
+          "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "status": "pass"
+        },
+        "input_injection": "none",
+        "launch_flags": [
+          "-D",
+          "-g",
+          "-m",
+          "gen",
+          "-r",
+          "U"
+        ],
+        "process_id": 151792,
+        "profile_cleanup_verified": true,
+        "resume_count": 1,
+        "runtime_copy": {
+          "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/blastem/blastem.cfg",
+          "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+          "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+          "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+          "status": "pass",
+          "temporary_copy_removed_after_session": true,
+          "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m4-budget-session_2-r0wqhhs6/blastem"
+        },
+        "started_utc": "2026-07-26T10:17:09.497517+00:00",
+        "terminal_breakpoint_address": "0000324A",
+        "terminal_breakpoint_symbol": "GameplayCommitAndReset",
+        "transcript_policy": {
+          "breakpoint_packets": [
+            "Z0,324a,2"
+          ],
+          "continue_packets": 1,
+          "debugger_write_packets": [],
+          "forbidden_breakpoint_symbols_observed": [],
+          "interrupt_packets": 0,
+          "measured_interval": "one uninterrupted continue from pre-run debugger halt to the natural timeout commit entry",
+          "measured_interval_transcript": [
+            "> c",
+            "< S05"
+          ],
+          "status": "pass",
+          "terminal_breakpoint_packet": "Z0,324a,2"
+        },
+        "transcript_sha256": "e36a718ba5452962fa3daccb713e0e48b7fdccb134ee26bc6990b32729e543b9"
+      },
+      "observation": {
+        "blocks": {
+          "debug_budget": {
+            "address": "00FFF000",
+            "bytes": 72,
+            "raw_hex": "5239344400010400000005A0000002D0000002D000000000000400005208000000010000000B000401B801B800000004000000000002034C0001003F000002D00000000000000000",
+            "sha256": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e"
+          },
+          "dma_queue_control": {
+            "address": "00FF9000",
+            "bytes": 16,
+            "raw_hex": "000000000000000001B8000000000000",
+            "sha256": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c"
+          },
+          "engine_control": {
+            "address": "00FF1400",
+            "bytes": 80,
+            "raw_hex": "5239344500010400000200030000000002D00001000000000E36D09A9B1702D0000D00000000010100000000014000E00000200000007000000200040000000001000101010000000100010101000000",
+            "sha256": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed"
+          },
+          "renderer_state": {
+            "address": "00FF8300",
+            "bytes": 36,
+            "raw_hex": "5239345600010500000100000000FFFFFFFFFFFF000B0004004800000000000C02CF0000",
+            "sha256": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          }
+        },
+        "debug": {
+          "abi_size": 1024,
+          "abi_version": 1,
+          "boot_stage": 4,
+          "dma_deferred_count": 0,
+          "dma_invalid_count": 0,
+          "dma_overflow_count": 0,
+          "dma_queue_depth": 0,
+          "dma_queue_high_water": 4,
+          "dma_required_drop_count": 0,
+          "dma_words_frame": 440,
+          "dma_words_max": 440,
+          "fatal_code": 0,
+          "frame_counter": 720,
+          "frame_token": 0,
+          "hardware_flags": 0,
+          "heartbeat": 720,
+          "last_vdp_status": 21000,
+          "magic": 1379480644,
+          "magic_ascii": "R94D",
+          "sequence": 1440,
+          "sprite_count": 11,
+          "sprite_scanline_max": 4,
+          "vblank_overrun_count": 0,
+          "z80_timeout_count": 0
+        },
+        "dma_queue": {
+          "build_depth": 0,
+          "build_words": 0,
+          "commit_words": 440,
+          "frame_pending": 0,
+          "published_depth": 0,
+          "reserved_0": 0,
+          "reserved_1": 0
+        },
+        "engine": {
+          "abi_version": 1,
+          "active_actor_count": 1,
+          "attempt": 0,
+          "checkpoint_count": 13,
+          "checkpoint_tick": 720,
+          "control_bytes": 1024,
+          "encounter": 0,
+          "facing_x": 1,
+          "flags": 3,
+          "input_held": 0,
+          "input_pressed": 0,
+          "input_previous": 0,
+          "input_released": 0,
+          "last_error": 0,
+          "magic": 1379480645,
+          "magic_ascii": "R94E",
+          "object_init_count": 4,
+          "overflow_flags": 0,
+          "pool_counts": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "pool_high_water": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "projection_length": 3638,
+          "rect_count": 2,
+          "room_bottom": 224,
+          "room_left": 0,
+          "room_right": 320,
+          "room_top": 0,
+          "spawn_x": 8192,
+          "spawn_y": 28672,
+          "state": 2,
+          "state_crc": 3499793175,
+          "terminal_reason": 1,
+          "tick": 720
+        },
+        "read_consistency": {
+          "cpu_state": "stopped at main-side GameplayCommitAndReset entry with interrupt mask inherited from MainLoop",
+          "first_block_sha256": {
+            "debug_budget": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e",
+            "dma_queue_control": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c",
+            "engine_control": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed",
+            "renderer_state": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          },
+          "second_block_sha256": {
+            "debug_budget": "3abe00398ebf541e6309031bfcef3e67a4e01415b76d5f245480aa70add3b12e",
+            "dma_queue_control": "89928ffaf5bfaea60b55b10497c27c94c634fe3c0b573c7203a9a22b4b3d4c0c",
+            "engine_control": "79a61ec5e91e73d4357f88a994cbac11bc200edbc233b7f14de57bc1230a70ed",
+            "renderer_state": "106daeffdf3108271a9d4bb970e13c1ac90b00fa6140cb930fdd1fd7c2811f52"
+          },
+          "status": "pass"
+        },
+        "renderer": {
+          "backlog_frames": 12,
+          "bytes": 1280,
+          "dma_rejects": 0,
+          "dropped_sprites": 0,
+          "flags": 1,
+          "last_attempt": 0,
+          "last_result": 0,
+          "last_tick": 719,
+          "magic": 1379480662,
+          "magic_ascii": "R94V",
+          "overlay_clear_destination": 65535,
+          "overlay_trace_destination": 65535,
+          "reset_phase": 0,
+          "reset_previous_row": 65535,
+          "scanline_max": 4,
+          "scanline_pixel_max": 72,
+          "sprite_count": 11,
+          "version": 1
+        }
+      },
+      "session_id": "session_2"
+    }
+  ],
+  "status": "fail"
+}

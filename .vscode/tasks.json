@@ -1,0 +1,64 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Genesis: Bootstrap Toolchain",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\bootstrap.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Genesis: Build Debug ROM",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\build.ps1", "-Configuration", "Debug"],
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Genesis: Build Release ROM",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\build.ps1", "-Configuration", "Release"],
+      "group": {"kind": "build", "isDefault": true},
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Genesis: Build and Run",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\run.ps1"],
+      "dependsOn": "Genesis: Build Debug ROM",
+      "problemMatcher": []
+    },
+    {
+      "label": "Genesis: Run Tests",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\test.ps1"],
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Genesis: Capture Evidence",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\capture.ps1"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Genesis: Validate Release",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\validate.ps1"],
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Genesis: Clean",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\tools\\clean.ps1"],
+      "problemMatcher": []
+    }
+  ]
+}
+

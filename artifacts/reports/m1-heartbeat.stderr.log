@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\Projects\RECURSION94\artifacts\probe_blastem_gdb.py", line 167, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\Projects\RECURSION94\artifacts\probe_blastem_gdb.py", line 112, in main
+    inserted = remote.request(f"Z0,{args.breakpoint:x},2")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Projects\RECURSION94\artifacts\probe_blastem_gdb.py", line 66, in request
+    return self.response()
+           ^^^^^^^^^^^^^^^
+  File "C:\Projects\RECURSION94\artifacts\probe_blastem_gdb.py", line 47, in response
+    while self._read_byte() != ord("$"):
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Projects\RECURSION94\artifacts\probe_blastem_gdb.py", line 40, in _read_byte
+    chunk = self.sock.recv(4096)
+            ^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
