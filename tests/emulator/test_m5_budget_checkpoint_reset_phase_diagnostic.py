@@ -7,6 +7,7 @@ import hashlib
 import json
 import io
 import inspect
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -22,6 +23,51 @@ BASELINE_BUILD = ROOT / "artifacts/archive/m5-pre-timing-140039e3-20261010/level
 LOOKUP_BUILD = ROOT / "artifacts/archive/m5-lookup-only-9a741642-20261010/level-B03"
 ROM = BASELINE_BUILD / "recursion94-debug.bin"
 SYMBOLS = BASELINE_BUILD / "recursion94-debug.sym"
+
+
+def debugger_command_blocks(script: str) -> dict[int, list[str]]:
+    """Extract balanced generated blocks for stop-control regression tests."""
+    blocks = {}
+    lines = iter(script.splitlines())
+    for line in lines:
+        if not line.startswith("commands "):
+            continue
+        ordinal, depth, body = int(line.split()[1]), 1, []
+        for line in lines:
+            depth += int(line.startswith("if ")) - int(line == "end")
+            if depth == 0:
+                break
+            body.append(line)
+        assert depth == 0 and ordinal not in blocks
+        blocks[ordinal] = body
+    return blocks
+
+
+def model_debugger_stop(body: list[str], values: dict[str, int]) -> tuple[str, list[str]]:
+    """Tiny conditional-control model, never gameplay or an evidence pass."""
+    active, stack, printed = True, [], []
+    for line in body:
+        if line.startswith("if "):
+            match = re.fullmatch(r"if (.+) < \$([0-9A-F]+)", line)
+            assert match is not None
+            condition = values[match[1]] < int(match[2], 16)
+            stack.append((active, condition))
+            active = active and condition
+        elif line == "else":
+            parent, condition = stack[-1]
+            active = parent and not condition
+        elif line == "end":
+            active = stack.pop()[0]
+        elif line == "continue":
+            if active:
+                return "continue", printed
+        elif line.startswith("printf "):
+            if active:
+                printed.append(line)
+        else:
+            raise AssertionError("unsupported stop-control instruction: " + line)
+    assert not stack
+    return "stopped", printed
 
 
 def captured_prefix_records() -> tuple[dict, list[dict]]:
@@ -1051,8 +1097,13 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
                 reset.extended_pc_contract(rom, changed, profile="crc_projection")
         old = parse_vasm_symbols(ROOT / "artifacts/archive/m5-renderer-hwm-e6778f90-20261010/level-B03/recursion94-debug.sym")
         strip = lambda text: [line for line in text.splitlines() if not line.startswith("breakpoint ")]
-        for builder, kwargs in ((reset.build_command_script, {"extended_overlay": True}), (reset.build_prefix_command_script, {})):
-            self.assertEqual(strip(builder(symbols, profile="crc_projection", **kwargs)), strip(builder(old, profile="renderer_hwm", **kwargs)))
+        # Only this candidate's two extended stop blocks intentionally differ;
+        # every marker and every other block retains the preceding contract.
+        candidate_blocks = debugger_command_blocks(reset.build_command_script(symbols, extended_overlay=True, profile="crc_projection"))
+        old_blocks = debugger_command_blocks(reset.build_command_script(old, extended_overlay=True, profile="renderer_hwm"))
+        self.assertEqual(set(candidate_blocks), set(old_blocks))
+        self.assertEqual([key for key in candidate_blocks if candidate_blocks[key] != old_blocks[key]], [27, 29])
+        self.assertEqual(strip(reset.build_prefix_command_script(symbols, profile="crc_projection")), strip(reset.build_prefix_command_script(old, profile="renderer_hwm")))
         script = reset.build_prefix_command_script(symbols, profile="crc_projection")
         self.assertEqual(reset.prefix_command_policy_errors(script, symbols, profile="crc_projection"), [])
         self.assertEqual(reset.command_policy_errors(reset.build_command_script(symbols, extended_overlay=True, profile="crc_projection"), symbols, extended_overlay=True, profile="crc_projection"), [])
@@ -1062,6 +1113,64 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         with patch.object(regular, "crc_projection_source_contract", side_effect=AssertionError("offline must stay archive-only")):
             report = reset.derive_lookup_comparison(ROOT, candidate_profile="renderer_hwm")
         self.assertEqual(report["cycle_blank_budget_scope"]["full_route_timing_certified"], False)
+
+    def test_crc_projection_stopfix_models_transitional_irq_and_exact_completed_main(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/level-B03"
+        symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
+        script = reset.build_command_script(symbols, extended_overlay=True, profile="crc_projection")
+        blocks = debugger_command_blocks(script)
+        def observe(ordinal: int, frame: int, attempt: int, tick: int) -> tuple[str, bool]:
+            values = {reset._memory(symbols[name], width): value for name, width, value in (
+                ("DEBUG_BOOT_STAGE", "w", reset.BOOT_STAGE_RUNNING), ("DEBUG_FRAME_COUNTER", "l", frame),
+                ("ENGINE_ATTEMPT", "w", attempt), ("ENGINE_TICK", "w", tick))}
+            action, printed = model_debugger_stop(blocks[ordinal], values)
+            return action, any(reset.COMPLETE_MARKER in line for line in printed)
+        self.assertEqual(reset.EXTENDED_FRAME_LIMIT, 730)
+        for frame in (718, 719, 721, 729, 730, 731):
+            for attempt, tick in ((0, 720), (1, 720), (1, 0), (1, 4), (2, 720)):
+                with self.subTest(irq=(frame, attempt, tick)):
+                    expected = ("stopped", True) if frame >= 730 else ("continue", False)
+                    self.assertEqual(observe(27, frame, attempt, tick), expected)
+        for frame in (718, 719, 721, 725, 729, 730):
+            for attempt in (0, 1, 2):
+                for tick in (0, 1, 3, 4, 5, 720):
+                    with self.subTest(main=(frame, attempt, tick)):
+                        expected = ("stopped", True) if 719 <= frame < 730 and (attempt, tick) == (1, 4) else ("continue", False)
+                        self.assertEqual(observe(29, frame, attempt, tick), expected)
+        # Exact observed transitional IRQ cannot finish the reconstructed main.
+        path = ((27, 720, 0, 720), (27, 721, 1, 720), (29, 721, 1, 0),
+                (29, 722, 1, 1), (29, 723, 1, 2), (29, 724, 1, 3), (29, 725, 1, 4))
+        self.assertEqual([observe(*point) for point in path], [("continue", False)] * 6 + [("stopped", True)])
+        self.assertEqual(hashlib.sha256(regular.build_repair_command_script(symbols, profile="crc_projection").encode()).hexdigest(), "f0f095772777e6abefb5d2022d24898a4a3bac1a66f9a15f4d546ab96ce9fff4")
+        self.assertEqual(hashlib.sha256(reset.build_prefix_command_script(symbols, profile="crc_projection").encode()).hexdigest(), "8e0a9f229772ec3bd3b091d2b6f105c4d0af882608af5039dc053ad01e705a52")
+
+    def test_crc_projection_failed_irq_completion_capture_remains_immutable_incomplete_proof(self) -> None:
+        stem = ROOT / "artifacts/diagnostics/m5-budget/reset-overlay-crc-projection-8b69d4bf-total719-total724-20261010"
+        report_path, trace_path = stem.with_suffix(".json"), stem.with_suffix(".log")
+        self.assertEqual(hashlib.sha256(report_path.read_bytes()).hexdigest(), "7718fa6566c8f31e9df4d2f289fec35887255b85f09e537232b4c4da4b77fd10")
+        self.assertEqual(hashlib.sha256(trace_path.read_bytes()).hexdigest(), "5cef9729324d9f706b248537906f181d1537ed325008a4b8787609cf9561ebde")
+        capture = json.loads(report_path.read_text("utf-8"))
+        console = trace_path.read_text("utf-8").split("----- CONSOLE TRANSCRIPT -----\n", 1)[1]
+        records = reset.parse_markers(console, extended_overlay=True)
+        self.assertEqual(records, capture["records"])
+        self.assertEqual(capture["command_script_sha256"], "4d5d4b3eb6debe0ed9a5fdc817d6187754a2d470346d674a131425a0badf6d3a")
+        self.assertEqual(hashlib.sha256(capture["command_script"].encode()).hexdigest(), capture["command_script_sha256"])
+        self.assertEqual(capture["provenance"]["collector"]["sha256"], "8e29cbc3b7cb4f4255894ca039458845f392d3315e85ef44cd81b76459e5e89f")
+        self.assertEqual((records[-1]["phase"], records[-1]["frame"], records[-1]["attempt"], records[-1]["tick"]), ("VX", 721, 1, 720))
+        self.assertFalse(any(record["phase"] == "MR" for record in records))
+        self.assertEqual(sum(record["phase"] == "PS" for record in records), 1)
+        self.assertIn("R94R COMPLETE\n68K Breakpoint 27 hit\n1850: rte\n> quit", console)
+        self.assertEqual(capture["status"], "diagnostic_fail")
+        self.assertEqual(capture["diagnostic_protocol_status"], "fail")
+        old_blocks = debugger_command_blocks(capture["command_script"])
+        action, printed = model_debugger_stop(old_blocks[27], {
+            "[$FFF018].w": reset.BOOT_STAGE_RUNNING, "[$FFF010].l": 721,
+            "[$FF140E].w": 1, "[$FF1410].w": 720})
+        self.assertEqual(action, "stopped")
+        self.assertTrue(any(reset.COMPLETE_MARKER in line for line in printed))
+        symbols = parse_vasm_symbols(ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/level-B03/recursion94-debug.sym")
+        new_blocks = debugger_command_blocks(reset.build_command_script(symbols, extended_overlay=True, profile="crc_projection"))
+        self.assertEqual([key for key in new_blocks if new_blocks[key] != old_blocks[key]], [27, 29])
 
     def test_renderer_hwm_comparison_cli_is_exclusive_and_never_overwrites_or_launches(self) -> None:
         report = {"diagnostic_protocol_status": "pass", "parity_status": "pass", "cycle_blank_budget_status": "pass"}

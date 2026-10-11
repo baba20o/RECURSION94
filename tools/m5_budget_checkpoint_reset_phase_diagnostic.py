@@ -1119,6 +1119,24 @@ def build_command_script(
             "continue",
         ),
     )
+    vblank_completion = (
+        f"if {attempt} < $1",
+        f"if {frame} < ${frame_limit:X}",
+        "continue", "else", f'printf "{COMPLETE_MARKER}\\n"', "end",
+        "else",
+        f"if {tick} < ${5 if extended_overlay else 1:X}",
+        f"if {frame} < ${frame_limit:X}",
+        "continue", "else", f'printf "{COMPLETE_MARKER}\\n"', "end",
+        "else", f'printf "{COMPLETE_MARKER}\\n"', "end", "end",
+    )
+    if extended_overlay and profile == "crc_projection":
+        # Attempt increments before reconstruction clears the prior tick.
+        # An IRQ may therefore observe (attempt=1,tick=720); only MD below
+        # can prove normal completion. IRQ completion is a physical fail-stop.
+        vblank_completion = (
+            f"if {frame} < ${frame_limit:X}", "continue", "else",
+            f'printf "{COMPLETE_MARKER}\\n"', "end",
+        )
     commands(
         "vblank_rte",
         (
@@ -1133,23 +1151,7 @@ def build_command_script(
                 f"cycle {frame} {attempt} {tick} {sequence} {counter} "
                 f"{token} {debug_words}"
             ),
-            f"if {attempt} < $1",
-            f"if {frame} < ${frame_limit:X}",
-            "continue",
-            "else",
-            f'printf "{COMPLETE_MARKER}\\n"',
-            "end",
-            "else",
-            f"if {tick} < ${5 if extended_overlay else 1:X}",
-            f"if {frame} < ${frame_limit:X}",
-            "continue",
-            "else",
-            f'printf "{COMPLETE_MARKER}\\n"',
-            "end",
-            "else",
-            f'printf "{COMPLETE_MARKER}\\n"',
-            "end",
-            "end",
+            *vblank_completion,
             "end",
             "end",
         ),
@@ -1173,6 +1175,18 @@ def build_command_script(
                     f"if {tick} < $4", "continue", "else",
                     f'printf "{COMPLETE_MARKER}\\n"', "end", "end", "end",
                 )
+                if profile == "crc_projection":
+                    body = (
+                        f"if {frame} < $2CF", "continue", "else",
+                        f"if {frame} < ${frame_limit:X}", marker,
+                        f"if {attempt} < $1", "continue", "else",
+                        f"if {attempt} < $2",
+                        f"if {tick} < $4", "continue", "else",
+                        f"if {tick} < $5", f'printf "{COMPLETE_MARKER}\\n"',
+                        "else", "continue", "end", "end",
+                        "else", "continue", "end", "end",
+                        "else", "continue", "end", "end",
+                    )
             commands(name, body)
     lines.extend(("continue", ""))
     return "\n".join(lines)
