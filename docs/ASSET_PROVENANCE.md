@@ -21,6 +21,13 @@ vasm 2.0f is used under its non-commercial-purpose notice. It is not embedded
 in the ROM; commercial use of this exact build pipeline outside the M68k/AmigaOS
 exception requires upstream written consent or an assembler substitution.
 
+Host-only JSON Schema validation dependencies are pinned separately in
+`tools/python-packages.lock.json`: `jsonschema`, `attrs`,
+`jsonschema-specifications`, `referencing`, and `rpds-py` use MIT;
+`typing-extensions` uses PSF-2.0. Bootstrap verifies wheel hashes and retains
+their license files under the ignored `.toolcache/python/` directory. These
+packages are not cartridge code or assets and are not part of the ROM.
+
 Any later external routine or asset must be listed here with source, author,
 license, exact modification, incorporated files, and reason. Proprietary Sega
 ROM content, disassemblies, ripped graphics/music, and commercial level layouts

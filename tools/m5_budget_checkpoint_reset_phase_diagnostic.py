@@ -178,6 +178,9 @@ PREFIX_TOTAL_STEPS = 1681
 PREFIX_FINAL_ATTEMPT = 2
 PREFIX_FINAL_TICK = 241
 PREFIX_PHYSICAL_FAIL_STOP = PREFIX_TOTAL_STEPS + 512
+PREFIX_MAX_RECORDS = 24000
+PREFIX_MAX_CONSOLE_BYTES = 4 * 1024 * 1024
+PREFIX_CONSOLE_ROWS = 32760
 PREFIX_SCHEDULE_SHA256 = "0215ce39982f901b2c29ea4a32405fa568aecb4227958f9a19d6e1093f8cabff"
 PREFIX_SAMPLE_POST_TICKS = (*range(59, 62), *range(119, 122), *range(179, 182), *range(183, 197), *range(239, 242))
 PREFIX_IRQ_TICK_RANGES = ((58, 62), (118, 122), (178, 197), (238, 242))
@@ -485,6 +488,13 @@ EXTENDED_MARKER_FIELDS = {
     },
     "BT": ("frame", "attempt", "tick", "address", "long0", "long1", "long2", "long3"),
 }
+PREFIX_MARKER_FIELDS = {
+    **MARKER_FIELDS,
+    **{name: fields for name, fields in EXTENDED_MARKER_FIELDS.items() if name != "BT"},
+    "ME": (*MARKER_FIELDS["ME"], "engine_state", "engine_input", "actor_count", "projectile_count"),
+    "RB": EXTENDED_MARKER_FIELDS["BT"],
+}
+PREFIX_MARKER_RE = re.compile(r"^R94C (?P<phase>[A-Z]{1,2})(?P<values>(?: [0-9A-Fa-f]{1,8})+)$")
 
 
 def _sha256_bytes(payload: bytes) -> str:
@@ -1174,6 +1184,11 @@ def prefix_route_contract(root: Path) -> dict[str, Any]:
             str(attempt): report["sessions"][0]["snapshots"][f"post_timeout_{attempt}"]
             for attempt in (1, 2)
         },
+        "projectile_counts": {
+            str(tick): snapshot["engine"]["pool_counts"][1]
+            for tick in PREFIX_SAMPLE_POST_TICKS
+            if (snapshot := report["sessions"][0]["snapshots"].get(f"attempt_2_tick_{tick}")) is not None
+        },
         "scope": "Input route and prior natural reset state only; historical report is not this candidate's runtime or cycle pass.",
     }
 
@@ -1300,7 +1315,467 @@ def prefix_command_policy_errors(script: str, symbols: Mapping[str, int], *, pro
     for line in script.splitlines():
         if line and line.split(maxsplit=1)[0] not in ALLOWED_COMMANDS:
             errors.append("prefix command program contains a non-read-only command")
+    try:
+        prefix_console_capacity(script)
+    except EvidenceFailure as error:
+        errors.append(str(error))
     return errors
+
+
+def prefix_console_capacity(script: str) -> dict[str, int]:
+    """Upper bounds from printf operand widths, including wrapped command echo."""
+    width = 120
+    marker_widths = []
+    for line in script.splitlines():
+        match = re.fullmatch(r'printf "(R94C .*?)" (.*)', line)
+        if match is None:
+            continue
+        format_text, operands = match.groups()
+        args = operands.split()
+        if format_text.count("%x") != len(args):
+            raise EvidenceFailure("prefix printf capacity operand mismatch")
+        # Byte/word memory reads have bounded widths; registers, cycle, long
+        # reads and constants conservatively use the full unsigned32 width.
+        marker_widths.append(len(format_text.replace("%x", "").replace(r"\n", "")) +
+                             sum(2 if arg.endswith(".b") else 4 if arg.endswith(".w") else 8 for arg in args))
+    if not marker_widths or max(marker_widths) >= width:
+        raise EvidenceFailure("prefix runtime marker can wrap its console row")
+    echo_rows = sum((len(line) + 2 + width - 1) // width for line in script.splitlines())
+    # 512 extra rows cover breakpoint acknowledgements, initial console text,
+    # all 23 stopped lifecycle displays/prompts, and final quit. Every runtime
+    # marker (including WAIT/replay) is already charged to MAX_RECORDS.
+    required_rows = PREFIX_MAX_RECORDS + echo_rows + 512
+    if not required_rows < PREFIX_CONSOLE_ROWS <= 32767:
+        raise EvidenceFailure("prefix full console exceeds bounded Win32 row capacity")
+    return {"width": width, "height": PREFIX_CONSOLE_ROWS, "maximum_records": PREFIX_MAX_RECORDS,
+            "maximum_marker_columns": max(marker_widths), "script_echo_rows": echo_rows,
+            "other_console_rows_allowance": 512, "required_rows_upper_bound": required_rows,
+            "maximum_utf8_console_bytes": PREFIX_MAX_CONSOLE_BYTES}
+
+
+def prefix_expected_input_events() -> list[str]:
+    """Exact bounded host transport transitions; not a simulation of gameplay."""
+    pressed: set[str] = set()
+    events = []
+    for desired in (prefix_schedule()[0], *(item["desired"] for item in prefix_input_stages()), 0):
+        for name, _virtual, _scan, _extended, bit in b03.KEYS:
+            if name in pressed and not desired & bit:
+                pressed.remove(name)
+                events.append(f"{name}:up")
+        for name, _virtual, _scan, _extended, bit in b03.KEYS:
+            if desired & bit:
+                events.append(f"{name}:reassert" if name in pressed else f"{name}:down")
+                pressed.add(name)
+    return events
+
+
+def parse_prefix_markers(console_text: str) -> list[dict[str, Any]]:
+    """Strict opt-in grammar; malformed or truncated marker text is evidence failure."""
+    if len(console_text.encode("utf-8")) > PREFIX_MAX_CONSOLE_BYTES:
+        raise EvidenceFailure("prefix console byte bound exceeded")
+    literals = {READY_MARKER, COMPLETE_MARKER, *(item["marker"] for item in prefix_input_stages())}
+    records = []
+    for raw in console_text.splitlines():
+        line = raw.strip()
+        if not line.startswith(("R94C", "R94R")) or line in literals:
+            continue
+        match = PREFIX_MARKER_RE.fullmatch(line)
+        if match is None or match["phase"] not in PREFIX_MARKER_FIELDS:
+            raise EvidenceFailure(f"unknown/malformed prefix marker: {line}")
+        fields = PREFIX_MARKER_FIELDS[match["phase"]]
+        values = match["values"].split()
+        if len(fields) != len(values):
+            raise EvidenceFailure(f"prefix {match['phase']} field count mismatch")
+        records.append({"phase": match["phase"], **dict(zip(fields, (int(value, 16) for value in values)))})
+        if len(records) > PREFIX_MAX_RECORDS:
+            raise EvidenceFailure("prefix record bound exceeded")
+    return records
+
+
+def prefix_input_errors(records: Sequence[Mapping[str, Any]], *, pre_count: int = PREFIX_TOTAL_STEPS,
+                        complete: bool = True) -> list[str]:
+    """Used before each next-mask post as well as on the completed raw capture."""
+    errors = []
+    if not 1 <= pre_count <= PREFIX_TOTAL_STEPS:
+        return ["prefix PRE proof bound invalid"]
+    ordered = [item for item in records if item["phase"] in {"MS", "ME"}]
+    expected_order = [phase for _ in range(pre_count) for phase in ("MS", "ME")]
+    if not complete:
+        expected_order.pop()
+    if [item["phase"] for item in ordered] != expected_order:
+        errors.append("prefix PRE/POST count or alternating order mismatch")
+    if ordered and ordered[0].get("frame") != 1:
+        errors.append("prefix first PRE must follow READY frame0 at exact physical frame1")
+    schedule = prefix_schedule()
+    for phase in ("MS", "ME"):
+        for index, item in enumerate(_by_phase(records, phase)):
+            if index >= pre_count:
+                errors.append("prefix contains excess authoritative step")
+                break
+            attempt, tick = divmod(index, 720)
+            post_tick = tick + int(phase == "ME")
+            if (item["attempt"], item["tick"], item["checkpoint_count"]) != (attempt, post_tick, 1 + post_tick // 60):
+                errors.append(f"prefix {phase} identity/checkpoint mismatch at total {index + 1}")
+            if not 1 <= item["frame"] < PREFIX_PHYSICAL_FAIL_STOP:
+                errors.append("prefix physical fail-stop reached/out of bounds")
+            if phase == "MS":
+                if (item["input"], item["d0"]) != (schedule[index], schedule[index]):
+                    errors.append(f"prefix PRE input/d0 mismatch at total {index + 1}")
+            elif (item["result"] & 0xFFFF, item["engine_state"], item["engine_input"], item["actor_count"]) != (8 if post_tick == 720 else 0, 2 if post_tick == 720 else 1, schedule[index], attempt + 1):
+                errors.append(f"prefix POST result/state/input/actors mismatch at total {index + 1}")
+            if phase == "ME" and not 0 <= item["projectile_count"] <= 32:
+                errors.append("prefix projectile count exceeds bounded pool")
+    return errors
+
+
+def prefix_console_contract_errors(console: str, script: str) -> list[str]:
+    errors = []
+    lines = [line.strip() for line in console.splitlines() if line.strip()]
+    stages = prefix_input_stages()
+    lifecycle = [READY_MARKER, *(item["marker"] for item in stages), COMPLETE_MARKER]
+    positions = []
+    for marker in lifecycle:
+        if lines.count(marker) != 1:
+            errors.append(f"prefix lifecycle multiplicity: {marker}")
+            continue
+        position = lines.index(marker)
+        positions.append(position)
+        expected = (("68K Breakpoint 21 hit", "169A:", "> continue") if marker == READY_MARKER else
+                    ("68K Breakpoint 29 hit", "344:", ">") if marker == COMPLETE_MARKER else
+                    ("68K Breakpoint 0 hit", "2FA:", "> continue"))
+        tail = lines[position + 1:position + 4]
+        if len(tail) != 3 or tail[0] != expected[0] or not tail[1].startswith(expected[1]) or tail[2] != expected[2]:
+            errors.append(f"prefix stopped lifecycle mismatch: {marker}")
+    if positions != sorted(positions):
+        errors.append("prefix lifecycle order mismatch")
+    if lines.count("> continue") != len(stages) + 2 or lines.count("> quit") != 0 or lines[-1:] != [">"]:
+        errors.append("prefix exact staged continue/pre-quit prompt count mismatch")
+    for index, command in enumerate(line for line in script.splitlines() if line.startswith("breakpoint ")):
+        echo, ack = f"> {command}", f"68K Breakpoint {index} set at ${command.split('$', 1)[1]}"
+        if lines.count(echo) != 1 or lines.count(ack) != 1 or lines.index(ack) != lines.index(echo) + 1:
+            errors.append(f"prefix breakpoint lifecycle mismatch: {index}")
+    for text in ("Failed to eval", "Unrecognized", "not a recognized command", "fgets failed"):
+        if text in console:
+            errors.append(f"prefix native debugger error: {text}")
+    try:
+        parse_prefix_markers(console)
+    except EvidenceFailure as error:
+        errors.append(str(error))
+    return errors
+
+
+def analyse_prefix(records: Sequence[Mapping[str, Any]], route: Mapping[str, Any]) -> dict[str, Any]:
+    """Analyse observed timing, separately from transport/state proof and budgets.
+
+    No physical cadence is padded or presumed. The 2,193-frame ceiling is only
+    an emergency diagnostic stop; ordinary and reset budgets remain unchanged.
+    """
+    errors = prefix_input_errors(records)
+    budget_errors: list[str] = []
+    phases = {name: _by_phase(records, name) for name in PREFIX_MARKER_FIELDS}
+    if len(records) > PREFIX_MAX_RECORDS or any(item["phase"] not in PREFIX_MARKER_FIELDS for item in records):
+        errors.append("prefix record type/count bound mismatch")
+    cycle_records = [item for item in records if "cycle" in item]
+    for first, last in zip(cycle_records, cycle_records[1:]):
+        if last["cycle"] < first["cycle"] or (last["cycle"] == first["cycle"] and (first["phase"], last["phase"]) != ("MS", "HI")):
+            errors.append("prefix raw master clocks not monotonic/no-wrap")
+            break
+    if cycle_records and not 0 <= cycle_records[0]["cycle"] < cycle_records[-1]["cycle"] <= 0xFFFFFFFF:
+        errors.append("prefix master clock bounds invalid")
+    positions = {id(item): index for index, item in enumerate(records)}
+
+    def ordered(items: Sequence[Mapping[str, Any]], label: str, *, contiguous: bool = False) -> None:
+        indices = [positions[id(item)] for item in items]
+        expected = list(range(indices[0], indices[-1] + 1)) if contiguous and indices else sorted(set(indices))
+        if indices != expected:
+            errors.append(f"prefix {label} marker order mismatch")
+
+    def unique(phase: str, attempt: int, tick: int) -> Mapping[str, Any] | None:
+        found = [item for item in phases[phase] if (item.get("attempt"), item.get("tick")) == (attempt, tick)]
+        if len(found) != 1:
+            errors.append(f"prefix {phase} multiplicity at {attempt}/{tick}")
+            return None
+        return found[0]
+
+    def span(first: Mapping[str, Any], last: Mapping[str, Any], label: str) -> dict[str, Any]:
+        try:
+            return _span(first, last, label)
+        except EvidenceFailure as error:
+            errors.append(str(error))
+            return {}
+
+    def identity_coverage(phase: str, identities: Sequence[tuple[int, int]]) -> None:
+        if [(item.get("attempt"), item.get("tick")) for item in phases[phase]] != list(identities):
+            errors.append(f"prefix {phase} exact identity coverage mismatch")
+
+    stages = prefix_input_stages()
+    if len(phases["HI"]) != len(stages):
+        errors.append("prefix input handoff count mismatch")
+    for item, stage in zip(phases["HI"], stages):
+        pre = unique("MS", stage["attempt"], stage["pre_tick"])
+        if [item[key] for key in ("attempt", "tick", "current", "desired")] != [stage[key] for key in ("attempt", "pre_tick", "current", "desired")]:
+            errors.append("prefix input handoff values mismatch")
+        if pre and (any(pre[key] != item[key] for key in ("cycle", "frame", "attempt", "tick")) or positions[id(item)] != positions[id(pre)] + 1):
+            errors.append("prefix input handoff not adjacent to identical PRE")
+
+    reset_proofs = []
+    for phase in ("MR", "BC", "BM", "BZ", "BW"):
+        identity_coverage(phase, ((1, 0), (2, 0)))
+    if len(phases["RB"]) != 640:
+        errors.append("prefix reset replay rows must cover exactly two 5,120-byte snapshots")
+    for attempt in (1, 2):
+        local = {phase: unique(phase, attempt, 0) for phase in ("MR", "BC", "BM", "BZ", "BW")}
+        rows = [item for item in phases["RB"] if (item["attempt"], item["tick"]) == (attempt, 0)]
+        reference = route["reset_snapshots"][str(attempt)]
+        mr = local["MR"]
+        payload = b""
+        if [item["address"] for item in rows] != list(range(0xFF0000, 0xFF1400, 16)):
+            errors.append(f"prefix reset {attempt} replay byte coverage mismatch")
+        else:
+            payload = b"".join(item[f"long{index}"].to_bytes(4, "big") for item in rows for index in range(4))
+            if _sha256_bytes(payload) != reference["replay_timeline"]["sha256"]:
+                errors.append(f"prefix reset {attempt} replay/timeline differs from pinned natural reset")
+        if mr:
+            if (mr["result"] & 0xFFFF, mr["checkpoint_count"], mr["state_crc"], mr["replay_crc"]) != (0, 1, reference["engine"]["state_crc"], reference["gameplay"]["last_bank_crc"]):
+                errors.append(f"prefix reset {attempt} published projection/replay mirrors mismatch")
+            if any(item["frame"] != mr["frame"] for item in rows):
+                errors.append(f"prefix reset {attempt} replay snapshot frame mismatch")
+            ordered((mr, *rows), "reset replay", contiguous=True)
+        if all(item is not None for item in local.values()):
+            mr, bc, bm, bz, bw = (local[phase] for phase in ("MR", "BC", "BM", "BZ", "BW"))
+            ordered((mr, bc, bm, bz, bw), "reset barriers")
+            if (bc["snapshot_bank"], bc["current_bank"]) != ((6, 0) if attempt == 1 else (0, 1)):
+                errors.append("prefix reset bank epoch mismatch")
+            if bc["sr"] & 0x700 != 0x500 or any(item["sr"] & 0x700 != 0x700 for item in (bm, bz, bw)):
+                errors.append("prefix reset IRQ masks mismatch")
+            if bc["token"] != bm["token"] or bz["token"] != 0 or bw["token"] != 0 or len({item["frame"] for item in (bc, bm, bz, bw)}) != 1:
+                errors.append("prefix reset token coalescing/frame mismatch")
+            if not 1 <= bc["token"] <= 2:
+                budget_errors.append(f"reset {attempt} service tokens outside one/two-frame budget")
+            first, fresh = unique("MS", attempt - 1, 719), unique("MS", attempt, 0)
+            terminal = unique("ME", attempt - 1, 720)
+            if first and terminal and fresh:
+                ordered((terminal, mr, *rows, bc, bm, bz, bw, fresh), "terminal/reset/fresh transition", contiguous=True)
+                if not terminal["frame"] <= mr["frame"] <= bc["frame"] < fresh["frame"]:
+                    errors.append("prefix terminal/reset service physical frame order mismatch")
+                duration = span(first, bc, f"reset {attempt} total main-side work")
+                if duration.get("delta_cpu_cycles_ceil", 0) > 256010:
+                    budget_errors.append(f"reset {attempt} exceeds two-frame main-side cycle budget")
+                if fresh["frame"] != bw["frame"] + 1:
+                    budget_errors.append(f"reset {attempt} did not resume on exactly the first fresh VBlank")
+                if bc["frame"] - first["frame"] != bc["token"]:
+                    budget_errors.append(f"reset {attempt} service IRQ delta differs from coalesced tokens")
+                reset_proofs.append({"attempt": attempt, "service_tokens": bc["token"], "pre_frame": first["frame"], "coalesce_frame": bc["frame"], "fresh_frame": fresh["frame"], "main_side": duration, "replay_sha256": _sha256_bytes(payload)})
+
+    render_ids = [(2, tick) for tick in PREFIX_SAMPLE_POST_TICKS]
+    for pre, post in zip(phases["MS"], phases["ME"]):
+        if post["cycle"] <= pre["cycle"] or post["frame"] < pre["frame"]:
+            errors.append("prefix paired PRE/POST cycle or physical frame ordering mismatch")
+        elif post["frame"] != pre["frame"]:
+            budget_errors.append(f"prefix gameplay crossed VBlank at {post['attempt']}/{post['tick']}")
+    for phase in ("ME", "MS"):
+        for first, last in zip(phases[phase], phases[phase][1:]):
+            if last["frame"] < first["frame"]:
+                errors.append("prefix physical frame counters run backwards")
+            elif first["attempt"] == last["attempt"] and last["frame"] != first["frame"] + 1:
+                budget_errors.append(f"prefix {phase} ordinary physical cadence drift at {last['attempt']}/{last['tick']}")
+    for phase in ("RM", "RG", "RR", "RX", "MD"):
+        identity_coverage(phase, render_ids)
+    identity_coverage("MB", [(2, tick - 1) for tick in PREFIX_SAMPLE_POST_TICKS])
+    for phase in ("PS", "ES", "EE", "TS", "TE", "CS", "CE", "PE"):
+        identity_coverage(phase, [(2, tick) for tick in (60, 120, 180, 240)])
+    rendered_ids = [(item["attempt"], item["tick"]) for item in phases["RR"] if item["result"] & 0xFFFF in (0, 3)]
+    for phase in ("HB", "HE", "SE", "OE"):
+        identity_coverage(phase, rendered_ids)
+    for phase, mask in (("MB", 0x700), ("MD", 0x500), ("RM", 0x500), ("RX", 0x500), ("RG", 0x700), ("RR", 0x700), ("HB", 0x700), ("HE", 0x700), ("SE", 0x700), ("OE", 0x700)):
+        if any(item["sr"] & 0x700 != mask for item in phases[phase]):
+            errors.append(f"prefix {phase} IRQ mask mismatch")
+        if any(item["token"] != 0 for item in phases[phase]):
+            budget_errors.append(f"prefix sampled {phase} has nonzero queued frame token")
+    samples = {}
+    for tick in PREFIX_SAMPLE_POST_TICKS:
+        names = ("MS", "MB", "ME", "RM", "RG", "RR", "RX", "MD")
+        local = {phase: unique(phase, 2, tick - int(phase in {"MS", "MB"})) for phase in names}
+        if any(item is None for item in local.values()):
+            continue
+        ordered([local[phase] for phase in ("MB", "MS", "ME", "RM", "RG", "RR", "RX", "MD")], f"tick {tick} main")
+        sample = {"frame_pre": local["MS"]["frame"], "frame_post": local["ME"]["frame"], "actor_count": local["ME"]["actor_count"], "projectile_count": local["ME"]["projectile_count"]}
+        for label, first, last in (("gameplay", "MS", "ME"), ("main", "MB", "MD"), ("renderer_masked", "RM", "RR")):
+            sample[label] = span(local[first], local[last], f"tick {tick} {label}")
+        if sample["gameplay"].get("delta_cpu_cycles_ceil", 0) > 83203:
+            budget_errors.append(f"attempt2 tick {tick} GameplayStep exceeds 83203 CPU cycles")
+        if sample["main"].get("delta_cpu_cycles_ceil", 0) > 128005:
+            budget_errors.append(f"attempt2 tick {tick} whole main exceeds one-frame cycle budget")
+        if str(tick) in route.get("projectile_counts", {}) and sample["projectile_count"] != route["projectile_counts"][str(tick)]:
+            errors.append(f"attempt2 tick {tick} projectile count differs from pinned route")
+        rr, rg = local["RR"], local["RG"]
+        result = rr["result"] & 0xFFFF
+        if result not in range(5):
+            errors.append("prefix renderer returned unknown result")
+        if result != (4 if tick % 60 == 0 else 0) or rr["backlog_frames"]:
+            budget_errors.append(f"attempt2 tick {tick} renderer hold/recovery/backlog/rejection mismatch")
+        if (rg["pending"], rg["published_depth"], rg["build_depth"], rg["backlog_frames"]) != (0, 0, 0, 0):
+            budget_errors.append(f"attempt2 tick {tick} pre-render queue/backlog not empty")
+        if (rg["campaign_flags"], rg["checkpoint_count"], rg["renderer_attempt"], rg["renderer_checkpoint_count"]) != (3, 1 + tick // 60, 2, 1 + (tick - 1) // 60):
+            errors.append("prefix pre-render campaign/checkpoint/attempt mirrors mismatch")
+        if rr["pending"] != int(result == 0):
+            errors.append("prefix renderer result/publication mismatch")
+        if any(item["frame"] != local["RM"]["frame"] for item in (rg, rr)):
+            errors.append("prefix masked renderer physical frame changed")
+        if rr["reset_phase"] != 0 or rr["renderer_attempt"] != 2 or (rr["renderer_checkpoint_count"], rr["checkpoint_count"]) != (1 + tick // 60, 1 + tick // 60):
+            errors.append("prefix renderer publication mirrors/reset phase mismatch")
+        if result == 4 and (tick % 60 != 0 or rr["pending"] != 0):
+            errors.append("prefix checkpoint hold result outside checkpoint/zero-publication")
+        if result in (0, 3):
+            drawing = [unique(phase, 2, tick) for phase in ("HB", "HE", "SE", "OE")]
+            if all(item is not None for item in drawing):
+                ordered((rg, *drawing, rr), f"tick {tick} renderer")
+                for label, first, last in (("hud", drawing[0], drawing[1]), ("sat", drawing[1], drawing[2]), ("overlay", drawing[2], drawing[3])):
+                    sample[label] = span(first, last, f"tick {tick} {label}")
+        if tick % 60 == 0:
+            project = [unique(phase, 2, tick) for phase in ("PS", "ES", "EE", "TS", "TE", "CS", "CE", "PE")]
+            if all(item is not None for item in project):
+                ps, es, ee, ts, te, cs, ce, pe = project
+                ordered((local["MS"], *project, local["ME"]), f"tick {tick} projection")
+                if (ps["checkpoint_count"], es["checkpoint_count"], ee["checkpoint_count"], pe["checkpoint_count"], ps["engine_state"], ee["length"] & 0xFFFF) != (tick // 60, tick // 60, 1 + tick // 60, 1 + tick // 60, 1, 3638):
+                    errors.append("prefix projection checkpoint progression/state/base length mismatch")
+                if (pe["length"] & 0xFFFF, pe["crc"], pe["state_crc"]) != (3894, ce["raw_crc"] ^ 0xFFFFFFFF, ce["raw_crc"] ^ 0xFFFFFFFF):
+                    errors.append("prefix projection length/CRC publication mismatch")
+                if (cs["source"], cs["length"] & 0xFFFF, te["length"] & 0xFFFF) != (0xFF6E36, 256, 256) or ts["destination"] != cs["source"] or te["destination"] != cs["source"] + 256:
+                    errors.append("prefix projection tail boundaries mismatch")
+                for label, first, last in (("projection", ps, pe), ("engine_projection", es, ee), ("tail", ts, te), ("tail_crc", cs, ce)):
+                    sample[label] = span(first, last, f"tick {tick} {label}")
+                sample["projection_crc"] = pe["state_crc"]
+        samples[str(tick)] = sample
+
+    irq_summary = _analyse_prefix_irqs(records, phases, errors, budget_errors)
+    return {"status": "pass" if not errors and not budget_errors else "fail",
+            "protocol_status": "pass" if not errors else "fail", "budget_status": "pass" if not budget_errors else "fail",
+            "errors": errors, "budget_errors": budget_errors,
+            "marker_counts": {phase: len(items) for phase, items in phases.items()},
+            "phase_spans": samples, "natural_resets": reset_proofs, "sampled_irqs": irq_summary,
+            "timing_scope": "Bounded natural 1,681-step route with strict full input proof; 26 later-attempt phase samples and four checkpoint projections. Raw /7 spans include intervening IRQs. Physical 2,193 is a diagnostic fail-stop, never an allowance. Not the full M5 cycle gate.",
+            "protocol_domain_limitations": ["An empty-token sampled MD requires an observed same-identity WAIT. The rare IRQ between MD and MainLoop token test can legitimately omit WAIT, but is unsupported here and remains protocol-fail with raw evidence preserved; no inferred/missing WAIT is accepted."],
+            "conclusion": "Natural canonical-route prefix observed; protocol " + ("failed" if errors else "passed") + "; sampled cycle/blank budget " + ("failed" if budget_errors else "passed") + ". Not a full M5 pass."}
+
+
+def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[str, Sequence[Mapping[str, Any]]],
+                         errors: list[str], budget_errors: list[str]) -> list[dict[str, Any]]:
+    def inside(item: Mapping[str, Any]) -> bool:
+        return item["attempt"] == 2 and any(first <= item["tick"] < last for first, last in PREFIX_IRQ_TICK_RANGES)
+
+    frames = [item["frame"] for item in phases["VX"]]
+    if frames != sorted(set(frames)) or not 1 <= len(frames) <= PREFIX_PHYSICAL_FAIL_STOP - 1498 + 1 or any(not 1 <= frame < PREFIX_PHYSICAL_FAIL_STOP for frame in frames):
+        errors.append("prefix IRQ physical coverage/count bound mismatch")
+    # Every counter increment between two proven engine observations inside a
+    # logging window must have a complete IRQ. This catches whole-IRQ deletion.
+    engine = [item for item in records if item["phase"] in {"MS", "ME"}]
+    required_frames = set()
+    for first, last in zip(engine, engine[1:]):
+        if inside(first) and inside(last):
+            required_frames.update(range(first["frame"] + 1, last["frame"] + 1))
+    # The first IRQ of every window occurs after the lower-tick POST and
+    # before its same-tick PRE; requiring all in-window PRE frames includes
+    # those boundary IRQs even if every record of an IRQ was deleted.
+    required_frames.update(item["frame"] for item in phases["MS"] if inside(item))
+    if not required_frames.issubset(frames):
+        errors.append("prefix sampled engine counters require missing IRQ(s)")
+    for lower, upper in PREFIX_IRQ_TICK_RANGES:
+        first = next((item for item in records if item["phase"] == "ME" and (item["attempt"], item["tick"]) == (2, lower)), None)
+        last = next((item for item in records if item["phase"] == "MS" and (item["attempt"], item["tick"]) == (2, upper - 1)), None)
+        if last is None and upper > PREFIX_FINAL_TICK:
+            last = next((item for item in records if item["phase"] == "MD" and (item["attempt"], item["tick"]) == (2, PREFIX_FINAL_TICK)), None)
+        if first is None or last is None:
+            errors.append("prefix complete IRQ window missing engine boundary")
+            continue
+        window = records[records.index(first):records.index(last) + 1]
+        for before, after in zip(window, window[1:]):
+            expected_delta = int(after["phase"] == "VC")
+            if after["frame"] != before["frame"] + expected_delta:
+                errors.append("prefix logged window frame counter changes outside exact VA/VC edge")
+                break
+    for phase in ("VA", "VE", "VC", "VP", "VS", "VK"):
+        if [item["frame"] + int(phase in {"VE", "VA"}) for item in phases[phase]] != frames:
+            errors.append(f"prefix {phase} exact IRQ coverage mismatch")
+    queue4 = ((0xFF8000, 0xF000, 320, 0x8000, 0), (0xFF8600, 0xC000, 40, 0x8001, 0), (0xFF8650, 0xC080, 40, 0x8001, 0), (0xFF86A0, 0xC100, 40, 0x8001, 0))
+    positions = {id(item): index for index, item in enumerate(records)}
+    summaries = []
+    previous_counter = 0
+    covered = set()
+    irq_names = {"VE", "VA", "VC", "Q", "DS", "DE", "VP", "VS", "VO", "VK", "VX"}
+    for frame in frames:
+        local = {name: [item for item in phases[name] if item["frame"] + int(name in {"VE", "VA"}) == frame] for name in irq_names}
+        singles = ("VE", "VA", "VC", "VP", "VS", "VK", "VX")
+        if any(len(local[name]) != 1 for name in singles):
+            continue
+        ve, va, vc, vp, vs, vk, vx = (local[name][0] for name in singles)
+        if not inside(ve) or (ve["attempt"], ve["tick"]) != (vc["attempt"], vc["tick"]) or (vc["attempt"], vc["tick"]) != (vx["attempt"], vx["tick"]):
+            errors.append(f"prefix IRQ {frame} engine identity/gate mismatch")
+        entry = va["entry_status"] & 8
+        increment = int(bool(entry) and not (vs["exit_status"] & 8))
+        if vs["entry_status"] != va["entry_status"] or (vk["d0"] & 0xFFFF, vk["d1"] & 0xFFFF) != (vs["exit_status"] & (8 if entry else 0xFFFF), entry):
+            errors.append(f"prefix IRQ {frame} raw blank predicates mismatch")
+        if vs["counter"] < previous_counter or vk["counter"] != min(0xFFFF, vs["counter"] + increment) or vx["counter"] != vk["counter"]:
+            errors.append(f"prefix IRQ {frame} cumulative counter mismatch")
+        previous_counter = vx["counter"]
+        if va["sequence"] != frame * 2 - 1 or vx["sequence"] != frame * 2 or ve["token"] + 1 != vx["token"] or ve["sr"] & 0x700 != 0x600:
+            errors.append(f"prefix IRQ {frame} sequence/token/mask mismatch")
+        if (ve["token"], vx["token"]) != (0, 1):
+            budget_errors.append(f"prefix IRQ {frame} queued/backlogged frame tokens")
+        if len(local["VO"]) != increment or any((item["d0"], item["d1"], item["counter"], item["sequence"]) != (0, 8, vs["counter"], frame * 2 - 1) for item in local["VO"]):
+            errors.append(f"prefix IRQ {frame} overrun origin mismatch")
+        if not entry or not (vs["exit_status"] & 8) or vx["counter"]:
+            budget_errors.append(f"prefix IRQ {frame} late/outside blank or cumulative overrun")
+        expected_queue = queue4 if vc["published_depth"] else ()
+        words = sum(item[2] for item in expected_queue)
+        if (vc["pending"], vc["published_depth"], vc["build_depth"], vc["build_words"]) != (int(bool(expected_queue)), len(expected_queue), len(expected_queue), words):
+            errors.append(f"prefix IRQ {frame} exact bounded queue topology mismatch")
+        if _record_values(local["Q"], "index", "source", "destination", "words", "flags", "age") != [[index, *item] for index, item in enumerate(expected_queue)]:
+            errors.append(f"prefix IRQ {frame} queue bytes mismatch")
+        if len(local["DS"]) != len(expected_queue) or len(local["DE"]) != len(expected_queue):
+            errors.append(f"prefix IRQ {frame} DMA coverage mismatch")
+        cumulative = 0
+        for start, end, item in zip(local["DS"], local["DE"], expected_queue):
+            cumulative += item[2]
+            if [start[key] for key in ("source", "destination", "words", "commit_words")] != [*item[:3], cumulative] or end["commit_words"] != cumulative or end["cycle"] <= start["cycle"]:
+                errors.append(f"prefix IRQ {frame} DMA issue mismatch")
+        if (vp["commit_words"], vp["debug_words"], vp["depth"], vp["pending"], vx["debug_words"]) != (words, words, 0, 0, words):
+            errors.append(f"prefix IRQ {frame} commit accounting mismatch")
+        prior_renderer = [item for item in phases["RR"] if (item["attempt"], item["tick"]) == (vc["attempt"], vc["tick"]) and item["cycle"] < ve["cycle"]]
+        if len(prior_renderer) == 1 and vc["pending"] != prior_renderer[0]["pending"]:
+            errors.append(f"prefix IRQ {frame} does not commit the preceding renderer publication")
+        expected_order = [ve, va, vc, *local["Q"]]
+        for start, end in zip(local["DS"], local["DE"]):
+            expected_order.extend((start, end))
+        expected_order.extend((vp, vs, *local["VO"], vk, vx))
+        indices = [positions[id(item)] for item in expected_order]
+        covered.update(indices)
+        if indices != list(range(indices[0], indices[-1] + 1)):
+            errors.append(f"prefix IRQ {frame} contiguous phase grammar mismatch")
+        try:
+            summaries.append({"frame": frame, "attempt": vc["attempt"], "tick": vc["tick"], "queue_depth": len(expected_queue), "words": words, "entry_to_rte": _span(ve, vx, f"prefix IRQ {frame}")})
+        except EvidenceFailure as error:
+            errors.append(str(error))
+    if covered != {index for index, item in enumerate(records) if item["phase"] in irq_names}:
+        errors.append("prefix orphan/duplicate IRQ marker")
+    wait_ids = [(item["frame"], item["attempt"], item["tick"]) for item in phases["WW"]]
+    if len(wait_ids) != len(set(wait_ids)) or len(wait_ids) > PREFIX_PHYSICAL_FAIL_STOP - 1498 + 1:
+        errors.append("prefix WAIT duplicate identity/count bound mismatch")
+    for wait in phases["WW"]:
+        following = next((item for item in phases["VE"] if item["cycle"] > wait["cycle"]), None)
+        previous = [item for item in phases["ME"] if (item["attempt"], item["tick"]) == (wait["attempt"], wait["tick"]) and item["cycle"] < wait["cycle"]]
+        if not inside(wait) or wait["token"] != 0 or wait["sr"] & 0x700 != 0x700 or len(previous) != 1 or following is None or any(wait[key] != following[key] for key in ("frame", "attempt", "tick")):
+            errors.append("prefix WAIT identity/mask/token/IRQ binding mismatch")
+        matching_done = [item for item in phases["MD"] if all(item[key] == wait[key] for key in ("frame", "attempt", "tick")) and item["cycle"] < wait["cycle"]]
+        if any(item["token"] != 0 for item in matching_done):
+            errors.append("prefix nonempty-token MD cannot reach same-frame/identity WAIT")
+    for done in phases["MD"]:
+        if done["tick"] == PREFIX_FINAL_TICK or done["token"]:
+            continue
+        waits = [item for item in phases["WW"] if all(item[key] == done[key] for key in ("frame", "attempt", "tick")) and item["cycle"] > done["cycle"]]
+        if len(waits) != 1:
+            errors.append("prefix sampled empty-token main missing/duplicate WAIT")
+    return summaries
 
 
 def command_policy_errors(
@@ -2362,7 +2837,8 @@ def analyse_extended(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
 
 
 def _staged_console_helper_payload(
-    process_id: int, script: str, timeout_seconds: float, *, ready_console_only: bool = False
+    process_id: int, script: str, timeout_seconds: float, *, ready_console_only: bool = False,
+    canonical_prefix: bool = False,
 ) -> dict[str, Any]:
     if os.name != "nt":
         raise EvidenceFailure("staged console helper requires native Windows")
@@ -2461,6 +2937,12 @@ def _staged_console_helper_payload(
     invalid = ctypes.c_void_p(-1).value
     if console_in in {None, invalid} or console_out in {None, invalid}:
         raise EvidenceFailure("could not open owned CONIN$/CONOUT$")
+    capacity = prefix_console_capacity(script) if canonical_prefix else None
+    if capacity:
+        kernel32.SetConsoleScreenBufferSize.argtypes = (wintypes.HANDLE, Coord)
+        kernel32.SetConsoleScreenBufferSize.restype = wintypes.BOOL
+        if not kernel32.SetConsoleScreenBufferSize(console_out, Coord(capacity["width"], capacity["height"])):
+            raise EvidenceFailure("owned prefix console bounded resize failed")
 
     def read_console() -> tuple[str, dict[str, int]]:
         info = ConsoleInfo()
@@ -2468,6 +2950,10 @@ def _staged_console_helper_payload(
             console_out, ctypes.byref(info)
         ):
             raise EvidenceFailure("GetConsoleScreenBufferInfo failed")
+        if capacity and (info.size.X, info.size.Y) != (capacity["width"], capacity["height"]):
+            failure = EvidenceFailure("prefix owned console geometry changed before bounded read")
+            failure.console_geometry = {"width": info.size.X, "height": info.size.Y, "cursor_x": info.cursor.X, "cursor_y": info.cursor.Y}
+            raise failure
         count = info.size.X * (info.cursor.Y + 1)
         buffer = ctypes.create_unicode_buffer(count + 1)
         read = wintypes.DWORD()
@@ -2484,7 +2970,8 @@ def _staged_console_helper_payload(
             raw[offset : offset + info.size.X].rstrip()
             for offset in range(0, len(raw), info.size.X)
         ]
-        return "\n".join(lines).rstrip() + "\n", {
+        transcript = "\n".join(lines).rstrip() + "\n"
+        geometry = {
             "width": info.size.X,
             "height": info.size.Y,
             "cursor_x": info.cursor.X,
@@ -2493,6 +2980,13 @@ def _staged_console_helper_payload(
             "raw_screen_buffer_utf16le_sha256": _sha256_bytes(raw.encode("utf-16-le")),
             "raw_screen_buffer": raw,
         }
+        if capacity and ((info.size.X, info.size.Y) != (capacity["width"], capacity["height"]) or
+                         info.cursor.Y >= info.size.Y - 1 or len(transcript.encode("utf-8")) > PREFIX_MAX_CONSOLE_BYTES):
+            failure = EvidenceFailure("prefix console geometry/capacity bound violated; possible scrolling/truncation")
+            failure.console_text = transcript
+            failure.console_geometry = geometry
+            raise failure
+        return transcript, geometry
 
     def peek_console_input() -> dict[str, Any]:
         return native._peek_owned_console_input(kernel32, console_in, InputRecord)
@@ -2518,6 +3012,12 @@ def _staged_console_helper_payload(
         while time.monotonic() < deadline:
             transcript, geometry = read_console()
             lines = [line.strip() for line in transcript.splitlines()]
+            if canonical_prefix and "R94C LIMIT" in lines:
+                failure = EvidenceFailure("prefix physical/attempt fail-stop reached; no further host input sent")
+                failure.console_text = transcript
+                failure.console_geometry = geometry
+                failure.console_input_peek = peek_console_input()
+                raise failure
             if ready_console_only and marker == READY_MARKER and marker in lines:
                 failure = EvidenceFailure("READY-only console diagnostic; no gameplay input or continue sent")
                 failure.console_text = transcript
@@ -2560,20 +3060,40 @@ def _staged_console_helper_payload(
         window["handle"], b03.INPUT_UP, pressed, input_events
     )
     continue_counts = [send_console("continue\n")]
-    for marker, desired in INPUT_MARKERS:
+    stages = [(item["marker"], item["desired"], item["total"]) for item in prefix_input_stages()] if canonical_prefix else [(marker, desired, None) for marker, desired in INPUT_MARKERS]
+
+    def verify_prefix_input(transcript: str, geometry: Mapping[str, Any], *, pre_count: int, complete: bool) -> None:
+        try:
+            failures = prefix_input_errors(parse_prefix_markers(transcript), pre_count=pre_count, complete=complete)
+            if failures:
+                raise EvidenceFailure("; ".join(failures))
+        except EvidenceFailure as failure:
+            failure.console_text = transcript
+            failure.console_geometry = geometry
+            failure.console_input_peek = peek_console_input()
+            raise
+
+    for marker, desired, pre_count in stages:
         _transcript, geometry = wait_for(marker)
+        if canonical_prefix:
+            verify_prefix_input(_transcript, geometry, pre_count=pre_count, complete=False)
         b03._set_gameplay_mask(
             window["handle"], desired, pressed, input_events
         )
         continue_counts.append(send_console("continue\n"))
     transcript, geometry = wait_for(COMPLETE_MARKER)
+    if canonical_prefix:
+        verify_prefix_input(transcript, geometry, pre_count=PREFIX_TOTAL_STEPS, complete=True)
     b03._set_gameplay_mask(window["handle"], 0, pressed, input_events)
-    quit_written = send_console("quit\n")
-    time.sleep(0.1)
-    try:
-        final, geometry = read_console()
-    except EvidenceFailure:
-        final = transcript + "> quit\n"
+    if canonical_prefix:
+        final, geometry, quit_written = _finish_prefix_console(transcript, geometry, send_console)
+    else:
+        quit_written = send_console("quit\n")
+        time.sleep(0.1)
+        try:
+            final, geometry = read_console()
+        except EvidenceFailure:
+            final = transcript + "> quit\n"
     kernel32.FreeConsole()
     return {
         "console_text": final,
@@ -2583,7 +3103,24 @@ def _staged_console_helper_payload(
         "input_window": window,
         "input_events": input_events,
         "console": geometry,
+        **({"console_capacity": capacity, "input_proof_checked_before_each_next_mask": True} if canonical_prefix else {}),
     }
+
+
+def _finish_prefix_console(transcript: str, geometry: Mapping[str, Any], send_console: Any) -> tuple[str, Mapping[str, Any], int]:
+    """Retain the last fully observed prompt; never invent text during teardown.
+
+    The caller has just checked COMPLETE, capacity and the full input proof.
+    Successful quit delivery and the parent's zero process exit are separate
+    cleanup evidence; they are not represented as an observed console echo.
+    """
+    try:
+        written = send_console("quit\n")
+    except EvidenceFailure as failure:
+        failure.console_text = transcript
+        failure.console_geometry = geometry
+        raise
+    return transcript, geometry, written
 
 
 def _console_helper_main(args: argparse.Namespace) -> int:
@@ -2592,6 +3129,7 @@ def _console_helper_main(args: argparse.Namespace) -> int:
         result = _staged_console_helper_payload(
             args.process_id, script, args.timeout_seconds,
             **({"ready_console_only": True} if getattr(args, "ready_console_only", False) else {}),
+            **({"canonical_prefix": True} if getattr(args, "canonical_prefix", False) else {}),
         )
     except EvidenceFailure as error:
         result = {
@@ -3070,10 +3608,15 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     report_path = Path(args.report).resolve()
     trace_path = Path(args.trace).resolve()
     extended_overlay = bool(getattr(args, "extended_overlay", False))
+    canonical_prefix = bool(getattr(args, "canonical_prefix", False))
     profile = getattr(args, "profile", "baseline")
     if report_path == trace_path or report_path.exists() or trace_path.exists():
         raise EvidenceFailure("live diagnostic outputs must be distinct new paths")
-    if extended_overlay:
+    if canonical_prefix and (extended_overlay or getattr(args, "ready_console_only", False)):
+        raise EvidenceFailure("canonical-prefix mode cannot be combined with other live diagnostic modes")
+    if canonical_prefix and not 0 < args.timeout_seconds <= 240:
+        raise EvidenceFailure("prefix timeout must remain positive and bounded to 240 seconds")
+    if extended_overlay or canonical_prefix:
         protected = {root / name for name in (DEFAULT_REPORT_RELATIVE_PATH, DEFAULT_TRACE_RELATIVE_PATH, CAPTURE_REPORT_RELATIVE_PATH, CAPTURE_TRACE_RELATIVE_PATH, DEFAULT_OFFLINE_REPORT_RELATIVE_PATH)}
         if report_path in protected or trace_path in protected or report_path == trace_path:
             raise EvidenceFailure("extended capture requires distinct explicit new output paths")
@@ -3135,12 +3678,21 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
         "RendererPrepareResetOverlay",
         *PC_SYMBOL_BINDINGS.values(),
     }
+    if canonical_prefix:
+        required_symbols.update(("ENGINE_INPUT_HELD", "ENGINE_ACTIVE_ACTOR_COUNT", "ENGINE_POOL_COUNTS"))
     missing = sorted(required_symbols - symbols.keys())
     if missing:
         raise EvidenceFailure("symbol map missing: " + ", ".join(missing))
-    bound_pc = (extended_pc_contract if extended_overlay else pc_contract)(rom_path.read_bytes(), symbols, profile=profile)
-    script = build_command_script(symbols, extended_overlay=extended_overlay, profile=profile)
-    policy_errors = command_policy_errors(script, symbols, extended_overlay=extended_overlay, profile=profile)
+    bound_pc = (extended_pc_contract if extended_overlay or canonical_prefix else pc_contract)(rom_path.read_bytes(), symbols, profile=profile)
+    if canonical_prefix:
+        route = prefix_route_contract(root)
+        script = build_prefix_command_script(symbols, profile=profile)
+        policy_errors = prefix_command_policy_errors(script, symbols, profile=profile)
+        bound_pc = {**bound_pc, "prefix_projection_entry": symbols["GameplayBuildProjection"]}
+    else:
+        route = None
+        script = build_command_script(symbols, extended_overlay=extended_overlay, profile=profile)
+        policy_errors = command_policy_errors(script, symbols, extended_overlay=extended_overlay, profile=profile)
     if policy_errors:
         raise EvidenceFailure("; ".join(policy_errors))
 
@@ -3191,6 +3743,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                     "--timeout-seconds",
                     str(args.timeout_seconds),
                     *(["--ready-console-only"] if getattr(args, "ready_console_only", False) else []),
+                    *(["--canonical-prefix"] if canonical_prefix else []),
                 ],
                 cwd=root,
                 stdout=subprocess.PIPE,
@@ -3225,6 +3778,8 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                         "default_config": _file_record(default_config, root),
                         "native_console_helper": _file_record(root / regular.CONSOLE_HELPER_RELATIVE_PATH, root),
                         "ready_console_only": bool(getattr(args, "ready_console_only", False)),
+                        "canonical_prefix": canonical_prefix,
+                        "prefix_route": route,
                         "guest_writes": 0,
                         "pc_contract": bound_pc,
                         "helper_returncode": helper.returncode,
@@ -3245,6 +3800,18 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                 )
                 raise EvidenceFailure("owned emulator exit timeout; completed console preserved as failure")
             if process.returncode != 0:
+                if canonical_prefix:
+                    preserve_native_failure(
+                        report_path, trace_path, script=script,
+                        helper_payload={**helper_result, "error": f"BlastEm exit code {process.returncode}", "full_console_available": True},
+                        metadata={"rom_profile": profile, "canonical_prefix": True, "prefix_route": route,
+                                  "rom": _file_record(rom_path, root), "symbols": _file_record(symbols_path, root),
+                                  "collector": _file_record(collector_path, root), "pc_contract": bound_pc,
+                                  "emulator": _file_record(emulator, root), "default_config": _file_record(default_config, root),
+                                  "native_console_helper": _file_record(root / regular.CONSOLE_HELPER_RELATIVE_PATH, root),
+                                  "input_transport": _file_record(root / "tools/m5_b03_runtime_evidence.py", root),
+                                  "guest_writes": 0, "helper_returncode": helper.returncode, "emulator_returncode": process.returncode},
+                    )
                 raise EvidenceFailure(f"BlastEm exit code {process.returncode}")
         finally:
             if helper is not None and helper.poll() is None:
@@ -3261,8 +3828,8 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
         raise EvidenceFailure("native console helper returned no result")
 
     console = helper_result["console_text"]
-    console_errors = console_contract_errors(console, script, extended_overlay=extended_overlay, renderer_end_pc=PROFILE_PC[profile]["renderer_end"])
-    expected_events = [
+    console_errors = prefix_console_contract_errors(console, script) if canonical_prefix else console_contract_errors(console, script, extended_overlay=extended_overlay, renderer_end_pc=PROFILE_PC[profile]["renderer_end"])
+    expected_events = prefix_expected_input_events() if canonical_prefix else [
         "Up:down",
         "Up:up",
         "Right:down",
@@ -3272,15 +3839,34 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     ]
     if helper_result.get("input_events") != expected_events:
         console_errors.append("host input transition event sequence mismatch")
-    records = parse_markers(console, extended_overlay=extended_overlay)
-    analysis = (analyse_extended if extended_overlay else analyse)(records)
+    if canonical_prefix:
+        try:
+            records = parse_prefix_markers(console)
+            analysis = analyse_prefix(records, route)
+        except (EvidenceFailure, ValueError, KeyError) as error:
+            preserve_native_failure(
+                report_path, trace_path, script=script,
+                helper_payload={**helper_result, "error": f"prefix parse/analysis failure: {error}", "full_console_available": True},
+                metadata={"rom_profile": profile, "canonical_prefix": True, "prefix_route": route, "rom": _file_record(rom_path, root), "symbols": _file_record(symbols_path, root), "collector": _file_record(collector_path, root), "pc_contract": bound_pc},
+            )
+            raise EvidenceFailure("prefix parse/analysis failed; raw evidence preserved") from error
+        if helper_result.get("console_capacity") != prefix_console_capacity(script) or helper_result.get("input_proof_checked_before_each_next_mask") is not True:
+            console_errors.append("prefix owned-console capacity/staged input-proof metadata mismatch")
+        if (helper_result.get("quit_input_records") != 5 or helper_result.get("script_input_records") != len(script) or
+                helper_result.get("continue_input_records") != [9] * (len(prefix_input_stages()) + 1)):
+            console_errors.append("prefix exact host command delivery counts mismatch")
+    else:
+        records = parse_markers(console, extended_overlay=extended_overlay)
+        analysis = (analyse_extended if extended_overlay else analyse)(records)
     trace = _trace_text(script, console)
-    if extended_overlay:
-        trace = trace.replace(f"# {REPORT_SCHEMA}\n", f"# {EXTENDED_REPORT_SCHEMA}\n", 1)
+    selected_schema = PREFIX_REPORT_SCHEMA if canonical_prefix else EXTENDED_REPORT_SCHEMA if extended_overlay else REPORT_SCHEMA
+    if extended_overlay or canonical_prefix:
+        trace = trace.replace(f"# {REPORT_SCHEMA}\n", f"# {selected_schema}\n", 1)
     trace_path.parent.mkdir(parents=True, exist_ok=True)
-    trace_path.write_text(trace, encoding="utf-8", newline="\n")
+    with trace_path.open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(trace)
     report = {
-        "schema": EXTENDED_REPORT_SCHEMA if extended_overlay else REPORT_SCHEMA,
+        "schema": selected_schema,
         "evidence_type": EVIDENCE_TYPE,
         "status": (
             "diagnostic_pass"
@@ -3311,7 +3897,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
         "host_input": {
             "window": helper_result["input_window"],
             "events": helper_result["input_events"],
-            "stops": [item[0] for item in INPUT_MARKERS],
+            "stops": [item["marker"] for item in prefix_input_stages()] if canonical_prefix else [item[0] for item in INPUT_MARKERS],
         },
         "command_script": script,
         "command_script_sha256": _sha256_bytes(script.encode("utf-8")),
@@ -3359,12 +3945,30 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
         report["diagnostic_protocol_status"] = "pass" if analysis["protocol_status"] == "pass" and not console_errors else "fail"
         report["cycle_blank_budget_status"] = analysis["budget_status"]
         report["limitations"][-1] = "Bounded through authoritative total724 and physical frame726, with fail-stop at frame730; not a full-run budget proof."
+    if canonical_prefix:
+        report["rom_profile"] = profile
+        report["evidence_type"] = "blastem_native_debugger_b03_canonical_prefix_sampled_phases"
+        report["prefix_route"] = route
+        report["console_capacity"] = helper_result["console_capacity"]
+        report["bounds"] = {
+            "authoritative_steps": PREFIX_TOTAL_STEPS, "final_attempt": PREFIX_FINAL_ATTEMPT,
+            "final_tick": PREFIX_FINAL_TICK, "sampled_attempt": 2,
+            "sampled_post_ticks": list(PREFIX_SAMPLE_POST_TICKS),
+            "irq_engine_tick_windows_half_open": [list(pair) for pair in PREFIX_IRQ_TICK_RANGES],
+            "physical_fail_stop_not_budget_allowance": PREFIX_PHYSICAL_FAIL_STOP,
+            "maximum_records": PREFIX_MAX_RECORDS, "maximum_console_bytes": PREFIX_MAX_CONSOLE_BYTES,
+            "reset_replay_rows": 640, "host_input_transition_stops": 21,
+            "timeout_seconds": args.timeout_seconds, "guest_debugger_writes": 0,
+        }
+        report["diagnostic_protocol_status"] = "pass" if analysis["protocol_status"] == "pass" and not console_errors else "fail"
+        report["cycle_blank_budget_status"] = analysis["budget_status"]
+        report["limitations"][-1] = analysis["timing_scope"]
+        report["limitations"].extend(analysis["protocol_domain_limitations"])
+        report["provenance"]["input_transport"] = _file_record(root / "tools/m5_b03_runtime_evidence.py", root)
+        report["provenance"]["native_console_helper"] = _file_record(root / regular.CONSOLE_HELPER_RELATIVE_PATH, root)
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_path.write_text(
-        json.dumps(report, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
+    with report_path.open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
     if report["status"] != "diagnostic_pass":
         raise EvidenceFailure("reset phase contract failed; artifacts preserved")
     return report
@@ -3378,6 +3982,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--report", default=DEFAULT_REPORT_RELATIVE_PATH)
     parser.add_argument("--trace", default=DEFAULT_TRACE_RELATIVE_PATH)
     parser.add_argument("--extended-overlay", action="store_true", help="extend the live reset diagnostic through total724; requires explicit new report/trace paths")
+    parser.add_argument("--canonical-prefix", action="store_true", help="observe the hash-bound 1681-step route and later-attempt phase samples; new outputs required; not a canonical budget gate")
     parser.add_argument("--ready-console-only", action="store_true", help="preserve one read-only READY console/input-queue diagnostic; never executes gameplay")
     parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater"), default="baseline")
     parser.add_argument("--extended-baseline-reanalyse", metavar="NEW_REPORT", help="write a new offline derivation from the pinned extended baseline without changing its capture")

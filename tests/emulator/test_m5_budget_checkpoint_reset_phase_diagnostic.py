@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import copy
 import hashlib
 import json
 import io
+import inspect
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from tools import m5_budget_checkpoint_phase_diagnostic as regular
 from tools import m5_budget_checkpoint_reset_phase_diagnostic as reset
@@ -20,6 +22,99 @@ BASELINE_BUILD = ROOT / "artifacts/archive/m5-pre-timing-140039e3-20261010/level
 LOOKUP_BUILD = ROOT / "artifacts/archive/m5-lookup-only-9a741642-20261010/level-B03"
 ROM = BASELINE_BUILD / "recursion94-debug.bin"
 SYMBOLS = BASELINE_BUILD / "recursion94-debug.sym"
+
+
+def synthetic_prefix_records() -> tuple[list[dict], dict]:
+    """Explicit parser/analyser fixture, NOT a native capture or gameplay model.
+
+    Zero replay RAM and artificial short spans exercise proof structure only.
+    The production route loader can never admit this synthetic reference.
+    """
+    records = []
+    reference = {"engine": {"state_crc": 1234}, "gameplay": {"last_bank_crc": 5678},
+                 "replay_timeline": {"sha256": hashlib.sha256(bytes(5120)).hexdigest()}}
+    route = {"reset_snapshots": {"1": reference, "2": reference}, "projectile_counts": {}}
+    stages = {item["total"]: item for item in reset.prefix_input_stages()}
+
+    def add(phase: str, **values: int) -> dict:
+        record = {"phase": phase, **dict.fromkeys(reset.PREFIX_MARKER_FIELDS[phase], 0), **values}
+        records.append(record)
+        return record
+
+    for index, mask in enumerate(reset.prefix_schedule()):
+        attempt, pre_tick = divmod(index, 720)
+        tick, frame = pre_tick + 1, index + 1 + attempt
+        base = frame * reset.NTSC_FRAME_MASTER_CLOCKS
+        sample = attempt == 2 and tick in reset.PREFIX_SAMPLE_POST_TICKS
+        ident = {"attempt": attempt, "tick": tick, "frame": frame}
+        pre_ident = {**ident, "tick": pre_tick}
+        if attempt == 2 and any(first <= pre_tick < last for first, last in reset.PREFIX_IRQ_TICK_RANGES):
+            queue = () if pre_tick % 60 == 0 else ((0xFF8000, 0xF000, 320, 0x8000), (0xFF8600, 0xC000, 40, 0x8001), (0xFF8650, 0xC080, 40, 0x8001), (0xFF86A0, 0xC100, 40, 0x8001))
+            words = sum(item[2] for item in queue)
+            add("WW", cycle=base - 50, **{**pre_ident, "frame": frame - 1}, sr=0x2700)
+            add("VE", cycle=base, **{**pre_ident, "frame": frame - 1}, sr=0x2600)
+            add("VA", cycle=base + 7, frame=frame - 1, entry_status=8, sequence=2 * frame - 1)
+            add("VC", cycle=base + 14, **pre_ident, pending=int(bool(queue)), published_depth=len(queue), build_depth=len(queue), build_words=words)
+            for slot, (source, dest, size, flags) in enumerate(queue):
+                add("Q", frame=frame, index=slot, source=source, destination=dest, words=size, flags=flags)
+            cumulative = 0
+            for slot, (source, dest, size, _flags) in enumerate(queue):
+                cumulative += size
+                add("DS", cycle=base + 21 + slot * 14, frame=frame, source=source, destination=dest, words=size, commit_words=cumulative)
+                add("DE", cycle=base + 28 + slot * 14, frame=frame, commit_words=cumulative)
+            add("VP", cycle=base + 100, frame=frame, commit_words=words, debug_words=words)
+            add("VS", cycle=base + 107, frame=frame, entry_status=8, exit_status=8)
+            add("VK", cycle=base + 114, frame=frame, d0=8, d1=8)
+            add("VX", cycle=base + 121, **pre_ident, sequence=2 * frame, token=1, debug_words=words)
+        if sample:
+            add("MB", cycle=base + 1000, **pre_ident, sr=0x2700)
+        add("MS", cycle=base + 1100, **pre_ident, input=mask, d0=mask, checkpoint_count=1 + pre_tick // 60)
+        if index + 1 in stages:
+            add("HI", cycle=base + 1100, **pre_ident, current=mask, desired=stages[index + 1]["desired"])
+        if sample and tick % 60 == 0:
+            for offset, phase in enumerate(("PS", "ES", "EE", "TS", "TE", "CS", "CE", "PE")):
+                item = add(phase, cycle=base + 1200 + offset * 100, **ident)
+                if "checkpoint_count" in item:
+                    item["checkpoint_count"] = int(phase in {"EE", "PE"}) + tick // 60
+                if phase == "PS":
+                    item["engine_state"] = 1
+                if phase == "EE":
+                    item["length"] = 0x620E36
+                if phase == "TS":
+                    item["destination"] = 0xFF6E36
+                if phase == "TE":
+                    item.update(destination=0xFF6F36, length=0x620100)
+                if phase == "CS":
+                    item.update(source=0xFF6E36, length=0x620100)
+                if phase == "CE":
+                    item["raw_crc"] = 0xEDCBA987
+                if phase == "PE":
+                    item.update(length=0xFFFF0F36, crc=0x12345678, state_crc=0x12345678)
+        add("ME", cycle=base + 3000, **ident, result=8 if tick == 720 else 0,
+            checkpoint_count=1 + tick // 60, engine_state=2 if tick == 720 else 1,
+            engine_input=mask, actor_count=attempt + 1)
+        if sample:
+            add("RM", cycle=base + 3300, **ident, sr=0x2500)
+            add("RG", cycle=base + 3400, **ident, sr=0x2700, campaign_flags=3, checkpoint_count=1 + tick // 60, renderer_checkpoint_count=1 + pre_tick // 60, renderer_attempt=2)
+            if tick % 60:
+                for offset, phase in enumerate(("HB", "HE", "SE", "OE")):
+                    add(phase, cycle=base + 3500 + offset * 100, **ident, sr=0x2700)
+            add("RR", cycle=base + 3900, **ident, sr=0x2700, result=4 if tick % 60 == 0 else 0,
+                checkpoint_count=1 + tick // 60, renderer_checkpoint_count=1 + tick // 60, renderer_attempt=2, pending=int(tick % 60 != 0))
+            add("RX", cycle=base + 4000, **ident, sr=0x2500)
+            add("MD", cycle=base + 4100, **ident, sr=0x2500)
+        if tick == 720:
+            new = {"attempt": attempt + 1, "tick": 0, "frame": frame + 1}
+            end = base + reset.NTSC_FRAME_MASTER_CLOCKS + 3000
+            add("MR", cycle=end, **new, checkpoint_count=1, state_crc=1234, replay_crc=5678)
+            for address in range(0xFF0000, 0xFF1400, 16):
+                add("RB", **new, address=address)
+            add("BC", cycle=end + 100, **new, snapshot_bank=6 if attempt == 0 else 0,
+                current_bank=attempt, token=1, sr=0x2500)
+            add("BM", cycle=end + 200, **new, token=1, sr=0x2700)
+            add("BZ", cycle=end + 300, **new, sr=0x2700)
+            add("BW", cycle=end + 400, **new, sr=0x2700)
+    return records, route
 
 
 def exact_records(*, extended: bool = False, late: bool = False) -> list[dict[str, int | str]]:
@@ -850,6 +945,224 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         self.assertIn("if [$FFF010].l < $891", script)
         self.assertEqual(script.count('printf "R94C MS '), 1)
         self.assertEqual(script.count('printf "R94C ME '), 1)
+
+    def test_prefix_synthetic_complete_and_partial_input_proof(self) -> None:
+        records, route = synthetic_prefix_records()
+        self.assertEqual(reset.prefix_input_errors(records), [])
+        for stage in reset.prefix_input_stages():
+            pre = [item for item in records if item["phase"] == "MS"][stage["total"] - 1]
+            partial = records[:records.index(pre) + 1]
+            self.assertEqual(reset.prefix_input_errors(partial, pre_count=stage["total"], complete=False), [])
+        analysis = reset.analyse_prefix(records, route)
+        self.assertEqual(analysis["errors"], [])
+        self.assertEqual(analysis["budget_errors"], [])
+        self.assertEqual(len(analysis["phase_spans"]), 26)
+        self.assertEqual([item["service_tokens"] for item in analysis["natural_resets"]], [1, 1])
+
+    def test_prefix_parser_rejects_unknown_truncated_oversized_and_limit_markers(self) -> None:
+        records, _ = synthetic_prefix_records()
+        console = "\n".join("R94C " + item["phase"] + " " + " ".join(f"{item[field]:X}" for field in reset.PREFIX_MARKER_FIELDS[item["phase"]]) for item in records)
+        self.assertEqual(reset.parse_prefix_markers(console), records)
+        for bad in ("R94C MS 1", "R94C ZZ 1", "R94C LIMIT", "R94R MS 1", "R94C MS 100000000 1 0 0 0 0 1", "R94C MS -1", "R94CINPUT"):
+            with self.subTest(marker=bad), self.assertRaises(reset.EvidenceFailure):
+                reset.parse_prefix_markers(console + "\n" + bad)
+        with patch.object(reset, "PREFIX_MAX_RECORDS", 1), self.assertRaises(reset.EvidenceFailure):
+            reset.parse_prefix_markers(console)
+        with patch.object(reset, "PREFIX_MAX_CONSOLE_BYTES", 1), self.assertRaises(reset.EvidenceFailure):
+            reset.parse_prefix_markers(console)
+
+    def test_prefix_synthetic_mutations_fail_protocol_and_budget_remains_separate(self) -> None:
+        original, route = synthetic_prefix_records()
+        mutations = (("MS", "d0", 0x80), ("ME", "engine_input", 0x80), ("ME", "actor_count", 9),
+                     ("HI", "current", 99), ("RB", "long0", 1), ("MR", "state_crc", 9),
+                     ("BC", "token", 0), ("BM", "sr", 0x2500), ("WW", "token", 1),
+                     ("VA", "entry_status", 0), ("VK", "d1", 0x1234), ("VS", "entry_status", 0),
+                     ("VX", "sequence", 0), ("PE", "crc", 1), ("CS", "source", 1))
+        for phase, field, value in mutations:
+            changed = copy.deepcopy(original)
+            next(item for item in changed if item["phase"] == phase)[field] = value
+            with self.subTest(phase=phase, field=field):
+                self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        changed = copy.deepcopy(original)
+        first_irq = next(item["frame"] for item in changed if item["phase"] == "VX")
+        names = {"VE", "VA", "VC", "VP", "VS", "VK", "VX"}
+        changed = [item for item in changed if not (item["phase"] in names and item["frame"] + int(item["phase"] in {"VE", "VA"}) == first_irq)]
+        self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        changed = copy.deepcopy(original)
+        checkpoint = next(item for item in changed if item["phase"] == "MS" and item["attempt"] == 2 and item["tick"] == 59)
+        end = next(item for item in changed if item["phase"] == "MD" and item["attempt"] == 2 and item["tick"] == 60)
+        for item in changed[changed.index(checkpoint) + 1:changed.index(end) + 1]:
+            if "cycle" in item:
+                item["cycle"] += 83204 * 7
+        analysis = reset.analyse_prefix(changed, route)
+        self.assertEqual(analysis["protocol_status"], "pass", analysis["errors"])
+        self.assertEqual(analysis["budget_status"], "fail")
+        self.assertTrue(any("GameplayStep exceeds" in error for error in analysis["budget_errors"]))
+
+    def test_prefix_console_capacity_and_host_key_transport_are_exact(self) -> None:
+        symbols = parse_vasm_symbols(ROOT / "artifacts/archive/m5-high-water-96dec577-20261010/level-B03/recursion94-debug.sym")
+        script = reset.build_prefix_command_script(symbols, profile="highwater")
+        capacity = reset.prefix_console_capacity(script)
+        self.assertEqual(capacity, {"width": 120, "height": 32760, "maximum_records": 24000,
+                                   "maximum_marker_columns": 89, "script_echo_rows": 2521,
+                                   "other_console_rows_allowance": 512, "required_rows_upper_bound": 27033,
+                                   "maximum_utf8_console_bytes": 4194304})
+        self.assertLess(capacity["required_rows_upper_bound"], capacity["height"])
+        for text in (script + 'printf "R94C ZZ ' + "%x " * 30 + '\\n" ' + "d0 " * 30,
+                     script + 'printf "R94C ZZ %x %x\\n" d0\n'):
+            with self.assertRaises(reset.EvidenceFailure):
+                reset.prefix_console_capacity(text)
+        with patch.object(reset, "PREFIX_CONSOLE_ROWS", 9001), self.assertRaises(reset.EvidenceFailure):
+            reset.prefix_console_capacity(script)
+        # Compare the event builder to the real transport's read-only mocked
+        # host-call path, not a second copy of its event algorithm.
+        expected, pressed = [], set()
+        with patch.object(reset.b03, "_post_key"), patch.object(reset.b03.time, "sleep"):
+            for desired in (reset.prefix_schedule()[0], *(item["desired"] for item in reset.prefix_input_stages()), 0):
+                reset.b03._set_gameplay_mask(123, desired, pressed, expected)
+        self.assertEqual(reset.prefix_expected_input_events(), expected)
+        self.assertIn("Right:reassert", expected)
+        self.assertEqual(pressed, set())
+
+    def test_prefix_native_path_is_opt_in_and_checks_input_before_next_mask(self) -> None:
+        args = reset._parser().parse_args(["--canonical-prefix", "--profile", "highwater"])
+        self.assertTrue(args.canonical_prefix)
+        self.assertFalse(args.extended_overlay)
+        self.assertEqual(args.timeout_seconds, 240)
+        source = inspect.getsource(reset._staged_console_helper_payload)
+        loop = source[source.index("for marker, desired, pre_count in stages:"):source.index("transcript, geometry = wait_for(COMPLETE_MARKER)")]
+        self.assertLess(loop.index("verify_prefix_input("), loop.index("b03._set_gameplay_mask("))
+        self.assertLess(loop.index("b03._set_gameplay_mask("), loop.index('send_console("continue'))
+        self.assertIn("SetConsoleScreenBufferSize", source)
+        self.assertIn("info.cursor.Y >= info.size.Y - 1", source)
+        self.assertIn('"R94C LIMIT" in lines', source)
+        self.assertIn("prefix parse/analysis failure", inspect.getsource(reset.collect))
+
+    def test_prefix_console_lifecycle_has_exact_21_transitions_and_no_unknown_lines(self) -> None:
+        symbols = parse_vasm_symbols(ROOT / "artifacts/archive/m5-high-water-96dec577-20261010/level-B03/recursion94-debug.sym")
+        script = reset.build_prefix_command_script(symbols, profile="highwater")
+        lines = []
+        for index, command in enumerate(line for line in script.splitlines() if line.startswith("breakpoint ")):
+            lines.extend(("> " + command, f"68K Breakpoint {index} set at ${command.split('$')[1]}"))
+        lines.extend(("> continue", reset.READY_MARKER, "68K Breakpoint 21 hit", "169A: synthetic instruction", "> continue"))
+        for stage in reset.prefix_input_stages():
+            lines.extend((stage["marker"], "68K Breakpoint 0 hit", "2FA: synthetic instruction", "> continue"))
+        lines.extend((reset.COMPLETE_MARKER, "68K Breakpoint 29 hit", "344: synthetic instruction", ">"))
+        console = "\n".join(lines)
+        self.assertEqual(reset.prefix_console_contract_errors(console, script), [])
+        for changed in (console.replace("2FA:", "2FE:", 1), console.replace("> continue", "> continue\n> continue", 1), console + "\nR94C LIMIT", console + "\nFailed to eval", console.replace(reset.READY_MARKER, ""), console + " quit"):
+            with self.subTest(change=changed[-80:]):
+                self.assertTrue(reset.prefix_console_contract_errors(changed, script))
+
+    def test_prefix_finish_preserves_exact_observed_console_without_teardown_fallback(self) -> None:
+        transcript = reset.COMPLETE_MARKER + "\n68K Breakpoint 29 hit\n344: observed instruction\n>\n"
+        geometry = {"width": 120, "height": 32760, "raw_screen_buffer": "observed"}
+        send = Mock(return_value=5)
+        result = reset._finish_prefix_console(transcript, geometry, send)
+        self.assertEqual(result, (transcript, geometry, 5))
+        self.assertIs(result[1], geometry)
+        self.assertNotIn("> quit", result[0])
+        send.assert_called_once_with("quit\n")
+        send.side_effect = reset.EvidenceFailure("quit delivery failed")
+        with self.assertRaisesRegex(reset.EvidenceFailure, "quit delivery failed"):
+            reset._finish_prefix_console(transcript, geometry, send)
+        self.assertEqual(send.side_effect.console_text, transcript)
+        self.assertIs(send.side_effect.console_geometry, geometry)
+        source = inspect.getsource(reset._staged_console_helper_payload)
+        finish = source[source.index("if canonical_prefix:\n        final, geometry, quit_written"):source.index("    kernel32.FreeConsole()", source.index("if canonical_prefix:\n        final, geometry, quit_written"))]
+        self.assertNotIn("read_console", finish.split("    else:", 1)[0])
+        self.assertIn('final = transcript + "> quit\\n"', finish.split("    else:", 1)[1])
+
+    def test_prefix_nonzero_emulator_exit_preserves_complete_evidence_before_raising(self) -> None:
+        # Execute only the actual bounded exit branch with all I/O mocked;
+        # never construct a native process or admit a synthetic live report.
+        tree = ast.parse(inspect.getsource(reset.collect))
+        branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If) and
+                      ast.unparse(node.test) == "process.returncode != 0")
+        program = compile(ast.fix_missing_locations(ast.Module(body=branch.body, type_ignores=[])), "<actual exit branch>", "exec")
+        capture = Mock()
+        namespace = {"canonical_prefix": True, "preserve_native_failure": capture,
+                     "report_path": Path("new.json"), "trace_path": Path("new.log"), "script": "observed script",
+                     "helper_result": {"console_text": "exact observed complete console", "console": {"width": 120}},
+                     "process": argparse.Namespace(returncode=7), "helper": argparse.Namespace(returncode=0),
+                     "profile": "highwater", "route": {"schedule_sha256": reset.PREFIX_SCHEDULE_SHA256},
+                     "rom_path": Path("rom"), "symbols_path": Path("sym"), "collector_path": Path("collector"),
+                     "emulator": Path("emulator"), "default_config": Path("cfg"), "root": ROOT,
+                     "regular": regular, "bound_pc": {"exact": True}, "_file_record": lambda path, root: {"path": str(path)},
+                     "EvidenceFailure": reset.EvidenceFailure}
+        with self.assertRaisesRegex(reset.EvidenceFailure, "BlastEm exit code 7"):
+            exec(program, namespace)
+        capture.assert_called_once()
+        self.assertEqual(capture.call_args.kwargs["helper_payload"]["console_text"], "exact observed complete console")
+        self.assertTrue(capture.call_args.kwargs["helper_payload"]["full_console_available"])
+        self.assertEqual(capture.call_args.kwargs["metadata"]["emulator_returncode"], 7)
+        capture.reset_mock()
+        namespace["canonical_prefix"] = False
+        with self.assertRaises(reset.EvidenceFailure):
+            exec(program, namespace)
+        capture.assert_not_called()
+
+    def test_prefix_review_mutations_bind_windows_resets_rendering_and_masks(self) -> None:
+        original, route = synthetic_prefix_records()
+        for phase, field, value in (("MB", "sr", 0x2500), ("ES", "checkpoint_count", 99), ("EE", "length", 3894),
+                                    ("RM", "frame", 999), ("PE", "frame", 999), ("MR", "frame", 999),
+                                    ("RG", "renderer_attempt", 0), ("RG", "checkpoint_count", 99), ("RR", "pending", 0),
+                                    ("DS", "words", 1)):
+            changed = copy.deepcopy(original)
+            next(item for item in changed if item["phase"] == phase)[field] = value
+            with self.subTest(phase=phase, field=field):
+                self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        for lower, _upper in reset.PREFIX_IRQ_TICK_RANGES:
+            first = next(item for item in original if item["phase"] == "VE" and item["tick"] == lower)
+            last = next(item for item in original if item["phase"] == "VX" and item["frame"] == first["frame"] + 1)
+            changed = original[:original.index(first)] + original[original.index(last) + 1:]
+            with self.subTest(window=lower):
+                self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        changed = copy.deepcopy(original)
+        wait = next(item for item in changed if item["phase"] == "WW")
+        changed.insert(changed.index(wait) + 1, {**wait, "cycle": wait["cycle"] + 7})
+        self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        changed = copy.deepcopy(original)
+        ve = next(item for item in changed if item["phase"] == "VE")
+        vx = next(item for item in changed if item["phase"] == "VX")
+        ve["token"], vx["token"] = 5, 6
+        analysis = reset.analyse_prefix(changed, route)
+        self.assertEqual(analysis["protocol_status"], "pass", analysis["errors"])
+        self.assertEqual(analysis["budget_status"], "fail")
+
+    def test_prefix_final_review_token_ordinal_and_startup_anchor_mutations(self) -> None:
+        original, route = synthetic_prefix_records()
+        for phase in ("MB", "RM", "RG", "RR", "RX", "HB", "HE", "SE", "OE"):
+            changed = copy.deepcopy(original)
+            next(item for item in changed if item["phase"] == phase)["token"] = 7
+            with self.subTest(phase=phase):
+                self.assertEqual(reset.analyse_prefix(changed, route)["budget_status"], "fail")
+        changed = copy.deepcopy(original)
+        next(item for item in changed if item["phase"] == "MD")["token"] = 1
+        result = reset.analyse_prefix(changed, route)
+        self.assertEqual(result["protocol_status"], "fail")
+        self.assertEqual(result["budget_status"], "fail")
+        self.assertIn("prefix nonempty-token MD cannot reach same-frame/identity WAIT", result["errors"])
+        changed = copy.deepcopy(original)
+        rr = next(item for item in changed if item["phase"] == "RR")
+        rr["checkpoint_count"] = rr["renderer_checkpoint_count"] = 99
+        self.assertEqual(reset.analyse_prefix(changed, route)["protocol_status"], "fail")
+        changed = copy.deepcopy(original)
+        for item in changed:
+            item["frame"] += 10
+            if item["phase"] in {"VA", "VX"}:
+                item["sequence"] += 20
+        result = reset.analyse_prefix(changed, route)
+        self.assertEqual(result["protocol_status"], "fail")
+        self.assertTrue(any("exact physical frame1" in error for error in result["errors"]))
+        # An actual first-step VBlank crossing remains an observed budget
+        # failure, not an invented startup identity or silently shifted trace.
+        changed = copy.deepcopy(original)
+        next(item for item in changed if item["phase"] == "ME")["frame"] = 2
+        result = reset.analyse_prefix(changed, route)
+        self.assertEqual(result["protocol_status"], "pass", result["errors"])
+        self.assertEqual(result["budget_status"], "fail")
+        self.assertIn("unsupported", result["protocol_domain_limitations"][0])
 
     def test_native_helper_timeout_serializes_partial_evidence_as_failure(self) -> None:
         failure = reset.EvidenceFailure("READY timeout")

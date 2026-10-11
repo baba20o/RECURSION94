@@ -31,6 +31,13 @@ art, levels, music, replays, reports, and the final ROM.
 
 The bootstrap installs pinned tools under `.toolcache`; it does not require
 administrator access or undocumented global paths.
+It also installs the hash-pinned JSON Schema validator and its dependencies
+from `tools/python-packages.lock.json` into the project-local Python directory.
+No global Python packages or `pip` installation are required.
+Before launching Python, bootstrap verifies the original embedded archive and
+installed interpreter files, including its unchanged isolated path configuration.
+Unexpected files or modified interpreter bytes fail verification; they are not
+silently trusted because `python.exe` exists.
 
 Expected release artifacts:
 

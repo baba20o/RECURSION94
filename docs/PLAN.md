@@ -30,8 +30,10 @@ natural later-attempt prefix with three actors, all four early checkpoints,
 and projectile/node interactions; a passing one-actor sample is not a full
 M5 cycle pass. Preserve raw projection/SAT/HUD parity and repair any measured
 remaining cause without removing required mechanics or reducing echo counts.
-Repair the native All-suite source-pin/legacy-fixture/dependency failures and
-rerun it without exclusions.
+The fresh native All-suite rerun passes 982/982 without skips after the reviewed
+source-pin, frozen-fixture, and project-local dependency repairs. The prefix
+collector is independently reviewed and 55 focused native tests pass; perform
+its first live capture only against the unchanged high-water ROM/symbol pair.
 Harden the late-entry VBlank detector. Refresh changed-ROM replay, counter,
 cycle, and five-state visual evidence before independent image review.
 Run Windows All and the fail-closed

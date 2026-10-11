@@ -1,0 +1,193 @@
+{
+  "archives": {
+    "blastem": {
+      "actual_sha256": "01dd73044d1333e40160da61da9e4ccb78fc5a100435b4d5f03ae4ba1f199a60",
+      "expected_sha256": "01dd73044d1333e40160da61da9e4ccb78fc5a100435b4d5f03ae4ba1f199a60",
+      "path": ".toolcache/downloads/blastem-0.6.3-pre-732f5689d438-win64.zip",
+      "status": "pass"
+    },
+    "python": {
+      "actual_sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "expected_sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+      "path": ".toolcache/downloads/python-3.12.10-embed-amd64.zip",
+      "status": "pass"
+    },
+    "sjasmplus": {
+      "actual_sha256": "fa0ca77e6e6dcdad77b2c64607b325dd6366844ab6438bfc97661fdfbc29aa35",
+      "expected_sha256": "fa0ca77e6e6dcdad77b2c64607b325dd6366844ab6438bfc97661fdfbc29aa35",
+      "path": ".toolcache/downloads/sjasmplus-1.23.1-win.zip",
+      "status": "pass"
+    },
+    "vasm": {
+      "actual_sha256": "c84b2de1cbb87831795fe64a85c5d9a7002a766e3a7c30b0a2d7d5e99d878f49",
+      "expected_sha256": "c84b2de1cbb87831795fe64a85c5d9a7002a766e3a7c30b0a2d7d5e99d878f49",
+      "path": ".toolcache/downloads/vasm-2.0f.tar.gz",
+      "status": "pass"
+    },
+    "zig": {
+      "actual_sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "expected_sha256": "554f5378228923ffd558eac35e21af020c73789d87afeabf4bfd16f2e6feed2c",
+      "path": ".toolcache/downloads/zig-0.14.1-windows.zip",
+      "status": "pass"
+    }
+  },
+  "issues": [],
+  "license_limitations": [
+    "vasm 2.0f is pinned under its upstream non-commercial use notice; commercial Genesis distribution clearance is not established"
+  ],
+  "lock_sha256": "a949e9a3b532c22b7b091c69b84026d987235715c483e069ecfb88e4a4261ec6",
+  "python_baseline": {
+    "archive_sha256": "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3",
+    "files": {
+      "LICENSE.txt": "e502c6b880ff58d614901495a9009c136539cd0b1e2a2abb8fc00b934c203419",
+      "_asyncio.pyd": "c77de90cad749087a0c5dc5e19d78d24f6ef44e7e5ac19b8420cfc0cea62395d",
+      "_bz2.pyd": "65f610646d10d5babea080e060d244b546ec52c54012e5e937dc72dcc2e2e7bc",
+      "_ctypes.pyd": "0e56107a891100535f2da79d85a5ae65ff1227b4765bd108f8593ac1a1110d81",
+      "_decimal.pyd": "aeacfead2befcc0768063a037bb64bd32109ae09cb144e5f571b04dd7965db9d",
+      "_elementtree.pyd": "5009a9a53c03ef8387443b5cf6ce08e5c3a79727466a0b931c5bbca915bf89ca",
+      "_hashlib.pyd": "03d233dbace599168eaffec823de6ed7beec8c2a4ebfe9b8a3d8e042a59af3ba",
+      "_lzma.pyd": "e3deecc1f59a3b811c608861decd84de1e8df8bafd5e2b39188861318c5a38cf",
+      "_msi.pyd": "b49332bae154ebdd8c3d5e7ddfdde336d9c47f91ba028dc67bafb2420b3dbb5c",
+      "_multiprocessing.pyd": "2c636df7059cb0dd7e978dd735c7c5c8ddb09cf94754cf9e232296b96c5c545a",
+      "_overlapped.pyd": "662126ff80c3a1b4cedf74074029c12ae4743e6d3b37376e39ac70aacb7d4d3c",
+      "_queue.pyd": "48e76e0ad63f6932b4a77b5819f41c1e7595636ca8d9e824f0943a14b8bb5035",
+      "_socket.pyd": "3efa4636cf9e350856f6927d67a4c2564bf9bd2758a00bbf17d3aece5b60016d",
+      "_sqlite3.pyd": "64b51df2805c58b023a875e8ae3be7ac7f61ef664f32ca6c90f6315da47ef0bc",
+      "_ssl.pyd": "0bc527d2dbc50009f43b2ed5d5982c4f63f4b647647ffa9eda612dcda80f6040",
+      "_uuid.pyd": "acce4f281d7ffb2dec0997527faf25b1df62ad7bd3032c568ddcf65c90edc867",
+      "_wmi.pyd": "a980f1e7a29842bd946863fc2693fbeb555a9dc0f9e1630dfed9a2fcdef3ece2",
+      "_zoneinfo.pyd": "76f1439cda82ab6976df6ba505c4079444703f6d44d8b0259ce59c0ff4279fb4",
+      "libcrypto-3.dll": "ccfffddcd3defb8d899026298af9af43bc186130f8483d77e97c93233d5f27d7",
+      "libffi-8.dll": "eff52743773eb550fcc6ce3efc37c85724502233b6b002a35496d828bd7b280a",
+      "libssl-3.dll": "007142039f04d04e0ed607bda53de095e5bc6a8a10d26ecedde94ea7d2d7eefe",
+      "pyexpat.pyd": "d615e193d1affcdbfe504e90d3621cbdcff94bf72b79d899126534507fd6d27a",
+      "python.cat": "5d85439736ae088d9680b391e2bca55ca7e9cc5b41a12ebe8e2f554506c7e72e",
+      "python.exe": "4d6f5f81a4bca11191c4c7c6b43632694d0a4ce74e068619d8fdc161d469859a",
+      "python3.dll": "fb975a606e7fbf74f64260e3f60c3490b4f74a183c0926fd6ed1ac4c52ac7b1c",
+      "python312._pth": "2820f241bc9d6810d4db21c21cca3845799367fbdf0199620fb37c86a74b945c",
+      "python312.dll": "9a0e3435aaa680d868150f87ab3e388ad2eebc22f87e036155c7b4eda8cd2120",
+      "python312.zip": "fb131c0ef7e35cc5250a74c8cd18744bf4115fb8163710711f3758d7df3d1f88",
+      "pythonw.exe": "d72294fb338bc2fc8896d25a7395a4db466425427e1559e77185d5135a830681",
+      "select.pyd": "d4d7181b11db0bd22a6cd5cda6f8583d1f5c77615fd0a6ca33350619d6e0438a",
+      "sqlite3.dll": "8daa45684bf6688fca28d956b2e8942f2fa98f656675ce68e6d61dd869848a7a",
+      "unicodedata.pyd": "208ee1cd3cbad0828433ca7246b05be2b1ff5569983d27d296c0b38888585488",
+      "vcruntime140.dll": "052ad6a20d375957e82aa6a3c441ea548d89be0981516ca7eb306e063d5027f4",
+      "vcruntime140_1.dll": "6a99bc0128e0c7d6cbbf615fcc26909565e17d4ca3451b97f8987f9c6acbc6c8",
+      "winsound.pyd": "100e8d676777603c7258daf9b2f23ef001f09f1596d8708de359326fff72bddd"
+    },
+    "runtime": {
+      "executable": ".toolcache/python/python.exe",
+      "implementation": "cpython",
+      "isolated": true,
+      "platform": "win32",
+      "pointer_bits": 64,
+      "site_disabled": true,
+      "version": "3.12.10"
+    },
+    "status": "pass",
+    "verified_files": 35
+  },
+  "python_packages": {
+    "changed_files": 0,
+    "lock_sha256": "3ca667f73b5138ccfe68362f5461cfdbb10b0861b9cc5e933df19fefe8b8507f",
+    "packages": [
+      {
+        "filename": "jsonschema-4.26.0-py3-none-any.whl",
+        "license": "MIT",
+        "license_files": [
+          "COPYING"
+        ],
+        "name": "jsonschema",
+        "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce",
+        "version": "4.26.0"
+      },
+      {
+        "filename": "attrs-26.1.0-py3-none-any.whl",
+        "license": "MIT",
+        "license_files": [
+          "LICENSE"
+        ],
+        "name": "attrs",
+        "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309",
+        "version": "26.1.0"
+      },
+      {
+        "filename": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+        "license": "MIT",
+        "license_files": [
+          "COPYING"
+        ],
+        "name": "jsonschema-specifications",
+        "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe",
+        "version": "2025.9.1"
+      },
+      {
+        "filename": "referencing-0.37.0-py3-none-any.whl",
+        "license": "MIT",
+        "license_files": [
+          "COPYING"
+        ],
+        "name": "referencing",
+        "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231",
+        "version": "0.37.0"
+      },
+      {
+        "filename": "rpds_py-0.30.0-cp312-cp312-win_amd64.whl",
+        "license": "MIT",
+        "license_files": [
+          "LICENSE"
+        ],
+        "name": "rpds-py",
+        "sha256": "a090322ca841abd453d43456ac34db46e8b05fd9b3b4ac0c78bcde8b089f959b",
+        "version": "0.30.0"
+      },
+      {
+        "filename": "typing_extensions-4.15.0-py3-none-any.whl",
+        "license": "PSF-2.0",
+        "license_files": [
+          "LICENSE"
+        ],
+        "name": "typing-extensions",
+        "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548",
+        "version": "4.15.0"
+      }
+    ],
+    "record_path": ".toolcache/python/recursion94-python-packages.json",
+    "record_sha256": "35e2d85d7fdbd366f0157b3e61d9437951566f5fcc3a85abcc8a5ae29b7b6858",
+    "status": "pass",
+    "target": {
+      "implementation": "cpython",
+      "platform": "win_amd64",
+      "python": "3.12"
+    },
+    "verification": "pinned wheel hashes, METADATA versions/dependency closure, licenses, installed file hashes, and exact recompiled timestamp caches; target packages not imported",
+    "verified_bytecode_files": 39,
+    "verified_files": 138
+  },
+  "schema": 1,
+  "smoke": {
+    "artifacts/reports/toolchain-smoke/smoke68k.bin": {
+      "bytes": 4,
+      "sha256": "af841c1d3eef93a81a3445ba358c37b149f4624bfe2af1175dfdcec99f0fa90f",
+      "status": "pass"
+    },
+    "artifacts/reports/toolchain-smoke/smokez80.bin": {
+      "bytes": 3,
+      "sha256": "e7e39756fd294c11d4c61dd9ea671dc45f34a2a663549a82b8a5eacf4f2aa1c3",
+      "status": "pass"
+    }
+  },
+  "status": "pass",
+  "versions": {
+    "python": "Python 3.12.10",
+    "sjasmplus": [
+      "1.23.1"
+    ],
+    "vasm": [
+      "vasm 2.0f (c) in 2002-2026 Volker Barthelmann",
+      "vasm M68k/CPU32/ColdFire cpu backend 2.8c (c) 2002-2026 Frank Wille",
+      "vasm motorola syntax module 3.19f (c) 2002-2026 Frank Wille",
+      "vasm test output module 1.0 (c) 2002 Volker Barthelmann"
+    ]
+  }
+}

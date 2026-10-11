@@ -1,3 +1,10 @@
+"""Frozen 140039e3 budget-contract fixtures, not current-candidate acceptance.
+
+The synthetic reports below use the exact archived ROM/symbol pair that the
+production collector pins. Current builds are independently rejected by that
+frozen contract; their live budget and timing gates remain pending separately.
+"""
+
 from __future__ import annotations
 
 import copy
@@ -124,9 +131,12 @@ SHA = "a" * 64
 CANONICAL_REPLAY = (
     ROOT / "artifacts/replays/m5-b03-live-replay-ram.bin"
 ).read_bytes()
-CURRENT_B03_SYMBOLS = parse_vasm_symbols(
-    ROOT / "build/level-B03/recursion94-debug.sym"
+FROZEN_B03_DIRECTORY = (
+    ROOT / "artifacts/archive/m5-pre-timing-140039e3-20261010/level-B03"
 )
+FROZEN_B03_ROM = FROZEN_B03_DIRECTORY / "recursion94-debug.bin"
+FROZEN_B03_SYMBOL_PATH = FROZEN_B03_DIRECTORY / "recursion94-debug.sym"
+FROZEN_B03_SYMBOLS = parse_vasm_symbols(FROZEN_B03_SYMBOL_PATH)
 
 
 def _canonical_scenario_evidence() -> list[dict]:
@@ -764,7 +774,7 @@ def synthetic_provenance(sessions: list[dict]) -> dict:
                 "debug_start_encounter": 2,
             },
             "required_symbols": {
-                name: f"{CURRENT_B03_SYMBOLS[name]:08X}"
+                name: f"{FROZEN_B03_SYMBOLS[name]:08X}"
                 for name in REQUIRED_SYMBOLS
             },
             "default_config_contract": {"status": "pass"},
@@ -1066,8 +1076,8 @@ def overrun_origin_transcript_fixture(
     site: str = "vblank_exit",
 ) -> tuple[list[str], dict, list[dict], dict]:
     session_id = "budget_overrun_origin_diagnostic"
-    vblank = CURRENT_B03_SYMBOLS["VBlankInterrupt"]
-    post = CURRENT_B03_SYMBOLS["MainLoopPostGameplayStep"]
+    vblank = FROZEN_B03_SYMBOLS["VBlankInterrupt"]
+    post = FROZEN_B03_SYMBOLS["MainLoopPostGameplayStep"]
     initial = synthetic_session(1)["route"]["scenario_snapshots"][0]
     rows = [synthetic_cadence_row(total) for total in (1, 2, 3)]
     third_blocks = _raw_blocks(rows[2])
@@ -1357,10 +1367,12 @@ class M5BudgetEvidenceTests(unittest.TestCase):
             [{"slot": 0, "value": 2}],
         )
 
-    def test_symbol_layout_matches_current_b03_fixture(self) -> None:
-        symbols = parse_vasm_symbols(
-            ROOT / "build/level-B03/recursion94-debug.sym"
-        )
+    def test_archived_rom_and_symbols_match_frozen_collector_hashes(self) -> None:
+        self.assertEqual(hashlib.sha256(FROZEN_B03_ROM.read_bytes()).hexdigest(), PINNED_ROM_SHA256)
+        self.assertEqual(hashlib.sha256(FROZEN_B03_SYMBOL_PATH.read_bytes()).hexdigest(), PINNED_SYMBOL_SHA256)
+
+    def test_symbol_layout_matches_frozen_b03_fixture(self) -> None:
+        symbols = parse_vasm_symbols(FROZEN_B03_SYMBOL_PATH)
         self.assertEqual(symbol_layout_errors(symbols), [])
         symbols["VOCAB_UPDATE_PEAK"] += 2
         self.assertIn(
@@ -1612,8 +1624,14 @@ class M5BudgetEvidenceTests(unittest.TestCase):
     ) -> None:
         sessions = [synthetic_session(1), synthetic_session(2)]
         symbol_name = "CampaignRuntimeProfileB03"
-        old_address = CURRENT_B03_SYMBOLS[symbol_name]
-        new_address = old_address + 2
+        old_address = FROZEN_B03_SYMBOLS[symbol_name]
+        current_symbols = parse_vasm_symbols(
+            ROOT / "build/level-B03/recursion94-debug.sym"
+        )
+        # Derive a wrong pointer independently of the report-controlled map,
+        # distinct from both frozen raw bytes and the actual current root.
+        new_address = max(old_address, current_symbols[symbol_name]) + 2
+        self.assertNotEqual(new_address, current_symbols[symbol_name])
         old_bytes = old_address.to_bytes(4, "big")
         new_bytes = new_address.to_bytes(4, "big")
         for session in sessions:
@@ -1640,7 +1658,8 @@ class M5BudgetEvidenceTests(unittest.TestCase):
 
         # Without a repository root this is internally coherent.  The
         # canonical root-backed gate must ignore the report-controlled map,
-        # parse the pinned live .sym, and fail the co-mutation.
+        # parse the actual root .sym, and fail the co-mutation. This is a
+        # negative current-root check, never current-candidate acceptance.
         self.assertEqual(report_contract_errors(report), [])
         rooted_errors = report_contract_errors(report, root=ROOT)
         self.assertIn(
@@ -1860,7 +1879,7 @@ class M5BudgetEvidenceTests(unittest.TestCase):
     def test_overrun_origin_site_bytes_are_exact_and_mutation_gated(
         self,
     ) -> None:
-        rom_path = ROOT / "build/level-B03/recursion94-debug.bin"
+        rom_path = FROZEN_B03_ROM
         contract = overrun_origin_site_contract(rom_path)
         self.assertEqual(contract["status"], "pass")
         self.assertEqual(set(contract["sites"]), set(OVERRUN_ORIGIN_SITES))
@@ -1877,6 +1896,13 @@ class M5BudgetEvidenceTests(unittest.TestCase):
         self.assertTrue(
             any("vblank_exit" in item for item in failed["errors"])
         )
+
+    def test_current_candidate_is_rejected_by_frozen_rom_contract(self) -> None:
+        rom_path = ROOT / "build/level-B03/recursion94-debug.bin"
+        self.assertNotEqual(hashlib.sha256(rom_path.read_bytes()).hexdigest(), PINNED_ROM_SHA256)
+        contract = overrun_origin_site_contract(rom_path)
+        self.assertEqual(contract["status"], "fail")
+        self.assertIn("overrun-origin diagnostic ROM SHA-256 mismatch", contract["errors"])
 
     def test_overrun_counter_isolation_requires_one_fault_only(self) -> None:
         _lines, _initial, rows, _origin = (
@@ -1902,8 +1928,8 @@ class M5BudgetEvidenceTests(unittest.TestCase):
         lines, initial, rows, origin = overrun_origin_transcript_fixture()
         kwargs = {
             "session_id": "budget_overrun_origin_diagnostic",
-            "vblank": CURRENT_B03_SYMBOLS["VBlankInterrupt"],
-            "post_step": CURRENT_B03_SYMBOLS["MainLoopPostGameplayStep"],
+            "vblank": FROZEN_B03_SYMBOLS["VBlankInterrupt"],
+            "post_step": FROZEN_B03_SYMBOLS["MainLoopPostGameplayStep"],
             "initial_scenario": initial,
             "cadence_rows": rows,
             "origin_hit": origin,
@@ -2689,10 +2715,10 @@ class M5BudgetEvidenceTests(unittest.TestCase):
 
     def test_strict_trace_cursor_binds_every_control_and_read(self) -> None:
         session = synthetic_session(1)
-        vblank = CURRENT_B03_SYMBOLS["VBlankInterrupt"]
-        post = CURRENT_B03_SYMBOLS["MainLoopPostGameplayStep"]
-        finalizer = CURRENT_B03_SYMBOLS["VocabularyFinalizeStage"]
-        wait_for_vblank = CURRENT_B03_SYMBOLS[
+        vblank = FROZEN_B03_SYMBOLS["VBlankInterrupt"]
+        post = FROZEN_B03_SYMBOLS["MainLoopPostGameplayStep"]
+        finalizer = FROZEN_B03_SYMBOLS["VocabularyFinalizeStage"]
+        wait_for_vblank = FROZEN_B03_SYMBOLS[
             "MainLoopWaitForVBlank"
         ]
         lines = strict_session_transcript(

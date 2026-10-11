@@ -11,6 +11,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tools.bootstrap_python_packages import provision  # noqa: E402
+from tools.embedded_python import attest  # noqa: E402
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -69,6 +75,14 @@ def verify(root: Path, *, verify_archives: bool) -> dict[str, Any]:
         if not path.is_file():
             issues.append(f"missing installed executable: {path}")
 
+    python_packages: dict[str, Any] = {}
+    python_baseline: dict[str, Any] = {}
+    try:
+        python_baseline = attest(root)
+        python_packages = provision(root, verify_only=True)
+    except (OSError, ValueError, RuntimeError) as error:
+        issues.append(f"pinned Python validation packages: {error}")
+
     versions: dict[str, list[str] | str] = {}
     if not issues:
         versions["python"] = run([str(python), "--version"], root)
@@ -120,6 +134,8 @@ def verify(root: Path, *, verify_archives: bool) -> dict[str, Any]:
         "lock_sha256": sha256(lock_path),
         "versions": versions,
         "archives": archive_results,
+        "python_packages": python_packages,
+        "python_baseline": python_baseline,
         "smoke": {
             path.relative_to(root).as_posix(): {
                 "bytes": len(expected),

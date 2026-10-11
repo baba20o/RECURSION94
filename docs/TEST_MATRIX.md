@@ -6,7 +6,8 @@ current build/static results; affected full-runtime recapture remains required.
 
 | Requirement | Test/evidence | Command | Latest result |
 |---|---|---|---|
-| Pinned host tools | Manifest checksum/version and exact-byte assembler smoke | `.\tools\bootstrap.ps1` | PASS 2026-07-26 |
+| Pinned host tools | Manifest checksum/version, original embedded Python baseline, pinned validator packages, exact-byte assembler smoke | `.\tools\bootstrap.ps1` | PASS 2026-10-10; second normal bootstrap changes zero package files; offline verification checks 35 interpreter files, 138 package files and 39 real import caches |
+| Current complete host/static suite | Every available suite, including real JSON Schema imports and frozen/current evidence separation | `.toolcache/python/python.exe tools/run_host_tests.py --root . --suite All --report artifacts/reports/host-tests-high-water-verified-20261010.json` | PASS 2026-10-10 — 982/982, zero failures/errors/skips; not the unfinished full release gate |
 | Current M5 Debug/release assembly | Canonical dual build | `.\tools\build.ps1 -Configuration Debug`; Release | PASS — high-water candidates Debug checksum `$1A55`, SHA-256 `9b2122f4...b86d34`; Release checksum `$8C7C`, SHA-256 `9591acc5...b572d6`; timing/replay recapture pending |
 | Dedicated B03 Debug fixture | Debug build with compile-time encounter selection plus independent static validation | `.\tools\build.ps1 -Configuration Debug -Level B03`; `tools/validate_rom.py` | PASS — high-water checksum `$4D6D`, ROM SHA-256 `96dec577...4dd11f`, symbol SHA-256 `6da707ba...795adb`; aggregate remains pending |
 | Frozen M2–M4 history | Exact archived Debug/Release ROMs, static integrity, frozen report bytes/check vectors, and B01 replay | `.\tools\validate.ps1 -Scope Milestone5` | PASS — historical hashes remain `c689adf9...883d2460` / `0cf94ab5...90f9d43`; no current-ROM equivalence is claimed |

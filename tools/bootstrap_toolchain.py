@@ -18,6 +18,12 @@ import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tools.bootstrap_python_packages import provision  # noqa: E402
+from tools.embedded_python import attest  # noqa: E402
+
 
 VASM_CORE_SOURCES = (
     "vasm.c",
@@ -238,6 +244,7 @@ def main() -> int:
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
     root = args.root.resolve()
+    python_baseline = attest(root)
     lock = json.loads((root / "tools" / "toolchain.lock.json").read_text("utf-8"))
     tools = lock["tools"]
     cache = root / ".toolcache"
@@ -286,6 +293,7 @@ def main() -> int:
     zig_version = run([str(zig_root / "zig.exe"), "version"])
     if zig_version != "0.14.1":
         raise RuntimeError(f"unexpected Zig version: {zig_version}")
+    python_packages = provision(root)
     smoke = smoke_test(root, bin_root, report_root)
 
     environment = {
@@ -310,6 +318,8 @@ def main() -> int:
             "blastem": str(blastem_root / "blastem.exe"),
         },
         "smoke": smoke,
+        "python_packages": python_packages,
+        "python_baseline": python_baseline,
     }
     (report_root / "environment.json").write_text(
         json.dumps(environment, indent=2) + "\n", encoding="utf-8"

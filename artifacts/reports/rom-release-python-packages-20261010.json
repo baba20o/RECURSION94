@@ -1,0 +1,145 @@
+{
+  "checks": [
+    {
+      "check": "image_size",
+      "status": "pass"
+    },
+    {
+      "check": "vector_table",
+      "status": "pass"
+    },
+    {
+      "check": "header_ascii",
+      "status": "pass"
+    },
+    {
+      "check": "header_fields",
+      "status": "pass"
+    },
+    {
+      "check": "rom_ram_bounds",
+      "status": "pass"
+    },
+    {
+      "check": "checksum",
+      "status": "pass"
+    },
+    {
+      "check": "region_metadata",
+      "status": "pass"
+    },
+    {
+      "check": "save_metadata",
+      "status": "pass"
+    }
+  ],
+  "facts": {
+    "assembled_bytes": null,
+    "bytes": 1048576,
+    "crc32": "fce10fe6",
+    "header": {
+      "calculated_checksum": 35964,
+      "console": "SEGA MEGA DRIVE",
+      "copyright": "(C)R94 2026.JUL",
+      "domestic_title": "RECURSION 94: THE LAST CARTRIDGE",
+      "io_support": "J",
+      "overseas_title": "RECURSION 94: THE LAST CARTRIDGE",
+      "product": "GM R94M1000-00",
+      "ram_end": 16777215,
+      "ram_start": 16711680,
+      "region": "JUE",
+      "rom_end": 1048575,
+      "rom_start": 0,
+      "save": {
+        "end": 2113535,
+        "present": true,
+        "signature": "RA",
+        "start": 2097153,
+        "type_flags_hex": "F820"
+      },
+      "stored_checksum": 35964
+    },
+    "sha256": "9591acc588a60e6217330e810216950df43761ef2a74cd4914f788a407b572d6",
+    "vectors": {
+      "entries": [
+        16777212,
+        512,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        5692,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870,
+        870
+      ],
+      "initial_ssp": 16777212,
+      "reset_pc": 512
+    }
+  },
+  "issues": [],
+  "pending_runtime_gates": [
+    "reset execution and debug heartbeat",
+    "exception-handler execution",
+    "save-memory read/write and corruption recovery",
+    "controller behavior",
+    "video/audio behavior"
+  ],
+  "schema": 1,
+  "scope": "independent-static-rom",
+  "status": "pass"
+}

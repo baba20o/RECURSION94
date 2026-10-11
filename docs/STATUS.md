@@ -72,8 +72,30 @@
   pass. The renderer sprite pin was refreshed only after independent exact
   source-delta, archived-opcode, raw-buffer, and CRC-parity review; native visual
   45/45 and aggregate/validator 125/125 now pass. The reproducible schema
-  dependency repair and a fresh full run are still required; an import failure does not count
-  the affected module's undiscovered tests as passing.
+  dependency repair is now implemented; an import failure does not count the
+  affected module's undiscovered tests as passing.
+  Resumed native bootstrap verifies all 35 original embedded-Python files and
+  the unchanged isolated `_pth`, then installs six hash-pinned distributions
+  without global Python or pip. A second bootstrap changes zero package files;
+  offline verification checks 138 installed files and 39 real import caches.
+  Actual Draft 2020-12 validation, local references, invalid-input rejection,
+  and the native `rpds` dependency pass. The post-import verification is in
+  `artifacts/reports/toolchain-python-packages-post-import-20261010.json`.
+  All three ROMs rebuild and independently validate at the identical hashes
+  above. The next full run discovers 979 tests with zero errors/skips and six
+  failures (`host-tests-high-water-dependencies-20261010.json`): one new
+  directory-case fixture also incorrectly changes the module basename; five
+  newly importable budget tests mix the frozen pre-timing contract with current
+  mutable ROM/symbol files. These test-fixture repairs do not refresh production
+  budget pins or establish a current-ROM budget pass. The final coherent native
+  rerun passes **982/982**, with zero failures, errors, or skips, recorded in
+  `artifacts/reports/host-tests-high-water-verified-20261010.json`.
+  Exact command: `.toolcache/python/python.exe tools/run_host_tests.py --root .
+  --suite All --report artifacts/reports/host-tests-high-water-verified-20261010.json`.
+  Its release gate remains false: save, full campaign replays, and live release
+  evidence are unfinished. The new 1,681-step later-attempt timing diagnostic
+  has independent review and 55 focused native tests; its first live capture is
+  the next measurement, not an already-passing performance gate.
   Its first reset capture timed out before gameplay because READY was followed
   by a nonempty debugger prompt (`>  y`). The exact 40-line failure tail is
   preserved as `reset-overlay-pool-25a74bd2-ready-timeout-20261010.txt` in the
