@@ -274,8 +274,16 @@ RendererBuildSat:
 ; shapes cover switches, doors, terminals, and nodes; sockets/conveyors reuse
 ; switch art while emitters and reflectors reuse readable data-object art.
         lea     (DEVICE_POOL).l,a2
-        move.w  #DEVICE_CAPACITY-1,d7
         moveq   #0,d6
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d7
+        cmpi.w  #DEVICE_CAPACITY,d7
+        bls.s   .campaign_device_bound_ready
+        moveq   #DEVICE_CAPACITY,d7
+.campaign_device_bound_ready:
+        tst.w   d7
+        beq.w   .campaign_devices_done
+        subq.w  #1,d7
 .campaign_device:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.w   .campaign_device_next
@@ -399,8 +407,16 @@ RendererBuildSat:
 .campaign_devices_done:
 
         lea     (ENEMY_POOL).l,a2
-        move.w  #ENEMY_CAPACITY-1,d7
         moveq   #0,d6
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_ENEMY-1).l,d7
+        cmpi.w  #ENEMY_CAPACITY,d7
+        bls.s   .campaign_enemy_bound_ready
+        moveq   #ENEMY_CAPACITY,d7
+.campaign_enemy_bound_ready:
+        tst.w   d7
+        beq.w   .campaign_enemies_done
+        subq.w  #1,d7
 .campaign_enemy:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .campaign_enemy_next
@@ -427,8 +443,16 @@ RendererBuildSat:
 .campaign_enemies_done:
 
         lea     (CARRYABLE_POOL).l,a2
-        move.w  #CARRYABLE_CAPACITY-1,d7
         moveq   #0,d6
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_CARRYABLE-1).l,d7
+        cmpi.w  #CARRYABLE_CAPACITY,d7
+        bls.s   .campaign_carryable_bound_ready
+        moveq   #CARRYABLE_CAPACITY,d7
+.campaign_carryable_bound_ready:
+        tst.w   d7
+        beq.w   .campaign_carryables_done
+        subq.w  #1,d7
 .campaign_carryable:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .campaign_carryable_next
@@ -452,8 +476,16 @@ RendererBuildSat:
 .campaign_carryables_done:
 
         lea     (HAZARD_POOL).l,a2
-        move.w  #HAZARD_CAPACITY-1,d7
         moveq   #0,d6
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_HAZARD-1).l,d7
+        cmpi.w  #HAZARD_CAPACITY,d7
+        bls.s   .campaign_hazard_bound_ready
+        moveq   #HAZARD_CAPACITY,d7
+.campaign_hazard_bound_ready:
+        tst.w   d7
+        beq.w   .campaign_hazards_done
+        subq.w  #1,d7
 .campaign_hazard:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .campaign_hazard_next
@@ -499,8 +531,16 @@ RendererBuildSat:
 .campaign_beams_done:
 
         lea     (PROJECTILE_POOL).l,a2
-        move.w  #PROJECTILE_CAPACITY-1,d7
         moveq   #0,d6
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_PROJECTILE-1).l,d7
+        cmpi.w  #PROJECTILE_CAPACITY,d7
+        bls.s   .campaign_projectile_bound_ready
+        moveq   #PROJECTILE_CAPACITY,d7
+.campaign_projectile_bound_ready:
+        tst.w   d7
+        beq.w   .campaign_projectiles_done
+        subq.w  #1,d7
 .campaign_projectile:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .campaign_projectile_next
@@ -860,7 +900,15 @@ RendererDoorRejectionActive:
         tst.b   (ACTOR_ACTIVE,a0)
         beq.w   .inactive
         lea     (DEVICE_POOL).l,a1
-        moveq   #DEVICE_CAPACITY-1,d2
+        moveq   #0,d2
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d2
+        cmpi.w  #DEVICE_CAPACITY,d2
+        bls.s   .campaign_bound_ready
+        moveq   #DEVICE_CAPACITY,d2
+.campaign_bound_ready:
+        tst.w   d2
+        beq.w   .inactive
+        subq.w  #1,d2
 .campaign_door:
         tst.b   (OBJECT_ACTIVE,a1)
         beq.s   .campaign_next

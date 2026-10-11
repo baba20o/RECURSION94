@@ -5,7 +5,29 @@
   cartridge; 2 — hardware foundation; 3 — deterministic engine core; 4 —
   echo vertical slice. The M4 automated evidence freeze is complete; literal
   human hands-on play and subjective listening are not claimed by it.
-- **Current M5 ROMs:** all images are 1,048,576 bytes. Canonical Debug
+- **Current M5 candidate:** seven read-only campaign renderer scans now use
+  clamped, zero-guarded historical pool bounds; legacy renderer paths and
+  gameplay are unchanged. All images are 1,048,576 bytes. Canonical Debug
+  checksum/SHA-256: `$C1BE` /
+  `bd21be6718d33dca944982d1c748f31f752251bb8ca099c22b9de889c71d20de`;
+  symbols `5d156d07a9075219830889a176bb5758ca18e9973742e10b5710743568162260`.
+  Canonical Release checksum/SHA-256: `$33E5` /
+  `0570d12f0dae8bfc13e1f90bf20cac13cb77a6d6b77a23af037eb3440eca4efb`;
+  symbols `31d38e46454d3cfc503a7a0bc9395216cf95b3a6dbd803acf18e92d0580c20b6`.
+  B03 Debug checksum/SHA-256: `$F4D6` /
+  `e6778f907da9f308cb587de695cdba5dc32371538e92ccd34676821428bf3c65`;
+  symbols `a67cba2c05ca4b1920c51e00c4022b2d993c408b3c5b9899e511bfc0d90dc6f6`.
+  Three builds and independent statics pass; 73 focused native tests pass,
+  including the shared allocation proof and six new renderer-bound tests.
+  The separately reviewed diagnostic profile and failure preservation pass
+  65/65 focused native tests without changing any older profile or timing limit.
+  The three prior fixed-capacity source assertions now require the typed bound,
+  capacity clamp, and zero exit. Images/maps are archived under
+  `artifacts/archive/m5-renderer-hwm-e6778f90-20261010/`.
+  Native timing/raw-buffer parity, current-ROM replays, refreshed reviewed
+  visual pins, Windows All, and M5 aggregate evidence remain pending. No
+  performance gain or M5 pass is claimed from the builds alone.
+- **Preceding high-water ROMs:** all images are 1,048,576 bytes. Canonical Debug
   checksum/SHA-256: `$1A55` /
   `9b2122f405dc7c6a2692eea2250ac18acff3ded08804aa67ab72316cc1b86d34`;
   symbol map:

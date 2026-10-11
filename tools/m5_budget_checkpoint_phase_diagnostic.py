@@ -210,6 +210,17 @@ PROFILE_REPAIR_PC["highwater"] = {
     "raw_crc_start": 0x6B64, "raw_crc_end": 0x6B68,
     "renderer_start": 0x8D14, "renderer_end": 0x8EF2,
 }
+RENDERER_HWM_ROM_SHA256 = "e6778f907da9f308cb587de695cdba5dc32371538e92ccd34676821428bf3c65"
+RENDERER_HWM_SYMBOL_SHA256 = "a67cba2c05ca4b1920c51e00c4022b2d993c408b3c5b9899e511bfc0d90dc6f6"
+RENDERER_HWM_SOURCE_PINS = {
+    "src/render/gameplay_renderer_sprites.asm": "4c8472074288c3ad25ea668edf5a648ae839e6a4dfeeecc537ea77b59b91ea4f",
+    "src/render/gameplay_renderer_hud.asm": "7f1ce7352585ede094c39f45d7a8b73371ad857edea36c03fb88faf87fe9aa71",
+}
+PROFILE_ROM_PINS["renderer_hwm"] = RENDERER_HWM_ROM_SHA256
+PROFILE_SYMBOL_PINS["renderer_hwm"] = RENDERER_HWM_SYMBOL_SHA256
+PROFILE_REPAIR_PC["renderer_hwm"] = {
+    **PROFILE_REPAIR_PC["highwater"], "renderer_start": 0x8DA4, "renderer_end": 0x8F82,
+}
 ALLOWED_COMMANDS = frozenset(
     {"breakpoint", "commands", "printf", "if", "else", "continue", "end"}
 )
@@ -365,6 +376,17 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int]) -> dict[str, Any]:
     }
 
 
+def renderer_hwm_source_contract(root: Path) -> dict[str, Any]:
+    """Bind only this candidate's two approved source edits before live work."""
+    sources = {}
+    for relative, expected in RENDERER_HWM_SOURCE_PINS.items():
+        path = root / relative
+        if not path.is_file() or sha256_file(path) != expected:
+            raise EvidenceFailure("renderer-HWM approved runtime source hash drift: " + relative)
+        sources[relative] = _file_record(path, root)
+    return sources
+
+
 def repair_pc_contract(
     rom: bytes, symbols: Mapping[str, int], *, profile: str = "baseline"
 ) -> dict[str, Any]:
@@ -388,7 +410,7 @@ def repair_pc_contract(
     exact_windows = {
         "raw_crc_call": (
             addresses["raw_crc_start"],
-            "6100B08C46812801" if profile == "highwater" else "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
+            "6100B08C46812801" if profile in {"highwater", "renderer_hwm"} else "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
         ),
         "raw_crc_return": (
             addresses["raw_crc_end"],
@@ -427,8 +449,8 @@ def repair_pc_contract(
         exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001967874003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24D2, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x2512, "224B4A05660E3A033003C0FC0018D2C06000008C")
-    if profile == "highwater":
-        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
+    if profile in {"highwater", "renderer_hwm"}:
+        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F9000197EC74003418E05AB342E58A2431280042414841B58151C8FFEA" if profile == "renderer_hwm" else "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24EA, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x252A, "224B4A05660E3A033003C0FC0018D2C06000008C")
     for name, (address, expected_hex) in exact_windows.items():
@@ -2153,6 +2175,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     report_path = Path(args.report).resolve()
     trace_path = Path(args.trace).resolve()
     profile = getattr(args, "profile", "baseline")
+    runtime_sources = renderer_hwm_source_contract(root) if profile == "renderer_hwm" else {}
     if report_path.exists() or trace_path.exists() or report_path == trace_path:
         raise EvidenceFailure("live diagnostic requires distinct new output paths")
     for path, label in (
@@ -2295,6 +2318,19 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                 preserve_failure({**helper_result, "error": "owned emulator exit timeout", "full_console_available": True})
                 raise EvidenceFailure("owned emulator exit timeout; completed console preserved as failure")
             if process.returncode != 0:
+                if profile == "renderer_hwm":
+                    preserve_native_failure(
+                        report_path, trace_path, script=script,
+                        helper_payload={**helper_result, "error": f"BlastEm exit code {process.returncode}", "full_console_available": True},
+                        metadata={"rom_profile": profile, "timeout_seconds": args.timeout_seconds,
+                                  "rom": _file_record(rom_path, root), "symbols": _file_record(symbols_path, root),
+                                  "collector": _file_record(collector_path, root), "pc_contract": bound_pc,
+                                  "emulator": _file_record(emulator, root), "default_config": _file_record(default_config, root),
+                                  "native_console_helper": _file_record(console_helper_path, root),
+                                  "candidate_runtime_sources": runtime_sources, "guest_writes": 0,
+                                  "helper_returncode": helper.returncode, "helper_stderr": stderr,
+                                  "emulator_returncode": process.returncode},
+                    )
                 raise EvidenceFailure(f"BlastEm exit code {process.returncode}")
         finally:
             if helper is not None and helper.poll() is None:
@@ -2391,6 +2427,8 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
             "Projection CRC parity binds runtime return/state/header/debug mirrors; it does not dump the 3,894-byte projection during the measured interval.",
         ],
     }
+    if runtime_sources:
+        report["provenance"]["candidate_runtime_sources"] = runtime_sources
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n",
@@ -2409,7 +2447,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--report", default=DEFAULT_REPORT_RELATIVE_PATH)
     parser.add_argument("--trace", default=DEFAULT_TRACE_RELATIVE_PATH)
-    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater"), default="baseline")
+    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm"), default="baseline")
     parser.add_argument("--timeout-seconds", type=float, default=180.0)
     return parser
 

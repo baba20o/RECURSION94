@@ -76,8 +76,21 @@ class CampaignRendererContractTests(unittest.TestCase):
         )
         for pool, capacity, label in pools:
             with self.subTest(pool=pool):
+                plural = "enemies" if label == "enemy" else f"{label}s"
                 self.assertIn(f"lea     ({pool}).l,a2", campaign)
-                self.assertIn(f"#{capacity}-1,d7", campaign)
+                self.assertIn(
+                    f"(ENGINE_POOL_HIGH_WATER+POOL_TYPE_{label.upper()}-1).l,d7",
+                    campaign,
+                )
+                self.assertIn(f"cmpi.w  #{capacity},d7", campaign)
+                self.assertIn(f"moveq   #{capacity},d7", campaign)
+                self.assertIn(
+                    f".campaign_{label}_bound_ready:\n"
+                    "        tst.w   d7\n"
+                    f"        beq.w   .campaign_{plural}_done\n"
+                    "        subq.w  #1,d7",
+                    campaign,
+                )
                 self.assertIn(
                     f"dbf     d7,.campaign_{label}",
                     campaign,
@@ -225,7 +238,19 @@ class CampaignRendererContractTests(unittest.TestCase):
         campaign_block = predicate[campaign:]
         self.assertNotIn("B01_", campaign_block)
         self.assertIn("lea     (DEVICE_POOL).l,a1", campaign_block)
-        self.assertIn("#DEVICE_CAPACITY-1,d2", campaign_block)
+        self.assertIn(
+            "(ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d2",
+            campaign_block,
+        )
+        self.assertIn("cmpi.w  #DEVICE_CAPACITY,d2", campaign_block)
+        self.assertIn("moveq   #DEVICE_CAPACITY,d2", campaign_block)
+        self.assertIn(
+            ".campaign_bound_ready:\n"
+            "        tst.w   d2\n"
+            "        beq.w   .inactive\n"
+            "        subq.w  #1,d2",
+            campaign_block,
+        )
         self.assertIn("#VOCAB_DEVICE_DOOR", campaign_block)
         self.assertIn("#VOCAB_DEVICE_STATE_OPEN", campaign_block)
         self.assertIn("VOCAB_DEVICE_STATE_DISABLED", campaign_block)
@@ -306,7 +331,18 @@ class CampaignRendererContractTests(unittest.TestCase):
         status = _routine(self.hud, "RendererHudCampaignStatus")
         self.assertNotIn("B01_", status)
         self.assertIn("lea     (DEVICE_POOL).l,a2", status)
-        self.assertIn("#DEVICE_CAPACITY-1,d5", status)
+        self.assertIn(
+            "(ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d5", status
+        )
+        self.assertIn("cmpi.w  #DEVICE_CAPACITY,d5", status)
+        self.assertIn("moveq   #DEVICE_CAPACITY,d5", status)
+        self.assertIn(
+            ".device_bound_ready:\n"
+            "        tst.w   d5\n"
+            "        beq.w   .status_ready\n"
+            "        subq.w  #1,d5",
+            status,
+        )
         self.assertIn("dbf     d5,.device", status)
         for state in (
             "VOCAB_DEVICE_STATE_ACTIVE",

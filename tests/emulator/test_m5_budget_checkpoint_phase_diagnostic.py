@@ -3,7 +3,10 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from tools import m5_budget_checkpoint_phase_diagnostic as diagnostic
 from tools.m2_evidence import parse_vasm_symbols, sha256_file
@@ -196,6 +199,42 @@ class M5BudgetCheckpointPhaseDiagnosticTests(unittest.TestCase):
         )
         vblank_exit["cycle"] = next_entry["cycle"] + 1
         self.assertEqual(diagnostic.analyse(shifted)["status"], "fail")
+
+    def test_renderer_hwm_profile_binds_archived_rom_symbols_and_unchanged_gameplay(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-renderer-hwm-e6778f90-20261010/level-B03"
+        rom_path, sym_path = archive / "recursion94-debug.bin", archive / "recursion94-debug.sym"
+        rom, symbols = rom_path.read_bytes(), parse_vasm_symbols(sym_path)
+        self.assertEqual(sha256_file(rom_path), "e6778f907da9f308cb587de695cdba5dc32371538e92ccd34676821428bf3c65")
+        self.assertEqual(sha256_file(sym_path), "a67cba2c05ca4b1920c51e00c4022b2d993c408b3c5b9899e511bfc0d90dc6f6")
+        contract = diagnostic.repair_pc_contract(rom, symbols, profile="renderer_hwm")
+        self.assertEqual(contract["addresses"], {**diagnostic.PROFILE_REPAIR_PC["highwater"], "renderer_start": 0x8DA4, "renderer_end": 0x8F82})
+        script = diagnostic.build_repair_command_script(symbols, profile="renderer_hwm")
+        self.assertEqual(diagnostic.repair_command_policy_errors(script, symbols, profile="renderer_hwm"), [])
+        for address in (0x1C2E, 0x24F4, 0x252E, 0x6B64, 0x8DA0, 0x8F82):
+            changed = bytearray(rom)
+            changed[address] ^= 1
+            with self.subTest(address=address), self.assertRaises(diagnostic.EvidenceFailure):
+                diagnostic.repair_pc_contract(bytes(changed), symbols, profile="renderer_hwm")
+        with self.assertRaises(diagnostic.EvidenceFailure):
+            diagnostic.repair_pc_contract(rom, symbols, profile="highwater")
+
+    def test_renderer_hwm_candidate_source_and_full_rom_drift_stop_before_launch(self) -> None:
+        sources = diagnostic.renderer_hwm_source_contract(ROOT)
+        self.assertEqual({key: value["sha256"] for key, value in sources.items()}, diagnostic.RENDERER_HWM_SOURCE_PINS)
+        self.assertEqual(len(sources), 2)
+        with tempfile.TemporaryDirectory() as directory:
+            args = diagnostic._parser().parse_args([
+                "--root", str(ROOT), "--profile", "renderer_hwm",
+                "--report", str(Path(directory) / "unused.json"), "--trace", str(Path(directory) / "unused.log")])
+            for relative in (*diagnostic.RENDERER_HWM_SOURCE_PINS, diagnostic.ROM_RELATIVE_PATH, diagnostic.SYMBOL_RELATIVE_PATH):
+                def changed_hash(path: Path) -> str:
+                    return "0" * 64 if path == ROOT / relative else sha256_file(path)
+                with self.subTest(path=relative), patch.object(diagnostic, "os", SimpleNamespace(name="nt")), \
+                        patch.object(diagnostic, "sha256_file", side_effect=changed_hash), \
+                        patch.object(diagnostic.subprocess, "Popen", side_effect=AssertionError("drift must stop before launch")):
+                    with self.assertRaisesRegex(diagnostic.EvidenceFailure, "hash drift"):
+                        diagnostic.collect(args)
+            self.assertEqual(list(Path(directory).iterdir()), [])
 
 
 class M5BudgetCheckpointRepairPhaseDiagnosticTests(unittest.TestCase):

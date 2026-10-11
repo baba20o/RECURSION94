@@ -269,7 +269,7 @@ RendererBuildHud:
 
 ; RendererHudCampaignStatus
 ; Returns a compact ordinary-status mirror derived only from active campaign
-; device records. The 32-record loop is fixed and does not mutate gameplay.
+; device records. The historical high-water prefix is bounded and read-only.
 ; Out: d0.w=RENDERER_CAMPAIGN_STATUS_* bits;
 ;      d1.l=(completion duration << 16)|current hold timer, or zero.
 ; Clobbers d0-d2/a0-a1; preserves d3-d7/a2-a6.
@@ -281,7 +281,15 @@ RendererHudCampaignStatus:
         andi.w  #VOCAB_CAMPAIGN_FLAG_ACTIVE,d0
         beq.w   .status_ready
         lea     (DEVICE_POOL).l,a2
-        moveq   #DEVICE_CAPACITY-1,d5
+        moveq   #0,d5
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d5
+        cmpi.w  #DEVICE_CAPACITY,d5
+        bls.s   .device_bound_ready
+        moveq   #DEVICE_CAPACITY,d5
+.device_bound_ready:
+        tst.w   d5
+        beq.w   .status_ready
+        subq.w  #1,d5
 .device:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.w   .next

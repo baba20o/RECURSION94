@@ -935,6 +935,43 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         self.assertEqual(report["analyses"]["highwater_reset"]["phase_spans"]["722"]["gameplay"]["delta_cpu_cycles_ceil"], 34070)
         self.assertEqual(report["analyses"]["highwater_reset"]["budget_errors"], [])
 
+    def test_renderer_hwm_profile_binds_exact_calls_and_preserves_all_marker_programs(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-renderer-hwm-e6778f90-20261010/level-B03"
+        rom = (archive / "recursion94-debug.bin").read_bytes()
+        symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
+        self.assertEqual(hashlib.sha256(rom).hexdigest(), reset.PROFILE_ROM_PINS["renderer_hwm"])
+        self.assertEqual(hashlib.sha256((archive / "recursion94-debug.sym").read_bytes()).hexdigest(), reset.PROFILE_SYMBOL_PINS["renderer_hwm"])
+        contract = reset.extended_pc_contract(rom, symbols, profile="renderer_hwm")
+        self.assertEqual(contract["addresses"], {**reset.PROFILE_PC["highwater"], "renderer_start": 0x8DA4, "renderer_end": 0x8F82})
+        self.assertEqual(contract["extended_addresses"], {
+            "main_begin": 0x2D6, "main_done": 0x344, "renderer_mask": 0x8DA0,
+            "renderer_unmasked": 0x8F84, "hud_begin": 0x8E5C, "hud_end": 0x8E60,
+            "sat_end": 0x8E64, "overlay_end": 0x8E68})
+        for address in (0x1C2E, 0x3A12, 0x3DB6, 0x6B64, 0x8DA0, 0x8E5C, 0x8E60, 0x8E64, 0x8E68, 0x8F82):
+            changed = bytearray(rom)
+            changed[address] ^= 1
+            with self.subTest(address=address), self.assertRaises(reset.EvidenceFailure):
+                reset.extended_pc_contract(bytes(changed), symbols, profile="renderer_hwm")
+        with self.assertRaises(reset.EvidenceFailure):
+            reset.extended_pc_contract(rom, symbols, profile="highwater")
+        old = parse_vasm_symbols(ROOT / "artifacts/archive/m5-high-water-96dec577-20261010/level-B03/recursion94-debug.sym")
+        for builder, kwargs in ((reset.build_command_script, {"extended_overlay": True}),
+                                (regular.build_repair_command_script, {}), (reset.build_prefix_command_script, {})):
+            strip_breakpoints = lambda text: [line for line in text.splitlines() if not line.startswith("breakpoint ")]
+            self.assertEqual(strip_breakpoints(builder(symbols, profile="renderer_hwm", **kwargs)),
+                             strip_breakpoints(builder(old, profile="highwater", **kwargs)))
+        self.assertEqual(reset.command_policy_errors(reset.build_command_script(symbols, extended_overlay=True, profile="renderer_hwm"), symbols, extended_overlay=True, profile="renderer_hwm"), [])
+        self.assertEqual(reset.prefix_command_policy_errors(reset.build_prefix_command_script(symbols, profile="renderer_hwm"), symbols, profile="renderer_hwm"), [])
+        self.assertEqual(reset._parser().parse_args(["--profile", "renderer_hwm"]).__dict__["profile"], "renderer_hwm")
+        source = inspect.getsource(reset.collect)
+        self.assertLess(source.index("regular.renderer_hwm_source_contract(root)"), source.index("subprocess.Popen("))
+        # No dependency on the new mutable runtime sources enters the pinned
+        # highwater offline derivation or changes its timing failures.
+        with patch.object(regular, "renderer_hwm_source_contract", side_effect=AssertionError("offline must use archive only")):
+            report = reset.derive_prefix_reanalysis(ROOT)
+        self.assertEqual(report["diagnostic_protocol_status"], "pass")
+        self.assertEqual(len(report["analysis"]["budget_errors"]), 312)
+
     def test_prefix_preparation_program_is_bounded_read_only_and_balanced(self) -> None:
         archive = ROOT / "artifacts/archive/m5-empty-pool-25a74bd2-20261010/level-B03"
         symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
@@ -1141,6 +1178,50 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         analysis = reset.analyse_prefix(changed, route)
         self.assertEqual(analysis["protocol_status"], "pass", analysis["errors"])
         self.assertEqual(analysis["budget_status"], "fail")
+
+    def test_renderer_hwm_nonzero_exit_archives_complete_helper_then_fails_without_overwrite(self) -> None:
+        for helper_module in (regular, reset):
+            tree = ast.parse(inspect.getsource(helper_module.collect))
+            branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If) and
+                          ast.unparse(node.test) == "process.returncode != 0")
+            program = compile(ast.fix_missing_locations(ast.Module(body=branch.body, type_ignores=[])), "<candidate actual exit branch>", "exec")
+            with self.subTest(helper=helper_module.__name__), tempfile.TemporaryDirectory() as directory:
+                report_path, trace_path = Path(directory) / "failed.json", Path(directory) / "failed.log"
+                result = {"console_text": "exact complete console\n>\n", "console": {"width": 120, "cursor_x": 2},
+                          "input_events": [{"edge": "Up:down"}], "script_input_records": 123}
+                namespace = {"canonical_prefix": False, "extended_overlay": True, "profile": "renderer_hwm",
+                             "preserve_native_failure": reset.preserve_native_failure,
+                             "report_path": report_path, "trace_path": trace_path, "script": "observed script\n",
+                             "helper_result": result, "process": argparse.Namespace(returncode=7),
+                             "helper": argparse.Namespace(returncode=0), "stderr": "native helper stderr",
+                             "args": argparse.Namespace(timeout_seconds=240), "runtime_sources": {"approved": "exact hash"},
+                             "rom_path": Path("rom"), "symbols_path": Path("sym"), "collector_path": Path("collector"),
+                             "console_helper_path": Path("console_helper"), "emulator": Path("emulator"),
+                             "default_config": Path("cfg"), "root": ROOT, "regular": regular, "bound_pc": {"exact": True},
+                             "_file_record": lambda path, root: {"path": str(path)}, "EvidenceFailure": reset.EvidenceFailure}
+                with patch.object(reset.subprocess, "Popen", side_effect=AssertionError("no retry")):
+                    with self.assertRaisesRegex(reset.EvidenceFailure, "BlastEm exit code 7"):
+                        exec(program, namespace)
+                report = json.loads(report_path.read_text("utf-8"))
+                self.assertEqual(report["status"], "diagnostic_fail")
+                self.assertFalse(report["timing_evidence_complete"])
+                self.assertEqual(report["failure"], {**result, "error": "BlastEm exit code 7", "full_console_available": True})
+                self.assertEqual(report["metadata"]["emulator_returncode"], 7)
+                self.assertEqual(report["metadata"]["helper_returncode"], 0)
+                self.assertEqual(report["metadata"]["helper_stderr"], "native helper stderr")
+                self.assertEqual(report["metadata"]["candidate_runtime_sources"], namespace["runtime_sources"])
+                self.assertIn(result["console_text"], trace_path.read_text("utf-8"))
+                frozen = (report_path.read_bytes(), trace_path.read_bytes())
+                with self.assertRaisesRegex(reset.EvidenceFailure, "distinct new paths"):
+                    exec(program, namespace)
+                self.assertEqual((report_path.read_bytes(), trace_path.read_bytes()), frozen)
+                # Preserve historical non-prefix modes exactly; only this
+                # approved candidate gains the new failure-only archive path.
+                namespace["profile"] = "highwater"
+                namespace["preserve_native_failure"] = Mock(side_effect=AssertionError("old mode changed"))
+                with self.assertRaisesRegex(reset.EvidenceFailure, "BlastEm exit code 7"):
+                    exec(program, namespace)
+                namespace["preserve_native_failure"].assert_not_called()
 
     def test_prefix_final_review_token_ordinal_and_startup_anchor_mutations(self) -> None:
         original, route = synthetic_prefix_records()

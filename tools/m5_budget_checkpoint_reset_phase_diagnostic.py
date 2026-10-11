@@ -315,6 +315,16 @@ PROFILE_EXTENDED_PC["highwater"] = {
     "renderer_unmasked": 0x8EF4, "hud_begin": 0x8DCC,
     "hud_end": 0x8DD0, "sat_end": 0x8DD4, "overlay_end": 0x8DD8,
 }
+PROFILE_ROM_PINS["renderer_hwm"] = regular.RENDERER_HWM_ROM_SHA256
+PROFILE_SYMBOL_PINS["renderer_hwm"] = regular.RENDERER_HWM_SYMBOL_SHA256
+PROFILE_PC["renderer_hwm"] = {
+    **PROFILE_PC["highwater"], "renderer_start": 0x8DA4, "renderer_end": 0x8F82,
+}
+PROFILE_EXTENDED_PC["renderer_hwm"] = {
+    **PROFILE_EXTENDED_PC["highwater"], "renderer_mask": 0x8DA0,
+    "renderer_unmasked": 0x8F84, "hud_begin": 0x8E5C,
+    "hud_end": 0x8E60, "sat_end": 0x8E64, "overlay_end": 0x8E68,
+}
 PC_SYMBOL_BINDINGS = {
     "gameplay_call": "MainLoopGameplayStepCall",
     "gameplay_return": "MainLoopPostGameplayStepCall",
@@ -528,7 +538,7 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
     if profile not in PROFILE_PC:
         raise EvidenceFailure("unknown reset diagnostic profile")
     addresses = PROFILE_PC[profile]
-    relocation = 258 if profile == "highwater" else 36 if profile == "pool" else 12 if profile != "baseline" else 0
+    relocation = 258 if profile in {"highwater", "renderer_hwm"} else 36 if profile == "pool" else 12 if profile != "baseline" else 0
     renderer_relocation = addresses["renderer_start"] - PC["renderer_start"]
     errors: list[str] = []
     for name, symbol_name in PC_SYMBOL_BINDINGS.items():
@@ -542,16 +552,16 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
             )
     if symbols.get("GameplayBuildProjection") != 0x000069F8 + relocation:
         errors.append("GameplayBuildProjection symbol drift")
-    if symbols.get("GameplayCommitAndReset") != (0x368A if profile == "highwater" else 0x3672 if profile == "pool" else 0x365A):
+    if symbols.get("GameplayCommitAndReset") != (0x368A if profile in {"highwater", "renderer_hwm"} else 0x3672 if profile == "pool" else 0x365A):
         errors.append("GameplayCommitAndReset symbol drift")
     if symbols.get("MainLoopCommitResetCall") != 0x00000320:
         errors.append("MainLoopCommitResetCall symbol drift")
     if symbols.get("Crc32UpdateRaw") != 0x00001BF2:
         errors.append("Crc32UpdateRaw symbol drift")
-    if symbols.get("RendererPrepareResetOverlay") != 0x000091CC + renderer_relocation + (6 if profile == "highwater" else 0):
+    if symbols.get("RendererPrepareResetOverlay") != 0x000091CC + renderer_relocation + (6 if profile in {"highwater", "renderer_hwm"} else 0):
         errors.append("RendererPrepareResetOverlay symbol drift")
     exact_windows = {
-        "gameplay_call": (PC["gameplay_call"], "61003748" if profile == "highwater" else "61003730" if profile == "pool" else "61003718"),
+        "gameplay_call": (PC["gameplay_call"], "61003748" if profile in {"highwater", "renderer_hwm"} else "61003730" if profile == "pool" else "61003718"),
         "gameplay_return": (PC["gameplay_return"], "0C400008"),
         "post_commit": (PC["post_commit"], "4A406712"),
         "renderer_call": (0x0000033E, f"4EB9{addresses['renderer_start'] - 10:08X}"),
@@ -561,11 +571,11 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
         "wait_vblank": (PC["wait_vblank"], "4E722500"),
         "timeout_projection_call": (
             addresses["timeout_projection_call"],
-            "61002D42" if profile == "highwater" else "61002C7C" if relocation else "61002C70",
+            "61002D42" if profile in {"highwater", "renderer_hwm"} else "61002C7C" if relocation else "61002C70",
         ),
         "reset_projection_call": (
             addresses["reset_projection_call"],
-            "610030E6" if profile == "highwater" else "61003020" if relocation else "61003014",
+            "610030E6" if profile in {"highwater", "renderer_hwm"} else "61003020" if relocation else "61003014",
         ),
         "campaign_projection_return": (
             addresses["campaign_projection_end"],
@@ -576,7 +586,7 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
             "4E75",
         ),
         "tail_return": (addresses["tail_end"], "4E75"),
-        "raw_crc_call_return": (addresses["raw_crc_start"], "6100B08C4681" if profile == "highwater" else "6100B16A4681" if profile == "pool" else "6100B1824681" if relocation else "6100B18E4681"),
+        "raw_crc_call_return": (addresses["raw_crc_start"], "6100B08C4681" if profile in {"highwater", "renderer_hwm"} else "6100B16A4681" if profile == "pool" else "6100B1824681" if relocation else "6100B18E4681"),
         "renderer_mask": (addresses["renderer_start"] - 4, "46FC2700"),
         "renderer_checkpoint_gate": (
             0x00008C7C + renderer_relocation,
@@ -603,8 +613,8 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
         exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001967874003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24D2, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x2512, "224B4A05660E3A033003C0FC0018D2C06000008C")
-    if profile == "highwater":
-        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
+    if profile in {"highwater", "renderer_hwm"}:
+        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F9000197EC74003418E05AB342E58A2431280042414841B58151C8FFEA" if profile == "renderer_hwm" else "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24EA, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x252A, "224B4A05660E3A033003C0FC0018D2C06000008C")
     for name, (address, expected_hex) in exact_windows.items():
@@ -2459,6 +2469,8 @@ def extended_pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str
         windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EB5E", "hud_end": "6100F338", "overlay_end": "61008306"}
     if profile == "highwater":
         windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EB5E", "hud_end": "6100F338", "sat_end": "610004F6", "overlay_end": "61008228"}
+    if profile == "renderer_hwm":
+        windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EACE", "hud_end": "6100F2BE", "sat_end": "610004F6", "overlay_end": "61008198"}
     if symbols.get("MainLoop") != 0x2C2:
         raise EvidenceFailure("extended MainLoop symbol drift")
     for name, address in addresses.items():
@@ -3744,6 +3756,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     extended_overlay = bool(getattr(args, "extended_overlay", False))
     canonical_prefix = bool(getattr(args, "canonical_prefix", False))
     profile = getattr(args, "profile", "baseline")
+    runtime_sources = regular.renderer_hwm_source_contract(root) if profile == "renderer_hwm" else {}
     if report_path == trace_path or report_path.exists() or trace_path.exists():
         raise EvidenceFailure("live diagnostic outputs must be distinct new paths")
     if canonical_prefix and (extended_overlay or getattr(args, "ready_console_only", False)):
@@ -3946,6 +3959,20 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                                   "input_transport": _file_record(root / "tools/m5_b03_runtime_evidence.py", root),
                                   "guest_writes": 0, "helper_returncode": helper.returncode, "emulator_returncode": process.returncode},
                     )
+                elif profile == "renderer_hwm" and extended_overlay:
+                    preserve_native_failure(
+                        report_path, trace_path, script=script,
+                        helper_payload={**helper_result, "error": f"BlastEm exit code {process.returncode}", "full_console_available": True},
+                        metadata={"rom_profile": profile, "extended_overlay": True, "timeout_seconds": args.timeout_seconds,
+                                  "rom": _file_record(rom_path, root), "symbols": _file_record(symbols_path, root),
+                                  "collector": _file_record(collector_path, root), "pc_contract": bound_pc,
+                                  "emulator": _file_record(emulator, root), "default_config": _file_record(default_config, root),
+                                  "native_console_helper": _file_record(root / regular.CONSOLE_HELPER_RELATIVE_PATH, root),
+                                  "input_transport": _file_record(root / "tools/m5_b03_runtime_evidence.py", root),
+                                  "candidate_runtime_sources": runtime_sources, "guest_writes": 0,
+                                  "helper_returncode": helper.returncode, "helper_stderr": stderr,
+                                  "emulator_returncode": process.returncode},
+                    )
                 raise EvidenceFailure(f"BlastEm exit code {process.returncode}")
         finally:
             if helper is not None and helper.poll() is None:
@@ -4100,6 +4127,8 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
         report["limitations"].extend(analysis["protocol_domain_limitations"])
         report["provenance"]["input_transport"] = _file_record(root / "tools/m5_b03_runtime_evidence.py", root)
         report["provenance"]["native_console_helper"] = _file_record(root / regular.CONSOLE_HELPER_RELATIVE_PATH, root)
+    if runtime_sources:
+        report["provenance"]["candidate_runtime_sources"] = runtime_sources
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with report_path.open("x", encoding="utf-8", newline="\n") as stream:
         stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
@@ -4118,7 +4147,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--extended-overlay", action="store_true", help="extend the live reset diagnostic through total724; requires explicit new report/trace paths")
     parser.add_argument("--canonical-prefix", action="store_true", help="observe the hash-bound 1681-step route and later-attempt phase samples; new outputs required; not a canonical budget gate")
     parser.add_argument("--ready-console-only", action="store_true", help="preserve one read-only READY console/input-queue diagnostic; never executes gameplay")
-    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater"), default="baseline")
+    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm"), default="baseline")
     parser.add_argument("--extended-baseline-reanalyse", metavar="NEW_REPORT", help="write a new offline derivation from the pinned extended baseline without changing its capture")
     parser.add_argument("--lookup-compare", metavar="NEW_REPORT", help="write a pinned offline baseline/lookup-only timing and raw-buffer comparison")
     parser.add_argument("--sprite-compare", metavar="NEW_REPORT", help="write a pinned offline lookup-only/sprite-loop timing and raw-buffer comparison")
