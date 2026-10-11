@@ -2619,8 +2619,8 @@ def derive_extended_baseline(root: Path) -> dict[str, Any]:
 
 
 def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -> dict[str, Any]:
-    """Exact offline before/after proof for one isolated lookup or sprite edit."""
-    if candidate_profile not in {"lookup", "sprite", "indexed", "pool", "highwater"}:
+    """Exact offline before/after proof for one isolated optimization."""
+    if candidate_profile not in {"lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm"}:
         raise EvidenceFailure("unsupported isolated comparison profile")
     directory = root / "artifacts/diagnostics/m5-budget"
     captures = {
@@ -2630,7 +2630,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
         "lookup_regular": ("checkpoint-lookup-9a741642-tick59-tick61-20261010", "f6fd781038736198d7fc9e5a29367b8e7405904c0523b470f06e61c72332d555", "56c76013eff2eaa33ff818d7e338c1e3da8e99d80f9068582ebfcc98d4af1fb9"),
     }
     roles = {"baseline": "baseline", "lookup": "lookup"}
-    if candidate_profile in {"sprite", "indexed", "pool", "highwater"}:
+    if candidate_profile in {"sprite", "indexed", "pool", "highwater", "renderer_hwm"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2638,7 +2638,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-sprite-09be6696-tick59-tick61-20261010", "29234a101b1247994da4e2b2b1b87cf7d4a199c12414fbb450b51701626d12f4", "899442b76066898e8c59508c1859fa9a5353202612459f0bd8be51414086dc94"),
         }
         roles = {"baseline": "lookup", "lookup": "sprite"}
-    if candidate_profile in {"indexed", "pool", "highwater"}:
+    if candidate_profile in {"indexed", "pool", "highwater", "renderer_hwm"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2646,7 +2646,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-indexed-c051995c-tick59-tick61-20261010", "bdf589b3c40871959d0c951ea2f00c5cd3c270349fe7668d29e9d0802771de46", "f1b7b69bfcb255294392e5a6c660304490dfaa8ce53928c18d609478646f9af6"),
         }
         roles = {"baseline": "sprite", "lookup": "indexed"}
-    if candidate_profile in {"pool", "highwater"}:
+    if candidate_profile in {"pool", "highwater", "renderer_hwm"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2654,7 +2654,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-pool-25a74bd2-tick59-tick61-20261010", "29bf381c1475a19d3346d742f06dfdea38cd901bd53a8cbb550ee0bfd00d6ace", "6403c02d748d6ac1d0874e849a87a4524b8d36a7ce399a678cd2f75bd4a74d36"),
         }
         roles = {"baseline": "indexed", "lookup": "pool"}
-    if candidate_profile == "highwater":
+    if candidate_profile in {"highwater", "renderer_hwm"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2662,6 +2662,14 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-highwater-96dec577-tick59-tick61-20261010", "c852a44a1bc768cd22392381e1644b8916b3467e6922e5fb0d9aa250bda96462", "2243c934a1f5554e729afb2325f3ee3b4f1d9a7b7cec7a05d8e8413dc356b15c"),
         }
         roles = {"baseline": "pool", "lookup": "highwater"}
+    if candidate_profile == "renderer_hwm":
+        captures = {
+            "baseline_reset": captures["lookup_reset"],
+            "baseline_regular": captures["lookup_regular"],
+            "lookup_reset": ("reset-overlay-renderer-hwm-e6778f90-total719-total724-20261010", "b1ffcd6d09667845a27b367b33be87df45bab6b11c7539b4d495080c01c67357", "feac204cabf748233953b55840830b964f87c741213caad127293f8f43024bac"),
+            "lookup_regular": ("checkpoint-renderer-hwm-e6778f90-tick59-tick61-20261010", "6fc3cebc759f71ff8e9298177a8b6817f83fd41e8a05d461b85fc67fe50cad47", "e2b0152acbbe6d4b841380e507ca748ed5a66841338b9190be54e8c61baab453"),
+        }
+        roles = {"baseline": "highwater", "lookup": "renderer_hwm"}
     reports: dict[str, Any] = {}
     analyses: dict[str, Any] = {}
     sources: dict[str, Any] = {}
@@ -2672,7 +2680,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
         capture = json.loads(report_path.read_text("utf-8"))
         role, family = name.split("_")
         profile = roles[role]
-        archive_name = {"baseline": "m5-pre-timing-140039e3-20261010", "lookup": "m5-lookup-only-9a741642-20261010", "sprite": "m5-sprite-loop-09be6696-20261010", "indexed": "m5-crc-index-c051995c-20261010", "pool": "m5-empty-pool-25a74bd2-20261010", "highwater": "m5-high-water-96dec577-20261010"}[profile]
+        archive_name = {"baseline": "m5-pre-timing-140039e3-20261010", "lookup": "m5-lookup-only-9a741642-20261010", "sprite": "m5-sprite-loop-09be6696-20261010", "indexed": "m5-crc-index-c051995c-20261010", "pool": "m5-empty-pool-25a74bd2-20261010", "highwater": "m5-high-water-96dec577-20261010", "renderer_hwm": "m5-renderer-hwm-e6778f90-20261010"}[profile]
         archive = root / "artifacts/archive" / archive_name / "level-B03"
         rom, sym = archive / "recursion94-debug.bin", archive / "recursion94-debug.sym"
         rom_hash = PROFILE_ROM_PINS[profile]
@@ -2730,8 +2738,8 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
     before_tick60 = analyses["baseline_regular"]["phase_spans"]["gameplay_tick60"]["delta_cpu_cycles_ceil"]
     after_tick60 = analyses["lookup_regular"]["phase_spans"]["gameplay_tick60"]["delta_cpu_cycles_ceil"]
     budget_pass = after_tick60 <= 83203 and analyses["lookup_reset"]["budget_status"] == "pass"
-    return {
-        "schema": "r94-m5-b03-" + {"lookup": "lookup-only", "sprite": "sprite-loop", "indexed": "crc-index", "pool": "empty-pool", "highwater": "high-water"}[candidate_profile] + "-timing-parity-v1",
+    report = {
+        "schema": "r94-m5-b03-" + {"lookup": "lookup-only", "sprite": "sprite-loop", "indexed": "crc-index", "pool": "empty-pool", "highwater": "high-water", "renderer_hwm": "renderer-hwm"}[candidate_profile] + "-timing-parity-v1",
         "status": "diagnostic_pass" if all(parity.values()) and budget_pass else "diagnostic_fail",
         "diagnostic_protocol_status": "pass",
         "parity_status": "pass" if all(parity.values()) else "fail",
@@ -2750,6 +2758,14 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
         "provenance": {"helper": _file_record(root / COLLECTOR_RELATIVE_PATH, root), "regular_helper": _file_record(root / REGULAR_HELPER_RELATIVE_PATH, root), "tests": _file_record(root / TEST_RELATIVE_PATH, root)},
         "conclusion": candidate_profile + " isolated-change sampled renderer/projection parity " + ("passes" if all(parity.values()) else "fails") + "; cycle/blank budget " + ("passes" if budget_pass else "fails") + ". Noncanonical bounded evidence only.",
     }
+    if candidate_profile == "renderer_hwm":
+        report["cycle_blank_budget_scope"] = {
+            "regular_attempt": 0, "regular_ticks": [59, 60, 61],
+            "reset_total_steps": [719, 720, 721, 722, 723, 724],
+            "later_attempt_timing_certified": False, "full_route_timing_certified": False,
+        }
+        report["conclusion"] += " Only the first-attempt regular samples and first-reset window are covered; this is not a later-attempt or full-route timing pass."
+    return report
 
 
 def analyse_extended(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
@@ -4154,6 +4170,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--indexed-compare", metavar="NEW_REPORT", help="write a pinned offline sprite-loop/indexed-CRC timing and raw-buffer comparison")
     parser.add_argument("--pool-compare", metavar="NEW_REPORT", help="write a pinned offline indexed-CRC/empty-pool timing and raw-buffer comparison")
     parser.add_argument("--highwater-compare", metavar="NEW_REPORT", help="write a pinned offline empty-pool/high-water timing and raw-buffer comparison")
+    parser.add_argument("--renderer-hwm-compare", metavar="NEW_REPORT", help="write a pinned offline high-water/renderer-HWM timing and raw-buffer comparison; first-attempt samples only")
     parser.add_argument("--prefix-reanalyse", metavar="NEW_REPORT", help="write a new hash-bound offline prefix reanalysis; preserve the original failed capture and every timing failure")
     parser.add_argument(
         "--offline-reanalyse",
@@ -4184,7 +4201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.prefix_reanalyse:
         if any((args.canonical_prefix, args.extended_overlay, args.ready_console_only, args.offline_reanalyse,
                 args.extended_baseline_reanalyse, args.lookup_compare, args.sprite_compare, args.indexed_compare,
-                args.pool_compare, args.highwater_compare)):
+                args.pool_compare, args.highwater_compare, args.renderer_hwm_compare)):
             raise EvidenceFailure("prefix offline reanalysis cannot be combined with another mode")
         output = Path(args.prefix_reanalyse)
         if not output.is_absolute():
@@ -4197,17 +4214,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
         print(f"Prefix offline reanalysis: protocol={report['diagnostic_protocol_status']}, budget={report['cycle_blank_budget_status']}; original capture unchanged")
         return 0 if report["diagnostic_protocol_status"] == "pass" else 1
-    if args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare:
-        if sum(bool(value) for value in (args.lookup_compare, args.sprite_compare, args.indexed_compare, args.pool_compare, args.highwater_compare)) != 1:
+    if args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare or args.renderer_hwm_compare:
+        if sum(bool(value) for value in (args.lookup_compare, args.sprite_compare, args.indexed_compare, args.pool_compare, args.highwater_compare, args.renderer_hwm_compare)) != 1:
             raise EvidenceFailure("choose exactly one isolated comparison")
-        output = Path(args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare)
+        if args.renderer_hwm_compare and any((args.canonical_prefix, args.extended_overlay,
+                args.ready_console_only, args.offline_reanalyse, args.extended_baseline_reanalyse)):
+            raise EvidenceFailure("renderer-HWM offline comparison cannot be combined with another mode")
+        output = Path(args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare or args.renderer_hwm_compare)
         if not output.is_absolute():
             output = root / output
         if output.exists():
             raise EvidenceFailure("lookup comparison output already exists")
-        report = derive_lookup_comparison(root, candidate_profile="highwater" if args.highwater_compare else "pool" if args.pool_compare else "indexed" if args.indexed_compare else "sprite" if args.sprite_compare else "lookup")
+        report = derive_lookup_comparison(root, candidate_profile="renderer_hwm" if args.renderer_hwm_compare else "highwater" if args.highwater_compare else "pool" if args.pool_compare else "indexed" if args.indexed_compare else "sprite" if args.sprite_compare else "lookup")
         output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+        if args.renderer_hwm_compare:
+            with output.open("x", encoding="utf-8", newline="\n") as stream:
+                stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        else:
+            output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
         print(f"Isolated timing comparison: protocol={report['diagnostic_protocol_status']}, parity={report['parity_status']}, budget={report['cycle_blank_budget_status']}")
         return 0 if report["diagnostic_protocol_status"] == report["parity_status"] == "pass" else 1
     if args.extended_baseline_reanalyse:

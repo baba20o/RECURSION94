@@ -75,10 +75,10 @@ PINNED_B03_SYMBOL_SHA256 = (
 )
 PINNED_RENDERER_SOURCE_SHA256 = {
     "src/render/gameplay_renderer_hud.asm": (
-        "17cdb737c5b31385eec5e399654e2b8c65423b6f31e8404ba82ae5cb433b8a84"
+        "7f1ce7352585ede094c39f45d7a8b73371ad857edea36c03fb88faf87fe9aa71"
     ),
     "src/render/gameplay_renderer_sprites.asm": (
-        "ac9360af87768d24c895e5f28606328d785972cd99b166682e3e4a9683e1fe2d"
+        "4c8472074288c3ad25ea668edf5a648ae839e6a4dfeeecc537ea77b59b91ea4f"
     ),
 }
 

@@ -972,6 +972,70 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         self.assertEqual(report["diagnostic_protocol_status"], "pass")
         self.assertEqual(len(report["analysis"]["budget_errors"]), 312)
 
+    def test_renderer_hwm_comparison_binds_6240_bytes_and_only_first_attempt_budget(self) -> None:
+        with patch.object(regular, "renderer_hwm_source_contract", side_effect=AssertionError("offline must use archive only")), \
+                patch.object(reset.subprocess, "Popen", side_effect=AssertionError("offline must never launch")):
+            report = reset.derive_lookup_comparison(ROOT, candidate_profile="renderer_hwm")
+        self.assertEqual(report["schema"], "r94-m5-b03-renderer-hwm-timing-parity-v1")
+        self.assertEqual(report["comparison_profiles"], {"before": "highwater", "after": "renderer_hwm"})
+        self.assertEqual(report["status"], "diagnostic_pass")
+        self.assertFalse(report["canonical"])
+        self.assertTrue(report["diagnostic_only"])
+        self.assertEqual((report["diagnostic_protocol_status"], report["parity_status"], report["cycle_blank_budget_status"]), ("pass", "pass", "pass"))
+        self.assertTrue(all(report["parity_checks"].values()))
+        self.assertEqual(report["cycle_blank_budget_scope"], {
+            "regular_attempt": 0, "regular_ticks": [59, 60, 61],
+            "reset_total_steps": [719, 720, 721, 722, 723, 724],
+            "later_attempt_timing_certified": False, "full_route_timing_certified": False})
+        self.assertIn("not a later-attempt or full-route timing pass", report["conclusion"])
+        expected = {
+            "highwater_reset": ("04011af7c1f75c4c518bbf169a560ec8368d589ff440199dc258393d6a808c77", "4f47773376fb623b6f525648b9974980b4541b9c69c1add023360ecbe568ea3b"),
+            "highwater_regular": ("c852a44a1bc768cd22392381e1644b8916b3467e6922e5fb0d9aa250bda96462", "2243c934a1f5554e729afb2325f3ee3b4f1d9a7b7cec7a05d8e8413dc356b15c"),
+            "renderer_hwm_reset": ("b1ffcd6d09667845a27b367b33be87df45bab6b11c7539b4d495080c01c67357", "feac204cabf748233953b55840830b964f87c741213caad127293f8f43024bac"),
+            "renderer_hwm_regular": ("6fc3cebc759f71ff8e9298177a8b6817f83fd41e8a05d461b85fc67fe50cad47", "e2b0152acbbe6d4b841380e507ca748ed5a66841338b9190be54e8c61baab453"),
+        }
+        self.assertEqual({key: (value["report"]["sha256"], value["trace"]["sha256"]) for key, value in report["sources"].items()}, expected)
+        samples = report["renderer_byte_comparisons"]
+        self.assertEqual(len(samples), 6)
+        self.assertEqual(sum(region["bytes"] for sample in samples for region in sample["regions"]), 6240)
+        self.assertTrue(all(sample["before_frame"] == sample["after_frame"] for sample in samples))
+        self.assertEqual(report["tick60_simulation_budget"]["after_cpu_cycles"], 80828)
+        self.assertEqual(report["tick60_simulation_budget"]["saved_cpu_cycles"], 0)
+        analyses = report["analyses"]
+        for tick, saving in ((59, 6460), (61, 6462)):
+            field = f"renderer_tick{tick}"
+            self.assertEqual(analyses["highwater_regular"]["phase_spans"][field]["delta_cpu_cycles_ceil"] - analyses["renderer_hwm_regular"]["phase_spans"][field]["delta_cpu_cycles_ceil"], saving)
+        after_reset = analyses["renderer_hwm_reset"]
+        self.assertEqual(after_reset["phase_spans"]["720"]["main_token_to_caller_return"]["delta_cpu_cycles_ceil"], 250444)
+        self.assertEqual(after_reset["phase_spans"]["722"]["main_token_to_caller_return"]["delta_cpu_cycles_ceil"], 102138)
+        self.assertEqual(after_reset["phase_spans"]["722"]["renderer_mask_to_restore"]["delta_cpu_cycles_ceil"], 66118)
+        self.assertEqual(after_reset["budget_errors"], [])
+        native_sha256 = reset.sha256_file
+        with patch.object(reset, "sha256_file", side_effect=lambda path: "0" * 64 if path.name == "reset-overlay-renderer-hwm-e6778f90-total719-total724-20261010.log" else native_sha256(path)):
+            with self.assertRaisesRegex(reset.EvidenceFailure, "immutable source drift"):
+                reset.derive_lookup_comparison(ROOT, candidate_profile="renderer_hwm")
+
+    def test_renderer_hwm_comparison_cli_is_exclusive_and_never_overwrites_or_launches(self) -> None:
+        report = {"diagnostic_protocol_status": "pass", "parity_status": "pass", "cycle_blank_budget_status": "pass"}
+        with tempfile.TemporaryDirectory() as directory, patch.object(reset.subprocess, "Popen", side_effect=AssertionError("offline must never launch")), \
+                patch.object(reset, "derive_lookup_comparison", return_value=report) as derive:
+            output = Path(directory) / "new.json"
+            arguments = ["--root", str(ROOT), "--renderer-hwm-compare", str(output)]
+            with patch("sys.stdout", new=io.StringIO()):
+                self.assertEqual(reset.main(arguments), 0)
+            derive.assert_called_once_with(ROOT, candidate_profile="renderer_hwm")
+            original = output.read_bytes()
+            with self.assertRaises(reset.EvidenceFailure):
+                reset.main(arguments)
+            self.assertEqual(output.read_bytes(), original)
+            for conflict in ("--canonical-prefix", "--extended-overlay", "--ready-console-only", "--offline-reanalyse"):
+                with self.subTest(conflict=conflict), self.assertRaisesRegex(reset.EvidenceFailure, "combined with another mode"):
+                    reset.main(arguments + [conflict])
+            for conflict in ("--highwater-compare", "--prefix-reanalyse", "--extended-baseline-reanalyse"):
+                with self.subTest(conflict=conflict), self.assertRaises(reset.EvidenceFailure):
+                    reset.main(arguments + [conflict, str(Path(directory) / "other.json")])
+            self.assertEqual(output.read_bytes(), original)
+
     def test_prefix_preparation_program_is_bounded_read_only_and_balanced(self) -> None:
         archive = ROOT / "artifacts/archive/m5-empty-pool-25a74bd2-20261010/level-B03"
         symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
