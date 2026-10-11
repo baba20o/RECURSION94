@@ -73,27 +73,27 @@ class RendererScan:
 
 SAT_SCANS = (
     RendererScan(
-        "RendererBuildSat", ".campaign_device", "DEVICE_POOL",
+        "RendererBuildSatRebuild", ".campaign_device", "DEVICE_POOL",
         "POOL_TYPE_DEVICE", "DEVICE_CAPACITY", "a2", "d7",
         ".campaign_device_bound_ready", ".campaign_devices_done", True,
     ),
     RendererScan(
-        "RendererBuildSat", ".campaign_enemy", "ENEMY_POOL",
+        "RendererBuildSatRebuild", ".campaign_enemy", "ENEMY_POOL",
         "POOL_TYPE_ENEMY", "ENEMY_CAPACITY", "a2", "d7",
         ".campaign_enemy_bound_ready", ".campaign_enemies_done", True,
     ),
     RendererScan(
-        "RendererBuildSat", ".campaign_carryable", "CARRYABLE_POOL",
+        "RendererBuildSatRebuild", ".campaign_carryable", "CARRYABLE_POOL",
         "POOL_TYPE_CARRYABLE", "CARRYABLE_CAPACITY", "a2", "d7",
         ".campaign_carryable_bound_ready", ".campaign_carryables_done", True,
     ),
     RendererScan(
-        "RendererBuildSat", ".campaign_hazard", "HAZARD_POOL",
+        "RendererBuildSatRebuild", ".campaign_hazard", "HAZARD_POOL",
         "POOL_TYPE_HAZARD", "HAZARD_CAPACITY", "a2", "d7",
         ".campaign_hazard_bound_ready", ".campaign_hazards_done", True,
     ),
     RendererScan(
-        "RendererBuildSat", ".campaign_projectile", "PROJECTILE_POOL",
+        "RendererBuildSatRebuild", ".campaign_projectile", "PROJECTILE_POOL",
         "POOL_TYPE_PROJECTILE", "PROJECTILE_CAPACITY", "a2", "d7",
         ".campaign_projectile_bound_ready", ".campaign_projectiles_done", True,
     ),
@@ -113,7 +113,7 @@ HUD_SCAN = RendererScan(
 
 SCANS = (*SAT_SCANS, DOOR_SCAN, HUD_SCAN)
 PATH_BY_ROUTINE = {
-    "RendererBuildSat": "src/render/gameplay_renderer_sprites.asm",
+    "RendererBuildSatRebuild": "src/render/gameplay_renderer_sprites.asm",
     "RendererDoorRejectionActive": "src/render/gameplay_renderer_sprites.asm",
     "RendererHudCampaignStatus": "src/render/gameplay_renderer_hud.asm",
 }
@@ -165,7 +165,7 @@ class RendererPoolScanSourceTests(unittest.TestCase):
 
     def test_zero_exits_preserve_publication_and_required_outputs(self) -> None:
         sat = _lines(_routine(
-            "src/render/gameplay_renderer_sprites.asm", "RendererBuildSat"
+            "src/render/gameplay_renderer_sprites.asm", "RendererBuildSatRebuild"
         ))
         ordered = (
             ".campaign_devices_done:",
@@ -232,6 +232,8 @@ class RendererPoolScanSourceTests(unittest.TestCase):
         routines = _all_routines()
         for root in (
             "RendererBuildSat",
+            "RendererBuildSatOwnedShadow",
+            "RendererBuildSatRebuild",
             "RendererDoorRejectionActive",
             "RendererHudCampaignStatus",
         ):

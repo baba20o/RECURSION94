@@ -99,7 +99,39 @@ class VocabularyAssemblySemanticTests(unittest.TestCase):
         self.assertLess(device_pool, node_damage)
         self.assertLess(node_damage, applied_check)
         self.assertLess(applied_check, consume)
-        self.assertIn("#DEVICE_CAPACITY-1", update)
+        self.assertIn(
+            "move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_ENEMY-1).l,d4",
+            update,
+        )
+        self.assertIn(
+            "move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d4",
+            update,
+        )
+        self.assertNotIn("#ENEMY_CAPACITY-1,d4", update)
+        self.assertNotIn("#DEVICE_CAPACITY-1,d4", update)
+        self.assertIn("beq.w   .security_nodes", update[enemy_pool:device_pool])
+        self.assertLess(update.index(".security_nodes:"), device_pool)
+        self.assertIn("beq.w   .next", update[device_pool:node_damage])
+        for target, next_label in (("Enemy", ".enemy_next"), ("SecurityNode", ".security_next")):
+            damage_call = update.index(f"bsr.w   VocabularyDamage{target}")
+            free_call = update.index("bsr.w   EnginePoolFreeSlot", damage_call)
+            self.assertIn(
+                f"tst.w   d0\n        beq.s   {next_label}",
+                update[damage_call:free_call],
+            )
+            self.assertIn(
+                "ori.w   #VOCAB_PROJECTILE_STATE_HIT,(OBJECT_STATE,a2)",
+                update[damage_call:free_call],
+            )
+            self.assertTrue(update[free_call:].startswith(
+                "bsr.w   EnginePoolFreeSlot\n"
+                "        subq.w  #1,d6\n"
+                "        bra.w   .next"
+            ))
+            helper = _routine(self.combat, f"VocabularyDamage{target}")
+            self.assertIn("movem.l d3-d5/a2,-(a7)", helper)
+            self.assertIn("movem.l (a7)+,d3-d5/a2", helper)
+            self.assertNotIn("ENGINE_POOL_HIGH_WATER", helper)
 
         damage = _routine(
             self.combat, "VocabularyDamageSecurityNode"

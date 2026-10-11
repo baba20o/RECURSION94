@@ -323,6 +323,33 @@ sample as accepted; the original failed report will not be overwritten.
 The immutable candidate ROMs and symbols are in
 `artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
 
+## Projectile scans and owned SAT shadow: built, not measured
+
+B03 candidate `e1220c05` adds three historically bounded scans to the preceding
+CRC/projection candidate: friendly-projectile enemies and security nodes, and
+static-projectile closed doors. Each reads the unsigned pool ledger, clamps to
+capacity, and tests zero before DBF. Zero-enemy flow still reaches devices;
+zero devices still publish the outer projectile count or return a clear static
+query as appropriate. Physical order and damage-applied consumption are
+unchanged. Typed transitive-call tests reject future same-pool allocation.
+
+The renderer retains the public full-clear entry and adds a guarded owned-shadow
+entry. It clears the previous used prefix in 32-byte bursts before rebuilding,
+leaving the already-zero tail alone. Counts above 64 set invalid state and
+fall back to all 80 entries. Initialization is always full-clear. Admission,
+scanline limits, all 640 output bytes, and full SAT DMA remain unchanged.
+The contracts are recorded in D-009 and `REGISTER_CONVENTIONS.md`.
+
+Independent source reviews, 100 focused native tests (including all 65×65
+grow/shrink count combinations), three ROM builds, and three independent static
+checks pass. ROMs/maps are archived under
+`artifacts/archive/m5-projectile-sat-e1220c05-20261010/`.
+The complete native Milestone5 and Render suites pass 168/168 and 90/90 with
+zero failures/errors/skips; the full Windows All rerun remains pending.
+Cycle savings are estimates only until a new pinned diagnostic profile and
+native regular/reset/natural-prefix captures prove them. The preceding image's
+66 prefix budget failures are not closed by these host tests.
+
 ## Natural third-attempt prefix: timing failure
 
 The first high-water prefix capture naturally executes 1,681 authoritative

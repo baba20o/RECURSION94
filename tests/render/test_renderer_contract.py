@@ -892,7 +892,7 @@ class RendererSourceTests(unittest.TestCase):
             r"move\.[bwl]\s+[^,\n]+,\s*\((?:B01_DEVICE|GAMEPLAY_)",
         )
 
-        sat = sprites.split("RendererBuildSat:", 1)[1].split(
+        sat = sprites.split("RendererBuildSatRebuild:", 1)[1].split(
             "RendererDoorRejectionActive:",
             1,
         )[0]
@@ -959,12 +959,14 @@ class RendererSourceTests(unittest.TestCase):
         sprites = (ROOT / "src/render/gameplay_renderer_sprites.asm").read_text(
             encoding="utf-8"
         )
-        build = sprites.split("RendererBuildSat:", 1)[1].split(
+        build = sprites.split("RendererBuildSatRebuild:", 1)[1].split(
             "; Current incarnation",
             1,
         )[0]
         self.assertEqual(build.count("movem.l d0-d6/a1,(a0)"), 2)
-        self.assertIn("#(SAT_SHADOW_BYTES/32)-1,d7", build)
+        self.assertIn("move.w  d0,d7", build)
+        self.assertIn("tst.w   d7", build)
+        self.assertIn("subq.w  #1,d7", build)
         self.assertIn(
             "#((RENDERER_SCANLINE_COUNT_BYTES+"
             "RENDERER_SCANLINE_PIXEL_BYTES)/32)-1,d7",

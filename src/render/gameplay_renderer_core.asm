@@ -112,7 +112,7 @@ GameplayRendererBuildAndQueue:
         bra.w   .restore
 .checkpoint_ready:
         bsr.w   RendererBuildHud
-        bsr.w   RendererBuildSat
+        bsr.w   RendererBuildSatOwnedShadow
         bsr.w   RendererPrepareResetOverlay
 
         bsr.w   DmaQueueBeginFrame

@@ -182,7 +182,7 @@ class CampaignSpriteTruthTests(unittest.TestCase):
     def test_hazard_markers_use_semantic_rectangles_with_radius_fallback(
         self,
     ) -> None:
-        build = routine(self.sprites, "RendererBuildSat")
+        build = routine(self.sprites, "RendererBuildSatRebuild")
         extent = local_block(
             build,
             ".append_campaign_hazard_extent",
@@ -231,7 +231,7 @@ class CampaignSpriteTruthTests(unittest.TestCase):
             self.assertIn(f"RENDERER_TILE_HAZARD{offset}", extent)
 
     def test_beam_cache_is_rendered_in_inclusive_bounded_chunks(self) -> None:
-        build = routine(self.sprites, "RendererBuildSat")
+        build = routine(self.sprites, "RendererBuildSatRebuild")
         campaign = build.split("\n.campaign:", 1)[1].split(
             "\n.publish:", 1
         )[0]
@@ -315,7 +315,7 @@ class CampaignSpriteTruthTests(unittest.TestCase):
         self.assertIn("addi.l  #8*256,d1", campaign)
         self.assertIn("subi.l  #16*256,d0", campaign)
 
-        build = routine(self.sprites, "RendererBuildSat")
+        build = routine(self.sprites, "RendererBuildSatRebuild")
         campaign_sat = build.split("\n.campaign:", 1)[1].split(
             "\n.publish:", 1
         )[0]

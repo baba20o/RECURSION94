@@ -212,7 +212,15 @@ VocabularyUpdateProjectilesAndDamage:
 
 .friendly:
         lea     (ENEMY_POOL).l,a3
-        moveq   #ENEMY_CAPACITY-1,d4
+        moveq   #0,d4
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_ENEMY-1).l,d4
+        cmpi.w  #ENEMY_CAPACITY,d4
+        bls.s   .enemy_bound_ready
+        moveq   #ENEMY_CAPACITY,d4
+.enemy_bound_ready:
+        tst.w   d4
+        beq.w   .security_nodes
+        subq.w  #1,d4
 .enemy:
         tst.b   (OBJECT_ACTIVE,a3)
         beq.s   .enemy_next
@@ -251,8 +259,17 @@ VocabularyUpdateProjectilesAndDamage:
 
 ; Enemies have collision priority. If none was hit, scan exposed breakable
 ; nodes in physical device-slot order and consume only an applied hit.
+.security_nodes:
         lea     (DEVICE_POOL).l,a3
-        moveq   #DEVICE_CAPACITY-1,d4
+        moveq   #0,d4
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d4
+        cmpi.w  #DEVICE_CAPACITY,d4
+        bls.s   .security_bound_ready
+        moveq   #DEVICE_CAPACITY,d4
+.security_bound_ready:
+        tst.w   d4
+        beq.w   .next
+        subq.w  #1,d4
 .security_node:
         tst.b   (OBJECT_ACTIVE,a3)
         beq.s   .security_next

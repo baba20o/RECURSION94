@@ -5,11 +5,39 @@
 ; updates are transactional: a late rejection rolls earlier lines back.
 
 ; RendererBuildSat
-; Rebuilds the complete 80-entry shadow table and scanline ledgers.
+; Public full-shadow entry. Rebuilds the complete 80-entry shadow table and
+; scanline ledgers without relying on the prior shadow/count invariant.
 ; Clobbers d0-d2/a0-a1; preserves d3-d7/a2-a6.
 RendererBuildSat:
+        move.w  #SAT_SHADOW_BYTES/32,d0
+        bra.w   RendererBuildSatRebuild
+
+; RendererBuildSatOwnedShadow
+; Internal per-frame entry used only after GameplayRendererInitialize has
+; established a fully zeroed SAT tail. The prior admitted count bounds the
+; owned prefix; corrupt counts fail closed to the public full-shadow rebuild.
+; Clobbers d0-d2/a0-a1; preserves d3-d7/a2-a6.
+RendererBuildSatOwnedShadow:
+        moveq   #0,d0
+        move.w  (RENDERER_SPRITE_COUNT).l,d0
+        cmpi.w  #RENDERER_SPRITE_LIMIT,d0
+        bhi.s   .invalid_prior_count
+        addq.w  #3,d0
+        lsr.w   #2,d0
+        bra.w   RendererBuildSatRebuild
+.invalid_prior_count:
+        ori.w   #RENDERER_FLAG_INVALID_STATE,(RENDERER_FLAGS).l
+        bra.w   RendererBuildSat
+
+; RendererBuildSatRebuild
+; In: d0.w=number of 32-byte SAT bursts to clear (0..20), supplied only by
+; RendererBuildSat or RendererBuildSatOwnedShadow. Rebuilds both scanline
+; ledgers and the complete semantic SAT result.
+; Clobbers d0-d2/a0-a1; preserves d3-d7/a2-a6.
+RendererBuildSatRebuild:
         movem.l d3-d7/a2-a5,-(a7)
 
+        move.w  d0,d7
         lea     (SAT_SHADOW).l,a0
         moveq   #0,d0
         moveq   #0,d1
@@ -19,11 +47,14 @@ RendererBuildSat:
         moveq   #0,d5
         moveq   #0,d6
         movea.l d0,a1
-        moveq   #(SAT_SHADOW_BYTES/32)-1,d7
+        tst.w   d7
+        beq.s   .sat_cleared
+        subq.w  #1,d7
 .clear_sat:
         movem.l d0-d6/a1,(a0)
         lea     32(a0),a0
         dbf     d7,.clear_sat
+.sat_cleared:
         clr.w   (RENDERER_SPRITE_COUNT).l
         clr.w   (RENDERER_SCANLINE_MAX).l
         clr.w   (RENDERER_SCANLINE_PIXEL_MAX).l

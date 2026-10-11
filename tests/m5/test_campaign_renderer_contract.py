@@ -42,7 +42,7 @@ class CampaignRendererContractTests(unittest.TestCase):
     def test_campaign_sat_branch_precedes_and_excludes_legacy_b01_reads(
         self,
     ) -> None:
-        build = _routine(self.sprites, "RendererBuildSat")
+        build = _routine(self.sprites, "RendererBuildSatRebuild")
         gate = build.index("(VOCAB_CAMPAIGN_FLAGS).l")
         branch = build.index("bne.w   .campaign", gate)
         legacy = build.index("B01_SWITCH_CENTER_X", branch)
@@ -57,7 +57,7 @@ class CampaignRendererContractTests(unittest.TestCase):
     def test_campaign_sat_scans_every_required_pool_with_static_bounds(
         self,
     ) -> None:
-        build = _routine(self.sprites, "RendererBuildSat")
+        build = _routine(self.sprites, "RendererBuildSatRebuild")
         campaign = build.split("\n.campaign:", 1)[1].split(
             "\n.publish:", 1
         )[0]
@@ -150,7 +150,7 @@ class CampaignRendererContractTests(unittest.TestCase):
     def test_campaign_device_shapes_and_state_filters_are_explicit(
         self,
     ) -> None:
-        build = _routine(self.sprites, "RendererBuildSat")
+        build = _routine(self.sprites, "RendererBuildSatRebuild")
         campaign = build.split("\n.campaign:", 1)[1].split(
             "\n.publish:", 1
         )[0]
@@ -265,7 +265,7 @@ class CampaignRendererContractTests(unittest.TestCase):
         self.assertIn("#VOCAB_CAMPAIGN_FLAG_ACTIVE", actor_pair)
         self.assertIn("cmp.l   d1,d0", actor_pair)
 
-        build = _routine(self.sprites, "RendererBuildSat")
+        build = _routine(self.sprites, "RendererBuildSatRebuild")
         campaign_sat = build.split("\n.campaign:", 1)[1].split(
             "\n.publish:", 1
         )[0]

@@ -1,6 +1,6 @@
 """Contract tests for using pool high-water marks as exclusive scan bounds.
 
-These tests bind the allocator/reset facts that make the implemented ten-loop
+These tests bind the allocator/reset facts that make the implemented thirteen-loop
 optimization legal, prove the invariant in a host state model, and enforce the
 exact gameplay scan sites used by the first high-water-bound pass.
 
@@ -25,6 +25,7 @@ from dataclasses import dataclass
 import re
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from tools.m3_reference.contracts import parse_layout_constants
 
@@ -342,8 +343,8 @@ class ScanSite:
     required_after: tuple[str, ...] = ()
 
 
-# This is intentionally the first, measured-B03-oriented pass rather than an
-# indiscriminate rewrite of every rare interaction/beam/repair search.
+# The original ten loops plus three projectile collision scans. Rare
+# interaction/beam/repair searches and actor-slot scans remain unchanged.
 SCAN_SITES = (
     ScanSite(
         "src/gameplay/campaign_collision.asm",
@@ -394,6 +395,44 @@ SCAN_SITES = (
         True,
         required_before=("dbf     d1,.clear_targets", "moveq   #0,d6"),
         required_after=("move.b  d6,(VOCAB_ACTIVE_ENEMY_COUNT).l",),
+    ),
+    ScanSite(
+        "src/gameplay/vocabulary_combat.asm",
+        "VocabularyUpdateProjectilesAndDamage",
+        "ENEMY_POOL",
+        "ENEMY_CAPACITY",
+        ".enemy",
+        "d4",
+        ".security_nodes",
+        True,
+        required_before=(".friendly:",),
+        required_after=("lea     (DEVICE_POOL).l,a3",),
+    ),
+    ScanSite(
+        "src/gameplay/vocabulary_combat.asm",
+        "VocabularyUpdateProjectilesAndDamage",
+        "DEVICE_POOL",
+        "DEVICE_CAPACITY",
+        ".security_node",
+        "d4",
+        ".next",
+        True,
+        required_before=(".security_nodes:", "dbf     d4,.enemy"),
+    ),
+    ScanSite(
+        "src/gameplay/campaign_collision.asm",
+        "GameplayCampaignProjectileHitsStatic",
+        "DEVICE_POOL",
+        "DEVICE_CAPACITY",
+        ".door",
+        "d7",
+        ".clear",
+        True,
+        required_before=(
+            "bsr.w   GameplayCampaignProjectileMayEnterNodeRect",
+            "dbf     d7,.rectangle",
+        ),
+        required_after=("moveq   #0,d0",),
     ),
     ScanSite(
         "src/gameplay/vocabulary_combat.asm",
@@ -476,7 +515,7 @@ SCAN_SITES = (
 )
 
 
-# Exact symbolic closure for the nine distinct first-pass routine roots.
+# Exact symbolic closure for the ten distinct gameplay routine roots.
 # Repeated callees are intentional and bind the current number/order of call
 # sites, while the reachability test below independently reasons about typed
 # allocator destinations.
@@ -567,7 +606,10 @@ EXPECTED_SCOPED_CALLS: dict[str, tuple[str, ...]] = {
 SCOPED_ROOT_POOLS: dict[str, frozenset[str]] = {
     "GameplayCampaignResolveDoorX": frozenset(("DEVICE_POOL",)),
     "GameplayCampaignResolveDoorY": frozenset(("DEVICE_POOL",)),
-    "VocabularyUpdateProjectilesAndDamage": frozenset(("PROJECTILE_POOL",)),
+    "VocabularyUpdateProjectilesAndDamage": frozenset(
+        ("PROJECTILE_POOL", "ENEMY_POOL", "DEVICE_POOL")
+    ),
+    "GameplayCampaignProjectileHitsStatic": frozenset(("DEVICE_POOL",)),
     "VocabularyUpdateEnemies": frozenset(("ENEMY_POOL",)),
     "VocabularyUpdateActorsAndHazards": frozenset(
         ("DEVICE_POOL", "HAZARD_POOL")
@@ -617,6 +659,12 @@ BOUND_LABELS = {
         "VocabularyUpdateProjectilesAndDamage",
         ".projectile",
     ): ".projectile_bound_ready",
+    ("VocabularyUpdateProjectilesAndDamage", ".enemy"): ".enemy_bound_ready",
+    (
+        "VocabularyUpdateProjectilesAndDamage",
+        ".security_node",
+    ): ".security_bound_ready",
+    ("GameplayCampaignProjectileHitsStatic", ".door"): ".door_bound_ready",
     ("VocabularyUpdateEnemies", ".enemy"): ".enemy_bound_ready",
     (
         "VocabularyUpdateActorsAndHazards",
@@ -847,6 +895,94 @@ class PoolHighWaterModelTests(unittest.TestCase):
         self.assertNotIn(current_slot, naive_prefix)
         self.assertFalse(any(actors[slot] for slot in naive_prefix))
 
+    def test_projectile_first_applied_hit_preserves_priority_holes_and_reuse(self) -> None:
+        # This is a scan/selection differential, not a geometry or damage
+        # simulator. Eligibility represents the unchanged active/kind/state/
+        # overlap filters; applied represents the damage helper's return.
+        enemies = PoolHistory.empty(C["ENEMY_CAPACITY"])
+        devices = PoolHistory.empty(C["DEVICE_CAPACITY"])
+        histories = [(enemies.copy(), devices.copy())]
+        for _ in range(6):
+            devices.allocate_lowest()
+        histories.append((enemies.copy(), devices.copy()))
+        for _ in range(4):
+            enemies.allocate_lowest()
+        enemies.free(1)
+        devices.free(1)
+        devices.free(3)
+        histories.append((enemies.copy(), devices.copy()))
+        enemies.free(3)
+        devices.free(5)
+        histories.append((enemies.copy(), devices.copy()))
+        self.assertEqual(enemies.allocate_lowest(), 1)
+        self.assertEqual(devices.allocate_lowest(), 1)
+        histories.append((enemies.copy(), devices.copy()))
+
+        def select(histories, eligible, applied, bounded):
+            for name, history in zip(("enemy", "device"), histories):
+                limit = (clamped_scan_bound(history.high_water, history.capacity)
+                         if bounded else history.capacity)
+                for slot in range(limit):
+                    key = (name, slot)
+                    if history.slots[slot] and key in eligible and key in applied:
+                        return key
+            return None
+
+        for pair in histories:
+            keys = tuple((name, slot) for name, history in zip(("enemy", "device"), pair)
+                         for slot in range(history.capacity))
+            for residue in range(4):
+                eligible = {key for key in keys if key[1] % 4 != residue}
+                # No applied damage, one arbitrary applied slot, and all
+                # eligible hits cover no-consume, fallback, and first-hit order.
+                applications = [set(), set(keys), *({key} for key in keys)]
+                for applied in applications:
+                    full = select(pair, eligible, applied, False)
+                    bounded = select(pair, eligible, applied, True)
+                    self.assertEqual(bounded, full)
+                    self.assertEqual(1 - int(bounded is not None), 1 - int(full is not None))
+                    after = []
+                    for hit in (full, bounded):
+                        enemy_after = pair[0].copy()
+                        device_after = pair[1].copy()
+                        if hit is not None and hit[0] == "enemy":
+                            enemy_after.free(hit[1])
+                        # Applied node damage does not free its device slot.
+                        after.append((enemy_after, device_after))
+                    self.assertEqual(after[0], after[1])
+
+        pair = histories[2]
+        both = {("enemy", 2), ("device", 0)}
+        self.assertEqual(select(pair, both, both, True), ("enemy", 2))
+        self.assertEqual(select(pair, both, {("device", 0)}, True), ("device", 0))
+        self.assertEqual(select(histories[1], both, both, True), ("device", 0))
+
+    def test_projectile_closed_door_scan_preserves_first_blocker_and_empty_result(self) -> None:
+        devices = PoolHistory.empty(C["DEVICE_CAPACITY"])
+        histories = [devices.copy()]
+        for _ in range(devices.capacity):
+            devices.allocate_lowest()
+        histories.append(devices.copy())
+        # Preserve a live slot at the old highest index despite a sparse pool.
+        for slot in range(devices.capacity - 1):
+            devices.free(slot)
+        histories.append(devices.copy())
+        devices.free(devices.capacity - 1)
+        histories.append(devices.copy())
+        self.assertEqual(devices.allocate_lowest(), 0)
+        histories.append(devices.copy())
+        for history in histories:
+            blocker_sets = [set(), set(range(history.capacity)),
+                            set(range(1, history.capacity, 2)),
+                            *({slot} for slot in range(history.capacity))]
+            for closed_overlapping in blocker_sets:
+                full = next((slot for slot in full_active_slots(history)
+                             if slot in closed_overlapping), None)
+                bounded = next((slot for slot in bounded_active_slots(history)
+                                if slot in closed_overlapping), None)
+                self.assertEqual(bounded, full)
+                self.assertEqual(int(bounded is not None), int(full is not None))
+
 
 class PoolHighWaterSourceContractTests(unittest.TestCase):
     def test_projection_bound_has_no_transitive_allocator_or_pool_mutation(self) -> None:
@@ -1071,7 +1207,8 @@ class PoolHighWaterSourceContractTests(unittest.TestCase):
         )[1].split("Encounter0ObjectsEnd:", 1)[0]
         self.assertIn("dc.b    POOL_TYPE_DEVICE,$00", encounter_zero)
 
-    def test_first_pass_scan_inventory_is_exact_and_source_bound(self) -> None:
+    def test_thirteen_scan_inventory_is_exact_and_source_bound(self) -> None:
+        self.assertEqual(len(SCAN_SITES), 13)
         self.assertEqual(
             {site.path for site in SCAN_SITES},
             {
@@ -1186,6 +1323,18 @@ class PoolHighWaterSourceContractTests(unittest.TestCase):
         )
         self.assertEqual(
             exits[("CampaignUpdateHazardControllers", ".hazard")], ".ok"
+        )
+        self.assertEqual(
+            exits[("VocabularyUpdateProjectilesAndDamage", ".enemy")],
+            ".security_nodes",
+        )
+        self.assertEqual(
+            exits[("VocabularyUpdateProjectilesAndDamage", ".security_node")],
+            ".next",
+        )
+        self.assertEqual(
+            exits[("GameplayCampaignProjectileHitsStatic", ".door")],
+            ".clear",
         )
 
         # Every formerly proposed label now exists in the implementation;
@@ -1308,6 +1457,41 @@ class PoolHighWaterSourceContractTests(unittest.TestCase):
         update_pool = _routine("src/game/object_pool.asm", "EngineUpdatePool")
         self.assertIn("bsr.w   EnginePoolFreeSlot", update_pool)
         self.assertNotIn("EnginePoolAllocateLowest", update_pool)
+
+    def test_projectile_nested_enemy_and_device_spawns_are_rejected(self) -> None:
+        # These are synthetic future regressions, not current spawn routines.
+        # Typed destination registration ensures this catches a missing
+        # enemy/device scoped pool, not merely an unknown helper name.
+        cases = (
+            ("VocabularyUpdateProjectilesAndDamage", "VocabularyDamageEnemy", "ENEMY_POOL"),
+            ("VocabularyUpdateProjectilesAndDamage", "VocabularyDamageSecurityNode", "DEVICE_POOL"),
+            ("GameplayCampaignProjectileHitsStatic", "GameplayCampaignProjectileMayEnterNodeRect", "DEVICE_POOL"),
+        )
+        for root, callee, destination in cases:
+            with self.subTest(root=root, callee=callee, pool=destination):
+                routines = _all_routines()
+                original = routines[callee]
+                routines[callee] = RoutineSource(
+                    original.path,
+                    original.body.replace(
+                        f"{callee}:\n",
+                        f"{callee}:\n        bsr.w   SyntheticNestedHelper\n",
+                        1,
+                    ),
+                )
+                routines["SyntheticNestedHelper"] = RoutineSource(
+                    "synthetic-only",
+                    "SyntheticNestedHelper:\n        bsr.w   SyntheticSpawn\n        rts\n",
+                )
+                routines["SyntheticSpawn"] = RoutineSource(
+                    "synthetic-only",
+                    "SyntheticSpawn:\n        bsr.w   EnginePoolAllocateLowest\n        rts\n",
+                )
+                with patch.dict(ALLOCATOR_CALLER_DESTINATIONS, {"SyntheticSpawn": destination}):
+                    self.assertEqual(
+                        _typed_allocation_violations(root, routines),
+                        (("SyntheticSpawn", destination),),
+                    )
 
 
 if __name__ == "__main__":

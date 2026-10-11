@@ -5,7 +5,33 @@
   cartridge; 2 — hardware foundation; 3 — deterministic engine core; 4 —
   echo vertical slice. The M4 automated evidence freeze is complete; literal
   human hands-on play and subjective listening are not claimed by it.
-- **Current M5 candidate:** bounded CRC/projection optimization has measured
+- **Current M5 candidate:** three projectile collision scans now use the
+  existing unsigned, clamped historical pool bounds, with zero exits preserving
+  enemy-before-node priority and closed-door query results. Normal rendering
+  uses the new owned-shadow SAT entry; initialization retains the unconditional
+  80-entry clear. Invalid prior sprite counts above 64 flag and fall back to a
+  full clear. The original admission/build body, full 640-byte DMA, ordinary
+  gameplay semantics, and RAM layout are unchanged. Independent cross-review
+  clears both patches. Native focused integration tests pass 100/100, including
+  warning-free standalone assemblies and all 4,225 valid prior/next sprite-count
+  combinations compared over all 640 bytes.
+  All three builds and independent static checks pass at 1,048,576 bytes:
+  Debug `$F882` / `639058a86286e2d18c6e6201849cbdca544a8f27ef77122163cca93a3da51ebc`,
+  symbols `485c94a381fa409d99a3bff4ebd9d2a87d3f8b6baa00126f1caa99fe735c513e`;
+  Release `$69A7` / `d334b18a46c4ffa6436b3e0bb95c0947cf6047ac96d5145cbf2d0f0ead5071ff`,
+  symbols `dcf8f20049dc36a8d1e453fc23b845c6734a019bd21b15db9e2d1eef96e7a9ca`;
+  B03 Debug `$2BA2` / `e1220c057808797de5a331f9d1bb9491efb43b200d3c7279c576686b2f0fa6a2`,
+  symbols `8babab748233bf3d81598e0548ca648a736454fac3e2c91b4667ba46ed15bafc`.
+  Exact ROMs/maps are archived under
+  `artifacts/archive/m5-projectile-sat-e1220c05-20261010/`; independent reports
+  are `rom-{debug,release,b03}-projectile-sat-20261010.json`.
+  Native Milestone5 and Render suites also pass 168/168 and 90/90, with no
+  failures, errors, or skips (`host-m5-projectile-sat-20261010.json` and
+  `host-render-projectile-sat-20261010.json`).
+  Native performance/parity, full Windows All, current-ROM replays/visuals, and
+  the M5 aggregate remain pending. No measured timing improvement is claimed
+  yet for this candidate; the preceding prefix's 66 failures remain open.
+- **Preceding CRC/projection candidate:** bounded optimization has measured
   checkpoint gains and sampled replay parity. The word CRC uses a
   generated big-endian index and an internal halfword-byte-swapped state,
   restoring the ordinary raw-CRC ABI at every exit. Four-word unrolling,

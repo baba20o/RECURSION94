@@ -119,3 +119,24 @@
   breakpoint, staged events, first consumed attempt bytes, and an empty GDB
   write-packet list. Those reports and their collector sources remain
   ROM/symbol/hash bound.
+
+## D-009 — Separate full SAT rebuild from owned-shadow reuse
+
+- **Context:** Ordinary multi-echo frames still exceed their measured timing
+  budget. Clearing all 80 SAT entries discards the renderer's known zero tail,
+  but changing the existing entry to trust arbitrary prior RAM would weaken
+  its contract and make reinitialization unsafe.
+- **Decision:** Keep `RendererBuildSat` unconditional. Add the explicitly
+  preconditioned `RendererBuildSatOwnedShadow` for the guarded main-side
+  producer, with a shared bounded `RendererBuildSatRebuild` worker. Initialization
+  always uses the full entry; malformed counts above 64 flag invalid state and
+  fall back to a full clear.
+- **Rationale:** A successful admission writes all eight bytes and patches only
+  the previous current entry. Clearing the prior used prefix before rebuilding
+  therefore preserves the zero tail across growth, shrinkage, and rejection.
+  Pending-frame and checkpoint-hold paths do not mutate the shadow.
+- **Consequence:** The implementation must preserve all 640 bytes, sprite
+  priority and admission limits, the full DMA size, and the ordinary ABI.
+  Host proof and source contracts do not replace fresh native timing/parity
+  capture for the changed ROM. Low-count corruption is outside the owned-entry
+  precondition and is not silently claimed to be detected.

@@ -114,7 +114,31 @@ class CampaignCollisionContractTests(unittest.TestCase):
         self.assertIn("lea     (CANONICAL_RECTS).l,a2", routine)
         self.assertIn("dbf     d7,.rectangle", routine)
         self.assertIn("lea     (DEVICE_POOL).l,a2", routine)
+        self.assertIn(
+            "\n".join((
+                ".doors:",
+                "        lea     (DEVICE_POOL).l,a2",
+                "        moveq   #0,d7",
+                "        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d7",
+                "        cmpi.w  #DEVICE_CAPACITY,d7",
+                "        bls.s   .door_bound_ready",
+                "        moveq   #DEVICE_CAPACITY,d7",
+                ".door_bound_ready:",
+                "        tst.w   d7",
+                "        beq.w   .clear",
+                "        subq.w  #1,d7",
+                ".door:",
+            )),
+            routine,
+        )
+        self.assertNotIn("#DEVICE_CAPACITY-1,d7", routine)
         self.assertIn("dbf     d7,.door", routine)
+        self.assertIn(".clear:\n        moveq   #0,d0\n        bra.s   .done", routine)
+        self.assertIn(".hit:\n        moveq   #1,d0", routine)
+        self.assertIn("movem.l d3-d7/a2-a3,-(a7)", routine)
+        self.assertIn("movem.l (a7)+,d3-d7/a2-a3", routine)
+        self.assertLess(routine.index("(ENGINE_ROOM_LEFT).l"), routine.index(".doors:"))
+        self.assertLess(routine.index("dbf     d7,.rectangle"), routine.index(".doors:"))
         self.assertIn("#VOCAB_DEVICE_STATE_OPEN", routine)
         self.assertIn("#CAMPAIGN_DOOR_WIDTH_16_8", routine)
         self.assertIn("#CAMPAIGN_DOOR_HEIGHT_16_8", routine)

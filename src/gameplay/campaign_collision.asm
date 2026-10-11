@@ -1005,7 +1005,15 @@ GameplayCampaignProjectileHitsStatic:
 ; Closed doors are live world collision for both player and enemy pulses.
 .doors:
         lea     (DEVICE_POOL).l,a2
-        moveq   #DEVICE_CAPACITY-1,d7
+        moveq   #0,d7
+        move.b  (ENGINE_POOL_HIGH_WATER+POOL_TYPE_DEVICE-1).l,d7
+        cmpi.w  #DEVICE_CAPACITY,d7
+        bls.s   .door_bound_ready
+        moveq   #DEVICE_CAPACITY,d7
+.door_bound_ready:
+        tst.w   d7
+        beq.w   .clear
+        subq.w  #1,d7
 .door:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .door_next

@@ -22,6 +22,15 @@ may be authored in parallel only against frozen interfaces.
 
 ## Current highest-leverage action
 
+The current frozen candidate is B03 `e1220c05`: three projectile HWM scans and
+an explicitly owned SAT prefix clear. The full public SAT clear remains intact.
+Both patches have independent review, 100 focused native tests, three builds,
+and three independent static passes. Complete the preceding CRC/reset
+hash-bound comparison, then pin the new candidate's exact probe boundaries and
+measure regular/reset/natural-prefix timing and parity. Do not transfer a
+preceding-ROM performance pass onto this unmeasured image. The last measured
+natural prefix still fails 66 ordinary-frame/blank checks.
+
 The pre-timing B01/B03 runtime recaptures pass on archived hashes. Lookup,
 sprite, indexed-CRC, whole-empty projection, and bounded gameplay scans now
 have measured gains and sampled parity. The high-water candidate passes the
