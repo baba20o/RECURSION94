@@ -78,7 +78,7 @@ PINNED_RENDERER_SOURCE_SHA256 = {
         "17cdb737c5b31385eec5e399654e2b8c65423b6f31e8404ba82ae5cb433b8a84"
     ),
     "src/render/gameplay_renderer_sprites.asm": (
-        "26a82e412fbee4ddc91d0b013f7c595c2354e85f3260e0fc09c486fe204f96b9"
+        "ac9360af87768d24c895e5f28606328d785972cd99b166682e3e4a9683e1fe2d"
     ),
 }
 

@@ -516,6 +516,25 @@ class RendererReferenceTests(unittest.TestCase):
 
 
 class RendererSourceTests(unittest.TestCase):
+    def test_display_off_hardware_calls_do_not_depend_on_word_branch_range(self) -> None:
+        core = (ROOT / "src/render/gameplay_renderer_core.asm").read_text(
+            encoding="utf-8"
+        )
+        # The integrated game can place these more than 32 KiB after the VDP
+        # helper, even though the renderer's isolated assembly fixture fits.
+        for label in (
+            "RendererLoadPaletteAndTiles",
+            "RendererClearPlaneA",
+            "RendererBuildPlaneB",
+        ):
+            with self.subTest(routine=label):
+                body = core.split(f"\n{label}:\n", 1)[1]
+                next_label = re.search(r"(?m)^[A-Z][A-Za-z0-9_]*:", body)
+                if next_label:
+                    body = body[:next_label.start()]
+                self.assertIn("jsr     (VdpSetVramWriteAddress).l", body)
+                self.assertNotIn("bsr.w   VdpSetVramWriteAddress", body)
+
     def test_public_entry_points_and_main_side_queue_contract_exist(self) -> None:
         core = (ROOT / "src/render/gameplay_renderer_core.asm").read_text(
             encoding="utf-8"

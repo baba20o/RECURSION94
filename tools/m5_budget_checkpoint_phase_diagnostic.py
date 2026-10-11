@@ -198,6 +198,18 @@ PROFILE_REPAIR_PC["pool"] = {
     "raw_crc_end": 0x6A8A, "renderer_start": 0x8C36,
     "renderer_end": 0x8E14,
 }
+HIGH_WATER_ROM_SHA256 = "96dec5774bcda0d5d0fc1029a051122a8cc9e5f9b2bf62fcba95b87ede4dd11f"
+HIGH_WATER_SYMBOL_SHA256 = "6da707bacf8436911b5583f954258c4f9aa54c7a222ba8bf51fe46dc0e795adb"
+PROFILE_ROM_PINS["highwater"] = HIGH_WATER_ROM_SHA256
+PROFILE_SYMBOL_PINS["highwater"] = HIGH_WATER_SYMBOL_SHA256
+PROFILE_REPAIR_PC["highwater"] = {
+    **PROFILE_REPAIR_PC["pool"], "campaign_projection_start": 0x6AFA,
+    "campaign_projection_end": 0x6BAA,
+    "engine_projection_start": 0x2162, "engine_projection_end": 0x237A,
+    "tail_start": 0x56D2, "tail_end": 0x56E6,
+    "raw_crc_start": 0x6B64, "raw_crc_end": 0x6B68,
+    "renderer_start": 0x8D14, "renderer_end": 0x8EF2,
+}
 ALLOWED_COMMANDS = frozenset(
     {"breakpoint", "commands", "printf", "if", "else", "continue", "end"}
 )
@@ -376,7 +388,7 @@ def repair_pc_contract(
     exact_windows = {
         "raw_crc_call": (
             addresses["raw_crc_start"],
-            "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
+            "6100B08C46812801" if profile == "highwater" else "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
         ),
         "raw_crc_return": (
             addresses["raw_crc_end"],
@@ -415,6 +427,10 @@ def repair_pc_contract(
         exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001967874003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24D2, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x2512, "224B4A05660E3A033003C0FC0018D2C06000008C")
+    if profile == "highwater":
+        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
+        exact_windows["pool_prior_current_count"] = (0x24EA, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
+        exact_windows["pool_empty_skip"] = (0x252A, "224B4A05660E3A033003C0FC0018D2C06000008C")
     for name, (address, expected_hex) in exact_windows.items():
         expected = bytes.fromhex(expected_hex)
         if rom[address : address + len(expected)] != expected:
@@ -2393,7 +2409,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--report", default=DEFAULT_REPORT_RELATIVE_PATH)
     parser.add_argument("--trace", default=DEFAULT_TRACE_RELATIVE_PATH)
-    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool"), default="baseline")
+    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater"), default="baseline")
     parser.add_argument("--timeout-seconds", type=float, default=180.0)
     return parser
 

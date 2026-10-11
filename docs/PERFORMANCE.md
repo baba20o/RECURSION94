@@ -195,6 +195,29 @@ regular/timeout/reset CRCs match. The paired report
 and records protocol/parity PASS, budget FAIL. ROMs/symbols are archived under
 `artifacts/archive/m5-empty-pool-25a74bd2-20261010/`.
 
+The high-water candidate, B03 `96dec577`, bounds ten gameplay scans using the
+legal lowest-free allocator's historical maximum live count. It retains slot
+order, active tests, actor scans, and every zero-bound publication side effect.
+All three ROM builds and independent static checks pass. Code growth required
+three display-off initialization calls to use absolute-long JSR; per-frame
+renderer code is unchanged. Tick60 simulation falls from 89,912 to 80,828
+cycles (9,084 saved), leaving 2,375 below the 83,203 limit; projection remains
+52,890 and complete main work is 81,590. Timeout total720 simulation takes
+78,380 and reset main work 250,444. At total722 simulation is 34,070 (12,004
+saved), the masked renderer remains 71,428, and whole main is 107,448. The
+extended reset diagnostic passes all sampled cycle/blank checks with exactly
+IRQs719–726, no late IRQ727, and unchanged two-service-VBlank reset cadence.
+All sampled CRCs and all 6,240 renderer bytes match the preceding candidate.
+The exact `.json`/`.log` pairs are
+`checkpoint-highwater-96dec577-tick59-tick61-20261010` and
+`reset-overlay-highwater-96dec577-total719-total724-20261010` under
+`artifacts/diagnostics/m5-budget/`. The paired reanalysis
+`high-water-timing-parity-25a74bd2-to-96dec577-20261010.json` has SHA-256
+`23d78a1fdcdb7309047d5bea443b045ecd38e4d7b9132064d4d53eac583fde66`.
+This is a bounded sampled pass, not the canonical M5 cycle gate. Later
+three-actor checkpoints, projectile interactions, full budget/replay routes,
+and objective visual recapture remain required before M5 freeze.
+
 ## Uninterrupted M4 renderer/VBlank and cross-clock gate
 
 Run the dedicated gate only after the final Debug ROM hash is fixed:

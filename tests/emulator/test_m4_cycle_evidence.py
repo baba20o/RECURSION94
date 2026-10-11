@@ -30,6 +30,55 @@ ROOT = Path(__file__).resolve().parents[2]
 SHA = "a" * 64
 
 
+def synthetic_legacy_jsr_fixture() -> tuple[bytes, dict[str, int]]:
+    """Invented legacy-loop opcode fixture, never a ROM or timing capture.
+
+    Current M5 reset-token coalescing intentionally no longer has the legacy
+    main-start signature. Test that old decoder without relabelling a current
+    M5 binary as compatible historical evidence.
+    """
+    symbols = {
+        "MainLoop": 0x100,
+        "MainLoopGameplayStepCall": 0x110,
+        "MainLoopPostGameplayStepCall": 0x114,
+        "MainLoopCommitResetCall": 0x120,
+        "MainLoopPostCommitReset": 0x124,
+        "MainLoopPostGameplayStep": 0x140,
+        "MainLoopWaitForVBlank": 0x180,
+        "VBlankInterrupt": 0x400,
+        "GameplayStep": 0x1000,
+        "GameplayCommitAndReset": 0x1500,
+        "GameplayRendererBuildAndQueue": 0x1800,
+        "EngineBuildProjection": 0x1A00,
+        "DEBUG_FRAME_TOKEN": 0xFFF014,
+        "DEBUG_FRAME_COUNTER": 0xFFF010,
+        "DEBUG_BOOT_STAGE": 0xFFF018,
+        "ENGINE_TICK": 0xFF1410,
+        "ENGINE_ATTEMPT": 0xFF1412,
+        "ENGINE_CHECKPOINT_COUNT": 0xFF1420,
+        "TIMELINE_ATTEMPT_LENGTH": 0xFF7000,
+    }
+    image = bytearray(0x2000)
+    image[0x100:0x10A] = bytes.fromhex("537900FFF01446FC2500")
+    for call, target in (
+        (0x110, 0x1000),
+        (0x120, 0x1500),
+        (0x1010, 0x1A00),
+        (0x1020, 0x1A00),
+        (0x1030, 0x1A00),
+    ):
+        image[call:call + 4] = bytes.fromhex("6100") + (
+            target - (call + 2)
+        ).to_bytes(2, "big", signed=True)
+    image[0x140:0x146] = bytes.fromhex("4EB900001800")
+    image[0x146:0x14A] = bytes.fromhex("6000") + (
+        0x100 - (0x146 + 2)
+    ).to_bytes(2, "big", signed=True)
+    image[0x420:0x422] = bytes.fromhex("4E73")
+    image[0x1014:0x101A] = bytes.fromhex("427900FF1420")
+    return bytes(image), symbols
+
+
 def synthetic_main_records(
     crossing_index: int | None = None,
 ) -> tuple[list[dict], list[dict]]:
@@ -427,9 +476,8 @@ class OtherAnalysisTests(unittest.TestCase):
 
 
 class ContractTests(unittest.TestCase):
-    def test_current_absolute_renderer_call_is_strictly_derived(self) -> None:
-        rom = (ROOT / "build/recursion94-debug.bin").read_bytes()
-        symbols = parse_vasm_symbols(ROOT / "build/recursion94-debug.sym")
+    def test_synthetic_legacy_absolute_renderer_call_is_strictly_derived(self) -> None:
+        rom, symbols = synthetic_legacy_jsr_fixture()
         contract = derive_pc_contract(rom, symbols)
         derivation = contract["main_end_derivation"]
         renderer_call = symbols["MainLoopPostGameplayStep"]
@@ -450,10 +498,8 @@ class ContractTests(unittest.TestCase):
         )
 
     def test_duplicate_renderer_target_call_fails_closed(self) -> None:
-        rom = bytearray(
-            (ROOT / "build/recursion94-debug.bin").read_bytes()
-        )
-        symbols = parse_vasm_symbols(ROOT / "build/recursion94-debug.sym")
+        fixture, symbols = synthetic_legacy_jsr_fixture()
+        rom = bytearray(fixture)
         contract = derive_pc_contract(bytes(rom), symbols)
         duplicate = contract["addresses"]["main_start"] + 10
         renderer = symbols["MainLoopPostGameplayStep"]
@@ -463,6 +509,14 @@ class ContractTests(unittest.TestCase):
             EvidenceFailure, "exactly one supported call opcode"
         ):
             derive_pc_contract(bytes(rom), symbols)
+
+    def test_current_m5_loop_is_not_accepted_as_legacy_timing_evidence(self) -> None:
+        rom = (ROOT / "build/recursion94-debug.bin").read_bytes()
+        symbols = parse_vasm_symbols(ROOT / "build/recursion94-debug.sym")
+        with self.assertRaisesRegex(
+            EvidenceFailure, "token-decrement/start signature is not unique"
+        ):
+            derive_pc_contract(rom, symbols)
 
     def test_archived_m4_bsr_renderer_call_remains_supported(self) -> None:
         archive = (

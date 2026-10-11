@@ -792,6 +792,42 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
             with self.assertRaises(reset.EvidenceFailure):
                 reset.prefix_schedule()
 
+    def test_highwater_profile_binds_actual_anchors_without_changing_marker_program(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-high-water-96dec577-20261010/level-B03"
+        rom = (archive / "recursion94-debug.bin").read_bytes()
+        symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
+        self.assertEqual(hashlib.sha256(rom).hexdigest(), reset.HIGH_WATER_ROM_SHA256)
+        self.assertEqual(hashlib.sha256((archive / "recursion94-debug.sym").read_bytes()).hexdigest(), reset.HIGH_WATER_SYMBOL_SHA256)
+        for helper in (reset.extended_pc_contract, regular.repair_pc_contract):
+            contract = helper(rom, symbols, profile="highwater")
+            self.assertEqual(contract["addresses"]["engine_projection_start"], 0x2162)
+            self.assertEqual(contract["addresses"]["tail_start"], 0x56D2)
+            for address in (0x1C2E, 0x24F4, 0x252E, 0x6B64, 0x8EF2):
+                bad = bytearray(rom)
+                bad[address] ^= 1
+                with self.assertRaises(reset.EvidenceFailure):
+                    helper(bytes(bad), symbols, profile="highwater")
+        old = parse_vasm_symbols(ROOT / "artifacts/archive/m5-empty-pool-25a74bd2-20261010/level-B03/recursion94-debug.sym")
+        for builder, kwargs in ((reset.build_command_script, {"extended_overlay": True}), (regular.build_repair_command_script, {})):
+            strip_breakpoints = lambda text: [line for line in text.splitlines() if not line.startswith("breakpoint ")]
+            self.assertEqual(strip_breakpoints(builder(symbols, profile="highwater", **kwargs)), strip_breakpoints(builder(old, profile="pool", **kwargs)))
+
+    def test_highwater_comparison_admits_only_the_sampled_cycle_blank_pass(self) -> None:
+        report = reset.derive_lookup_comparison(ROOT, candidate_profile="highwater")
+        self.assertEqual(report["comparison_profiles"], {"before": "pool", "after": "highwater"})
+        self.assertEqual(report["status"], "diagnostic_pass")
+        self.assertFalse(report["canonical"])
+        self.assertTrue(report["diagnostic_only"])
+        self.assertEqual(report["diagnostic_protocol_status"], "pass")
+        self.assertEqual(report["parity_status"], "pass")
+        self.assertTrue(all(report["parity_checks"].values()))
+        self.assertEqual(report["cycle_blank_budget_status"], "pass")
+        self.assertEqual(report["tick60_simulation_budget"]["after_cpu_cycles"], 80828)
+        self.assertEqual(report["tick60_simulation_budget"]["saved_cpu_cycles"], 9084)
+        self.assertEqual(report["tick60_simulation_budget"]["remaining_excess_cpu_cycles"], 0)
+        self.assertEqual(report["analyses"]["highwater_reset"]["phase_spans"]["722"]["gameplay"]["delta_cpu_cycles_ceil"], 34070)
+        self.assertEqual(report["analyses"]["highwater_reset"]["budget_errors"], [])
+
     def test_prefix_preparation_program_is_bounded_read_only_and_balanced(self) -> None:
         archive = ROOT / "artifacts/archive/m5-empty-pool-25a74bd2-20261010/level-B03"
         symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")

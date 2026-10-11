@@ -6,26 +6,28 @@
   echo vertical slice. The M4 automated evidence freeze is complete; literal
   human hands-on play and subjective listening are not claimed by it.
 - **Current M5 ROMs:** all images are 1,048,576 bytes. Canonical Debug
-  checksum/SHA-256: `$7343` /
-  `9c92b3f61fd8509110615e05caf57e36ed414187270a8e4a2201f90e294469df`;
+  checksum/SHA-256: `$1A55` /
+  `9b2122f405dc7c6a2692eea2250ac18acff3ded08804aa67ab72316cc1b86d34`;
   symbol map:
-  `cd35ad45231f94aa32ade6bf8d4266899cb639efe54bf36e95745b48bc4030ce`.
-  Canonical Release checksum/SHA-256: `$E69C` /
-  `97cc2010df56a23c3516d027022b0c922c2b883dd4be521cd95d8b641d1047f1`;
+  `79400e37fe90553891a010d5714c073f8ce545b92db3f6242e48bce881c56f1d`.
+  Canonical Release checksum/SHA-256: `$8C7C` /
+  `9591acc588a60e6217330e810216950df43761ef2a74cd4914f788a407b572d6`;
   symbol map:
-  `e1259708cab848abb4797284b7404a604b6ce42179e65e82fc1b1387a061f35f`.
-  The dedicated B03 Debug fixture checksum/SHA-256 is `$A64F` /
-  `25a74bd2d9314f2f1a2e5c9c49279449e1d1f78c8bcd7189600073b7a0ae6152`;
+  `bba032fce4f3e3d98ce2da81c314b64170fc44655362a08646876ed415c04761`.
+  The dedicated B03 Debug fixture checksum/SHA-256 is `$4D6D` /
+  `96dec5774bcda0d5d0fc1029a051122a8cc9e5f9b2bf62fcba95b87ede4dd11f`;
   symbol map:
-  `ea8d8637ad5beb337a22266041dd5d05506e2f67b4471c617c1449a0a7827728`.
-  These add isolated whole-empty projection elision to the measured lookup,
-  sprite, and indexed-CRC repairs; three builds and independent statics pass,
-  with measured improvement and exact sampled parity, but remaining timing
-  failures. The source additionally contains a ten-loop gameplay high-water
-  repair with 100/100 affected native Windows host tests passing; its new ROM
-  builds, replay parity, and cycle measurements are pending. The ROM identities
-  above therefore describe the preceding measured candidate, not this newer
-  source revision.
+  `6da707bacf8436911b5583f954258c4f9aa54c7a222ba8bf51fe46dc0e795adb`.
+  These add ten high-water-bounded gameplay scans to the measured lookup,
+  sprite, indexed-CRC, and whole-empty projection repairs. Three builds and
+  independent statics pass; 143 focused native Windows tests passed before
+  the build-only integration repair. Code growth exposed three out-of-range
+  relative calls in display-off renderer initialization; those calls now use
+  explicit absolute-long JSR, with a new source regression. The current
+  first-attempt tick60 and extended reset diagnostics pass their protocol and
+  sampled timing checks, with exact sampled parity. Later multi-echo timing and
+  full current-ROM replay/visual/aggregate recapture remain pending. Images/maps
+  are archived under `artifacts/archive/m5-high-water-96dec577-20261010/`.
   The preceding
   replay-proven images/symbols are preserved under
   `artifacts/archive/m5-pre-timing-140039e3-20261010/`; their reports are not
@@ -60,6 +62,18 @@
   standalone assembly fixture covering projection, exact source binding,
   reset initialization, prior active records, reuse, and malformed-domain
   rejection. Runtime measurement remains separate.
+  The first high-water Windows All run discovers 879 test entries with 33
+  errors and zero skips, preserved in
+  `artifacts/reports/host-tests-high-water-20261010.json`: 29 errors derive
+  from a stale reviewed renderer pin, two legacy timing tests use the changed
+  M5 main loop, one old CRC source assertion expects the pre-indexed loop,
+  and one import error exposes the missing native `jsonschema` dependency.
+  After explicit legacy-fixture/CRC assertion repairs, 103 focused native tests
+  pass. The renderer sprite pin was refreshed only after independent exact
+  source-delta, archived-opcode, raw-buffer, and CRC-parity review; native visual
+  45/45 and aggregate/validator 125/125 now pass. The reproducible schema
+  dependency repair and a fresh full run are still required; an import failure does not count
+  the affected module's undiscovered tests as passing.
   Its first reset capture timed out before gameplay because READY was followed
   by a nonempty debugger prompt (`>  y`). The exact 40-line failure tail is
   preserved as `reset-overlay-pool-25a74bd2-ready-timeout-20261010.txt` in the
@@ -181,6 +195,20 @@
   52,890. The reset main interval saves 13,559 cycles; service cadence stays
   at two VBlanks. Sampled CRCs and all 6,240 renderer bytes match. Ordinary
   post-reset renderer overruns remain; gameplay scan bounds are next.
+- **Measured high-water gameplay repair:** B03 `96dec577` reduces tick60 to
+  80,828 cycles, saving 9,084 and leaving 2,375 below the 83,203 limit.
+  Projection remains 52,890. Timeout total720 gameplay takes 78,380; the reset
+  main interval takes 250,444. At total722 gameplay takes 34,070 and the
+  unchanged masked renderer 71,428, with whole main 107,448. Both bounded
+  diagnostics pass protocol and sampled budget checks; the reset fixture no
+  longer reaches late IRQ727 or commits outside blank. Its two reset-service
+  VBlanks and coalesce count are unchanged. All sampled CRCs and six raw
+  renderer buffers (6,240 bytes) match the empty-pool candidate exactly.
+  The paired comparison is
+  `high-water-timing-parity-25a74bd2-to-96dec577-20261010.json`, SHA-256
+  `23d78a1fdcdb7309047d5bea443b045ecd38e4d7b9132064d4d53eac583fde66`.
+  This is not a full M5 cycle pass: later multi-echo checkpoints, the canonical
+  budget route, current-ROM replays, visual evidence, and critic remain pending.
 - **Additional contract finding:** HW-003 records excess RUNNING interrupt
   responsibilities under the repository's strict ISR policy. The historical
   automated M4 reports remain intact, but do not waive that release blocker.

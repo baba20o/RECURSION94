@@ -36,9 +36,9 @@
   "facts": {
     "assembled_bytes": null,
     "bytes": 1048576,
-    "crc32": "aa600baf",
+    "crc32": "81caad0c",
     "header": {
-      "calculated_checksum": 42575,
+      "calculated_checksum": 19821,
       "console": "SEGA MEGA DRIVE",
       "copyright": "(C)R94 2026.JUL",
       "domestic_title": "RECURSION 94: THE LAST CARTRIDGE",
@@ -57,9 +57,9 @@
         "start": 2097153,
         "type_flags_hex": "F820"
       },
-      "stored_checksum": 42575
+      "stored_checksum": 19821
     },
-    "sha256": "25a74bd2d9314f2f1a2e5c9c49279449e1d1f78c8bcd7189600073b7a0ae6152",
+    "sha256": "96dec5774bcda0d5d0fc1029a051122a8cc9e5f9b2bf62fcba95b87ede4dd11f",
     "vectors": {
       "entries": [
         16777212,

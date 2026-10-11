@@ -23,11 +23,15 @@ may be authored in parallel only against frozen interfaces.
 ## Current highest-leverage action
 
 The pre-timing B01/B03 runtime recaptures pass on archived hashes. Lookup,
-sprite, and indexed-CRC repairs now have measured gains and sampled parity,
-but do not pass the separate simulation/blank budgets. Continue PERF-001/002
-one bounded cause at a time: whole-empty projection elision, then bounded
-gameplay scans as measurements justify. Preserve raw projection/SAT/HUD parity
-and remeasure each change, including later-attempt checkpoints with echoes.
+sprite, indexed-CRC, whole-empty projection, and bounded gameplay scans now
+have measured gains and sampled parity. The high-water candidate passes the
+first-attempt checkpoint and extended reset timing samples. Next measure the
+natural later-attempt prefix with three actors, all four early checkpoints,
+and projectile/node interactions; a passing one-actor sample is not a full
+M5 cycle pass. Preserve raw projection/SAT/HUD parity and repair any measured
+remaining cause without removing required mechanics or reducing echo counts.
+Repair the native All-suite source-pin/legacy-fixture/dependency failures and
+rerun it without exclusions.
 Harden the late-entry VBlank detector. Refresh changed-ROM replay, counter,
 cycle, and five-state visual evidence before independent image review.
 Run Windows All and the fail-closed

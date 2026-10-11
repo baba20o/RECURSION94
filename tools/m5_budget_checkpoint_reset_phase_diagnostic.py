@@ -290,6 +290,23 @@ PROFILE_EXTENDED_PC["pool"] = {
     "renderer_unmasked": 0x8E16, "hud_begin": 0x8CEE,
     "hud_end": 0x8CF2, "sat_end": 0x8CF6, "overlay_end": 0x8CFA,
 }
+HIGH_WATER_ROM_SHA256 = "96dec5774bcda0d5d0fc1029a051122a8cc9e5f9b2bf62fcba95b87ede4dd11f"
+HIGH_WATER_SYMBOL_SHA256 = "6da707bacf8436911b5583f954258c4f9aa54c7a222ba8bf51fe46dc0e795adb"
+PROFILE_ROM_PINS["highwater"] = HIGH_WATER_ROM_SHA256
+PROFILE_SYMBOL_PINS["highwater"] = HIGH_WATER_SYMBOL_SHA256
+PROFILE_PC["highwater"] = {
+    **PROFILE_PC["pool"], "timeout_projection_call": 0x3DB6,
+    "reset_projection_call": 0x3A12, "campaign_projection_end": 0x6BAA,
+    "engine_projection_start": 0x2162, "engine_projection_end": 0x237A,
+    "tail_start": 0x56D2, "tail_end": 0x56E6,
+    "raw_crc_start": 0x6B64, "raw_crc_end": 0x6B68,
+    "renderer_start": 0x8D14, "renderer_end": 0x8EF2,
+}
+PROFILE_EXTENDED_PC["highwater"] = {
+    **PROFILE_EXTENDED_PC["pool"], "renderer_mask": 0x8D10,
+    "renderer_unmasked": 0x8EF4, "hud_begin": 0x8DCC,
+    "hud_end": 0x8DD0, "sat_end": 0x8DD4, "overlay_end": 0x8DD8,
+}
 PC_SYMBOL_BINDINGS = {
     "gameplay_call": "MainLoopGameplayStepCall",
     "gameplay_return": "MainLoopPostGameplayStepCall",
@@ -496,7 +513,7 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
     if profile not in PROFILE_PC:
         raise EvidenceFailure("unknown reset diagnostic profile")
     addresses = PROFILE_PC[profile]
-    relocation = 36 if profile == "pool" else 12 if profile != "baseline" else 0
+    relocation = 258 if profile == "highwater" else 36 if profile == "pool" else 12 if profile != "baseline" else 0
     renderer_relocation = addresses["renderer_start"] - PC["renderer_start"]
     errors: list[str] = []
     for name, symbol_name in PC_SYMBOL_BINDINGS.items():
@@ -510,16 +527,16 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
             )
     if symbols.get("GameplayBuildProjection") != 0x000069F8 + relocation:
         errors.append("GameplayBuildProjection symbol drift")
-    if symbols.get("GameplayCommitAndReset") != (0x3672 if profile == "pool" else 0x365A):
+    if symbols.get("GameplayCommitAndReset") != (0x368A if profile == "highwater" else 0x3672 if profile == "pool" else 0x365A):
         errors.append("GameplayCommitAndReset symbol drift")
     if symbols.get("MainLoopCommitResetCall") != 0x00000320:
         errors.append("MainLoopCommitResetCall symbol drift")
     if symbols.get("Crc32UpdateRaw") != 0x00001BF2:
         errors.append("Crc32UpdateRaw symbol drift")
-    if symbols.get("RendererPrepareResetOverlay") != 0x000091CC + renderer_relocation:
+    if symbols.get("RendererPrepareResetOverlay") != 0x000091CC + renderer_relocation + (6 if profile == "highwater" else 0):
         errors.append("RendererPrepareResetOverlay symbol drift")
     exact_windows = {
-        "gameplay_call": (PC["gameplay_call"], "61003730" if profile == "pool" else "61003718"),
+        "gameplay_call": (PC["gameplay_call"], "61003748" if profile == "highwater" else "61003730" if profile == "pool" else "61003718"),
         "gameplay_return": (PC["gameplay_return"], "0C400008"),
         "post_commit": (PC["post_commit"], "4A406712"),
         "renderer_call": (0x0000033E, f"4EB9{addresses['renderer_start'] - 10:08X}"),
@@ -529,22 +546,22 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
         "wait_vblank": (PC["wait_vblank"], "4E722500"),
         "timeout_projection_call": (
             addresses["timeout_projection_call"],
-            "61002C7C" if relocation else "61002C70",
+            "61002D42" if profile == "highwater" else "61002C7C" if relocation else "61002C70",
         ),
         "reset_projection_call": (
             addresses["reset_projection_call"],
-            "61003020" if relocation else "61003014",
+            "610030E6" if profile == "highwater" else "61003020" if relocation else "61003014",
         ),
         "campaign_projection_return": (
             addresses["campaign_projection_end"],
             "4E75",
         ),
         "engine_projection_return": (
-            PC["engine_projection_end"],
+            addresses["engine_projection_end"],
             "4E75",
         ),
         "tail_return": (addresses["tail_end"], "4E75"),
-        "raw_crc_call_return": (addresses["raw_crc_start"], "6100B16A4681" if profile == "pool" else "6100B1824681" if relocation else "6100B18E4681"),
+        "raw_crc_call_return": (addresses["raw_crc_start"], "6100B08C4681" if profile == "highwater" else "6100B16A4681" if profile == "pool" else "6100B1824681" if relocation else "6100B18E4681"),
         "renderer_mask": (addresses["renderer_start"] - 4, "46FC2700"),
         "renderer_checkpoint_gate": (
             0x00008C7C + renderer_relocation,
@@ -571,6 +588,10 @@ def pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str = "basel
         exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001967874003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24D2, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x2512, "224B4A05660E3A033003C0FC0018D2C06000008C")
+    if profile == "highwater":
+        exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
+        exact_windows["pool_prior_current_count"] = (0x24EA, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
+        exact_windows["pool_empty_skip"] = (0x252A, "224B4A05660E3A033003C0FC0018D2C06000008C")
     for name, (address, expected_hex) in exact_windows.items():
         expected = bytes.fromhex(expected_hex)
         if rom[address : address + len(expected)] != expected:
@@ -1917,6 +1938,8 @@ def extended_pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str
         windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EB5E", "hud_end": "6100F338", "overlay_end": "6100831E"}
     if profile == "pool":
         windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EB5E", "hud_end": "6100F338", "overlay_end": "61008306"}
+    if profile == "highwater":
+        windows = {**EXTENDED_WINDOWS, "hud_begin": "6100EB5E", "hud_end": "6100F338", "sat_end": "610004F6", "overlay_end": "61008228"}
     if symbols.get("MainLoop") != 0x2C2:
         raise EvidenceFailure("extended MainLoop symbol drift")
     for name, address in addresses.items():
@@ -1976,7 +1999,7 @@ def derive_extended_baseline(root: Path) -> dict[str, Any]:
 
 def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -> dict[str, Any]:
     """Exact offline before/after proof for one isolated lookup or sprite edit."""
-    if candidate_profile not in {"lookup", "sprite", "indexed", "pool"}:
+    if candidate_profile not in {"lookup", "sprite", "indexed", "pool", "highwater"}:
         raise EvidenceFailure("unsupported isolated comparison profile")
     directory = root / "artifacts/diagnostics/m5-budget"
     captures = {
@@ -1986,7 +2009,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
         "lookup_regular": ("checkpoint-lookup-9a741642-tick59-tick61-20261010", "f6fd781038736198d7fc9e5a29367b8e7405904c0523b470f06e61c72332d555", "56c76013eff2eaa33ff818d7e338c1e3da8e99d80f9068582ebfcc98d4af1fb9"),
     }
     roles = {"baseline": "baseline", "lookup": "lookup"}
-    if candidate_profile in {"sprite", "indexed", "pool"}:
+    if candidate_profile in {"sprite", "indexed", "pool", "highwater"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -1994,7 +2017,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-sprite-09be6696-tick59-tick61-20261010", "29234a101b1247994da4e2b2b1b87cf7d4a199c12414fbb450b51701626d12f4", "899442b76066898e8c59508c1859fa9a5353202612459f0bd8be51414086dc94"),
         }
         roles = {"baseline": "lookup", "lookup": "sprite"}
-    if candidate_profile in {"indexed", "pool"}:
+    if candidate_profile in {"indexed", "pool", "highwater"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2002,7 +2025,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-indexed-c051995c-tick59-tick61-20261010", "bdf589b3c40871959d0c951ea2f00c5cd3c270349fe7668d29e9d0802771de46", "f1b7b69bfcb255294392e5a6c660304490dfaa8ce53928c18d609478646f9af6"),
         }
         roles = {"baseline": "sprite", "lookup": "indexed"}
-    if candidate_profile == "pool":
+    if candidate_profile in {"pool", "highwater"}:
         captures = {
             "baseline_reset": captures["lookup_reset"],
             "baseline_regular": captures["lookup_regular"],
@@ -2010,6 +2033,14 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
             "lookup_regular": ("checkpoint-pool-25a74bd2-tick59-tick61-20261010", "29bf381c1475a19d3346d742f06dfdea38cd901bd53a8cbb550ee0bfd00d6ace", "6403c02d748d6ac1d0874e849a87a4524b8d36a7ce399a678cd2f75bd4a74d36"),
         }
         roles = {"baseline": "indexed", "lookup": "pool"}
+    if candidate_profile == "highwater":
+        captures = {
+            "baseline_reset": captures["lookup_reset"],
+            "baseline_regular": captures["lookup_regular"],
+            "lookup_reset": ("reset-overlay-highwater-96dec577-total719-total724-20261010", "04011af7c1f75c4c518bbf169a560ec8368d589ff440199dc258393d6a808c77", "4f47773376fb623b6f525648b9974980b4541b9c69c1add023360ecbe568ea3b"),
+            "lookup_regular": ("checkpoint-highwater-96dec577-tick59-tick61-20261010", "c852a44a1bc768cd22392381e1644b8916b3467e6922e5fb0d9aa250bda96462", "2243c934a1f5554e729afb2325f3ee3b4f1d9a7b7cec7a05d8e8413dc356b15c"),
+        }
+        roles = {"baseline": "pool", "lookup": "highwater"}
     reports: dict[str, Any] = {}
     analyses: dict[str, Any] = {}
     sources: dict[str, Any] = {}
@@ -2020,7 +2051,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
         capture = json.loads(report_path.read_text("utf-8"))
         role, family = name.split("_")
         profile = roles[role]
-        archive_name = {"baseline": "m5-pre-timing-140039e3-20261010", "lookup": "m5-lookup-only-9a741642-20261010", "sprite": "m5-sprite-loop-09be6696-20261010", "indexed": "m5-crc-index-c051995c-20261010", "pool": "m5-empty-pool-25a74bd2-20261010"}[profile]
+        archive_name = {"baseline": "m5-pre-timing-140039e3-20261010", "lookup": "m5-lookup-only-9a741642-20261010", "sprite": "m5-sprite-loop-09be6696-20261010", "indexed": "m5-crc-index-c051995c-20261010", "pool": "m5-empty-pool-25a74bd2-20261010", "highwater": "m5-high-water-96dec577-20261010"}[profile]
         archive = root / "artifacts/archive" / archive_name / "level-B03"
         rom, sym = archive / "recursion94-debug.bin", archive / "recursion94-debug.sym"
         rom_hash = PROFILE_ROM_PINS[profile]
@@ -2079,7 +2110,7 @@ def derive_lookup_comparison(root: Path, *, candidate_profile: str = "lookup") -
     after_tick60 = analyses["lookup_regular"]["phase_spans"]["gameplay_tick60"]["delta_cpu_cycles_ceil"]
     budget_pass = after_tick60 <= 83203 and analyses["lookup_reset"]["budget_status"] == "pass"
     return {
-        "schema": "r94-m5-b03-" + {"lookup": "lookup-only", "sprite": "sprite-loop", "indexed": "crc-index", "pool": "empty-pool"}[candidate_profile] + "-timing-parity-v1",
+        "schema": "r94-m5-b03-" + {"lookup": "lookup-only", "sprite": "sprite-loop", "indexed": "crc-index", "pool": "empty-pool", "highwater": "high-water"}[candidate_profile] + "-timing-parity-v1",
         "status": "diagnostic_pass" if all(parity.values()) and budget_pass else "diagnostic_fail",
         "diagnostic_protocol_status": "pass",
         "parity_status": "pass" if all(parity.values()) else "fail",
@@ -3348,12 +3379,13 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--trace", default=DEFAULT_TRACE_RELATIVE_PATH)
     parser.add_argument("--extended-overlay", action="store_true", help="extend the live reset diagnostic through total724; requires explicit new report/trace paths")
     parser.add_argument("--ready-console-only", action="store_true", help="preserve one read-only READY console/input-queue diagnostic; never executes gameplay")
-    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool"), default="baseline")
+    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater"), default="baseline")
     parser.add_argument("--extended-baseline-reanalyse", metavar="NEW_REPORT", help="write a new offline derivation from the pinned extended baseline without changing its capture")
     parser.add_argument("--lookup-compare", metavar="NEW_REPORT", help="write a pinned offline baseline/lookup-only timing and raw-buffer comparison")
     parser.add_argument("--sprite-compare", metavar="NEW_REPORT", help="write a pinned offline lookup-only/sprite-loop timing and raw-buffer comparison")
     parser.add_argument("--indexed-compare", metavar="NEW_REPORT", help="write a pinned offline sprite-loop/indexed-CRC timing and raw-buffer comparison")
     parser.add_argument("--pool-compare", metavar="NEW_REPORT", help="write a pinned offline indexed-CRC/empty-pool timing and raw-buffer comparison")
+    parser.add_argument("--highwater-compare", metavar="NEW_REPORT", help="write a pinned offline empty-pool/high-water timing and raw-buffer comparison")
     parser.add_argument(
         "--offline-reanalyse",
         action="store_true",
@@ -3380,15 +3412,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise SystemExit("console-helper arguments are incomplete")
         return _console_helper_main(args)
     root = Path(args.root).resolve()
-    if args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare:
-        if sum(bool(value) for value in (args.lookup_compare, args.sprite_compare, args.indexed_compare, args.pool_compare)) != 1:
+    if args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare:
+        if sum(bool(value) for value in (args.lookup_compare, args.sprite_compare, args.indexed_compare, args.pool_compare, args.highwater_compare)) != 1:
             raise EvidenceFailure("choose exactly one isolated comparison")
-        output = Path(args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare)
+        output = Path(args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare)
         if not output.is_absolute():
             output = root / output
         if output.exists():
             raise EvidenceFailure("lookup comparison output already exists")
-        report = derive_lookup_comparison(root, candidate_profile="pool" if args.pool_compare else "indexed" if args.indexed_compare else "sprite" if args.sprite_compare else "lookup")
+        report = derive_lookup_comparison(root, candidate_profile="highwater" if args.highwater_compare else "pool" if args.pool_compare else "indexed" if args.indexed_compare else "sprite" if args.sprite_compare else "lookup")
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
         print(f"Isolated timing comparison: protocol={report['diagnostic_protocol_status']}, parity={report['parity_status']}, budget={report['cycle_blank_budget_status']}")

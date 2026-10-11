@@ -175,8 +175,7 @@ class AssemblyContractTests(unittest.TestCase):
             "ror.w   #8,d2",
             "eor.w   d1,d2",
             "lsl.l   #2,d2",
-            "adda.l  d2,a1",
-            "move.l  (a1),d2",
+            "move.l  (a1,d2.l),d2",
             "clr.w   d1",
             "swap    d1",
             "eor.l   d2,d1",
@@ -185,7 +184,13 @@ class AssemblyContractTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
         self.assertIn("btst    #0,d2", crc)
         self.assertIn("lea     (Crc32ByteTable).l,a1", crc)
-        self.assertIn("lea     (Crc32T16Table).l,a1", word)
+        self.assertIn("lea     (Crc32T16Table).l,a1", crc)
+        self.assertLess(
+            crc.index("lea     (Crc32T16Table).l,a1"),
+            crc.index(".next_word:"),
+        )
+        self.assertNotIn("adda.l  d2,a1", word)
+        self.assertNotIn("(a1,d2.w)", word)
 
     def test_common_composite_zero_runs_dispatch_before_power_fallback(self) -> None:
         projection = (ROOT / "src/game/projection.asm").read_text(

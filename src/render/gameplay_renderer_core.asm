@@ -224,7 +224,7 @@ RendererLoadPaletteAndTiles:
         dbf     d0,.palette
 
         move.w  #RENDERER_VRAM_TILE_START,d0
-        bsr.w   VdpSetVramWriteAddress
+        jsr     (VdpSetVramWriteAddress).l
         lea     RendererTileData(pc),a0
         move.w  #(RENDERER_TILE_BYTES/4)-1,d0
 .tiles:
@@ -236,7 +236,7 @@ RendererLoadPaletteAndTiles:
 ; Clears the complete 64x32 table, including offscreen cells. Clobbers d0-d2.
 RendererClearPlaneA:
         move.w  #VRAM_PLANE_A,d0
-        bsr.w   VdpSetVramWriteAddress
+        jsr     (VdpSetVramWriteAddress).l
         moveq   #0,d0
         move.w  #(PLANE_WIDTH_CELLS*32)-1,d1
 .clear:
@@ -258,7 +258,7 @@ RendererBuildPlaneB:
 ; campaign geometry so the frozen standalone fixture remains reproducible.
         movem.l d3-d7,-(a7)
         move.w  #VRAM_PLANE_B,d0
-        bsr.w   VdpSetVramWriteAddress
+        jsr     (VdpSetVramWriteAddress).l
         moveq   #0,d6                   ; row 0..31
 .row:
         moveq   #0,d5                   ; column 0..63
