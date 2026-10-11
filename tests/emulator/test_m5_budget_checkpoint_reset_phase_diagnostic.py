@@ -1015,6 +1015,54 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
             with self.assertRaisesRegex(reset.EvidenceFailure, "immutable source drift"):
                 reset.derive_lookup_comparison(ROOT, candidate_profile="renderer_hwm")
 
+    def test_crc_projection_reset_and_prefix_profiles_preserve_marker_semantics_and_bounds(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/level-B03"
+        rom = (archive / "recursion94-debug.bin").read_bytes()
+        symbols = parse_vasm_symbols(archive / "recursion94-debug.sym")
+        self.assertEqual(hashlib.sha256(rom).hexdigest(), reset.PROFILE_ROM_PINS["crc_projection"])
+        self.assertEqual(hashlib.sha256((archive / "recursion94-debug.sym").read_bytes()).hexdigest(), reset.PROFILE_SYMBOL_PINS["crc_projection"])
+        contract = reset.extended_pc_contract(rom, symbols, profile="crc_projection")
+        self.assertEqual(contract["addresses"], {
+            **reset.PROFILE_PC["renderer_hwm"], "timeout_projection_call": 0x3DFC,
+            "reset_projection_call": 0x3A58, "campaign_projection_end": 0x6C66,
+            "engine_projection_start": 0x2228, "engine_projection_end": 0x23B8,
+            "tail_start": 0x5718, "tail_end": 0x57A2,
+            "raw_crc_start": 0x6C20, "raw_crc_end": 0x6C24,
+            "renderer_start": 0x8E60, "renderer_end": 0x903E})
+        self.assertEqual(contract["extended_addresses"], {
+            "main_begin": 0x2D6, "main_done": 0x344, "renderer_mask": 0x8E5C,
+            "renderer_unmasked": 0x9040, "hud_begin": 0x8F18, "hud_end": 0x8F1C,
+            "sat_end": 0x8F20, "overlay_end": 0x8F24})
+        for window in contract["exact_windows"].values():
+            for offset in (0, len(bytes.fromhex(window["hex"])) - 1):
+                changed = bytearray(rom)
+                changed[window["address"] + offset] ^= 1
+                with self.subTest(address=window["address"], offset=offset), self.assertRaises(reset.EvidenceFailure):
+                    reset.extended_pc_contract(bytes(changed), symbols, profile="crc_projection")
+        for name, address in contract["extended_addresses"].items():
+            changed = bytearray(rom)
+            changed[address] ^= 1
+            with self.subTest(extended=name), self.assertRaises(reset.EvidenceFailure):
+                reset.extended_pc_contract(bytes(changed), symbols, profile="crc_projection")
+        for name in (*reset.PC_SYMBOL_BINDINGS.values(), *regular.CRC_PROJECTION_SYMBOL_BINDINGS,
+                     "GameplayBuildProjection", "GameplayCommitAndReset", "Crc32UpdateRaw", "RendererPrepareResetOverlay", "MainLoop"):
+            changed = {**symbols, name: symbols[name] + 2}
+            with self.subTest(symbol=name), self.assertRaises(reset.EvidenceFailure):
+                reset.extended_pc_contract(rom, changed, profile="crc_projection")
+        old = parse_vasm_symbols(ROOT / "artifacts/archive/m5-renderer-hwm-e6778f90-20261010/level-B03/recursion94-debug.sym")
+        strip = lambda text: [line for line in text.splitlines() if not line.startswith("breakpoint ")]
+        for builder, kwargs in ((reset.build_command_script, {"extended_overlay": True}), (reset.build_prefix_command_script, {})):
+            self.assertEqual(strip(builder(symbols, profile="crc_projection", **kwargs)), strip(builder(old, profile="renderer_hwm", **kwargs)))
+        script = reset.build_prefix_command_script(symbols, profile="crc_projection")
+        self.assertEqual(reset.prefix_command_policy_errors(script, symbols, profile="crc_projection"), [])
+        self.assertEqual(reset.command_policy_errors(reset.build_command_script(symbols, extended_overlay=True, profile="crc_projection"), symbols, extended_overlay=True, profile="crc_projection"), [])
+        self.assertEqual(reset._parser().parse_args(["--canonical-prefix", "--profile", "crc_projection"]).profile, "crc_projection")
+        source = inspect.getsource(reset.collect)
+        self.assertLess(source.index("regular.crc_projection_source_contract(root)"), source.index("subprocess.Popen("))
+        with patch.object(regular, "crc_projection_source_contract", side_effect=AssertionError("offline must stay archive-only")):
+            report = reset.derive_lookup_comparison(ROOT, candidate_profile="renderer_hwm")
+        self.assertEqual(report["cycle_blank_budget_scope"]["full_route_timing_certified"], False)
+
     def test_renderer_hwm_comparison_cli_is_exclusive_and_never_overwrites_or_launches(self) -> None:
         report = {"diagnostic_protocol_status": "pass", "parity_status": "pass", "cycle_blank_budget_status": "pass"}
         with tempfile.TemporaryDirectory() as directory, patch.object(reset.subprocess, "Popen", side_effect=AssertionError("offline must never launch")), \
@@ -1244,16 +1292,17 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         self.assertEqual(analysis["budget_status"], "fail")
 
     def test_renderer_hwm_nonzero_exit_archives_complete_helper_then_fails_without_overwrite(self) -> None:
-        for helper_module in (regular, reset):
+        for helper_module, profile in ((helper, profile) for helper in (regular, reset)
+                                       for profile in ("renderer_hwm", "crc_projection")):
             tree = ast.parse(inspect.getsource(helper_module.collect))
             branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If) and
                           ast.unparse(node.test) == "process.returncode != 0")
             program = compile(ast.fix_missing_locations(ast.Module(body=branch.body, type_ignores=[])), "<candidate actual exit branch>", "exec")
-            with self.subTest(helper=helper_module.__name__), tempfile.TemporaryDirectory() as directory:
+            with self.subTest(helper=helper_module.__name__, profile=profile), tempfile.TemporaryDirectory() as directory:
                 report_path, trace_path = Path(directory) / "failed.json", Path(directory) / "failed.log"
                 result = {"console_text": "exact complete console\n>\n", "console": {"width": 120, "cursor_x": 2},
                           "input_events": [{"edge": "Up:down"}], "script_input_records": 123}
-                namespace = {"canonical_prefix": False, "extended_overlay": True, "profile": "renderer_hwm",
+                namespace = {"canonical_prefix": False, "extended_overlay": True, "profile": profile,
                              "preserve_native_failure": reset.preserve_native_failure,
                              "report_path": report_path, "trace_path": trace_path, "script": "observed script\n",
                              "helper_result": result, "process": argparse.Namespace(returncode=7),
@@ -1280,7 +1329,7 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
                     exec(program, namespace)
                 self.assertEqual((report_path.read_bytes(), trace_path.read_bytes()), frozen)
                 # Preserve historical non-prefix modes exactly; only this
-                # approved candidate gains the new failure-only archive path.
+                # approved candidates gain the new failure-only archive path.
                 namespace["profile"] = "highwater"
                 namespace["preserve_native_failure"] = Mock(side_effect=AssertionError("old mode changed"))
                 with self.assertRaisesRegex(reset.EvidenceFailure, "BlastEm exit code 7"):

@@ -236,6 +236,59 @@ class M5BudgetCheckpointPhaseDiagnosticTests(unittest.TestCase):
                         diagnostic.collect(args)
             self.assertEqual(list(Path(directory).iterdir()), [])
 
+    def test_crc_projection_profile_binds_archived_boundaries_and_all_changed_windows(self) -> None:
+        archive = ROOT / "artifacts/archive/m5-crc-projection-8b69d4bf-20261010/level-B03"
+        rom_path, sym_path = archive / "recursion94-debug.bin", archive / "recursion94-debug.sym"
+        rom, symbols = rom_path.read_bytes(), parse_vasm_symbols(sym_path)
+        self.assertEqual(sha256_file(rom_path), "8b69d4bf62cc286123632619daad1422cd7076d4620154900d6a8eade5ede4c5")
+        self.assertEqual(sha256_file(sym_path), "d81234dd46b0ee9744f94e8dbd37b04df8838e1237bdb77a41e456f4911eb131")
+        contract = diagnostic.repair_pc_contract(rom, symbols, profile="crc_projection")
+        self.assertEqual(contract["addresses"], {
+            **diagnostic.PROFILE_REPAIR_PC["renderer_hwm"],
+            "campaign_projection_start": 0x6BB6, "campaign_projection_end": 0x6C66,
+            "engine_projection_start": 0x2228, "engine_projection_end": 0x23B8,
+            "tail_start": 0x5718, "tail_end": 0x57A2,
+            "raw_crc_start": 0x6C20, "raw_crc_end": 0x6C24,
+            "renderer_start": 0x8E60, "renderer_end": 0x903E})
+        self.assertEqual(rom[0x571E:0x579E], bytes.fromhex("20D9") * 64)
+        for name, window in contract["exact_windows"].items():
+            for offset in (0, len(bytes.fromhex(window["hex"])) - 1):
+                changed = bytearray(rom)
+                changed[window["address"] + offset] ^= 1
+                with self.subTest(window=name, offset=offset), self.assertRaises(diagnostic.EvidenceFailure):
+                    diagnostic.repair_pc_contract(bytes(changed), symbols, profile="crc_projection")
+        for name in (*diagnostic.REPAIR_PC_SYMBOL_BINDINGS.values(), *diagnostic.CRC_PROJECTION_SYMBOL_BINDINGS):
+            changed = {**symbols, name: symbols[name] + 2}
+            with self.subTest(symbol=name), self.assertRaises(diagnostic.EvidenceFailure):
+                diagnostic.repair_pc_contract(rom, changed, profile="crc_projection")
+        for old_profile in ("baseline", "lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm"):
+            with self.subTest(old_profile=old_profile), self.assertRaises(diagnostic.EvidenceFailure):
+                diagnostic.repair_pc_contract(rom, symbols, profile=old_profile)
+        old = parse_vasm_symbols(ROOT / "artifacts/archive/m5-renderer-hwm-e6778f90-20261010/level-B03/recursion94-debug.sym")
+        strip = lambda text: [line for line in text.splitlines() if not line.startswith("breakpoint ")]
+        script = diagnostic.build_repair_command_script(symbols, profile="crc_projection")
+        self.assertEqual(strip(script), strip(diagnostic.build_repair_command_script(old, profile="renderer_hwm")))
+        self.assertEqual(diagnostic.repair_command_policy_errors(script, symbols, profile="crc_projection"), [])
+        self.assertEqual(diagnostic._parser().parse_args(["--profile", "crc_projection"]).profile, "crc_projection")
+
+    def test_crc_projection_six_source_and_full_build_pins_stop_drift_before_launch(self) -> None:
+        sources = diagnostic.crc_projection_source_contract(ROOT)
+        self.assertEqual({key: value["sha256"] for key, value in sources.items()}, diagnostic.CRC_PROJECTION_SOURCE_PINS)
+        self.assertEqual(len(sources), 6)
+        with tempfile.TemporaryDirectory() as directory:
+            args = diagnostic._parser().parse_args([
+                "--root", str(ROOT), "--profile", "crc_projection",
+                "--report", str(Path(directory) / "unused.json"), "--trace", str(Path(directory) / "unused.log")])
+            for relative in (*diagnostic.CRC_PROJECTION_SOURCE_PINS, diagnostic.ROM_RELATIVE_PATH, diagnostic.SYMBOL_RELATIVE_PATH):
+                def changed_hash(path: Path) -> str:
+                    return "0" * 64 if path == ROOT / relative else sha256_file(path)
+                with self.subTest(path=relative), patch.object(diagnostic, "os", SimpleNamespace(name="nt")), \
+                        patch.object(diagnostic, "sha256_file", side_effect=changed_hash), \
+                        patch.object(diagnostic.subprocess, "Popen", side_effect=AssertionError("drift must stop before launch")):
+                    with self.assertRaisesRegex(diagnostic.EvidenceFailure, "hash drift"):
+                        diagnostic.collect(args)
+            self.assertEqual(list(Path(directory).iterdir()), [])
+
 
 class M5BudgetCheckpointRepairPhaseDiagnosticTests(unittest.TestCase):
     @classmethod

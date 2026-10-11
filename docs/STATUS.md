@@ -28,6 +28,12 @@
   `45a0f0cef6467c656dda8399a01c6d2ab73ca0e1b06236cc7addcbf8fc2f458a`.
   ROMs and symbols are archived under
   `artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
+  Full native host suites also pass: M3 59/59, M5 165/165, and Render 82/82, with exact
+  reports `host-m3-crc-projection-20261010.json` and
+  `host-m5-crc-projection-20261010.json` plus
+  `host-render-crc-projection-20261010.json` under `artifacts/reports/`.
+  The additive diagnostic profile passes 70/70 focused native tests; all
+  older profiles and non-breakpoint marker programs remain unchanged.
   Current-ROM emulator measurements, full replays, Windows All, and M5
   aggregate validation remain required; no timing improvement is claimed yet.
 - **Preceding renderer-HWM candidate:** seven read-only campaign renderer scans use

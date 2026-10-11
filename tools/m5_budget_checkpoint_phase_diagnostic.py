@@ -221,6 +221,51 @@ PROFILE_SYMBOL_PINS["renderer_hwm"] = RENDERER_HWM_SYMBOL_SHA256
 PROFILE_REPAIR_PC["renderer_hwm"] = {
     **PROFILE_REPAIR_PC["highwater"], "renderer_start": 0x8DA4, "renderer_end": 0x8F82,
 }
+CRC_PROJECTION_ROM_SHA256 = "8b69d4bf62cc286123632619daad1422cd7076d4620154900d6a8eade5ede4c5"
+CRC_PROJECTION_SYMBOL_SHA256 = "d81234dd46b0ee9744f94e8dbd37b04df8838e1237bdb77a41e456f4911eb131"
+CRC_PROJECTION_SOURCE_PINS = {
+    **RENDERER_HWM_SOURCE_PINS,
+    "src/game/crc32.asm": "e40fe41de27f907bdbee28cf38015d889fd679ba480ce841f166edd7fce6645b",
+    "src/game/projection.asm": "70e607ae4ca9519a8f57bce7b93746a242617831e7812ea55db3f3cf6cf3ee2e",
+    "src/gameplay/vocabulary_core.asm": "638f6b03ffd1feb4654ca13dd0ec439c830f1431d68ad0df1a0a154ef5d186b9",
+    "tools/crc32_tables.py": "2c78213919a12fe886dc6d404f071f28764c3cb7353cf126fb96b37292ca5a71",
+}
+PROFILE_ROM_PINS["crc_projection"] = CRC_PROJECTION_ROM_SHA256
+PROFILE_SYMBOL_PINS["crc_projection"] = CRC_PROJECTION_SYMBOL_SHA256
+PROFILE_REPAIR_PC["crc_projection"] = {
+    **PROFILE_REPAIR_PC["renderer_hwm"],
+    "campaign_projection_start": 0x6BB6, "campaign_projection_end": 0x6C66,
+    "engine_projection_start": 0x2228, "engine_projection_end": 0x23B8,
+    "tail_start": 0x5718, "tail_end": 0x57A2,
+    "raw_crc_start": 0x6C20, "raw_crc_end": 0x6C24,
+    "renderer_start": 0x8E60, "renderer_end": 0x903E,
+}
+# Exact candidate instructions, not generated from the ROM being validated.
+# Four identical word updates appear on each independently bounded parity path.
+CRC_PROJECTION_WORD_UPDATE = "74003418B342E58A2431280042414841B581"
+CRC_PROJECTION_WORD_SETUP = "5340E0594841E059484143F9000198A8E2486506E248651A603CE24865026024"
+CRC_PROJECTION_WINDOWS = {
+    "crc_entry_odd_pointer": (0x1BF2, "4A4067000134240808020000671C74001418B302E54AE08943F9000598A824312000B581534067000110E248640460000078"),
+    "crc_even_four_word_loop": (0x1C24, CRC_PROJECTION_WORD_SETUP + CRC_PROJECTION_WORD_UPDATE * 4 + "51C8FFB6E0594841E05948414E75"),
+    "crc_odd_four_word_loop": (0x1C9A, "4A4067000076" + CRC_PROJECTION_WORD_SETUP + CRC_PROJECTION_WORD_UPDATE * 4 + "51C8FFB6E0594841E0594841"),
+    "crc_byte_tail_return": (0x1D14, "74001418B302E54AE08943F9000598A824312000B5814E75"),
+    "projection_header_copy_1": (0x2248, "41F900FF140C22D832D8"),
+    "projection_header_copy_2_3": (0x227A, "41F900FF142822D822D841F900FF142222D832D8303900FF143832C0"),
+    "projection_actor_copy": (0x2296, "45F900FF18007606" + "22DA" * 7 + "32DAD4FC000251CBFFEA"),
+    "projection_prefix_crc": (0x22B6, "41F900FF6000303C00FA223CFFFFFFFF6100F92A24012248"),
+    "projection_return": (0x23B4, "4CDF7CF84E75"),
+    "zero_record_direct_dispatch": (0x242E, "0C40000F670000920C40001F670000940C400007670000960C40000C670000980C4000186700009A0C40001B6700009C"),
+    "zero_record_direct_27": (0x24F8, "43F900064CA860000002"),
+    "pool_header_crc_and_hwm_bound": (0x253A, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C441F900FF1448D0C27800181012C4264941E9FFFC700422066100F67A2C01224B4A05660E3A033003C0FC0018D2C060000080B8436302380330039044360438007A004A43670000605343"),
+    "pool_active_copy_crc": (0x25C2, "22DA" * 6 + "264941E9FFE8303C001822066100F6162C01224B601C"),
+    "pool_zero_tail_flush": (0x2604, "DA443004C0FC0018D2C04A45670E2649300522066100FE142C01224B24064CDF0C784E75"),
+    "vocabulary_unrolled_tail": (0x5718, "43F900FF1600" + "20D9" * 64 + "303C01004E75"),
+}
+CRC_PROJECTION_SYMBOL_BINDINGS = {
+    "Crc32T16Table": 0x198A8, "Crc32ByteTable": 0x598A8,
+    "Crc32ZeroRecords27Table": 0x64CA8,
+    "Crc32AdvanceZeroRecords": 0x242E, "EngineProjectPool": 0x253A,
+}
 ALLOWED_COMMANDS = frozenset(
     {"breakpoint", "commands", "printf", "if", "else", "continue", "end"}
 )
@@ -387,6 +432,17 @@ def renderer_hwm_source_contract(root: Path) -> dict[str, Any]:
     return sources
 
 
+def crc_projection_source_contract(root: Path) -> dict[str, Any]:
+    """Bind the three runtime edits, table generator, and unchanged renderer."""
+    sources = {}
+    for relative, expected in CRC_PROJECTION_SOURCE_PINS.items():
+        path = root / relative
+        if not path.is_file() or sha256_file(path) != expected:
+            raise EvidenceFailure("CRC/projection approved source hash drift: " + relative)
+        sources[relative] = _file_record(path, root)
+    return sources
+
+
 def repair_pc_contract(
     rom: bytes, symbols: Mapping[str, int], *, profile: str = "baseline"
 ) -> dict[str, Any]:
@@ -410,7 +466,7 @@ def repair_pc_contract(
     exact_windows = {
         "raw_crc_call": (
             addresses["raw_crc_start"],
-            "6100B08C46812801" if profile in {"highwater", "renderer_hwm"} else "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
+            "6100AFD046812801" if profile == "crc_projection" else "6100B08C46812801" if profile in {"highwater", "renderer_hwm"} else "6100B16A46812801" if profile == "pool" else "6100B18246812801" if profile != "baseline" else "6100B18E46812801",
         ),
         "raw_crc_return": (
             addresses["raw_crc_end"],
@@ -453,6 +509,11 @@ def repair_pc_contract(
         exact_windows["crc_indexed_base_loop"] = (0x1C2A, "43F9000197EC74003418E05AB342E58A2431280042414841B58151C8FFEA" if profile == "renderer_hwm" else "43F90001975C74003418E05AB342E58A2431280042414841B58151C8FFEA")
         exact_windows["pool_prior_current_count"] = (0x24EA, "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4")
         exact_windows["pool_empty_skip"] = (0x252A, "224B4A05660E3A033003C0FC0018D2C06000008C")
+    if profile == "crc_projection":
+        exact_windows.update(CRC_PROJECTION_WINDOWS)
+        for symbol_name, expected in CRC_PROJECTION_SYMBOL_BINDINGS.items():
+            if symbols.get(symbol_name) != expected:
+                errors.append(f"CRC/projection {symbol_name} symbol drift")
     for name, (address, expected_hex) in exact_windows.items():
         expected = bytes.fromhex(expected_hex)
         if rom[address : address + len(expected)] != expected:
@@ -2175,7 +2236,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
     report_path = Path(args.report).resolve()
     trace_path = Path(args.trace).resolve()
     profile = getattr(args, "profile", "baseline")
-    runtime_sources = renderer_hwm_source_contract(root) if profile == "renderer_hwm" else {}
+    runtime_sources = crc_projection_source_contract(root) if profile == "crc_projection" else renderer_hwm_source_contract(root) if profile == "renderer_hwm" else {}
     if report_path.exists() or trace_path.exists() or report_path == trace_path:
         raise EvidenceFailure("live diagnostic requires distinct new output paths")
     for path, label in (
@@ -2318,7 +2379,7 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
                 preserve_failure({**helper_result, "error": "owned emulator exit timeout", "full_console_available": True})
                 raise EvidenceFailure("owned emulator exit timeout; completed console preserved as failure")
             if process.returncode != 0:
-                if profile == "renderer_hwm":
+                if profile in {"renderer_hwm", "crc_projection"}:
                     preserve_native_failure(
                         report_path, trace_path, script=script,
                         helper_payload={**helper_result, "error": f"BlastEm exit code {process.returncode}", "full_console_available": True},
@@ -2447,7 +2508,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--report", default=DEFAULT_REPORT_RELATIVE_PATH)
     parser.add_argument("--trace", default=DEFAULT_TRACE_RELATIVE_PATH)
-    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm"), default="baseline")
+    parser.add_argument("--profile", choices=("baseline", "lookup", "sprite", "indexed", "pool", "highwater", "renderer_hwm", "crc_projection"), default="baseline")
     parser.add_argument("--timeout-seconds", type=float, default=180.0)
     return parser
 
