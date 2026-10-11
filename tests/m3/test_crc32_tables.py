@@ -39,10 +39,10 @@ from tools.m3_reference.model import EngineModel, canonical_script_input
 ROOT = Path(__file__).resolve().parents[2]
 GENERATED = ROOT / "assets/generated/crc32"
 EXPECTED_BINARY_SHA256 = (
-    "10c10d1ef280fe51536fb574b08ec84398a74d8bd31b0ce75a2f5d2535940e2a"
+    "45a0f0cef6467c656dda8399a01c6d2ab73ca0e1b06236cc7addcbf8fc2f458a"
 )
 EXPECTED_TABLE_SHA256 = {
-    "t16": "dece7bd308b236535fa543b6c7795b60695f25db147c1d065239e3a22d55431a",
+    "t16": "941ba0c1b90ca424a6113165982fabe7cc8389c84cbbb79fe8111d92a02c6e86",
     "byte": "da5c898b03a4b8559186e7ce3b034e14aab00e7672966ce3032e2b2a2fd4574e",
     "zero_records_1": "d31dcc439340e2c121ff3fb00fc18e1f606806963698d0ac7e3db91971125425",
     "zero_records_2": "b8c25e6f96934eafd8fd0c516f934f07b7f9d079b9249d2deb2f5ea4434804ad",
@@ -55,6 +55,7 @@ EXPECTED_TABLE_SHA256 = {
     "zero_records_15": "bd4d5fe8fe776cd681f29551873584ef008350e31861101c7dbaf91db4080d5b",
     "zero_records_24": "ac2c188843856d6c0cc0c8318923be000664f2a59415357e250fd2fca8f80317",
     "zero_records_31": "a86cf6f2d432801d267d4c9e29dc8df628c60550572bfe7b892800e9136b3887",
+    "zero_records_27": "d680df694413a34d15a283b3572b70a5912b0959ff7864d9ab5404e7c3c3873f",
 }
 EXPECTED_CHECKPOINTS = (
     (0, 0xD6C025DF),
@@ -101,6 +102,25 @@ def _table_update_raw(raw_crc: int, payload: bytes, table: bytes) -> int:
     return raw
 
 
+def _halfword_swap(value: int) -> int:
+    # Independent byte permutation, rather than the generator's bit masks.
+    a, b, c, d = value.to_bytes(4, "big")
+    return int.from_bytes(bytes((b, a, d, c)), "big")
+
+
+def _four_word_entry(words: int) -> tuple[int, int]:
+    """Mirror the two LSR/Bcc decisions on the nonzero word count minus one."""
+    if not 1 <= words <= 0x7FFF:
+        raise ValueError("word loop requires 1..32767 words")
+    counter = words - 1
+    first_carry = counter & 1
+    counter >>= 1
+    second_carry = counter & 1
+    counter >>= 1
+    entry = (0 if second_carry else 2) if first_carry else (1 if second_carry else 3)
+    return entry, counter
+
+
 def _t16_update_raw(
     raw_crc: int,
     payload: bytes,
@@ -110,22 +130,38 @@ def _t16_update_raw(
     address_parity: int = 0,
     lookup_offsets: list[int] | None = None,
 ) -> int:
-    """Host mirror of the aligned-word assembly recurrence."""
+    """Host mirror of transformed state and the four-word carry-tree loop."""
+    if len(payload) > 0xFFFF:
+        raise ValueError("public CRC length is one unsigned word")
     raw = raw_crc & 0xFFFFFFFF
     cursor = 0
     if payload and address_parity & 1:
         raw = _table_update_raw(raw, payload[:1], byte_table)
         cursor = 1
-    while cursor + 1 < len(payload):
-        word = int.from_bytes(payload[cursor : cursor + 2], "little")
-        index = (raw ^ word) & 0xFFFF
-        offset = index * 4
-        if lookup_offsets is not None:
-            lookup_offsets.append(offset)
-        raw = ((raw >> 16) ^ _u32be(t16_table, offset)) & 0xFFFFFFFF
-        cursor += 2
+    words = (len(payload) - cursor) // 2
+    if words:
+        transformed = _halfword_swap(raw)
+        entry, counter = _four_word_entry(words)
+        while True:
+            for _word in range(entry, 4):
+                assert cursor + 2 <= len(payload)
+                assert (address_parity + cursor) % 2 == 0
+                word = int.from_bytes(payload[cursor : cursor + 2], "big")
+                index = (transformed ^ word) & 0xFFFF
+                offset = index * 4
+                if lookup_offsets is not None:
+                    lookup_offsets.append(offset)
+                transformed = (transformed >> 16) ^ _u32be(t16_table, offset)
+                cursor += 2
+            if counter == 0:
+                break
+            counter -= 1
+            entry = 0
+        raw = _halfword_swap(transformed)
     if cursor < len(payload):
         raw = _table_update_raw(raw, payload[cursor:], byte_table)
+        cursor += 1
+    assert cursor == len(payload)
     return raw
 
 
@@ -250,6 +286,7 @@ def _publish_pool_fixture(
     high_water: int,
     raw_crc: int,
     whole_empty_elision: bool,
+    high_water_elision: bool = False,
     binary: bytes,
     layout: dict[str, dict[str, int | str]],
 ) -> tuple[bytes, int, int, int, bool]:
@@ -271,6 +308,8 @@ def _publish_pool_fixture(
         raise ValueError("source live count is not exact")
     if not live_count <= high_water <= capacity:
         raise ValueError("source high-water count is not legal")
+    if any(record[0] for record in source[high_water:]):
+        raise ValueError("source active slot lies outside high-water bound")
     if any(not record[0] and any(record) for record in source):
         raise ValueError("source inactive record is not cleared")
     prior_records = tuple(
@@ -284,6 +323,10 @@ def _publish_pool_fixture(
             raise ValueError("prior projection live count is not exact")
         if not prior[2] <= prior[3] <= capacity:
             raise ValueError("prior projection high-water count is not legal")
+        if any(record[0] for record in prior_records[prior[3]:]):
+            raise ValueError("prior active slot lies outside high-water bound")
+        if high_water < prior[3]:
+            raise ValueError("high-water cannot decrease without clearing prior image")
         if any(not record[0] and any(record) for record in prior_records):
             raise ValueError("prior projection inactive record is not zero")
 
@@ -311,7 +354,8 @@ def _publish_pool_fixture(
     output = bytearray(header)
     zero_run = 0
     stored_bytes = 0
-    for record, previous in zip(source, prior_records):
+    bound = min(high_water, capacity) if high_water_elision else capacity
+    for record, previous in zip(source[:bound], prior_records[:bound]):
         if record[0]:
             if zero_run:
                 raw = _advance_zero_records(
@@ -328,11 +372,14 @@ def _publish_pool_fixture(
             else:
                 output.extend(previous)
             zero_run += 1
+    # These untouched bytes are guaranteed zero by the checked prior domain.
+    output.extend(b"".join(prior_records[bound:]))
+    zero_run += capacity - bound
     if zero_run:
         raw = _advance_zero_records(
             raw, zero_run, binary=binary, layout=layout
         )
-    return bytes(output), raw, capacity, stored_bytes, False
+    return bytes(output), raw, bound, stored_bytes, False
 
 
 class Crc32GeneratedTableTests(unittest.TestCase):
@@ -348,7 +395,7 @@ class Crc32GeneratedTableTests(unittest.TestCase):
         }
 
     def test_exact_binary_and_component_hashes_are_bound(self) -> None:
-        self.assertEqual(self.bundle.binary_bytes, 0x4B400)
+        self.assertEqual(self.bundle.binary_bytes, 0x4C400)
         self.assertEqual(self.bundle.binary_sha256, EXPECTED_BINARY_SHA256)
         self.assertEqual(
             hashlib.sha256(self.binary).hexdigest(),
@@ -360,7 +407,13 @@ class Crc32GeneratedTableTests(unittest.TestCase):
         )
         self.assertEqual(self.report["polynomial_reflected"], "EDB88320")
         self.assertEqual(self.report["t16_entries"], 65_536)
-        self.assertEqual(self.report["t16_index_byte_order"], "little")
+        self.assertEqual(self.report["schema"], "r94-crc32-tables-v4")
+        self.assertEqual(self.report["t16_index_byte_order"], "big")
+        self.assertEqual(
+            self.report["t16_crc_representation"],
+            "raw_crc_byte_swapped_within_each_16_bit_halfword",
+        )
+        self.assertEqual(self.report["byte_and_zero_tables_crc_representation"], "ordinary_raw_crc")
         self.assertEqual(
             self.report["zero_record_direct_runs"],
             list(ZERO_RECORD_DIRECT_RUNS),
@@ -419,17 +472,17 @@ class Crc32GeneratedTableTests(unittest.TestCase):
     def test_every_t16_entry_matches_two_independent_byte_updates(self) -> None:
         item = self.layout["t16"]
         self.assertEqual(item["entries"], T16_TABLE_ENTRIES)
-        self.assertEqual(item["index_byte_order"], "little")
+        self.assertEqual(item["index_byte_order"], "big")
         self.assertEqual(item["bytes"], T16_TABLE_BYTES)
         offset = int(item["offset"])
         for index in range(T16_TABLE_ENTRIES):
-            raw = _independent_byte_entry(index & 0xFF)
-            expected = (
+            raw = _independent_byte_entry(index >> 8)
+            expected = _halfword_swap((
                 (raw >> 8)
                 ^ _independent_byte_entry(
-                    (raw ^ (index >> 8)) & 0xFF
+                    (raw ^ index) & 0xFF
                 )
-            ) & 0xFFFFFFFF
+            ) & 0xFFFFFFFF)
             actual = _u32be(self.binary, offset + index * 4)
             if actual != expected:
                 self.fail(
@@ -472,7 +525,7 @@ class Crc32GeneratedTableTests(unittest.TestCase):
                 self.assertEqual(raw ^ 0xFFFFFFFF, expected)
 
         randomizer = random.Random(0x52393443)
-        lengths = (0, 1, 2, 3, 4, 7, 8, 9, 254, 255, 256, 3638, 0xFFFF)
+        lengths = (*range(34), 127, 128, 129, 249, 250, 251, 254, 255, 256, 3638, 0xFFFE, 0xFFFF)
         for length in lengths:
             payload = randomizer.randbytes(length)
             for parity in (0, 1):
@@ -511,7 +564,7 @@ class Crc32GeneratedTableTests(unittest.TestCase):
                 payload = bytearray(b"\xA5" if parity else b"")
                 raw = crc32_update_raw(seed, bytes(payload))
                 for index in indices:
-                    pair = (index ^ (raw & 0xFFFF)).to_bytes(2, "little")
+                    pair = (index ^ (_halfword_swap(raw) & 0xFFFF)).to_bytes(2, "big")
                     payload.extend(pair)
                     raw = crc32_update_raw(raw, pair)
                 payload.append(0x5A)  # Also retain the odd trailing-byte path.
@@ -531,6 +584,67 @@ class Crc32GeneratedTableTests(unittest.TestCase):
                     # Narrowing the scaled index to d2.w, or sign-extending
                     # it, cannot satisfy these exact full-width addresses.
                     self.assertEqual(observed, offsets)
+
+    def test_four_word_entry_covers_every_public_length_and_remainder(self) -> None:
+        for words in range(1, 0x8000):
+            entry, counter = _four_word_entry(words)
+            self.assertEqual(4 - entry + counter * 4, words)
+            self.assertEqual(entry, (-words) % 4)
+            self.assertLessEqual(counter, 0x1FFF)
+        for invalid in (0, -1, 0x8000):
+            with self.assertRaises(ValueError):
+                _four_word_entry(invalid)
+
+    def test_source_cycle_accounting_keeps_short_call_regressions_explicit(self) -> None:
+        # Original-68000 instruction estimate only, not native timing proof.
+        # The duplicated even loop removes 40 cycles of tail packing/dispatch;
+        # the now-word-sized initial BEQ adds 4, for a net 36 per even call.
+        setup = {0: 36, 1: 42, 2: 44, 3: 34}
+
+        def delta(words: int) -> int:
+            unroll_saving = 10 * (words - (words + 3) // 4) - setup[words % 4]
+            return 104 - 22 * words - unroll_saving - 36
+
+        self.assertEqual([delta(words) for words in range(1, 5)], [88, 58, 16, -14])
+        calls = [125] + [2] * 7 + [12] * 6 + [128]
+        self.assertEqual(sum(calls), 339)
+        self.assertEqual(-sum(map(delta, calls)), 8336)
+        self.assertFalse(self.report["neutral_b01_cycle_estimate"]["candidate_optimization_savings_credited"])
+
+    def test_every_full_long_offset_and_arbitrary_seed_is_reachable(self) -> None:
+        t16 = self.binary[:T16_TABLE_BYTES]
+        start = int(self.layout["byte"]["offset"])
+        byte = self.binary[start:start + BYTE_TABLE_BYTES]
+        for index in range(0x10000):
+            seed = _halfword_swap(index)
+            offsets: list[int] = []
+            actual = _t16_update_raw(seed, b"\0\0", t16_table=t16,
+                                     byte_table=byte, lookup_offsets=offsets)
+            self.assertEqual(offsets, [index * 4])
+            self.assertEqual(actual, binascii.crc32(b"\0\0", seed ^ 0xFFFFFFFF) ^ 0xFFFFFFFF)
+
+    def test_contiguous_copies_equal_explicit_fields_including_inactive_payload(self) -> None:
+        rng = random.Random(0xC094)
+        fields = {
+            "actor": ((0, 1), (1, 1), (2, 2), (4, 4), (8, 4), (12, 4),
+                      (16, 4), (20, 2), (22, 2), (24, 1), (25, 1), (26, 2), (28, 2)),
+            "object": ((0, 1), (1, 1), (2, 2), (4, 4), (8, 4), (12, 4),
+                       (16, 4), (20, 2), (22, 2)),
+        }
+        for case in range(128):
+            actor = bytearray(rng.randbytes(32))
+            actor[0] = case & 1  # Inactive actor fields still participate.
+            actor[30:] = b"\xA5\x5A"  # Reserved bytes must not leak.
+            obj = rng.randbytes(24)
+            for kind, source, length in (("actor", actor, 30), ("object", obj, 24)):
+                explicit = b"".join(source[offset:offset + size] for offset, size in fields[kind])
+                self.assertEqual(bytes(source[:length]), explicit)
+            control = rng.randbytes(0x50)
+            for offsets, width in (((0x0C, 0x0E, 0x10), 2),
+                                   ((0x28, 0x2A, 0x2C, 0x2E), 2),
+                                   ((0x22, 0x23, 0x24, 0x25, 0x26, 0x27), 1)):
+                self.assertEqual(control[offsets[0]:offsets[-1] + width],
+                                 b"".join(control[x:x + width] for x in offsets))
 
     def test_each_zero_record_transition_matches_byte_updates(self) -> None:
         randomizer = random.Random(0xEDB88320)
@@ -754,7 +868,8 @@ class Crc32GeneratedTableTests(unittest.TestCase):
             prior, source, whole_empty_elision=False, **arguments
         )
         new = _publish_pool_fixture(
-            prior, source, whole_empty_elision=True, **arguments
+            prior, source, whole_empty_elision=True, high_water_elision=True,
+            **arguments
         )
         expected = bytes((pool_type, capacity, live_count, high_water)) + b"".join(source)
         self.assertEqual(new[:2], old[:2])
@@ -763,7 +878,7 @@ class Crc32GeneratedTableTests(unittest.TestCase):
         self.assertEqual(len(new[0]), 4 + capacity * OBJECT_RECORD_BYTES)
         self.assertEqual(old[2], capacity)
         self.assertEqual(new[4], live_count == 0 and prior[2] == 0)
-        self.assertEqual(new[2], 0 if new[4] else capacity)
+        self.assertEqual(new[2], 0 if new[4] else high_water)
         stores = sum(
             bool(record[0]) or bool(prior[4 + slot * OBJECT_RECORD_BYTES])
             for slot, record in enumerate(source)
@@ -789,17 +904,16 @@ class Crc32GeneratedTableTests(unittest.TestCase):
                     reset, empty, pool_type=pool_type, high_water=0
                 )
                 self.assertTrue(initialized[4])
-                # Reconstruction resets the complete projection, then may
-                # reconstruct an active object at any physical slot.
+                # Lowest-free reconstruction starts at physical slot zero.
                 active = b"\x01\xA7" + bytes(range(2, OBJECT_RECORD_BYTES))
                 loaded = self._assert_pool_publication(
                     reset,
-                    empty[:-1] + (active,),
+                    (active,) + empty[1:],
                     pool_type=pool_type,
                     high_water=1,
                 )
                 self.assertFalse(loaded[4])
-                self.assertEqual(loaded[2], capacity)
+                self.assertEqual(loaded[2], 1)
                 reinitialized = self._assert_pool_publication(
                     reset, empty, pool_type=pool_type, high_water=0
                 )
@@ -815,9 +929,9 @@ class Crc32GeneratedTableTests(unittest.TestCase):
             capacity = contract.pool_capacities[pool_type]
             empty = (zero,) * capacity
             first_only = (first,) + empty[1:]
-            both = (first,) + empty[1:-1] + (last,)
-            last_only = empty[:-1] + (last,)
-            reused_hole = (reused,) + empty[1:-1] + (last,)
+            both = (first, last) + empty[2:]
+            last_only = (zero, last) + empty[2:]
+            reused_hole = (reused, last) + empty[2:]
             prior = bytes(4 + capacity * OBJECT_RECORD_BYTES)
             phases = (
                 ("initial_empty", empty, 0, True, 0),
@@ -911,6 +1025,9 @@ class Crc32GeneratedTableTests(unittest.TestCase):
             ("source_zero_count_with_active_slot", canonical, (active,) + empty[1:], 0, 1),
             ("source_nonzero_count_without_active_slot", canonical, empty, 1, 1),
             ("source_live_above_high_water", canonical, (active,) + empty[1:], 1, 0),
+            ("source_active_above_high_water", canonical, empty[:-1] + (active,), 1, 1),
+            ("prior_active_above_high_water", bytes((4, capacity, 1, 1)) + b"".join(empty[:-1]) + active, empty, 0, 1),
+            ("high_water_decreased_without_reset", bytes((4, capacity, 0, 3)) + b"".join(empty), empty, 0, 1),
         )
         for name, prior, source, count, high_water in invalid:
             for fast in (False, True):
@@ -924,9 +1041,46 @@ class Crc32GeneratedTableTests(unittest.TestCase):
                             high_water=high_water,
                             raw_crc=0xFFFFFFFF,
                             whole_empty_elision=fast,
+                            high_water_elision=fast,
                             binary=self.binary,
                             layout=self.layout,
                         )
+
+    def test_hwm_publication_matches_legal_allocator_histories_for_every_pool(self) -> None:
+        from tests.m5.test_pool_scan_bounds import POOL_SPECS, PoolHistory
+
+        rng = random.Random(0x9410)
+        zero = bytes(OBJECT_RECORD_BYTES)
+        publications = 0
+        omitted_slots = 0
+        for spec in POOL_SPECS:
+            history = PoolHistory.empty(spec.capacity)
+            source = [zero] * spec.capacity
+            prior = bytes(4 + spec.capacity * OBJECT_RECORD_BYTES)
+            for _operation in range(1200):
+                action = rng.randrange(10)
+                if action < 4:
+                    slot = history.allocate_lowest()
+                    if slot != 0xFFFF:
+                        source[slot] = b"\x01" + rng.randbytes(23)
+                elif action < 7 and history.live_count:
+                    slot = rng.choice([i for i, active in enumerate(history.slots) if active])
+                    history.free(slot)
+                    source[slot] = zero
+                elif action == 7:
+                    history.reset()
+                    source = [zero] * spec.capacity
+                    prior = bytes(4 + spec.capacity * OBJECT_RECORD_BYTES)
+                if action >= 8:
+                    result = self._assert_pool_publication(
+                        prior, tuple(source), pool_type=spec.pool_type,
+                        high_water=history.high_water, seed=rng.getrandbits(32),
+                    )
+                    prior = result[0]
+                    publications += 1
+                    omitted_slots += spec.capacity - result[2]
+        self.assertGreater(publications, 1500)
+        self.assertGreater(omitted_slots, 10000)
 
     def test_generator_is_deterministic_and_stale_checks_fail_closed(self) -> None:
         self.assertEqual(build_tables(), build_tables())
@@ -952,7 +1106,7 @@ class Crc32GeneratedTableTests(unittest.TestCase):
         for records in ZERO_RECORD_TABLE_COUNTS:
             self.assertIn(f"Crc32ZeroRecords{records}Table", include)
         self.assertIn("Crc32T16Table", include)
-        self.assertIn("CRC32_TABLE_BINARY_BYTES        equ     $4B400", include)
+        self.assertIn("CRC32_TABLE_BINARY_BYTES        equ     $4C400", include)
         self.assertIn("CRC32_T16_TABLE_BYTES           equ     $40000", include)
         self.assertEqual(
             sum(int(item["bytes"]) for item in self.report["tables"]),
@@ -963,6 +1117,42 @@ class Crc32GeneratedTableTests(unittest.TestCase):
 
 
 class Crc32StandaloneAssemblyTests(unittest.TestCase):
+    def test_contiguous_copy_source_is_exact_and_layout_assertions_are_complete(self) -> None:
+        source = (ROOT / "src/game/projection.asm").read_text("utf-8")
+        clean = "\n".join(re.sub(r"\s+", " ", line.split(";", 1)[0].strip())
+                          for line in source.splitlines() if line.split(";", 1)[0].strip())
+        actor = clean.split(".actor:\n", 1)[1].split("dbf d3,.actor", 1)[0]
+        self.assertEqual(actor, "rept 7\nmove.l (a2)+,(a1)+\nendr\nmove.w (a2)+,(a1)+\n"
+                               "adda.w #ACTOR_BYTES-ACTOR_PROJECTION_BYTES,a2\n")
+        active = clean.split(".serialize_active:\n", 1)[1].split(".inactive_slot:", 1)[0]
+        self.assertTrue(active.startswith("rept OBJECT_PROJECTION_BYTES/4\nmove.l (a2)+,(a1)+\nendr\n"))
+        self.assertTrue(active.endswith("bra.s .next_slot\n"))
+        self.assertNotIn("adda.w #OBJECT_BYTES,a2", active)
+        for start, copies in (("ENGINE_ENCOUNTER_ID", ("l", "w")),
+                              ("ENGINE_ROOM_LEFT", ("l", "l")),
+                              ("ENGINE_INPUT_HELD", ("l", "w"))):
+            self.assertIn(f"lea ({start}).l,a0\n" + "\n".join(
+                f"move.{size} (a0)+,(a1)+" for size in copies), clean)
+        offsets = {
+            "ACTOR_BYTES": 32, "ACTOR_PROJECTION_BYTES": 30, "ACTOR_ACTIVE": 0,
+            "ACTOR_ROLE": 1, "ACTOR_FLAGS": 2, "ACTOR_X": 4, "ACTOR_Y": 8,
+            "ACTOR_VX": 12, "ACTOR_VY": 16, "ACTOR_HALF_WIDTH": 20,
+            "ACTOR_HALF_HEIGHT": 22, "ACTOR_INPUT": 24, "ACTOR_PREVIOUS_INPUT": 25,
+            "ACTOR_HEALTH": 26, "ACTOR_LOGICAL_ID": 28, "ACTOR_RESERVED": 30,
+            "OBJECT_PROJECTION_BYTES": 24, "OBJECT_ACTIVE": 0,
+            "OBJECT_LOGICAL_ID": 1, "OBJECT_STATE": 2, "OBJECT_X": 4,
+            "OBJECT_Y": 8, "OBJECT_VX": 12, "OBJECT_VY": 16,
+            "OBJECT_TIMER": 20, "OBJECT_PARAM": 22,
+        }
+        for name, value in offsets.items():
+            self.assertIn(f"assert {name}={value},", clean)
+        for base, fields in (("ENGINE_ENCOUNTER_ID", (("ENGINE_ATTEMPT", 2), ("ENGINE_TICK", 4))),
+                             ("ENGINE_ROOM_LEFT", (("ENGINE_ROOM_TOP", 2), ("ENGINE_ROOM_RIGHT", 4), ("ENGINE_ROOM_BOTTOM", 6))),
+                             ("ENGINE_INPUT_HELD", (("ENGINE_INPUT_PRESSED", 1), ("ENGINE_INPUT_RELEASED", 2),
+                                                    ("ENGINE_INPUT_PREVIOUS", 3), ("ENGINE_FACING_X", 4), ("ENGINE_ACTIVE_ACTOR_COUNT", 5)))):
+            for name, offset in fields:
+                self.assertIn(f"assert {name}={base}+{offset},", clean)
+
     def test_whole_empty_pool_source_binds_prior_count_header_crc_and_common_flush(self) -> None:
         source = (ROOT / "src/game/projection.asm").read_text("utf-8")
         routine = source.split("EngineProjectPool:\n", 1)[1]
@@ -995,6 +1185,7 @@ class Crc32StandaloneAssemblyTests(unittest.TestCase):
                 "move.b d4,(a1)+",
                 "lea (ENGINE_POOL_HIGH_WATER).l,a0",
                 "adda.w d2,a0",
+                "moveq #0,d4",
                 "move.b (a0),d4",
                 "move.b d4,(a1)+",
                 "movea.l a1,a3",
@@ -1017,11 +1208,17 @@ class Crc32StandaloneAssemblyTests(unittest.TestCase):
             ],
         )
         self.assertEqual(
-            lines[scan:scan + 4],
-            [".scan_slots:", "subq.w #1,d3", "moveq #0,d5", ".slot:"],
+            lines[scan:scan + 15],
+            [".scan_slots:", "cmp.w d3,d4", "bls.s .bound_clamped",
+             "move.w d3,d4", ".bound_clamped:", "move.w d3,d0",
+             "sub.w d4,d0", "move.w d4,d3", "move.w d0,d4",
+             "moveq #0,d5", "tst.w d3", "beq.w .append_zero_tail",
+             "subq.w #1,d3", ".slot:", "tst.b (OBJECT_ACTIVE,a2)"],
         )
         flush = lines.index(".flush_trailing_run:")
-        self.assertEqual(lines[flush - 1], "dbf d3,.slot")
+        self.assertEqual(lines[flush - 7:flush], [".next_slot:", "dbf d3,.slot",
+                         ".append_zero_tail:", "add.w d4,d5", "move.w d4,d0",
+                         "mulu.w #OBJECT_PROJECTION_BYTES,d0", "adda.w d0,a1"])
         self.assertEqual(
             lines[flush:],
             [
@@ -1103,7 +1300,7 @@ class Crc32StandaloneAssemblyTests(unittest.TestCase):
         self.assertLessEqual(constants["ENGINE_ACTOR_BASE"], constants["ENGINE_PROJECTION_BASE"])
         self.assertLessEqual(constants["ENGINE_PROJECTION_END"], constants["ENGINE_STAGING_END"])
 
-    def test_word_loop_hoists_t16_base_and_keeps_full_long_scaled_index(self) -> None:
+    def test_word_loops_bind_transform_long_index_unroll_and_ordinary_byte_paths(self) -> None:
         source = (ROOT / "src/game/crc32.asm").read_text("utf-8")
         lines = [
             re.sub(r"\s+", " ", line.split(";", 1)[0].strip())
@@ -1111,41 +1308,47 @@ class Crc32StandaloneAssemblyTests(unittest.TestCase):
             if line.split(";", 1)[0].strip()
         ]
         aligned = lines.index(".aligned:")
-        word_loop = lines.index(".next_word:")
-        tail = lines.index(".tail_ready:")
-        self.assertLess(aligned, word_loop)
-        self.assertLess(word_loop, tail)
-        self.assertEqual(lines.count("lea (Crc32T16Table).l,a1"), 1)
+        tail = lines.index(".byte_tail:")
+        self.assertEqual(lines.count("lea (Crc32T16Table).l,a1"), 2)
         self.assertEqual(
-            lines[word_loop - 3:word_loop],
-            [
-                "beq.s .tail_ready",
-                "subq.w #1,d0",
-                "lea (Crc32T16Table).l,a1",
-            ],
+            lines[aligned:aligned + 6],
+            [".aligned:", "lsr.w #1,d0", "bcc.s .even_length",
+             "bra.w .odd_length", ".even_length:", "subq.w #1,d0"],
         )
-        # The zero extension and long shift/index retain all 18 offset bits.
-        # No per-word LEA/ADDA may alter the fixed base between iterations.
-        self.assertEqual(
-            lines[word_loop + 1:tail],
-            [
-                "moveq #0,d2",
-                "move.w (a0)+,d2",
-                "ror.w #8,d2",
-                "eor.w d1,d2",
-                "lsl.l #2,d2",
-                "move.l (a1,d2.l),d2",
-                "clr.w d1",
-                "swap d1",
-                "eor.l d2,d1",
-                "dbf d0,.next_word",
-            ],
-        )
+        transform = ["ror.w #8,d1", "swap d1", "ror.w #8,d1", "swap d1"]
+        word = ["moveq #0,d2", "move.w (a0)+,d2", "eor.w d1,d2",
+                "lsl.l #2,d2", "move.l (a1,d2.l),d2", "clr.w d1",
+                "swap d1", "eor.l d2,d1"]
+        for parity in ("even", "odd"):
+            start = lines.index(f".{parity}_word0:")
+            base = max(i for i in range(start) if lines[i] == "lea (Crc32T16Table).l,a1")
+            self.assertEqual(lines[base - 4:base], transform)
+            self.assertEqual(lines[base + 1:start], [
+                "lsr.w #1,d0", f"bcs.s .{parity}_even_words", "lsr.w #1,d0",
+                f"bcs.s .{parity}_word1", f"bra.s .{parity}_word3",
+                f".{parity}_even_words:", "lsr.w #1,d0",
+                f"bcs.s .{parity}_word0", f"bra.s .{parity}_word2",
+            ])
+            for index in range(4):
+                label = lines.index(f".{parity}_word{index}:")
+                self.assertEqual(lines[label + 1:label + 9], word)
+            end = lines.index(f"dbf d0,.{parity}_word0")
+            self.assertEqual(lines[end + 1:end + 5], transform)
+        self.assertEqual(lines[lines.index("dbf d0,.even_word0") + 5], "rts")
+        odd = lines.index(".odd_length:")
+        self.assertEqual(lines[odd + 1:odd + 4],
+                         ["tst.w d0", "beq.w .byte_tail", "subq.w #1,d0"])
         # The odd-address prefix and odd-length tail each bind the byte table
         # independently; neither may accidentally reuse the hoisted T16 base.
         for byte_path in (lines[:aligned], lines[tail:lines.index(".done:")]):
             byte_base = byte_path.index("lea (Crc32ByteTable).l,a1")
             self.assertEqual(byte_path[byte_base + 1], "move.l (a1,d2.w),d2")
+
+        raw = lines[lines.index("Crc32UpdateRaw:"):lines.index("Crc32KnownVector:")]
+        self.assertFalse(any(re.search(r"\b(?:d[3-7]|a[2-7])\b", line) for line in raw))
+        self.assertFalse(any(re.match(r"(?:bsr|jsr|jmp)\b", line) for line in raw))
+        self.assertEqual(raw[:3], ["Crc32UpdateRaw:", "tst.w d0", "beq.w .done"])
+        self.assertNotIn("ror.w #8,d2", raw)
 
     def test_zero_warning_link_complete_standalone_contains_tables_once(self) -> None:
         vasm = ROOT / ".toolcache/bin/vasmm68k_mot.exe"
@@ -1178,7 +1381,7 @@ class Crc32StandaloneAssemblyTests(unittest.TestCase):
             self.assertEqual(payload.count(table), 1)
             self.assertTrue(payload.endswith(table))
             self.assertGreater(len(payload), len(table))
-            self.assertLess(len(payload) - len(table), 256)
+            self.assertLess(len(payload) - len(table), 512)
 
     def test_projection_serializer_standalone_assembles_without_warnings(self) -> None:
         vasm = ROOT / ".toolcache/bin/vasmm68k_mot.exe"
@@ -1220,7 +1423,7 @@ class Crc32BuildIntegrationTests(unittest.TestCase):
         result = compile_crc32_lookup_tables(root=ROOT)
         self.assertEqual(result["status"], "pass")
         self.assertTrue(result["generated_files_current"])
-        self.assertEqual(result["binary_bytes"], 0x4B400)
+        self.assertEqual(result["binary_bytes"], 0x4C400)
         self.assertEqual(result["binary_sha256"], EXPECTED_BINARY_SHA256)
         self.assertEqual(result["table_sha256"], EXPECTED_TABLE_SHA256)
 

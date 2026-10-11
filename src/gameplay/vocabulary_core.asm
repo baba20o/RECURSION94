@@ -523,9 +523,9 @@ VocabularyFinalizeStage:
 ; Clobbers d0-d2/a0-a1.
 VocabularyBuildProjectionTail:
         lea     (VOCAB_STATE_BASE).l,a1
-        move.w  #(VOCAB_PROJECTION_BYTES/4)-1,d1
-.copy:
+        rept    VOCAB_PROJECTION_BYTES/4
         move.l  (a1)+,(a0)+
-        dbf     d1,.copy
+        endr
         move.w  #VOCAB_PROJECTION_BYTES,d0
         rts
+        assert  VOCAB_PROJECTION_BYTES=256,"vocabulary fixed copy size drift"

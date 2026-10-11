@@ -16,11 +16,13 @@ Crc32IsoHdlc:
 ; In:  a0=byte stream, d0.w=length (0..$FFFF), d1.l=unfinalized CRC.
 ; Out: a0 advanced, d1.l=unfinalized CRC. Clobbers d0/d2/a1.
 ; An odd input address consumes one byte before the aligned T16 loop. Each
-; aligned word is loaded big-endian and byte-rotated into the generated
-; little-endian table index. The high word of d0 retains the 0/1-byte tail.
+; aligned word uses the generated big-endian T16 index. Only inside a word
+; loop, d1 is T(raw): bytes swapped within each 16-bit halfword. T commutes
+; with XOR and the 16-bit shift; entry/exit restore the ordinary raw-CRC ABI.
+; Separate even/odd loops avoid a per-call tail flag or callee-saved scratch.
 Crc32UpdateRaw:
         tst.w   d0
-        beq.s   .done
+        beq.w   .done
 
         move.l  a0,d2
         btst    #0,d2
@@ -35,39 +37,135 @@ Crc32UpdateRaw:
         move.l  (a1,d2.w),d2
         eor.l   d2,d1
         subq.w  #1,d0
-        beq.s   .done
+        beq.w   .done
 
 .aligned:
-; Pack the 0/1-byte tail into d0's high word, then amortize one DBF over
-; aligned word updates without borrowing a callee-saved register.
-        move.w  d0,d2
-        andi.w  #$0001,d2
-        swap    d0
-        move.w  d2,d0
-        swap    d0
+; A nonzero even byte count implies at least one word. Odd counts use a
+; separate exit, including the one-byte case that must not transform d1.
         lsr.w   #1,d0
-        beq.s   .tail_ready
+        bcc.s   .even_length
+        bra.w   .odd_length
+.even_length:
         subq.w  #1,d0
-; The T16 offset spans $00000..$3FFFC, so the original-68000 indexed read
-; must use d2.l. Keep the table base fixed across words; the odd-byte tail
-; below binds its own byte table. This changes addressing, not the recurrence.
+        ror.w   #8,d1
+        swap    d1
+        ror.w   #8,d1
+        swap    d1
         lea     (Crc32T16Table).l,a1
-.next_word:
+; Split N-1 twice: d0 becomes ceil(N/4)-1 and the two carry bits select
+; the first 1..4 updates. Every later iteration executes exactly four.
+        lsr.w   #1,d0
+        bcs.s   .even_even_words
+        lsr.w   #1,d0
+        bcs.s   .even_word1
+        bra.s   .even_word3
+.even_even_words:
+        lsr.w   #1,d0
+        bcs.s   .even_word0
+        bra.s   .even_word2
+.even_word0:
         moveq   #0,d2
         move.w  (a0)+,d2
-        ror.w   #8,d2
         eor.w   d1,d2
         lsl.l   #2,d2
         move.l  (a1,d2.l),d2
         clr.w   d1
         swap    d1
         eor.l   d2,d1
-        dbf     d0,.next_word
+.even_word1:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+.even_word2:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+.even_word3:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+        dbf     d0,.even_word0
+        ror.w   #8,d1
+        swap    d1
+        ror.w   #8,d1
+        swap    d1
+        rts
 
-.tail_ready:
-        swap    d0
+.odd_length:
         tst.w   d0
-        beq.s   .done
+        beq.w   .byte_tail
+        subq.w  #1,d0
+        ror.w   #8,d1
+        swap    d1
+        ror.w   #8,d1
+        swap    d1
+        lea     (Crc32T16Table).l,a1
+        lsr.w   #1,d0
+        bcs.s   .odd_even_words
+        lsr.w   #1,d0
+        bcs.s   .odd_word1
+        bra.s   .odd_word3
+.odd_even_words:
+        lsr.w   #1,d0
+        bcs.s   .odd_word0
+        bra.s   .odd_word2
+.odd_word0:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+.odd_word1:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+.odd_word2:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+.odd_word3:
+        moveq   #0,d2
+        move.w  (a0)+,d2
+        eor.w   d1,d2
+        lsl.l   #2,d2
+        move.l  (a1,d2.l),d2
+        clr.w   d1
+        swap    d1
+        eor.l   d2,d1
+        dbf     d0,.odd_word0
+        ror.w   #8,d1
+        swap    d1
+        ror.w   #8,d1
+        swap    d1
+.byte_tail:
         moveq   #0,d2
         move.b  (a0)+,d2
         eor.b   d1,d2

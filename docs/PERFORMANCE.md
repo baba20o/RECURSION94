@@ -259,11 +259,38 @@ remain: 70 reported budget violations, a cumulative overrun counter of five,
 and a maximum raw main span of 152,732 at tick193. That whole-main span includes
 interrupt service; it is not a pure simulation or renderer cost.
 
-Thus the renderer improvement is measured, but neither the multi-echo
-simulation defect nor the M5 budget gate is closed. The pinned offline pair
-comparison and CRC/projection optimization are next; ordinary-frame/blank
-failures also require repair. The older late-entry detector limitation remains
-open, so its counter alone cannot certify all blank deadlines.
+The independently reviewed pinned comparison is
+`renderer-hwm-timing-parity-96dec577-to-e6778f90-20261010.json`, SHA-256
+`ac60c0f84054e491252ba820e830017e15cdb1800bfb6137b08bfcc182bb9a80`.
+Its helper passes 67/67 focused native tests. Its sampled budget claim is
+explicitly limited to the first-attempt regular/reset windows, not the later
+prefix or full route. Thus the renderer improvement is measured, but neither
+the multi-echo simulation defect nor the M5 budget gate is closed.
+Ordinary-frame/blank failures also require repair. The older late-entry
+detector limitation remains open, so its counter alone cannot certify all
+blank deadlines.
+
+## CRC/projection candidate: built, timing unmeasured
+
+B03 `8b69d4bf` retains the renderer improvement and adds a transformed-state
+CRC word loop with four-word unrolling, exact contiguous projection copies,
+monotonic pool scan bounds, and a direct 27-zero-record transition. The public
+raw-CRC ABI and complete projection bytes/schema remain unchanged by design.
+The generated table bundle grows by 4,096 bytes to 312,320 bytes; the three
+ROM images still fit the chosen 1 MiB layout. Standalone assembly, all three
+builds, static ROM validation, and 77 focused native host tests pass.
+An independent code review covers the zero/odd/even/max-length paths,
+full-width table indexing, every copied field, source-pointer advancement,
+and the allocator/reset invariant required for omitted zero suffixes.
+
+These are correctness/build checks, not performance acceptance. Short CRC
+calls can become slower, so only native whole-frame measurements can show
+the net result. No estimated savings are credited toward the simulation or
+reset limits. Next measurements must preserve the renderer-HWM baseline's
+input, replay bytes, renderer bytes, and projection CRCs, while measuring
+all four later-attempt checkpoints, both reset windows, and ordinary frames.
+The immutable candidate ROMs and symbols are in
+`artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
 
 ## Natural third-attempt prefix: timing failure
 

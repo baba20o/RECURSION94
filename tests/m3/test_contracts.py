@@ -166,13 +166,9 @@ class AssemblyContractTests(unittest.TestCase):
 
     def test_t16_word_recurrence_and_unaligned_prefix_are_exact(self) -> None:
         crc = (ROOT / "src/game/crc32.asm").read_text(encoding="utf-8")
-        word = crc[
-            crc.index(".next_word:") :
-            crc.index(".tail_ready:")
-        ]
-        required_order = (
+        required_word = (
+            "moveq   #0,d2",
             "move.w  (a0)+,d2",
-            "ror.w   #8,d2",
             "eor.w   d1,d2",
             "lsl.l   #2,d2",
             "move.l  (a1,d2.l),d2",
@@ -180,17 +176,40 @@ class AssemblyContractTests(unittest.TestCase):
             "swap    d1",
             "eor.l   d2,d1",
         )
-        positions = [word.index(fragment) for fragment in required_order]
-        self.assertEqual(positions, sorted(positions))
-        self.assertIn("btst    #0,d2", crc)
-        self.assertIn("lea     (Crc32ByteTable).l,a1", crc)
-        self.assertIn("lea     (Crc32T16Table).l,a1", crc)
-        self.assertLess(
-            crc.index("lea     (Crc32T16Table).l,a1"),
-            crc.index(".next_word:"),
+        transform = "\n".join(
+            "        " + line
+            for line in ("ror.w   #8,d1", "swap    d1") * 2
         )
-        self.assertNotIn("adda.l  d2,a1", word)
-        self.assertNotIn("(a1,d2.w)", word)
+        self.assertEqual(crc.count(transform), 4)
+        for parity in ("even", "odd"):
+            for index in range(4):
+                label = f".{parity}_word{index}:"
+                next_label = (
+                    f".{parity}_word{index + 1}:"
+                    if index < 3 else f"        dbf     d0,.{parity}_word0"
+                )
+                word = crc.split(label, 1)[1].split(next_label, 1)[0]
+                self.assertEqual(
+                    tuple(line.strip() for line in word.splitlines() if line.strip()),
+                    required_word,
+                )
+            self.assertIn(
+                f"        dbf     d0,.{parity}_word0\n" + transform,
+                crc,
+            )
+        raw = crc.split("Crc32UpdateRaw:", 1)[1]
+        self.assertTrue(raw.startswith("\n        tst.w   d0\n        beq.w   .done\n"))
+        prefix = raw.split(".aligned:", 1)[0]
+        self.assertIn("btst    #0,d2\n        beq.s   .aligned", prefix)
+        self.assertIn("move.b  (a0)+,d2", prefix)
+        self.assertIn("subq.w  #1,d0\n        beq.w   .done", prefix)
+        self.assertIn(
+            ".odd_length:\n        tst.w   d0\n        beq.w   .byte_tail",
+            raw,
+        )
+        self.assertEqual(raw.count("lea     (Crc32ByteTable).l,a1"), 2)
+        self.assertEqual(raw.count("lea     (Crc32T16Table).l,a1"), 2)
+        self.assertNotIn("ror.w   #8,d2", raw)
 
     def test_common_composite_zero_runs_dispatch_before_power_fallback(self) -> None:
         projection = (ROOT / "src/game/projection.asm").read_text(
@@ -201,7 +220,7 @@ class AssemblyContractTests(unittest.TestCase):
             projection.index("; Apply one generated four-plane linear transition.")
         ]
         fallback = advance.index("move.l  d3,-(a7)")
-        for records in (7, 12, 15, 24, 31):
+        for records in (7, 12, 15, 24, 27, 31):
             compare = f"cmpi.w  #{records},d0"
             label = f".direct_zero_records_{records}:"
             table = f"lea     (Crc32ZeroRecords{records}Table).l,a1"
@@ -215,7 +234,7 @@ class AssemblyContractTests(unittest.TestCase):
                 f"lea     (Crc32ZeroRecords{records}Table).l,a1",
                 advance,
             )
-        self.assertEqual(advance.count("bra.w   .apply_zero_transition"), 5)
+        self.assertEqual(advance.count("bra.w   .apply_zero_transition"), 6)
 
 
 if __name__ == "__main__":

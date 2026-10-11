@@ -5,7 +5,32 @@
   cartridge; 2 — hardware foundation; 3 — deterministic engine core; 4 —
   echo vertical slice. The M4 automated evidence freeze is complete; literal
   human hands-on play and subjective listening are not claimed by it.
-- **Current M5 candidate:** seven read-only campaign renderer scans now use
+- **Current M5 candidate:** bounded CRC/projection optimization is built, but
+  native timing and replay parity are not yet measured. The word CRC uses a
+  generated big-endian index and an internal halfword-byte-swapped state,
+  restoring the ordinary raw-CRC ABI at every exit. Four-word unrolling,
+  layout-asserted contiguous copies, monotonic projection scan bounds, and a
+  direct 27-zero-record transition preserve the fixed projection schema.
+  Canonical Debug checksum/SHA-256: `$DA08` /
+  `e9ea22b6192c8cddef195a854737ddc7c16344355758bcd0260ac5766c59687b`;
+  symbols `cf293ed2fc64f2dd11b103ccbc13e27a0ea34a8218abca175b71d62fe5c5189e`.
+  Canonical Release checksum/SHA-256: `$4B2D` /
+  `2bbd22cf6165a6af1313694bd223fc5cd904461e5fe6d25f5a0a75e57e8b699d`;
+  symbols `06e0c901bbba92e09d848558c48bde65557d1ad791c6f670258cc2595ca063ad`.
+  B03 Debug checksum/SHA-256: `$0D28` /
+  `8b69d4bf62cc286123632619daad1422cd7076d4620154900d6a8eade5ede4c5`;
+  symbols `d81234dd46b0ee9744f94e8dbd37b04df8838e1237bdb77a41e456f4911eb131`.
+  All three images remain 1,048,576 bytes; all three builds and static ROM
+  checks pass. Native CRC, pool-bound, and source-contract tests pass 77/77
+  with no failures, errors, or skips. This includes the exact rebuilt-ROM
+  table-blob test and warning-free standalone assemblies. Generated CRC
+  tables occupy 312,320 bytes, SHA-256
+  `45a0f0cef6467c656dda8399a01c6d2ab73ca0e1b06236cc7addcbf8fc2f458a`.
+  ROMs and symbols are archived under
+  `artifacts/archive/m5-crc-projection-8b69d4bf-20261010/`.
+  Current-ROM emulator measurements, full replays, Windows All, and M5
+  aggregate validation remain required; no timing improvement is claimed yet.
+- **Preceding renderer-HWM candidate:** seven read-only campaign renderer scans use
   clamped, zero-guarded historical pool bounds; legacy renderer paths and
   gameplay are unchanged. All images are 1,048,576 bytes. Canonical Debug
   checksum/SHA-256: `$C1BE` /
@@ -38,8 +63,11 @@
   `d1e86bebd1ddab8577c654ec18d01cd03375c5b8cc9e02c638fe5f35a1e93b40`.
   Current-ROM full replays, Windows All, and M5 aggregate evidence remain
   pending. This is a bounded measured rendering gain, not a full M5 performance
-  pass. CRC/projection optimization is now in progress; no new CRC ROM or
-  timing result is claimed yet.
+  pass. Its independently reviewed paired comparison is
+  `renderer-hwm-timing-parity-96dec577-to-e6778f90-20261010.json`, SHA-256
+  `ac60c0f84054e491252ba820e830017e15cdb1800bfb6137b08bfcc182bb9a80`.
+  The comparison helper passes 67/67 focused native tests and explicitly
+  excludes later-attempt/full-route timing certification.
 - **Preceding high-water ROMs:** all images are 1,048,576 bytes. Canonical Debug
   checksum/SHA-256: `$1A55` /
   `9b2122f405dc7c6a2692eea2250ac18acff3ded08804aa67ab72316cc1b86d34`;
@@ -290,8 +318,9 @@
 - **License limitation:** vasm 2.0f is usable here only for non-commercial
   purposes unless written permission is obtained; commercial exploitation
   requires permission or migration to the verified GNU Binutils path
-- **Next action:** measure bounded renderer scans and CRC/projection hot paths, preserving
-  byte parity and native remeasurement. Resolve the remaining timing failures before
+- **Next action:** measure the built CRC/projection candidate against the preserved
+  renderer-HWM checkpoint/reset/prefix baselines, requiring exact byte/CRC parity.
+  Resolve the remaining timing failures before
   rerunning objective HUD/SAT captures and budget-v3, independently review the
   visuals, run Windows All and `Milestone5`, then
   freeze M5 only if every required gate passes

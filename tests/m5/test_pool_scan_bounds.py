@@ -655,6 +655,24 @@ def _typed_allocation_violations(
 
 
 class PoolHighWaterModelTests(unittest.TestCase):
+    def test_monotonic_bound_covers_prior_projection_until_reset_clears_it(self) -> None:
+        for spec in POOL_SPECS:
+            history = PoolHistory.empty(spec.capacity)
+            for _ in range(spec.capacity):
+                history.allocate_lowest()
+            prior_active = tuple(history.slots)
+            for slot in range(spec.capacity):
+                history.free(slot)
+                self.assertTrue(all(not active or i < history.high_water
+                                    for i, active in enumerate(prior_active)))
+            self.assertEqual(history.live_count, 0)
+            self.assertEqual(history.high_water, spec.capacity)
+            history.reset()
+            # Resetting only the ledger would invalidate prior-tail elision.
+            self.assertTrue(any(prior_active[history.high_water:]))
+            prior_active = (False,) * spec.capacity
+            self.assertFalse(any(prior_active[history.high_water:]))
+
     def test_real_pool_types_and_capacities_are_complete(self) -> None:
         self.assertEqual(
             tuple(spec.pool_type for spec in POOL_SPECS),
@@ -831,6 +849,29 @@ class PoolHighWaterModelTests(unittest.TestCase):
 
 
 class PoolHighWaterSourceContractTests(unittest.TestCase):
+    def test_projection_bound_has_no_transitive_allocator_or_pool_mutation(self) -> None:
+        routines = _all_routines()
+        reachable, unresolved = _reachable_routines("EngineProjectPool", routines)
+        self.assertEqual(unresolved, ())
+        self.assertEqual(reachable, {"EngineProjectPool", "Crc32UpdateRaw", "Crc32AdvanceZeroRecords"})
+        for label in reachable:
+            body = routines[label].body
+            self.assertNotIn("EnginePoolAllocateLowest", body)
+            self.assertNotIn("EnginePoolFreeSlot", body)
+        projection = routines["EngineProjectPool"].body
+        self.assertIn("monotonic", projection)
+        self.assertIn("canonical", projection)
+        self.assertIn("beq.w   .append_zero_tail", projection)
+        self.assertIn("cmp.w   d3,d4", projection)
+        self.assertIn("bls.s   .bound_clamped", projection)
+        # Source pool a2 is read/advanced only. All memory stores target a1
+        # (projection), a7 (preservation), or the predecrement stack.
+        code = "\n".join(line.split(";", 1)[0] for line in projection.splitlines())
+        for line in code.splitlines():
+            if re.search(r"\b(?:move|clr|add|sub|or|and|eor)\.[bwl]\b", line):
+                destination = line.rsplit(",", 1)[-1].strip()
+                self.assertNotRegex(destination, r"\(.*a[023456].*\)")
+
     def test_allocator_scans_from_zero_and_returns_lowest_free_index(self) -> None:
         routine = _routine(
             "src/game/object_pool.asm", "EnginePoolAllocateLowest"

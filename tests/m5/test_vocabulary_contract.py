@@ -200,8 +200,20 @@ class VocabularySourceTests(unittest.TestCase):
             encoding="utf-8"
         )
         routine = core.split("VocabularyBuildProjectionTail:", 1)[1]
-        self.assertIn("#(VOCAB_PROJECTION_BYTES/4)-1", routine)
+        self.assertIn(
+            "        rept    VOCAB_PROJECTION_BYTES/4\n"
+            "        move.l  (a1)+,(a0)+\n"
+            "        endr",
+            routine,
+        )
+        self.assertIn(
+            'assert  VOCAB_PROJECTION_BYTES=256,"vocabulary fixed copy size drift"',
+            routine,
+        )
         self.assertIn("#VOCAB_PROJECTION_BYTES,d0", routine)
+        self.assertNotIn("dbf", routine)
+        self.assertNotIn("bsr", routine)
+        self.assertNotIn("jsr", routine)
         self.assertNotIn("EngineBuildProjection", routine)
 
     def test_campaign_projection_continues_the_base_crc_without_full_rehash(

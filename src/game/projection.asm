@@ -14,12 +14,11 @@ EngineBuildProjection:
 ; the CRC to stream in projection order while the pool records are serialized.
         move.w  #ENGINE_PROJECTION_SCHEMA_BYTES,(a1)+
 
-        move.w  (ENGINE_ENCOUNTER_ID).l,d0
-        move.w  d0,(a1)+
-        move.w  (ENGINE_ATTEMPT).l,d0
-        move.w  d0,(a1)+
-        move.w  (ENGINE_TICK).l,d0
-        move.w  d0,(a1)+
+; These three header groups are contiguous in both source and projection.
+; Layout assertions below bind every copied byte; no reserved fields enter.
+        lea     (ENGINE_ENCOUNTER_ID).l,a0
+        move.l  (a0)+,(a1)+
+        move.w  (a0)+,(a1)+
         move.w  (ENGINE_STATE).l,d0
         move.w  d0,(a1)+
         move.w  (ENGINE_TERMINAL_REASON).l,d0
@@ -30,26 +29,12 @@ EngineBuildProjection:
         move.w  d0,(a1)+
         move.w  (ENGINE_LAST_ERROR).l,d0
         move.w  d0,(a1)+
-        move.w  (ENGINE_ROOM_LEFT).l,d0
-        move.w  d0,(a1)+
-        move.w  (ENGINE_ROOM_TOP).l,d0
-        move.w  d0,(a1)+
-        move.w  (ENGINE_ROOM_RIGHT).l,d0
-        move.w  d0,(a1)+
-        move.w  (ENGINE_ROOM_BOTTOM).l,d0
-        move.w  d0,(a1)+
-        move.b  (ENGINE_INPUT_HELD).l,d0
-        move.b  d0,(a1)+
-        move.b  (ENGINE_INPUT_PRESSED).l,d0
-        move.b  d0,(a1)+
-        move.b  (ENGINE_INPUT_RELEASED).l,d0
-        move.b  d0,(a1)+
-        move.b  (ENGINE_INPUT_PREVIOUS).l,d0
-        move.b  d0,(a1)+
-        move.b  (ENGINE_FACING_X).l,d0
-        move.b  d0,(a1)+
-        move.b  (ENGINE_ACTIVE_ACTOR_COUNT).l,d0
-        move.b  d0,(a1)+
+        lea     (ENGINE_ROOM_LEFT).l,a0
+        move.l  (a0)+,(a1)+
+        move.l  (a0)+,(a1)+
+        lea     (ENGINE_INPUT_HELD).l,a0
+        move.l  (a0)+,(a1)+
+        move.w  (a0)+,(a1)+
         move.w  (ENGINE_RECT_COUNT).l,d0
         move.w  d0,(a1)+
 
@@ -58,33 +43,11 @@ EngineBuildProjection:
         lea     (ENGINE_ACTOR_BASE).l,a2
         moveq   #ACTOR_CAPACITY-1,d3
 .actor:
-        move.b  (ACTOR_ACTIVE,a2),d0
-        move.b  d0,(a1)+
-        move.b  (ACTOR_ROLE,a2),d0
-        move.b  d0,(a1)+
-        move.w  (ACTOR_FLAGS,a2),d0
-        move.w  d0,(a1)+
-        move.l  (ACTOR_X,a2),d0
-        move.l  d0,(a1)+
-        move.l  (ACTOR_Y,a2),d0
-        move.l  d0,(a1)+
-        move.l  (ACTOR_VX,a2),d0
-        move.l  d0,(a1)+
-        move.l  (ACTOR_VY,a2),d0
-        move.l  d0,(a1)+
-        move.w  (ACTOR_HALF_WIDTH,a2),d0
-        move.w  d0,(a1)+
-        move.w  (ACTOR_HALF_HEIGHT,a2),d0
-        move.w  d0,(a1)+
-        move.b  (ACTOR_INPUT,a2),d0
-        move.b  d0,(a1)+
-        move.b  (ACTOR_PREVIOUS_INPUT,a2),d0
-        move.b  d0,(a1)+
-        move.w  (ACTOR_HEALTH,a2),d0
-        move.w  d0,(a1)+
-        move.w  (ACTOR_LOGICAL_ID,a2),d0
-        move.w  d0,(a1)+
-        adda.w  #ACTOR_BYTES,a2
+        rept    7
+        move.l  (a2)+,(a1)+
+        endr
+        move.w  (a2)+,(a1)+
+        adda.w  #ACTOR_BYTES-ACTOR_PROJECTION_BYTES,a2
         dbf     d3,.actor
 
 ; Hash the fixed header and actor prefix once. EngineProjectPool then returns
@@ -240,6 +203,8 @@ Crc32AdvanceZeroRecords:
         beq.w   .direct_zero_records_12
         cmpi.w  #24,d0
         beq.w   .direct_zero_records_24
+        cmpi.w  #27,d0
+        beq.w   .direct_zero_records_27
 
         move.l  d3,-(a7)
         move.w  d0,d3
@@ -291,6 +256,9 @@ Crc32AdvanceZeroRecords:
 .direct_zero_records_24:
         lea     (Crc32ZeroRecords24Table).l,a1
         bra.w   .apply_zero_transition
+.direct_zero_records_27:
+        lea     (Crc32ZeroRecords27Table).l,a1
+        bra.w   .apply_zero_transition
 
 ; Apply one generated four-plane linear transition.
 ; In: a1=interleaved transition table, d1.l=raw CRC.
@@ -330,7 +298,10 @@ Crc32AdvanceZeroRecords:
 ; Out: a1 advanced, d2.l=raw CRC through this pool.
 ; Clobbers d0-d2/a0-a1; preserves callee-saved registers.
 ; Prior storage is reset-zeroed or the preceding canonical projection; exact
-; live counts are maintained by the pool API before publication.
+; live counts are maintained by the pool API before publication. Lowest-free
+; allocation makes the monotonic high-water byte an exclusive bound on every
+; source AND prior active slot. Reconstruction clears projection before that
+; ledger resets. Arbitrary/malformed prior buffers are outside this contract.
 EngineProjectPool:
         movem.l d3-d6/a2-a3,-(a7)
         movea.l a0,a2
@@ -351,6 +322,7 @@ EngineProjectPool:
         move.b  d4,(a1)+
         lea     (ENGINE_POOL_HIGH_WATER).l,a0
         adda.w  d2,a0
+        moveq   #0,d4
         move.b  (a0),d4
         move.b  d4,(a1)+
 
@@ -375,8 +347,20 @@ EngineProjectPool:
         adda.w  d0,a1
         bra.w   .flush_trailing_run
 .scan_slots:
-        subq.w  #1,d3
+; d4 survives the raw CRC call. Clamp before arithmetic, retain the omitted
+; canonical-zero suffix in d4, and reject zero before forming a DBF counter.
+        cmp.w   d3,d4
+        bls.s   .bound_clamped
+        move.w  d3,d4
+.bound_clamped:
+        move.w  d3,d0
+        sub.w   d4,d0
+        move.w  d4,d3
+        move.w  d0,d4
         moveq   #0,d5
+        tst.w   d3
+        beq.w   .append_zero_tail
+        subq.w  #1,d3
 .slot:
         tst.b   (OBJECT_ACTIVE,a2)
         beq.s   .inactive_slot
@@ -394,24 +378,9 @@ EngineProjectPool:
         moveq   #0,d5
 
 .serialize_active:
-        move.b  (OBJECT_ACTIVE,a2),d4
-        move.b  d4,(a1)+
-        move.b  (OBJECT_LOGICAL_ID,a2),d4
-        move.b  d4,(a1)+
-        move.w  (OBJECT_STATE,a2),d4
-        move.w  d4,(a1)+
-        move.l  (OBJECT_X,a2),d4
-        move.l  d4,(a1)+
-        move.l  (OBJECT_Y,a2),d4
-        move.l  d4,(a1)+
-        move.l  (OBJECT_VX,a2),d4
-        move.l  d4,(a1)+
-        move.l  (OBJECT_VY,a2),d4
-        move.l  d4,(a1)+
-        move.w  (OBJECT_TIMER,a2),d4
-        move.w  d4,(a1)+
-        move.w  (OBJECT_PARAM,a2),d4
-        move.w  d4,(a1)+
+        rept    OBJECT_PROJECTION_BYTES/4
+        move.l  (a2)+,(a1)+
+        endr
 
 ; Hash the active record immediately. This is the only per-record stream call;
 ; inactive records are represented by coalesced generated transitions.
@@ -422,7 +391,7 @@ EngineProjectPool:
         bsr.w   Crc32UpdateRaw
         move.l  d1,d6
         movea.l a3,a1
-        bra.s   .advance_slot
+        bra.s   .next_slot
 
 .inactive_slot:
 ; Allocation, free, and canonical reconstruction clear all six source longs.
@@ -443,7 +412,16 @@ EngineProjectPool:
         adda.w  #OBJECT_PROJECTION_BYTES,a1
 .advance_slot:
         adda.w  #OBJECT_BYTES,a2
+.next_slot:
         dbf     d3,.slot
+
+; No prior active record can lie beyond the monotonic bound. Keep the full
+; capacity in the projection and merge this suffix with any scanned zero run.
+.append_zero_tail:
+        add.w   d4,d5
+        move.w  d4,d0
+        mulu.w  #OBJECT_PROJECTION_BYTES,d0
+        adda.w  d0,a1
 
 ; A trailing inactive run must be applied before the next pool header.
 .flush_trailing_run:
@@ -461,3 +439,39 @@ EngineProjectPool:
         rts
 
         assert  OBJECT_BYTES=OBJECT_PROJECTION_BYTES,"inactive object projection size drift"
+        assert  OBJECT_PROJECTION_BYTES=24,"object contiguous copy size drift"
+        assert  OBJECT_ACTIVE=0,"object copy origin drift"
+        assert  OBJECT_LOGICAL_ID=1,"object ID offset drift"
+        assert  OBJECT_STATE=2,"object state offset drift"
+        assert  OBJECT_X=4,"object X offset drift"
+        assert  OBJECT_Y=8,"object Y offset drift"
+        assert  OBJECT_VX=12,"object VX offset drift"
+        assert  OBJECT_VY=16,"object VY offset drift"
+        assert  OBJECT_TIMER=20,"object timer offset drift"
+        assert  OBJECT_PARAM=22,"object parameter offset drift"
+        assert  ACTOR_BYTES=32,"actor source stride drift"
+        assert  ACTOR_PROJECTION_BYTES=30,"actor projection stride drift"
+        assert  ACTOR_ACTIVE=0,"actor copy origin drift"
+        assert  ACTOR_ROLE=1,"actor role offset drift"
+        assert  ACTOR_FLAGS=2,"actor flags offset drift"
+        assert  ACTOR_X=4,"actor X offset drift"
+        assert  ACTOR_Y=8,"actor Y offset drift"
+        assert  ACTOR_VX=12,"actor VX offset drift"
+        assert  ACTOR_VY=16,"actor VY offset drift"
+        assert  ACTOR_HALF_WIDTH=20,"actor width offset drift"
+        assert  ACTOR_HALF_HEIGHT=22,"actor height offset drift"
+        assert  ACTOR_INPUT=24,"actor input offset drift"
+        assert  ACTOR_PREVIOUS_INPUT=25,"actor previous-input offset drift"
+        assert  ACTOR_HEALTH=26,"actor health offset drift"
+        assert  ACTOR_LOGICAL_ID=28,"actor ID offset drift"
+        assert  ACTOR_RESERVED=30,"actor reserved offset drift"
+        assert  ENGINE_ATTEMPT=ENGINE_ENCOUNTER_ID+2,"header attempt offset drift"
+        assert  ENGINE_TICK=ENGINE_ENCOUNTER_ID+4,"header tick offset drift"
+        assert  ENGINE_ROOM_TOP=ENGINE_ROOM_LEFT+2,"header room top offset drift"
+        assert  ENGINE_ROOM_RIGHT=ENGINE_ROOM_LEFT+4,"header room right offset drift"
+        assert  ENGINE_ROOM_BOTTOM=ENGINE_ROOM_LEFT+6,"header room bottom offset drift"
+        assert  ENGINE_INPUT_PRESSED=ENGINE_INPUT_HELD+1,"header pressed offset drift"
+        assert  ENGINE_INPUT_RELEASED=ENGINE_INPUT_HELD+2,"header released offset drift"
+        assert  ENGINE_INPUT_PREVIOUS=ENGINE_INPUT_HELD+3,"header previous offset drift"
+        assert  ENGINE_FACING_X=ENGINE_INPUT_HELD+4,"header facing offset drift"
+        assert  ENGINE_ACTIVE_ACTOR_COUNT=ENGINE_INPUT_HELD+5,"header actor count offset drift"

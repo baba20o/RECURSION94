@@ -2,8 +2,10 @@
 """Generate deterministic Motorola 68000 CRC-32 lookup data.
 
 The T16 table implements two reflected CRC-32/ISO-HDLC byte updates at once.
-Its 16-bit index is the little-endian payload word XORed with the low word of
-the raw CRC.  The byte table handles unaligned prefixes and odd tails.  The
+Its 16-bit index is the native big-endian payload word XORed with the low word
+of T(raw CRC), where T swaps bytes within each 16-bit halfword. T16 outputs use
+that same representation; byte and zero-run tables retain ordinary raw CRC.
+The byte table handles unaligned prefixes and odd tails.  The
 projection tables implement the linear transition for power-of-two and common
 composite runs of 24-byte all-zero object records. A transition record contains
 four big-endian longs, one for each byte position of an arbitrary raw
@@ -30,7 +32,7 @@ BYTE_TABLE_BYTES = BYTE_TABLE_ENTRIES * TABLE_WORD_BYTES
 T16_TABLE_BYTES = T16_TABLE_ENTRIES * TABLE_WORD_BYTES
 OBJECT_RECORD_BYTES = 24
 ZERO_RECORD_POWERS = (1, 2, 4, 8, 16, 32)
-ZERO_RECORD_DIRECT_RUNS = (7, 12, 15, 24, 31)
+ZERO_RECORD_DIRECT_RUNS = (7, 12, 15, 24, 31, 27)
 ZERO_RECORD_TABLE_COUNTS = ZERO_RECORD_POWERS + ZERO_RECORD_DIRECT_RUNS
 TRANSITION_TABLE_BYTES = BYTE_TABLE_ENTRIES * 4 * TABLE_WORD_BYTES
 
@@ -38,7 +40,8 @@ OUTPUT_BINARY = "crc32_tables.bin"
 OUTPUT_INCLUDE = "crc32_tables.inc.asm"
 OUTPUT_REPORT = "crc32_tables.json"
 OUTPUT_NAMES = frozenset((OUTPUT_BINARY, OUTPUT_INCLUDE, OUTPUT_REPORT))
-REPORT_SCHEMA = "r94-crc32-tables-v3"
+REPORT_SCHEMA = "r94-crc32-tables-v4"
+T16_CRC_REPRESENTATION = "raw_crc_byte_swapped_within_each_16_bit_halfword"
 NTSC_FRAME_CYCLES = 128_005
 NTSC_65_PERCENT_CYCLES = 83_203
 
@@ -81,9 +84,13 @@ def crc32_iso_hdlc(payload: bytes) -> int:
 
 
 def estimate_neutral_projection_cycles() -> dict[str, int | str]:
-    """Conservative component-only bound for neutral B01 projection.
+    """Retained conservative component-only bound for neutral B01 projection.
 
-    This is a source-level instruction bound, not emulator timing evidence.
+    This is a pre-optimization source-level bound, not emulator timing evidence.
+    No transformed-T16, contiguous-copy or HWM-elision savings are credited;
+    its integration contingency also covers the added short-stream conversion
+    and direct-run dispatch overhead. It must not stand in for current native
+    whole-frame measurements.
     Counts use original-68000 timings, charge every DBF as its slower terminal
     path, charge every conditional branch at its slower direction, and include
     a separate 4,096-cycle integration contingency.  The steady projection has
@@ -117,9 +124,10 @@ def estimate_neutral_projection_cycles() -> dict[str, int | str]:
     pre_direct_run_reported_bound_cycles = 48_632
     return {
         "method": (
-            "conservative original-68000 instruction upper bound; "
+            "retained pre-optimization conservative original-68000 upper bound; "
             "component-only, not whole-frame timing evidence"
         ),
+        "candidate_optimization_savings_credited": False,
         "scope": (
             "EngineBuildProjection only; excludes gameplay, renderer, "
             "interrupt, and reset costs"
@@ -166,12 +174,16 @@ def _byte_table() -> bytes:
     )
 
 
+def swap_bytes_within_halfwords(value: int) -> int:
+    """Linear involution T; commutes with XOR and an unsigned 16-bit shift."""
+    return ((value & 0x00FF00FF) << 8) | ((value & 0xFF00FF00) >> 8)
+
+
 def _t16_table() -> bytes:
     return b"".join(
         _u32be(
-            crc32_update_raw(
-                0,
-                index.to_bytes(2, "little"),
+            swap_bytes_within_halfwords(
+                crc32_update_raw(0, index.to_bytes(2, "big"))
             )
         )
         for index in range(T16_TABLE_ENTRIES)
@@ -198,7 +210,8 @@ def _table_layout() -> tuple[bytes, list[dict[str, int | str]]]:
         {
             "name": "t16",
             "entries": T16_TABLE_ENTRIES,
-            "index_byte_order": "little",
+            "index_byte_order": "big",
+            "crc_representation": T16_CRC_REPRESENTATION,
             "offset": len(binary),
             "bytes": len(t16_table),
             "sha256": hashlib.sha256(t16_table).hexdigest(),
@@ -293,7 +306,9 @@ def build_tables() -> Crc32TableBundle:
         "xorout": "FFFFFFFF",
         "object_record_bytes": OBJECT_RECORD_BYTES,
         "t16_entries": T16_TABLE_ENTRIES,
-        "t16_index_byte_order": "little",
+        "t16_index_byte_order": "big",
+        "t16_crc_representation": T16_CRC_REPRESENTATION,
+        "byte_and_zero_tables_crc_representation": "ordinary_raw_crc",
         "zero_record_powers": list(ZERO_RECORD_POWERS),
         "zero_record_direct_runs": list(ZERO_RECORD_DIRECT_RUNS),
         "zero_record_table_counts": list(ZERO_RECORD_TABLE_COUNTS),
