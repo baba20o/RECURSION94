@@ -24,6 +24,18 @@ ROM = BASELINE_BUILD / "recursion94-debug.bin"
 SYMBOLS = BASELINE_BUILD / "recursion94-debug.sym"
 
 
+def captured_prefix_records() -> tuple[dict, list[dict]]:
+    """Independently parse the preserved native log, never a synthetic pass."""
+    report_path = ROOT / (reset.PREFIX_CAPTURE_STEM + ".json")
+    trace_path = ROOT / (reset.PREFIX_CAPTURE_STEM + ".log")
+    assert hashlib.sha256(report_path.read_bytes()).hexdigest() == reset.PREFIX_CAPTURE_REPORT_SHA256
+    assert hashlib.sha256(trace_path.read_bytes()).hexdigest() == reset.PREFIX_CAPTURE_TRACE_SHA256
+    capture = json.loads(report_path.read_text("utf-8"))
+    records = reset.parse_prefix_markers(trace_path.read_text("utf-8").split("----- CONSOLE TRANSCRIPT -----\n", 1)[1])
+    assert records == capture["records"]
+    return capture, records
+
+
 def synthetic_prefix_records() -> tuple[list[dict], dict]:
     """Explicit parser/analyser fixture, NOT a native capture or gameplay model.
 
@@ -1163,6 +1175,116 @@ class ResetPhaseDiagnosticTests(unittest.TestCase):
         self.assertEqual(result["protocol_status"], "pass", result["errors"])
         self.assertEqual(result["budget_status"], "fail")
         self.assertIn("unsupported", result["protocol_domain_limitations"][0])
+
+    def test_prefix_real_capture_directional_coverage_preserves_every_budget_failure(self) -> None:
+        capture, records = captured_prefix_records()
+        analysis = reset.analyse_prefix(records, capture["prefix_route"])
+        self.assertEqual(analysis["protocol_status"], "pass", analysis["errors"])
+        self.assertEqual(analysis["budget_status"], "fail")
+        self.assertEqual(analysis["budget_errors"], capture["analysis"]["budget_errors"])
+        self.assertEqual(len(analysis["budget_errors"]), 312)
+        for field in ("phase_spans", "natural_resets", "marker_counts"):
+            self.assertEqual(analysis[field], capture["analysis"][field])
+        coverage = analysis["irq_observation_coverage"]
+        expected = [*range(1508, 1512), *range(1570, 1574), *range(1631, 1650), *range(1695, 1698)]
+        self.assertEqual(coverage["required_frames"], expected)
+        self.assertEqual(coverage["observed_frames"], expected)
+        self.assertEqual(coverage["missing_frames"], [])
+        self.assertEqual(coverage["unanchored_frames"], [])
+        self.assertTrue({1507, 1630, 1694}.isdisjoint(expected))
+        commits = {item["frame"]: item for item in analysis["sampled_irqs"]}
+        self.assertEqual(commits[1634]["renderer_publication_binding"], "first_commit_of_sampled_renderer")
+        self.assertEqual(commits[1639]["words"], 440)
+        self.assertEqual(commits[1640]["words"], 0)
+        self.assertEqual(commits[1640]["renderer_publication_binding"], "already_consumed_exact_empty")
+        self.assertIsNone(analysis["observed_renderer_consumption"][-1]["first_later_commit"])
+
+    def test_prefix_real_capture_rejects_every_whole_irq_deletion_including_boundaries(self) -> None:
+        capture, original = captured_prefix_records()
+        for vx in (item for item in original if item["phase"] == "VX"):
+            ve = next(item for item in original if item["phase"] == "VE" and item["frame"] == vx["frame"] - 1)
+            changed = original[:original.index(ve)] + original[original.index(vx) + 1:]
+            with self.subTest(frame=vx["frame"]):
+                analysis = reset.analyse_prefix(changed, capture["prefix_route"])
+                self.assertEqual(analysis["protocol_status"], "fail")
+                self.assertIn("prefix sampled engine counters require missing IRQ(s)", analysis["errors"])
+
+    def test_prefix_real_capture_rejects_complete_second_commit_of_consumed_publication(self) -> None:
+        capture, original = captured_prefix_records()
+        changed = copy.deepcopy(original)
+        vc = next(item for item in changed if item["phase"] == "VC" and item["frame"] == 1640)
+        vc.update(pending=1, published_depth=4, build_depth=4, build_words=440)
+        additions = []
+        for item in original:
+            if item["frame"] != 1639 or item["phase"] not in {"Q", "DS", "DE"}:
+                continue
+            added = {**item, "frame": 1640}
+            if "cycle" in added:
+                added["cycle"] = vc["cycle"] + len(additions) + 1
+            additions.append(added)
+        changed[changed.index(vc) + 1:changed.index(vc) + 1] = additions
+        for item in changed:
+            if item["frame"] == 1640 and item["phase"] == "VP":
+                item.update(commit_words=440, debug_words=440)
+            if item["frame"] == 1640 and item["phase"] == "VX":
+                item["debug_words"] = 440
+        analysis = reset.analyse_prefix(changed, capture["prefix_route"])
+        self.assertEqual(analysis["errors"], ["prefix IRQ 1640 does not consume the sampled renderer publication exactly once"])
+        # RR181 is bound to its first commit even though the engine has
+        # advanced to tick182 before that IRQ; no RR182 is invented.
+        changed = copy.deepcopy(original)
+        next(item for item in changed if item["phase"] == "RR" and item["tick"] == 181)["pending"] = 0
+        self.assertIn("prefix IRQ 1634 does not consume the sampled renderer publication exactly once",
+                      reset.analyse_prefix(changed, capture["prefix_route"])["errors"])
+
+    def test_prefix_offline_derivation_reparses_raw_log_and_keeps_original_failure(self) -> None:
+        capture, records = captured_prefix_records()
+        with patch.object(reset.subprocess, "Popen", side_effect=AssertionError("offline must not launch")), \
+                patch.object(reset, "parse_prefix_markers", wraps=reset.parse_prefix_markers) as parse:
+            report = reset.derive_prefix_reanalysis(ROOT)
+        self.assertEqual(parse.call_count, 2)  # record derivation and console audit
+        self.assertIn("R94C MS ", parse.call_args_list[0].args[0])
+        self.assertEqual(report["status"], "diagnostic_fail")
+        self.assertEqual(report["offline_reanalysis_status"], "pass")
+        self.assertEqual(report["diagnostic_protocol_status"], "pass")
+        self.assertEqual(report["cycle_blank_budget_status"], "fail")
+        self.assertEqual(report["source_capture"]["original_analysis_errors"], capture["analysis"]["errors"])
+        self.assertEqual(report["analysis"]["budget_errors"], capture["analysis"]["budget_errors"])
+        with patch.object(reset, "parse_prefix_markers", return_value=records[:-1]):
+            with self.assertRaisesRegex(reset.EvidenceFailure, "independently parsed raw records"):
+                reset.derive_prefix_reanalysis(ROOT)
+        altered = copy.deepcopy(report["analysis"])
+        altered["budget_errors"].pop()
+        with patch.object(reset, "analyse_prefix", return_value=altered):
+            with self.assertRaisesRegex(reset.EvidenceFailure, "changed original budget/timing facts"):
+                reset.derive_prefix_reanalysis(ROOT)
+        for drift in ("PREFIX_CAPTURE_REPORT_SHA256", "PREFIX_CAPTURE_TRACE_SHA256", "PREFIX_CAPTURE_COLLECTOR_SHA256"):
+            with self.subTest(pin=drift), patch.object(reset, drift, "0" * 64):
+                with self.assertRaisesRegex(reset.EvidenceFailure, "immutable source hash drift"):
+                    reset.derive_prefix_reanalysis(ROOT)
+
+    def test_prefix_offline_cli_is_exclusive_non_overwriting_and_never_launches(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "new-reanalysis.json"
+            arguments = ["--root", str(ROOT), "--prefix-reanalyse", str(output)]
+            with patch.object(reset.subprocess, "Popen", side_effect=AssertionError("offline must not launch")):
+                self.assertEqual(reset.main(arguments), 0)
+                before = output.read_bytes()
+                with self.assertRaisesRegex(reset.EvidenceFailure, "already exists"):
+                    reset.main(arguments)
+                self.assertEqual(output.read_bytes(), before)
+                with self.assertRaisesRegex(reset.EvidenceFailure, "combined"):
+                    reset.main(arguments + ["--canonical-prefix"])
+
+    def test_prefix_nonzero_done_token_without_matching_wait_keeps_later_waits(self) -> None:
+        original, route = synthetic_prefix_records()
+        done = next(item for item in original if item["phase"] == "MD")
+        done["token"] = 1
+        changed = [item for item in original if not (item["phase"] == "WW" and all(item[key] == done[key] for key in ("frame", "attempt", "tick")))]
+        self.assertTrue(any(item["phase"] == "WW" for item in changed))
+        analysis = reset.analyse_prefix(changed, route)
+        self.assertEqual(analysis["protocol_status"], "pass", analysis["errors"])
+        self.assertEqual(analysis["budget_status"], "fail")
 
     def test_native_helper_timeout_serializes_partial_evidence_as_failure(self) -> None:
         failure = reset.EvidenceFailure("READY timeout")

@@ -28,14 +28,15 @@ have measured gains and sampled parity. The high-water candidate passes the
 first-attempt checkpoint and extended reset timing samples. The first natural
 later-attempt prefix completes its input/replay proofs but exposes real
 three-actor checkpoint, ordinary-frame, and second-reset budget failures.
-Repair the two analyzer domain assumptions offline without changing the raw
-failed capture or suppressing budget failures; then profile and optimize the
-measured hot paths. Preserve raw projection/SAT/HUD parity without removing
+The independently reviewed offline repair passes protocol checks with all
+30 observed IRQs anchored and all 312 original budget errors unchanged; the
+failed raw capture remains immutable. Profile and optimize the measured hot
+paths. Preserve raw projection/SAT/HUD parity without removing
 required mechanics or reducing echo counts.
 The fresh native All-suite rerun passes 982/982 without skips after the reviewed
 source-pin, frozen-fixture, and project-local dependency repairs. The prefix
-collector is independently reviewed and 55 focused native tests pass; its
-first capture uses the unchanged high-water ROM/symbol pair. Every optimized
+collector and offline repair are independently reviewed and 61 focused native
+tests pass; the first capture uses the unchanged high-water ROM/symbol pair. Every optimized
 candidate needs fresh measured parity and timing, not the preceding image's pass.
 Harden the late-entry VBlank detector. Refresh changed-ROM replay, counter,
 cycle, and five-state visual evidence before independent image review.

@@ -1,0 +1,3158 @@
+{
+  "analysis": {
+    "budget_errors": [
+      "reset 2 exceeds two-frame main-side cycle budget",
+      "prefix gameplay crossed VBlank at 2/7",
+      "prefix gameplay crossed VBlank at 2/8",
+      "prefix gameplay crossed VBlank at 2/9",
+      "prefix gameplay crossed VBlank at 2/10",
+      "prefix gameplay crossed VBlank at 2/11",
+      "prefix gameplay crossed VBlank at 2/17",
+      "prefix gameplay crossed VBlank at 2/18",
+      "prefix gameplay crossed VBlank at 2/19",
+      "prefix gameplay crossed VBlank at 2/20",
+      "prefix gameplay crossed VBlank at 2/21",
+      "prefix gameplay crossed VBlank at 2/22",
+      "prefix gameplay crossed VBlank at 2/23",
+      "prefix gameplay crossed VBlank at 2/24",
+      "prefix gameplay crossed VBlank at 2/31",
+      "prefix gameplay crossed VBlank at 2/32",
+      "prefix gameplay crossed VBlank at 2/33",
+      "prefix gameplay crossed VBlank at 2/34",
+      "prefix gameplay crossed VBlank at 2/35",
+      "prefix gameplay crossed VBlank at 2/36",
+      "prefix gameplay crossed VBlank at 2/37",
+      "prefix gameplay crossed VBlank at 2/38",
+      "prefix gameplay crossed VBlank at 2/39",
+      "prefix gameplay crossed VBlank at 2/47",
+      "prefix gameplay crossed VBlank at 2/48",
+      "prefix gameplay crossed VBlank at 2/49",
+      "prefix gameplay crossed VBlank at 2/50",
+      "prefix gameplay crossed VBlank at 2/51",
+      "prefix gameplay crossed VBlank at 2/52",
+      "prefix gameplay crossed VBlank at 2/58",
+      "prefix gameplay crossed VBlank at 2/59",
+      "prefix gameplay crossed VBlank at 2/60",
+      "prefix gameplay crossed VBlank at 2/61",
+      "prefix gameplay crossed VBlank at 2/62",
+      "prefix gameplay crossed VBlank at 2/63",
+      "prefix gameplay crossed VBlank at 2/64",
+      "prefix gameplay crossed VBlank at 2/65",
+      "prefix gameplay crossed VBlank at 2/71",
+      "prefix gameplay crossed VBlank at 2/72",
+      "prefix gameplay crossed VBlank at 2/73",
+      "prefix gameplay crossed VBlank at 2/74",
+      "prefix gameplay crossed VBlank at 2/75",
+      "prefix gameplay crossed VBlank at 2/76",
+      "prefix gameplay crossed VBlank at 2/77",
+      "prefix gameplay crossed VBlank at 2/83",
+      "prefix gameplay crossed VBlank at 2/84",
+      "prefix gameplay crossed VBlank at 2/85",
+      "prefix gameplay crossed VBlank at 2/86",
+      "prefix gameplay crossed VBlank at 2/87",
+      "prefix gameplay crossed VBlank at 2/88",
+      "prefix gameplay crossed VBlank at 2/89",
+      "prefix gameplay crossed VBlank at 2/90",
+      "prefix gameplay crossed VBlank at 2/91",
+      "prefix gameplay crossed VBlank at 2/92",
+      "prefix gameplay crossed VBlank at 2/93",
+      "prefix gameplay crossed VBlank at 2/94",
+      "prefix gameplay crossed VBlank at 2/95",
+      "prefix gameplay crossed VBlank at 2/96",
+      "prefix gameplay crossed VBlank at 2/97",
+      "prefix gameplay crossed VBlank at 2/98",
+      "prefix gameplay crossed VBlank at 2/99",
+      "prefix gameplay crossed VBlank at 2/100",
+      "prefix gameplay crossed VBlank at 2/101",
+      "prefix gameplay crossed VBlank at 2/102",
+      "prefix gameplay crossed VBlank at 2/103",
+      "prefix gameplay crossed VBlank at 2/104",
+      "prefix gameplay crossed VBlank at 2/105",
+      "prefix gameplay crossed VBlank at 2/106",
+      "prefix gameplay crossed VBlank at 2/107",
+      "prefix gameplay crossed VBlank at 2/108",
+      "prefix gameplay crossed VBlank at 2/109",
+      "prefix gameplay crossed VBlank at 2/110",
+      "prefix gameplay crossed VBlank at 2/111",
+      "prefix gameplay crossed VBlank at 2/121",
+      "prefix gameplay crossed VBlank at 2/122",
+      "prefix gameplay crossed VBlank at 2/123",
+      "prefix gameplay crossed VBlank at 2/124",
+      "prefix gameplay crossed VBlank at 2/125",
+      "prefix gameplay crossed VBlank at 2/126",
+      "prefix gameplay crossed VBlank at 2/127",
+      "prefix gameplay crossed VBlank at 2/128",
+      "prefix gameplay crossed VBlank at 2/129",
+      "prefix gameplay crossed VBlank at 2/130",
+      "prefix gameplay crossed VBlank at 2/131",
+      "prefix gameplay crossed VBlank at 2/132",
+      "prefix gameplay crossed VBlank at 2/133",
+      "prefix gameplay crossed VBlank at 2/134",
+      "prefix gameplay crossed VBlank at 2/135",
+      "prefix gameplay crossed VBlank at 2/136",
+      "prefix gameplay crossed VBlank at 2/137",
+      "prefix gameplay crossed VBlank at 2/138",
+      "prefix gameplay crossed VBlank at 2/139",
+      "prefix gameplay crossed VBlank at 2/140",
+      "prefix gameplay crossed VBlank at 2/141",
+      "prefix gameplay crossed VBlank at 2/142",
+      "prefix gameplay crossed VBlank at 2/143",
+      "prefix gameplay crossed VBlank at 2/144",
+      "prefix gameplay crossed VBlank at 2/145",
+      "prefix gameplay crossed VBlank at 2/146",
+      "prefix gameplay crossed VBlank at 2/147",
+      "prefix gameplay crossed VBlank at 2/148",
+      "prefix gameplay crossed VBlank at 2/164",
+      "prefix gameplay crossed VBlank at 2/165",
+      "prefix gameplay crossed VBlank at 2/166",
+      "prefix gameplay crossed VBlank at 2/167",
+      "prefix gameplay crossed VBlank at 2/168",
+      "prefix gameplay crossed VBlank at 2/169",
+      "prefix gameplay crossed VBlank at 2/170",
+      "prefix gameplay crossed VBlank at 2/171",
+      "prefix gameplay crossed VBlank at 2/172",
+      "prefix gameplay crossed VBlank at 2/173",
+      "prefix gameplay crossed VBlank at 2/174",
+      "prefix gameplay crossed VBlank at 2/175",
+      "prefix gameplay crossed VBlank at 2/176",
+      "prefix gameplay crossed VBlank at 2/177",
+      "prefix gameplay crossed VBlank at 2/178",
+      "prefix gameplay crossed VBlank at 2/179",
+      "prefix gameplay crossed VBlank at 2/180",
+      "prefix gameplay crossed VBlank at 2/181",
+      "prefix gameplay crossed VBlank at 2/183",
+      "prefix gameplay crossed VBlank at 2/188",
+      "prefix gameplay crossed VBlank at 2/189",
+      "prefix gameplay crossed VBlank at 2/190",
+      "prefix gameplay crossed VBlank at 2/191",
+      "prefix gameplay crossed VBlank at 2/192",
+      "prefix gameplay crossed VBlank at 2/193",
+      "prefix gameplay crossed VBlank at 2/198",
+      "prefix gameplay crossed VBlank at 2/199",
+      "prefix gameplay crossed VBlank at 2/200",
+      "prefix gameplay crossed VBlank at 2/201",
+      "prefix gameplay crossed VBlank at 2/202",
+      "prefix gameplay crossed VBlank at 2/203",
+      "prefix gameplay crossed VBlank at 2/208",
+      "prefix gameplay crossed VBlank at 2/209",
+      "prefix gameplay crossed VBlank at 2/210",
+      "prefix gameplay crossed VBlank at 2/211",
+      "prefix gameplay crossed VBlank at 2/212",
+      "prefix gameplay crossed VBlank at 2/213",
+      "prefix gameplay crossed VBlank at 2/218",
+      "prefix gameplay crossed VBlank at 2/219",
+      "prefix gameplay crossed VBlank at 2/220",
+      "prefix gameplay crossed VBlank at 2/221",
+      "prefix gameplay crossed VBlank at 2/222",
+      "prefix gameplay crossed VBlank at 2/223",
+      "prefix gameplay crossed VBlank at 2/224",
+      "prefix gameplay crossed VBlank at 2/225",
+      "prefix gameplay crossed VBlank at 2/226",
+      "prefix gameplay crossed VBlank at 2/231",
+      "prefix gameplay crossed VBlank at 2/232",
+      "prefix gameplay crossed VBlank at 2/233",
+      "prefix gameplay crossed VBlank at 2/234",
+      "prefix gameplay crossed VBlank at 2/235",
+      "prefix gameplay crossed VBlank at 2/236",
+      "prefix gameplay crossed VBlank at 2/237",
+      "prefix gameplay crossed VBlank at 2/238",
+      "prefix gameplay crossed VBlank at 2/239",
+      "prefix gameplay crossed VBlank at 2/240",
+      "prefix gameplay crossed VBlank at 2/241",
+      "prefix ME ordinary physical cadence drift at 2/7",
+      "prefix ME ordinary physical cadence drift at 2/17",
+      "prefix ME ordinary physical cadence drift at 2/31",
+      "prefix ME ordinary physical cadence drift at 2/47",
+      "prefix ME ordinary physical cadence drift at 2/58",
+      "prefix ME ordinary physical cadence drift at 2/71",
+      "prefix ME ordinary physical cadence drift at 2/83",
+      "prefix ME ordinary physical cadence drift at 2/164",
+      "prefix ME ordinary physical cadence drift at 2/182",
+      "prefix ME ordinary physical cadence drift at 2/188",
+      "prefix ME ordinary physical cadence drift at 2/198",
+      "prefix ME ordinary physical cadence drift at 2/208",
+      "prefix ME ordinary physical cadence drift at 2/218",
+      "prefix ME ordinary physical cadence drift at 2/231",
+      "prefix MS ordinary physical cadence drift at 2/11",
+      "prefix MS ordinary physical cadence drift at 2/24",
+      "prefix MS ordinary physical cadence drift at 2/39",
+      "prefix MS ordinary physical cadence drift at 2/52",
+      "prefix MS ordinary physical cadence drift at 2/65",
+      "prefix MS ordinary physical cadence drift at 2/77",
+      "prefix MS ordinary physical cadence drift at 2/111",
+      "prefix MS ordinary physical cadence drift at 2/120",
+      "prefix MS ordinary physical cadence drift at 2/148",
+      "prefix MS ordinary physical cadence drift at 2/182",
+      "prefix MS ordinary physical cadence drift at 2/183",
+      "prefix MS ordinary physical cadence drift at 2/193",
+      "prefix MS ordinary physical cadence drift at 2/203",
+      "prefix MS ordinary physical cadence drift at 2/213",
+      "prefix MS ordinary physical cadence drift at 2/226",
+      "prefix sampled MB has nonzero queued frame token",
+      "prefix sampled MD has nonzero queued frame token",
+      "prefix sampled RM has nonzero queued frame token",
+      "prefix sampled RX has nonzero queued frame token",
+      "prefix sampled RG has nonzero queued frame token",
+      "prefix sampled RR has nonzero queued frame token",
+      "prefix sampled HB has nonzero queued frame token",
+      "prefix sampled HE has nonzero queued frame token",
+      "prefix sampled SE has nonzero queued frame token",
+      "prefix sampled OE has nonzero queued frame token",
+      "attempt2 tick 59 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 60 GameplayStep exceeds 83203 CPU cycles",
+      "attempt2 tick 119 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 120 GameplayStep exceeds 83203 CPU cycles",
+      "attempt2 tick 179 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 180 GameplayStep exceeds 83203 CPU cycles",
+      "attempt2 tick 183 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 183 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 183 pre-render queue/backlog not empty",
+      "attempt2 tick 184 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 184 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 184 pre-render queue/backlog not empty",
+      "attempt2 tick 185 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 185 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 185 pre-render queue/backlog not empty",
+      "attempt2 tick 186 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 186 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 186 pre-render queue/backlog not empty",
+      "attempt2 tick 187 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 187 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 187 pre-render queue/backlog not empty",
+      "attempt2 tick 188 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 188 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 188 pre-render queue/backlog not empty",
+      "attempt2 tick 189 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 189 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 189 pre-render queue/backlog not empty",
+      "attempt2 tick 190 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 190 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 190 pre-render queue/backlog not empty",
+      "attempt2 tick 191 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 191 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 191 pre-render queue/backlog not empty",
+      "attempt2 tick 192 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 192 pre-render queue/backlog not empty",
+      "attempt2 tick 193 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 193 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 193 pre-render queue/backlog not empty",
+      "attempt2 tick 194 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 194 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 194 pre-render queue/backlog not empty",
+      "attempt2 tick 195 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 195 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 195 pre-render queue/backlog not empty",
+      "attempt2 tick 196 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 196 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 196 pre-render queue/backlog not empty",
+      "attempt2 tick 239 whole main exceeds one-frame cycle budget",
+      "attempt2 tick 239 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 239 pre-render queue/backlog not empty",
+      "attempt2 tick 240 GameplayStep exceeds 83203 CPU cycles",
+      "attempt2 tick 240 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 240 pre-render queue/backlog not empty",
+      "attempt2 tick 241 renderer hold/recovery/backlog/rejection mismatch",
+      "attempt2 tick 241 pre-render queue/backlog not empty",
+      "prefix IRQ 1508 queued/backlogged frame tokens",
+      "prefix IRQ 1508 late/outside blank or cumulative overrun",
+      "prefix IRQ 1509 queued/backlogged frame tokens",
+      "prefix IRQ 1509 late/outside blank or cumulative overrun",
+      "prefix IRQ 1510 queued/backlogged frame tokens",
+      "prefix IRQ 1510 late/outside blank or cumulative overrun",
+      "prefix IRQ 1511 queued/backlogged frame tokens",
+      "prefix IRQ 1511 late/outside blank or cumulative overrun",
+      "prefix IRQ 1570 queued/backlogged frame tokens",
+      "prefix IRQ 1570 late/outside blank or cumulative overrun",
+      "prefix IRQ 1571 queued/backlogged frame tokens",
+      "prefix IRQ 1571 late/outside blank or cumulative overrun",
+      "prefix IRQ 1572 queued/backlogged frame tokens",
+      "prefix IRQ 1572 late/outside blank or cumulative overrun",
+      "prefix IRQ 1573 queued/backlogged frame tokens",
+      "prefix IRQ 1573 late/outside blank or cumulative overrun",
+      "prefix IRQ 1631 queued/backlogged frame tokens",
+      "prefix IRQ 1631 late/outside blank or cumulative overrun",
+      "prefix IRQ 1632 queued/backlogged frame tokens",
+      "prefix IRQ 1632 late/outside blank or cumulative overrun",
+      "prefix IRQ 1633 queued/backlogged frame tokens",
+      "prefix IRQ 1633 late/outside blank or cumulative overrun",
+      "prefix IRQ 1634 queued/backlogged frame tokens",
+      "prefix IRQ 1634 late/outside blank or cumulative overrun",
+      "prefix IRQ 1635 queued/backlogged frame tokens",
+      "prefix IRQ 1635 late/outside blank or cumulative overrun",
+      "prefix IRQ 1636 queued/backlogged frame tokens",
+      "prefix IRQ 1636 late/outside blank or cumulative overrun",
+      "prefix IRQ 1637 queued/backlogged frame tokens",
+      "prefix IRQ 1637 late/outside blank or cumulative overrun",
+      "prefix IRQ 1638 queued/backlogged frame tokens",
+      "prefix IRQ 1638 late/outside blank or cumulative overrun",
+      "prefix IRQ 1639 queued/backlogged frame tokens",
+      "prefix IRQ 1639 late/outside blank or cumulative overrun",
+      "prefix IRQ 1640 queued/backlogged frame tokens",
+      "prefix IRQ 1640 late/outside blank or cumulative overrun",
+      "prefix IRQ 1641 queued/backlogged frame tokens",
+      "prefix IRQ 1641 late/outside blank or cumulative overrun",
+      "prefix IRQ 1642 queued/backlogged frame tokens",
+      "prefix IRQ 1642 late/outside blank or cumulative overrun",
+      "prefix IRQ 1643 queued/backlogged frame tokens",
+      "prefix IRQ 1643 late/outside blank or cumulative overrun",
+      "prefix IRQ 1644 queued/backlogged frame tokens",
+      "prefix IRQ 1644 late/outside blank or cumulative overrun",
+      "prefix IRQ 1645 queued/backlogged frame tokens",
+      "prefix IRQ 1645 late/outside blank or cumulative overrun",
+      "prefix IRQ 1646 queued/backlogged frame tokens",
+      "prefix IRQ 1646 late/outside blank or cumulative overrun",
+      "prefix IRQ 1647 queued/backlogged frame tokens",
+      "prefix IRQ 1647 late/outside blank or cumulative overrun",
+      "prefix IRQ 1648 queued/backlogged frame tokens",
+      "prefix IRQ 1648 late/outside blank or cumulative overrun",
+      "prefix IRQ 1649 queued/backlogged frame tokens",
+      "prefix IRQ 1649 late/outside blank or cumulative overrun",
+      "prefix IRQ 1695 queued/backlogged frame tokens",
+      "prefix IRQ 1695 late/outside blank or cumulative overrun",
+      "prefix IRQ 1696 queued/backlogged frame tokens",
+      "prefix IRQ 1696 late/outside blank or cumulative overrun",
+      "prefix IRQ 1697 queued/backlogged frame tokens",
+      "prefix IRQ 1697 late/outside blank or cumulative overrun"
+    ],
+    "budget_status": "fail",
+    "conclusion": "Natural canonical-route prefix observed; protocol passed; sampled cycle/blank budget failed. Not a full M5 pass.",
+    "errors": [],
+    "irq_observation_coverage": {
+      "counter_intervals": [
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1376068271,
+            "frame": 1507,
+            "phase": "MS",
+            "tick": 58
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1376447035,
+            "frame": 1508,
+            "phase": "ME",
+            "tick": 59
+          },
+          "required_frames": [
+            1508
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1377014427,
+            "frame": 1508,
+            "phase": "MS",
+            "tick": 59
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1377763807,
+            "frame": 1509,
+            "phase": "ME",
+            "tick": 60
+          },
+          "required_frames": [
+            1509
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1377781335,
+            "frame": 1509,
+            "phase": "MS",
+            "tick": 60
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1378106913,
+            "frame": 1510,
+            "phase": "ME",
+            "tick": 61
+          },
+          "required_frames": [
+            1510
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1378674291,
+            "frame": 1510,
+            "phase": "MS",
+            "tick": 61
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1379053374,
+            "frame": 1511,
+            "phase": "ME",
+            "tick": 62
+          },
+          "required_frames": [
+            1511
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1431229636,
+            "frame": 1569,
+            "phase": "ME",
+            "tick": 118
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1431858367,
+            "frame": 1570,
+            "phase": "MS",
+            "tick": 118
+          },
+          "required_frames": [
+            1570
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1432131493,
+            "frame": 1570,
+            "phase": "ME",
+            "tick": 119
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1432760238,
+            "frame": 1571,
+            "phase": "MS",
+            "tick": 119
+          },
+          "required_frames": [
+            1571
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1433421472,
+            "frame": 1571,
+            "phase": "MS",
+            "tick": 120
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1433711349,
+            "frame": 1572,
+            "phase": "ME",
+            "tick": 121
+          },
+          "required_frames": [
+            1572
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1434270117,
+            "frame": 1572,
+            "phase": "MS",
+            "tick": 121
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1434613202,
+            "frame": 1573,
+            "phase": "ME",
+            "tick": 122
+          },
+          "required_frames": [
+            1573
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1486290729,
+            "frame": 1630,
+            "phase": "MS",
+            "tick": 178
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1486637416,
+            "frame": 1631,
+            "phase": "ME",
+            "tick": 179
+          },
+          "required_frames": [
+            1631
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1487196198,
+            "frame": 1631,
+            "phase": "MS",
+            "tick": 179
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1487909886,
+            "frame": 1632,
+            "phase": "ME",
+            "tick": 180
+          },
+          "required_frames": [
+            1632
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1487927358,
+            "frame": 1632,
+            "phase": "MS",
+            "tick": 180
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1488216626,
+            "frame": 1633,
+            "phase": "ME",
+            "tick": 181
+          },
+          "required_frames": [
+            1633
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1489064214,
+            "frame": 1633,
+            "phase": "MS",
+            "tick": 182
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1489451828,
+            "frame": 1634,
+            "phase": "ME",
+            "tick": 183
+          },
+          "required_frames": [
+            1634
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1489451828,
+            "frame": 1634,
+            "phase": "ME",
+            "tick": 183
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1490094000,
+            "frame": 1635,
+            "phase": "MS",
+            "tick": 183
+          },
+          "required_frames": [
+            1635
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1490405094,
+            "frame": 1635,
+            "phase": "ME",
+            "tick": 184
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1491059641,
+            "frame": 1636,
+            "phase": "MS",
+            "tick": 184
+          },
+          "required_frames": [
+            1636
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1491370735,
+            "frame": 1636,
+            "phase": "ME",
+            "tick": 185
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1492159296,
+            "frame": 1637,
+            "phase": "MS",
+            "tick": 185
+          },
+          "required_frames": [
+            1637
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1492465812,
+            "frame": 1637,
+            "phase": "ME",
+            "tick": 186
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1493240771,
+            "frame": 1638,
+            "phase": "MS",
+            "tick": 186
+          },
+          "required_frames": [
+            1638
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1493493989,
+            "frame": 1638,
+            "phase": "ME",
+            "tick": 187
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1494268908,
+            "frame": 1639,
+            "phase": "MS",
+            "tick": 187
+          },
+          "required_frames": [
+            1639
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1494268908,
+            "frame": 1639,
+            "phase": "MS",
+            "tick": 187
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1494603337,
+            "frame": 1640,
+            "phase": "ME",
+            "tick": 188
+          },
+          "required_frames": [
+            1640
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1495175517,
+            "frame": 1640,
+            "phase": "MS",
+            "tick": 188
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1495556576,
+            "frame": 1641,
+            "phase": "ME",
+            "tick": 189
+          },
+          "required_frames": [
+            1641
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1496128784,
+            "frame": 1641,
+            "phase": "MS",
+            "tick": 189
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1496509836,
+            "frame": 1642,
+            "phase": "ME",
+            "tick": 190
+          },
+          "required_frames": [
+            1642
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1497082072,
+            "frame": 1642,
+            "phase": "MS",
+            "tick": 190
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1497458510,
+            "frame": 1643,
+            "phase": "ME",
+            "tick": 191
+          },
+          "required_frames": [
+            1643
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1498017026,
+            "frame": 1643,
+            "phase": "MS",
+            "tick": 191
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1498340171,
+            "frame": 1644,
+            "phase": "ME",
+            "tick": 192
+          },
+          "required_frames": [
+            1644
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1498898687,
+            "frame": 1644,
+            "phase": "MS",
+            "tick": 192
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1499286303,
+            "frame": 1645,
+            "phase": "ME",
+            "tick": 193
+          },
+          "required_frames": [
+            1645
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1499286303,
+            "frame": 1645,
+            "phase": "ME",
+            "tick": 193
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1499928496,
+            "frame": 1646,
+            "phase": "MS",
+            "tick": 193
+          },
+          "required_frames": [
+            1646
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1500239590,
+            "frame": 1646,
+            "phase": "ME",
+            "tick": 194
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1500882095,
+            "frame": 1647,
+            "phase": "MS",
+            "tick": 194
+          },
+          "required_frames": [
+            1647
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1501193189,
+            "frame": 1647,
+            "phase": "ME",
+            "tick": 195
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1501982209,
+            "frame": 1648,
+            "phase": "MS",
+            "tick": 195
+          },
+          "required_frames": [
+            1648
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1502312931,
+            "frame": 1648,
+            "phase": "ME",
+            "tick": 196
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1503076450,
+            "frame": 1649,
+            "phase": "MS",
+            "tick": 196
+          },
+          "required_frames": [
+            1649
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1543655168,
+            "frame": 1694,
+            "phase": "MS",
+            "tick": 238
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1544024684,
+            "frame": 1695,
+            "phase": "ME",
+            "tick": 239
+          },
+          "required_frames": [
+            1695
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1544571986,
+            "frame": 1695,
+            "phase": "MS",
+            "tick": 239
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1545312770,
+            "frame": 1696,
+            "phase": "ME",
+            "tick": 240
+          },
+          "required_frames": [
+            1696
+          ]
+        },
+        {
+          "first": {
+            "attempt": 2,
+            "cycle": 1545330256,
+            "frame": 1696,
+            "phase": "MS",
+            "tick": 240
+          },
+          "last": {
+            "attempt": 2,
+            "cycle": 1545646608,
+            "frame": 1697,
+            "phase": "ME",
+            "tick": 241
+          },
+          "required_frames": [
+            1697
+          ]
+        }
+      ],
+      "missing_frames": [],
+      "observed_frames": [
+        1508,
+        1509,
+        1510,
+        1511,
+        1570,
+        1571,
+        1572,
+        1573,
+        1631,
+        1632,
+        1633,
+        1634,
+        1635,
+        1636,
+        1637,
+        1638,
+        1639,
+        1640,
+        1641,
+        1642,
+        1643,
+        1644,
+        1645,
+        1646,
+        1647,
+        1648,
+        1649,
+        1695,
+        1696,
+        1697
+      ],
+      "required_frames": [
+        1508,
+        1509,
+        1510,
+        1511,
+        1570,
+        1571,
+        1572,
+        1573,
+        1631,
+        1632,
+        1633,
+        1634,
+        1635,
+        1636,
+        1637,
+        1638,
+        1639,
+        1640,
+        1641,
+        1642,
+        1643,
+        1644,
+        1645,
+        1646,
+        1647,
+        1648,
+        1649,
+        1695,
+        1696,
+        1697
+      ],
+      "rule": "Every physical counter increment after an in-gate MS/ME and through the next engine observation requires a complete logged IRQ; the first lower-bound ME frame is already counted, not itself evidence of an observed IRQ.",
+      "unanchored_frames": []
+    },
+    "marker_counts": {
+      "BC": 2,
+      "BM": 2,
+      "BW": 2,
+      "BZ": 2,
+      "CE": 4,
+      "CS": 4,
+      "DE": 100,
+      "DS": 100,
+      "EE": 4,
+      "ES": 4,
+      "HB": 22,
+      "HE": 22,
+      "HI": 21,
+      "MB": 26,
+      "MD": 26,
+      "ME": 1681,
+      "MR": 2,
+      "MS": 1681,
+      "OE": 22,
+      "PE": 4,
+      "PS": 4,
+      "Q": 100,
+      "RB": 640,
+      "RG": 26,
+      "RM": 26,
+      "RR": 26,
+      "RX": 26,
+      "SE": 22,
+      "TE": 4,
+      "TS": 4,
+      "VA": 30,
+      "VC": 30,
+      "VE": 30,
+      "VK": 30,
+      "VO": 3,
+      "VP": 30,
+      "VS": 30,
+      "VX": 30,
+      "WW": 0
+    },
+    "natural_resets": [
+      {
+        "attempt": 1,
+        "coalesce_frame": 722,
+        "fresh_frame": 723,
+        "main_side": {
+          "delta_cpu_cycles_ceil": 248950,
+          "delta_master_clocks": 1742645,
+          "end_cycle_master": 671932227,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 670189582
+        },
+        "pre_frame": 720,
+        "replay_sha256": "78cd343e0e7295d09889a48a27649ea41795cae294b8cc9c136d76c86cb43c6b",
+        "service_tokens": 2
+      },
+      {
+        "attempt": 2,
+        "coalesce_frame": 1444,
+        "fresh_frame": 1445,
+        "main_side": {
+          "delta_cpu_cycles_ceil": 258196,
+          "delta_master_clocks": 1807366,
+          "end_cycle_master": 1318937796,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1317130430
+        },
+        "pre_frame": 1442,
+        "replay_sha256": "f288d943ab9a8714e59ab29aefedccca19da38b1b9540444e5fc3d59edd1f39d",
+        "service_tokens": 2
+      }
+    ],
+    "observed_renderer_consumption": [
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1377092318,
+          "frame": 1509,
+          "pending": 1,
+          "tick": 59
+        },
+        "pending": 1,
+        "tick": 59
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1377988375,
+          "frame": 1510,
+          "pending": 0,
+          "tick": 60
+        },
+        "pending": 0,
+        "tick": 60
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1378884996,
+          "frame": 1511,
+          "pending": 1,
+          "tick": 61
+        },
+        "pending": 1,
+        "tick": 61
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1432687039,
+          "frame": 1571,
+          "pending": 1,
+          "tick": 119
+        },
+        "pending": 1,
+        "tick": 119
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1433542873,
+          "frame": 1572,
+          "pending": 0,
+          "tick": 120
+        },
+        "pending": 0,
+        "tick": 120
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1434438895,
+          "frame": 1573,
+          "pending": 1,
+          "tick": 121
+        },
+        "pending": 1,
+        "tick": 121
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1487305226,
+          "frame": 1632,
+          "pending": 1,
+          "tick": 179
+        },
+        "pending": 1,
+        "tick": 179
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1488201394,
+          "frame": 1633,
+          "pending": 0,
+          "tick": 180
+        },
+        "pending": 0,
+        "tick": 180
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1489097432,
+          "frame": 1634,
+          "pending": 1,
+          "tick": 182
+        },
+        "pending": 1,
+        "tick": 181
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1490020829,
+          "frame": 1635,
+          "pending": 1,
+          "tick": 183
+        },
+        "pending": 1,
+        "tick": 183
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1490974094,
+          "frame": 1636,
+          "pending": 1,
+          "tick": 184
+        },
+        "pending": 1,
+        "tick": 184
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1491939734,
+          "frame": 1637,
+          "pending": 1,
+          "tick": 185
+        },
+        "pending": 1,
+        "tick": 185
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1493021090,
+          "frame": 1638,
+          "pending": 1,
+          "tick": 186
+        },
+        "pending": 1,
+        "tick": 186
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1494049276,
+          "frame": 1639,
+          "pending": 1,
+          "tick": 187
+        },
+        "pending": 1,
+        "tick": 187
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1495369620,
+          "frame": 1641,
+          "pending": 1,
+          "tick": 188
+        },
+        "pending": 1,
+        "tick": 188
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1496265676,
+          "frame": 1642,
+          "pending": 1,
+          "tick": 189
+        },
+        "pending": 1,
+        "tick": 189
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1497161682,
+          "frame": 1643,
+          "pending": 1,
+          "tick": 190
+        },
+        "pending": 1,
+        "tick": 190
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1498057721,
+          "frame": 1644,
+          "pending": 1,
+          "tick": 191
+        },
+        "pending": 1,
+        "tick": 191
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1498953733,
+          "frame": 1645,
+          "pending": 1,
+          "tick": 192
+        },
+        "pending": 1,
+        "tick": 192
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1499855297,
+          "frame": 1646,
+          "pending": 1,
+          "tick": 193
+        },
+        "pending": 1,
+        "tick": 193
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1500808588,
+          "frame": 1647,
+          "pending": 1,
+          "tick": 194
+        },
+        "pending": 1,
+        "tick": 194
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1501762185,
+          "frame": 1648,
+          "pending": 1,
+          "tick": 195
+        },
+        "pending": 1,
+        "tick": 195
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1502856909,
+          "frame": 1649,
+          "pending": 1,
+          "tick": 196
+        },
+        "pending": 1,
+        "tick": 196
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1544651809,
+          "frame": 1696,
+          "pending": 1,
+          "tick": 239
+        },
+        "pending": 1,
+        "tick": 239
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": {
+          "attempt": 2,
+          "cycle": 1545547866,
+          "frame": 1697,
+          "pending": 0,
+          "tick": 240
+        },
+        "pending": 0,
+        "tick": 240
+      },
+      {
+        "attempt": 2,
+        "first_later_commit": null,
+        "pending": 1,
+        "tick": 241
+      }
+    ],
+    "phase_spans": {
+      "119": {
+        "actor_count": 3,
+        "frame_post": 1570,
+        "frame_pre": 1570,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 39018,
+          "delta_master_clocks": 273126,
+          "end_cycle_master": 1432131493,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1431858367
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1432246965,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432135539
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 128739,
+          "delta_master_clocks": 901171,
+          "end_cycle_master": 1432748926,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1431847755
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1432648891,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432635157
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77774,
+          "delta_master_clocks": 544418,
+          "end_cycle_master": 1432678081,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432133663
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55456,
+          "delta_master_clocks": 388192,
+          "end_cycle_master": 1432635157,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432246965
+        }
+      },
+      "120": {
+        "actor_count": 3,
+        "engine_projection": {
+          "delta_cpu_cycles_ceil": 37978,
+          "delta_master_clocks": 265846,
+          "end_cycle_master": 1433299462,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433033616
+        },
+        "frame_post": 1571,
+        "frame_pre": 1571,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 91960,
+          "delta_master_clocks": 643720,
+          "end_cycle_master": 1433403958,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432760238
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 94360,
+          "delta_master_clocks": 660520,
+          "end_cycle_master": 1433410146,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432749626
+        },
+        "projectile_count": 0,
+        "projection": {
+          "delta_cpu_cycles_ceil": 52890,
+          "delta_master_clocks": 370230,
+          "end_cycle_master": 1433402600,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433032370
+        },
+        "projection_crc": 32521378,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 454,
+          "delta_master_clocks": 3178,
+          "end_cycle_master": 1433409292,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433406114
+        },
+        "tail": {
+          "delta_cpu_cycles_ceil": 1982,
+          "delta_master_clocks": 13874,
+          "end_cycle_master": 1433313840,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433299966
+        },
+        "tail_crc": {
+          "delta_cpu_cycles_ceil": 12372,
+          "delta_master_clocks": 86604,
+          "end_cycle_master": 1433401522,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433314918
+        }
+      },
+      "121": {
+        "actor_count": 3,
+        "frame_post": 1572,
+        "frame_pre": 1571,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 41411,
+          "delta_master_clocks": 289877,
+          "end_cycle_master": 1433711349,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433421472
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1433826821,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433715395
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 121135,
+          "delta_master_clocks": 847945,
+          "end_cycle_master": 1434258791,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433410846
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1434228733,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1434215013
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77776,
+          "delta_master_clocks": 544432,
+          "end_cycle_master": 1434257937,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433713505
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55456,
+          "delta_master_clocks": 388192,
+          "end_cycle_master": 1434215013,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433826821
+        }
+      },
+      "179": {
+        "actor_count": 3,
+        "frame_post": 1631,
+        "frame_pre": 1630,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 49527,
+          "delta_master_clocks": 346687,
+          "end_cycle_master": 1486637416,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1486290729
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15920,
+          "delta_master_clocks": 111440,
+          "end_cycle_master": 1486752888,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1486641448
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 129251,
+          "delta_master_clocks": 904755,
+          "end_cycle_master": 1487184872,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1486280117
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1487154814,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487141094
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77778,
+          "delta_master_clocks": 544446,
+          "end_cycle_master": 1487184018,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1486639572
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55458,
+          "delta_master_clocks": 388206,
+          "end_cycle_master": 1487141094,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1486752888
+        }
+      },
+      "180": {
+        "actor_count": 3,
+        "engine_projection": {
+          "delta_cpu_cycles_ceil": 37980,
+          "delta_master_clocks": 265860,
+          "end_cycle_master": 1487805390,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487539530
+        },
+        "frame_post": 1632,
+        "frame_pre": 1631,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 101956,
+          "delta_master_clocks": 713688,
+          "end_cycle_master": 1487909886,
+          "master_remainder_mod_7": 3,
+          "start_cycle_master": 1487196198
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 104360,
+          "delta_master_clocks": 730516,
+          "end_cycle_master": 1487916074,
+          "master_remainder_mod_7": 3,
+          "start_cycle_master": 1487185558
+        },
+        "projectile_count": 0,
+        "projection": {
+          "delta_cpu_cycles_ceil": 52890,
+          "delta_master_clocks": 370230,
+          "end_cycle_master": 1487908528,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487538298
+        },
+        "projection_crc": 1488972684,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 454,
+          "delta_master_clocks": 3178,
+          "end_cycle_master": 1487915220,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487912042
+        },
+        "tail": {
+          "delta_cpu_cycles_ceil": 1982,
+          "delta_master_clocks": 13874,
+          "end_cycle_master": 1487819768,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487805894
+        },
+        "tail_crc": {
+          "delta_cpu_cycles_ceil": 12374,
+          "delta_master_clocks": 86618,
+          "end_cycle_master": 1487907450,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487820832
+        }
+      },
+      "181": {
+        "actor_count": 3,
+        "frame_post": 1633,
+        "frame_pre": 1632,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 41324,
+          "delta_master_clocks": 289268,
+          "end_cycle_master": 1488216626,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487927358
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1488332098,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1488220672
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 121044,
+          "delta_master_clocks": 847308,
+          "end_cycle_master": 1488764068,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487916760
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1488734010,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1488720290
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77776,
+          "delta_master_clocks": 544432,
+          "end_cycle_master": 1488763214,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1488218782
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55456,
+          "delta_master_clocks": 388192,
+          "end_cycle_master": 1488720290,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1488332098
+        }
+      },
+      "183": {
+        "actor_count": 3,
+        "frame_post": 1634,
+        "frame_pre": 1633,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 55374,
+          "delta_master_clocks": 387614,
+          "end_cycle_master": 1489451828,
+          "master_remainder_mod_7": 3,
+          "start_cycle_master": 1489064214
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1489567300,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1489455874
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 147017,
+          "delta_master_clocks": 1029114,
+          "end_cycle_master": 1490082688,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 1489053574
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1489982680,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1489968960
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79696,
+          "delta_master_clocks": 557872,
+          "end_cycle_master": 1490011870,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1489453998
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57380,
+          "delta_master_clocks": 401660,
+          "end_cycle_master": 1489968960,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1489567300
+        }
+      },
+      "184": {
+        "actor_count": 3,
+        "frame_post": 1635,
+        "frame_pre": 1635,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 44442,
+          "delta_master_clocks": 311094,
+          "end_cycle_master": 1490405094,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490094000
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15920,
+          "delta_master_clocks": 111440,
+          "end_cycle_master": 1490520566,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490409126
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 137849,
+          "delta_master_clocks": 964941,
+          "end_cycle_master": 1491048329,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1490083388
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1490935932,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490922212
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1490965136,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490407250
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57378,
+          "delta_master_clocks": 401646,
+          "end_cycle_master": 1490922212,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490520566
+        }
+      },
+      "185": {
+        "actor_count": 3,
+        "frame_post": 1636,
+        "frame_pre": 1636,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 44442,
+          "delta_master_clocks": 311094,
+          "end_cycle_master": 1491370735,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491059641
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1491486207,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491374781
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 156994,
+          "delta_master_clocks": 1098955,
+          "end_cycle_master": 1492147984,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1491049029
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1491901587,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491887853
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1491930777,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491372891
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57378,
+          "delta_master_clocks": 401646,
+          "end_cycle_master": 1491887853,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491486207
+        }
+      },
+      "186": {
+        "actor_count": 3,
+        "frame_post": 1637,
+        "frame_pre": 1637,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 43788,
+          "delta_master_clocks": 306516,
+          "end_cycle_master": 1492465812,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1492159296
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1492581270,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1492469844
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 154397,
+          "delta_master_clocks": 1080775,
+          "end_cycle_master": 1493229459,
+          "master_remainder_mod_7": 3,
+          "start_cycle_master": 1492148684
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1492982944,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1492969210
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77738,
+          "delta_master_clocks": 544166,
+          "end_cycle_master": 1493012134,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1492467968
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55420,
+          "delta_master_clocks": 387940,
+          "end_cycle_master": 1492969210,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1492581270
+        }
+      },
+      "187": {
+        "actor_count": 3,
+        "frame_post": 1638,
+        "frame_pre": 1638,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 36174,
+          "delta_master_clocks": 253218,
+          "end_cycle_master": 1493493989,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493240771
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1493609461,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493498035
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 146777,
+          "delta_master_clocks": 1027437,
+          "end_cycle_master": 1494257596,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1493230159
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1494011121,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493997401
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77740,
+          "delta_master_clocks": 544180,
+          "end_cycle_master": 1494040325,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493496145
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55420,
+          "delta_master_clocks": 387940,
+          "end_cycle_master": 1493997401,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493609461
+        }
+      },
+      "188": {
+        "actor_count": 3,
+        "frame_post": 1640,
+        "frame_pre": 1639,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 47776,
+          "delta_master_clocks": 334429,
+          "end_cycle_master": 1494603337,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1494268908
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1494718795,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1494607369
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 129420,
+          "delta_master_clocks": 905937,
+          "end_cycle_master": 1495164233,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1494258296
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1495134175,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495120455
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1495163379,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1494605493
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57380,
+          "delta_master_clocks": 401660,
+          "end_cycle_master": 1495120455,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1494718795
+        }
+      },
+      "189": {
+        "actor_count": 3,
+        "frame_post": 1641,
+        "frame_pre": 1640,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 54437,
+          "delta_master_clocks": 381059,
+          "end_cycle_master": 1495556576,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495175517
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1495672034,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495560608
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 136079,
+          "delta_master_clocks": 952553,
+          "end_cycle_master": 1496117472,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495164919
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1496087414,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496073694
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1496116618,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495558732
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57380,
+          "delta_master_clocks": 401660,
+          "end_cycle_master": 1496073694,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495672034
+        }
+      },
+      "190": {
+        "actor_count": 3,
+        "frame_post": 1642,
+        "frame_pre": 1641,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 54436,
+          "delta_master_clocks": 381052,
+          "end_cycle_master": 1496509836,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496128784
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1496625308,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496513882
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 136082,
+          "delta_master_clocks": 952574,
+          "end_cycle_master": 1497070732,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496118158
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1497040688,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497026968
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79696,
+          "delta_master_clocks": 557872,
+          "end_cycle_master": 1497069878,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496512006
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57380,
+          "delta_master_clocks": 401660,
+          "end_cycle_master": 1497026968,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496625308
+        }
+      },
+      "191": {
+        "actor_count": 3,
+        "frame_post": 1643,
+        "frame_pre": 1642,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 53777,
+          "delta_master_clocks": 376438,
+          "end_cycle_master": 1497458510,
+          "master_remainder_mod_7": 6,
+          "start_cycle_master": 1497082072
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1497573982,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497462556
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 133467,
+          "delta_master_clocks": 934268,
+          "end_cycle_master": 1498005700,
+          "master_remainder_mod_7": 6,
+          "start_cycle_master": 1497071432
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1497975642,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497961922
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77738,
+          "delta_master_clocks": 544166,
+          "end_cycle_master": 1498004846,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497460680
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55420,
+          "delta_master_clocks": 387940,
+          "end_cycle_master": 1497961922,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497573982
+        }
+      },
+      "192": {
+        "actor_count": 3,
+        "frame_post": 1644,
+        "frame_pre": 1643,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 46164,
+          "delta_master_clocks": 323145,
+          "end_cycle_master": 1498340171,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1498017026
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1498455643,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498344217
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 125852,
+          "delta_master_clocks": 880961,
+          "end_cycle_master": 1498887361,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1498006400
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1498857303,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498843583
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 77738,
+          "delta_master_clocks": 544166,
+          "end_cycle_master": 1498886507,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498342341
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 55420,
+          "delta_master_clocks": 387940,
+          "end_cycle_master": 1498843583,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498455643
+        }
+      },
+      "193": {
+        "actor_count": 3,
+        "frame_post": 1645,
+        "frame_pre": 1644,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 55374,
+          "delta_master_clocks": 387616,
+          "end_cycle_master": 1499286303,
+          "master_remainder_mod_7": 5,
+          "start_cycle_master": 1498898687
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1499401775,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499290349
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 147018,
+          "delta_master_clocks": 1029123,
+          "end_cycle_master": 1499917184,
+          "master_remainder_mod_7": 4,
+          "start_cycle_master": 1498888061
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1499817141,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499803421
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1499846345,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499288459
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57378,
+          "delta_master_clocks": 401646,
+          "end_cycle_master": 1499803421,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499401775
+        }
+      },
+      "194": {
+        "actor_count": 3,
+        "frame_post": 1646,
+        "frame_pre": 1646,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 44442,
+          "delta_master_clocks": 311094,
+          "end_cycle_master": 1500239590,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499928496
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15920,
+          "delta_master_clocks": 111440,
+          "end_cycle_master": 1500355062,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500243622
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 136129,
+          "delta_master_clocks": 952899,
+          "end_cycle_master": 1500870783,
+          "master_remainder_mod_7": 3,
+          "start_cycle_master": 1499917884
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1500770428,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500756708
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1500799632,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500241746
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57378,
+          "delta_master_clocks": 401646,
+          "end_cycle_master": 1500756708,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500355062
+        }
+      },
+      "195": {
+        "actor_count": 3,
+        "frame_post": 1647,
+        "frame_pre": 1647,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 44442,
+          "delta_master_clocks": 311094,
+          "end_cycle_master": 1501193189,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500882095
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15918,
+          "delta_master_clocks": 111426,
+          "end_cycle_master": 1501308661,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501197235
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 157060,
+          "delta_master_clocks": 1099414,
+          "end_cycle_master": 1501970897,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1500871483
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1501724041,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501710307
+        },
+        "projectile_count": 1,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79698,
+          "delta_master_clocks": 557886,
+          "end_cycle_master": 1501753231,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501195345
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 57378,
+          "delta_master_clocks": 401646,
+          "end_cycle_master": 1501710307,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501308661
+        }
+      },
+      "196": {
+        "actor_count": 3,
+        "frame_post": 1648,
+        "frame_pre": 1648,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 47246,
+          "delta_master_clocks": 330722,
+          "end_cycle_master": 1502312931,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501982209
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 16212,
+          "delta_master_clocks": 113484,
+          "end_cycle_master": 1502430447,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1502316963
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 156221,
+          "delta_master_clocks": 1093541,
+          "end_cycle_master": 1503065138,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1501971597
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1502818751,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1502805031
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 76124,
+          "delta_master_clocks": 532868,
+          "end_cycle_master": 1502847955,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1502315087
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 53512,
+          "delta_master_clocks": 374584,
+          "end_cycle_master": 1502805031,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1502430447
+        }
+      },
+      "239": {
+        "actor_count": 3,
+        "frame_post": 1695,
+        "frame_pre": 1694,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 52788,
+          "delta_master_clocks": 369516,
+          "end_cycle_master": 1544024684,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1543655168
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 16196,
+          "delta_master_clocks": 113372,
+          "end_cycle_master": 1544142102,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544028730
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 130872,
+          "delta_master_clocks": 916104,
+          "end_cycle_master": 1544560674,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1543644570
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1544530630,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544516896
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 76140,
+          "delta_master_clocks": 532980,
+          "end_cycle_master": 1544559820,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544026840
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 53542,
+          "delta_master_clocks": 374794,
+          "end_cycle_master": 1544516896,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544142102
+        }
+      },
+      "240": {
+        "actor_count": 3,
+        "engine_projection": {
+          "delta_cpu_cycles_ceil": 37980,
+          "delta_master_clocks": 265860,
+          "end_cycle_master": 1545208274,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544942414
+        },
+        "frame_post": 1696,
+        "frame_pre": 1695,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 105827,
+          "delta_master_clocks": 740784,
+          "end_cycle_master": 1545312770,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 1544571986
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 108225,
+          "delta_master_clocks": 757570,
+          "end_cycle_master": 1545318944,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 1544561374
+        },
+        "projectile_count": 0,
+        "projection": {
+          "delta_cpu_cycles_ceil": 52890,
+          "delta_master_clocks": 370230,
+          "end_cycle_master": 1545311412,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544941182
+        },
+        "projection_crc": 1692499552,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 452,
+          "delta_master_clocks": 3164,
+          "end_cycle_master": 1545318090,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545314926
+        },
+        "tail": {
+          "delta_cpu_cycles_ceil": 1982,
+          "delta_master_clocks": 13874,
+          "end_cycle_master": 1545222652,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545208778
+        },
+        "tail_crc": {
+          "delta_cpu_cycles_ceil": 12374,
+          "delta_master_clocks": 86618,
+          "end_cycle_master": 1545310334,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545223716
+        }
+      },
+      "241": {
+        "actor_count": 3,
+        "frame_post": 1697,
+        "frame_pre": 1696,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 45194,
+          "delta_master_clocks": 316352,
+          "end_cycle_master": 1545646608,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1545330256
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 16192,
+          "delta_master_clocks": 113344,
+          "end_cycle_master": 1545763998,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545650654
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 123276,
+          "delta_master_clocks": 862926,
+          "end_cycle_master": 1546182570,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1545319644
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1546152526,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1546138792
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 76134,
+          "delta_master_clocks": 532938,
+          "end_cycle_master": 1546181716,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545648778
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 53542,
+          "delta_master_clocks": 374794,
+          "end_cycle_master": 1546138792,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545763998
+        }
+      },
+      "59": {
+        "actor_count": 3,
+        "frame_post": 1508,
+        "frame_pre": 1507,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 54110,
+          "delta_master_clocks": 378764,
+          "end_cycle_master": 1376447035,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1376068271
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15902,
+          "delta_master_clocks": 111314,
+          "end_cycle_master": 1376562381,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1376451067
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 135068,
+          "delta_master_clocks": 945470,
+          "end_cycle_master": 1377003101,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1376057631
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1962,
+          "delta_master_clocks": 13734,
+          "end_cycle_master": 1376973057,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1376959323
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79008,
+          "delta_master_clocks": 553056,
+          "end_cycle_master": 1377002247,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1376449191
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 56706,
+          "delta_master_clocks": 396942,
+          "end_cycle_master": 1376959323,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1376562381
+        }
+      },
+      "60": {
+        "actor_count": 3,
+        "engine_projection": {
+          "delta_cpu_cycles_ceil": 37980,
+          "delta_master_clocks": 265860,
+          "end_cycle_master": 1377659325,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377393465
+        },
+        "frame_post": 1509,
+        "frame_pre": 1508,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 107055,
+          "delta_master_clocks": 749380,
+          "end_cycle_master": 1377763807,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 1377014427
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 109457,
+          "delta_master_clocks": 766194,
+          "end_cycle_master": 1377769995,
+          "master_remainder_mod_7": 2,
+          "start_cycle_master": 1377003801
+        },
+        "projectile_count": 0,
+        "projection": {
+          "delta_cpu_cycles_ceil": 52890,
+          "delta_master_clocks": 370230,
+          "end_cycle_master": 1377762463,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377392233
+        },
+        "projection_crc": 2830594008,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 452,
+          "delta_master_clocks": 3164,
+          "end_cycle_master": 1377769141,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377765977
+        },
+        "tail": {
+          "delta_cpu_cycles_ceil": 1984,
+          "delta_master_clocks": 13888,
+          "end_cycle_master": 1377673703,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377659815
+        },
+        "tail_crc": {
+          "delta_cpu_cycles_ceil": 12374,
+          "delta_master_clocks": 86618,
+          "end_cycle_master": 1377761385,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377674767
+        }
+      },
+      "61": {
+        "actor_count": 3,
+        "frame_post": 1510,
+        "frame_pre": 1509,
+        "gameplay": {
+          "delta_cpu_cycles_ceil": 46512,
+          "delta_master_clocks": 325578,
+          "end_cycle_master": 1378106913,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1377781335
+        },
+        "hud": {
+          "delta_cpu_cycles_ceil": 15900,
+          "delta_master_clocks": 111300,
+          "end_cycle_master": 1378222259,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1378110959
+        },
+        "main": {
+          "delta_cpu_cycles_ceil": 127470,
+          "delta_master_clocks": 892284,
+          "end_cycle_master": 1378662979,
+          "master_remainder_mod_7": 1,
+          "start_cycle_master": 1377770695
+        },
+        "overlay": {
+          "delta_cpu_cycles_ceil": 1960,
+          "delta_master_clocks": 13720,
+          "end_cycle_master": 1378632921,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1378619201
+        },
+        "projectile_count": 0,
+        "renderer_masked": {
+          "delta_cpu_cycles_ceil": 79006,
+          "delta_master_clocks": 553042,
+          "end_cycle_master": 1378662125,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1378109083
+        },
+        "sat": {
+          "delta_cpu_cycles_ceil": 56706,
+          "delta_master_clocks": 396942,
+          "end_cycle_master": 1378619201,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1378222259
+        }
+      }
+    },
+    "protocol_domain_limitations": [
+      "An empty-token sampled MD requires an observed same-identity WAIT. The rare IRQ between MD and MainLoop token test can legitimately omit WAIT, but is unsupported here and remains protocol-fail with raw evidence preserved; no inferred/missing WAIT is accepted."
+    ],
+    "protocol_status": "pass",
+    "sampled_irqs": [
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9928,
+          "delta_master_clocks": 69496,
+          "end_cycle_master": 1376257979,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1376188483
+        },
+        "frame": 1508,
+        "queue_depth": 4,
+        "renderer_publication_binding": "unsampled_renderer_identity",
+        "tick": 58,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9931,
+          "delta_master_clocks": 69517,
+          "end_cycle_master": 1377153939,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377084422
+        },
+        "frame": 1509,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 59,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 2330,
+          "delta_master_clocks": 16310,
+          "end_cycle_master": 1377996789,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1377980479
+        },
+        "frame": 1510,
+        "queue_depth": 0,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 60,
+        "words": 0
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9930,
+          "delta_master_clocks": 69510,
+          "end_cycle_master": 1378946610,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1378877100
+        },
+        "frame": 1511,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 61,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9930,
+          "delta_master_clocks": 69510,
+          "end_cycle_master": 1431846803,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1431777293
+        },
+        "frame": 1570,
+        "queue_depth": 4,
+        "renderer_publication_binding": "unsampled_renderer_identity",
+        "tick": 118,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9931,
+          "delta_master_clocks": 69517,
+          "end_cycle_master": 1432748674,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1432679157
+        },
+        "frame": 1571,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 119,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 2328,
+          "delta_master_clocks": 16296,
+          "end_cycle_master": 1433551287,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1433534991
+        },
+        "frame": 1572,
+        "queue_depth": 0,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 120,
+        "words": 0
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9931,
+          "delta_master_clocks": 69517,
+          "end_cycle_master": 1434500516,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1434430999
+        },
+        "frame": 1573,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 121,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9931,
+          "delta_master_clocks": 69517,
+          "end_cycle_master": 1486470788,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1486401271
+        },
+        "frame": 1631,
+        "queue_depth": 4,
+        "renderer_publication_binding": "unsampled_renderer_identity",
+        "tick": 178,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 10018,
+          "delta_master_clocks": 70126,
+          "end_cycle_master": 1487367456,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1487297330
+        },
+        "frame": 1632,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 179,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 2330,
+          "delta_master_clocks": 16310,
+          "end_cycle_master": 1488209808,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1488193498
+        },
+        "frame": 1633,
+        "queue_depth": 0,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 180,
+        "words": 0
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9926,
+          "delta_master_clocks": 69482,
+          "end_cycle_master": 1489159018,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1489089536
+        },
+        "frame": 1634,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 182,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9927,
+          "delta_master_clocks": 69489,
+          "end_cycle_master": 1490082436,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490012947
+        },
+        "frame": 1635,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 183,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 11697,
+          "delta_master_clocks": 81879,
+          "end_cycle_master": 1491048077,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1490966198
+        },
+        "frame": 1636,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 184,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 30840,
+          "delta_master_clocks": 215880,
+          "end_cycle_master": 1492147718,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1491931838
+        },
+        "frame": 1637,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 185,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 30857,
+          "delta_master_clocks": 215999,
+          "end_cycle_master": 1493229193,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1493013194
+        },
+        "frame": 1638,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 186,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 30850,
+          "delta_master_clocks": 215950,
+          "end_cycle_master": 1494257330,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1494041380
+        },
+        "frame": 1639,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 187,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 2330,
+          "delta_master_clocks": 16310,
+          "end_cycle_master": 1494482139,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1494465829
+        },
+        "frame": 1640,
+        "queue_depth": 0,
+        "renderer_publication_binding": "already_consumed_exact_empty",
+        "tick": 187,
+        "words": 0
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9928,
+          "delta_master_clocks": 69496,
+          "end_cycle_master": 1495431220,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1495361724
+        },
+        "frame": 1641,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 188,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9928,
+          "delta_master_clocks": 69496,
+          "end_cycle_master": 1496327276,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1496257780
+        },
+        "frame": 1642,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 189,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9926,
+          "delta_master_clocks": 69482,
+          "end_cycle_master": 1497223268,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1497153786
+        },
+        "frame": 1643,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 190,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9926,
+          "delta_master_clocks": 69482,
+          "end_cycle_master": 1498119307,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498049825
+        },
+        "frame": 1644,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 191,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9930,
+          "delta_master_clocks": 69510,
+          "end_cycle_master": 1499015347,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1498945837
+        },
+        "frame": 1645,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 192,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9933,
+          "delta_master_clocks": 69531,
+          "end_cycle_master": 1499916932,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1499847401
+        },
+        "frame": 1646,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 193,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9977,
+          "delta_master_clocks": 69839,
+          "end_cycle_master": 1500870531,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1500800692
+        },
+        "frame": 1647,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 194,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 30908,
+          "delta_master_clocks": 216356,
+          "end_cycle_master": 1501970645,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1501754289
+        },
+        "frame": 1648,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 195,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 30837,
+          "delta_master_clocks": 215859,
+          "end_cycle_master": 1503064872,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1502849013
+        },
+        "frame": 1649,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 196,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 9927,
+          "delta_master_clocks": 69489,
+          "end_cycle_master": 1543817316,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1543747827
+        },
+        "frame": 1695,
+        "queue_depth": 4,
+        "renderer_publication_binding": "unsampled_renderer_identity",
+        "tick": 238,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 10019,
+          "delta_master_clocks": 70133,
+          "end_cycle_master": 1544714046,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1544643913
+        },
+        "frame": 1696,
+        "queue_depth": 4,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 239,
+        "words": 440
+      },
+      {
+        "attempt": 2,
+        "entry_to_rte": {
+          "delta_cpu_cycles_ceil": 2330,
+          "delta_master_clocks": 16310,
+          "end_cycle_master": 1545556280,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 1545539970
+        },
+        "frame": 1697,
+        "queue_depth": 0,
+        "renderer_publication_binding": "first_commit_of_sampled_renderer",
+        "tick": 240,
+        "words": 0
+      }
+    ],
+    "status": "fail",
+    "timing_scope": "Bounded natural 1,681-step route with strict full input proof; 26 later-attempt phase samples and four checkpoint projections. Raw /7 spans include intervening IRQs. Physical 2,193 is a diagnostic fail-stop, never an allowance. Not the full M5 cycle gate."
+  },
+  "canonical": false,
+  "completed_utc": "2026-10-11T02:14:33.799717+00:00",
+  "corrections": [
+    "Anchor required IRQs directionally after an in-gate engine observation, including the trailing transition out of its gate; never infer the already-counted lower-bound frame as a logged IRQ.",
+    "Each observed renderer publication binds to its first later commit by cycle order, even if the engine advances; a later same-identity commit without a new publication must be exact-empty."
+  ],
+  "cycle_blank_budget_status": "fail",
+  "derivation": "offline_reanalysis_no_emulator_rerun",
+  "diagnostic_only": true,
+  "diagnostic_protocol_status": "pass",
+  "limitations": [
+    "Unlogged IRQs before each window's lower-bound POST are not observed or certified.",
+    "Unsampled renderer identities retain exact queue/DMA proof but do not acquire invented RR markers; final RR241 has no subsequent IRQ in this capture.",
+    "All original budget errors and raw phase/reset spans are unchanged. Protocol reanalysis success is not a cycle/blank budget pass or a full M5 pass."
+  ],
+  "offline_reanalysis_status": "pass",
+  "provenance": {
+    "archived_rom": {
+      "bytes": 1048576,
+      "path": "artifacts/archive/m5-high-water-96dec577-20261010/level-B03/recursion94-debug.bin",
+      "sha256": "96dec5774bcda0d5d0fc1029a051122a8cc9e5f9b2bf62fcba95b87ede4dd11f"
+    },
+    "archived_symbols": {
+      "bytes": 86908,
+      "path": "artifacts/archive/m5-high-water-96dec577-20261010/level-B03/recursion94-debug.sym",
+      "sha256": "6da707bacf8436911b5583f954258c4f9aa54c7a222ba8bf51fe46dc0e795adb"
+    },
+    "current_helper": {
+      "bytes": 217429,
+      "path": "tools/m5_budget_checkpoint_reset_phase_diagnostic.py",
+      "sha256": "1a0bd6d7c5866a32e2c304353e314167b0ac32028f9f41a1f10abe2cf18b7ca1"
+    },
+    "current_tests": {
+      "bytes": 75678,
+      "path": "tests/emulator/test_m5_budget_checkpoint_reset_phase_diagnostic.py",
+      "sha256": "a007dc3b17766ea136f0f79bd47e6cbf5a14abe1b28697e4b861a8568998416a"
+    }
+  },
+  "read_only_contract": {
+    "debugger_commands_sent": 0,
+    "emulator_processes_started": 0,
+    "guest_writes": 0,
+    "mutable_build_inputs_used": false,
+    "original_budget_errors_exactly_preserved": true,
+    "records_reparsed_from_trace": true,
+    "source_capture_modified": false
+  },
+  "schema": "r94-m5-b03-canonical-prefix-offline-reanalysis-v1",
+  "source_capture": {
+    "archived_collector": {
+      "bytes": 205246,
+      "path": "artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-collector-1db162d8.py",
+      "sha256": "1db162d880e418614a7ce6f6c132f28ae9b3afb5fb330168399bd5fda58c04e2"
+    },
+    "console_sha256": "1c63451f930675778d864293d344ceb175402cc99ed55fd65fd5b97b31594e5e",
+    "original_analysis_errors": [
+      "prefix sampled engine counters require missing IRQ(s)",
+      "prefix IRQ 1640 does not commit the preceding renderer publication"
+    ],
+    "original_protocol_status": "fail",
+    "original_status": "diagnostic_fail",
+    "raw_console_utf16le_sha256": "e06d17103a33846004203ace958d778de3f2749472983a2af232d2b49a0867b8",
+    "records_sha256": "e3d3bb8532651e0d4840a481862892cac8b0b38933f6f4fc8381a19d4e2b81ac",
+    "report": {
+      "bytes": 2187184,
+      "path": "artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-attempt2-tick241-20261010.json",
+      "sha256": "21d29dc3e129b01a0bf68e3c6d16a184014550aa343b884bfaecd1e029752cbf"
+    },
+    "trace": {
+      "bytes": 346506,
+      "path": "artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-attempt2-tick241-20261010.log",
+      "sha256": "b0b9adeb6c501a14658a9a21428d22d94885f2e6b867bb17c22b70687ca1f09f"
+    }
+  },
+  "status": "diagnostic_fail"
+}

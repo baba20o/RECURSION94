@@ -174,6 +174,11 @@ EXTENDED_BASELINE_TRACE_SHA256 = "6dd5e82e5236d2f2b240eb72cf5f428888f7e21c0b5f7c
 EXTENDED_TARGET_TOTALS = tuple(range(719, 725))
 EXTENDED_TARGET_VBLANK_FRAMES = tuple(range(719, 727))
 PREFIX_REPORT_SCHEMA = "r94-m5-b03-canonical-prefix-phase-diagnostic-v1"
+PREFIX_CAPTURE_STEM = "artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-attempt2-tick241-20261010"
+PREFIX_CAPTURE_REPORT_SHA256 = "21d29dc3e129b01a0bf68e3c6d16a184014550aa343b884bfaecd1e029752cbf"
+PREFIX_CAPTURE_TRACE_SHA256 = "b0b9adeb6c501a14658a9a21428d22d94885f2e6b867bb17c22b70687ca1f09f"
+PREFIX_CAPTURE_COLLECTOR = "artifacts/diagnostics/m5-budget/canonical-prefix-highwater-96dec577-collector-1db162d8.py"
+PREFIX_CAPTURE_COLLECTOR_SHA256 = "1db162d880e418614a7ce6f6c132f28ae9b3afb5fb330168399bd5fda58c04e2"
 PREFIX_TOTAL_STEPS = 1681
 PREFIX_FINAL_ATTEMPT = 2
 PREFIX_FINAL_TICK = 241
@@ -1654,9 +1659,42 @@ def analyse_prefix(records: Sequence[Mapping[str, Any]], route: Mapping[str, Any
             "errors": errors, "budget_errors": budget_errors,
             "marker_counts": {phase: len(items) for phase, items in phases.items()},
             "phase_spans": samples, "natural_resets": reset_proofs, "sampled_irqs": irq_summary,
+            "irq_observation_coverage": prefix_irq_coverage(records),
+            "observed_renderer_consumption": [
+                {"attempt": renderer["attempt"], "tick": renderer["tick"], "pending": renderer["pending"],
+                 "first_later_commit": next(({key: commit[key] for key in ("cycle", "frame", "attempt", "tick", "pending")}
+                                             for commit in phases["VC"] if commit["cycle"] > renderer["cycle"]), None)}
+                for renderer in phases["RR"]],
             "timing_scope": "Bounded natural 1,681-step route with strict full input proof; 26 later-attempt phase samples and four checkpoint projections. Raw /7 spans include intervening IRQs. Physical 2,193 is a diagnostic fail-stop, never an allowance. Not the full M5 cycle gate.",
             "protocol_domain_limitations": ["An empty-token sampled MD requires an observed same-identity WAIT. The rare IRQ between MD and MainLoop token test can legitimately omit WAIT, but is unsupported here and remains protocol-fail with raw evidence preserved; no inferred/missing WAIT is accepted."],
             "conclusion": "Natural canonical-route prefix observed; protocol " + ("failed" if errors else "passed") + "; sampled cycle/blank budget " + ("failed" if budget_errors else "passed") + ". Not a full M5 pass."}
+
+
+def prefix_irq_coverage(records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """Derive IRQ coverage from the engine identity active during each interval.
+
+    A lower-bound ME can already include an IRQ taken while the preceding
+    tick was outside the logging gate. Conversely the final in-gate MS can
+    cross an IRQ before its ME advances outside that gate. Neither boundary
+    permits inferring unobserved IRQ markers from an absolute PRE frame.
+    """
+    engine = [item for item in records if item["phase"] in {"MS", "ME"}]
+    intervals = []
+    required: set[int] = set()
+    for first, last in zip(engine, engine[1:]):
+        if first["attempt"] != 2 or not any(lower <= first["tick"] < upper for lower, upper in PREFIX_IRQ_TICK_RANGES):
+            continue
+        frames = list(range(first["frame"] + 1, last["frame"] + 1))
+        if frames:
+            required.update(frames)
+            fields = ("phase", "cycle", "frame", "attempt", "tick")
+            intervals.append({"first": {key: first[key] for key in fields},
+                              "last": {key: last[key] for key in fields}, "required_frames": frames})
+    observed = [item["frame"] for item in records if item["phase"] == "VX"]
+    return {"rule": "Every physical counter increment after an in-gate MS/ME and through the next engine observation requires a complete logged IRQ; the first lower-bound ME frame is already counted, not itself evidence of an observed IRQ.",
+            "required_frames": sorted(required), "observed_frames": observed,
+            "missing_frames": sorted(required - set(observed)),
+            "unanchored_frames": sorted(set(observed) - required), "counter_intervals": intervals}
 
 
 def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[str, Sequence[Mapping[str, Any]]],
@@ -1667,19 +1705,11 @@ def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[s
     frames = [item["frame"] for item in phases["VX"]]
     if frames != sorted(set(frames)) or not 1 <= len(frames) <= PREFIX_PHYSICAL_FAIL_STOP - 1498 + 1 or any(not 1 <= frame < PREFIX_PHYSICAL_FAIL_STOP for frame in frames):
         errors.append("prefix IRQ physical coverage/count bound mismatch")
-    # Every counter increment between two proven engine observations inside a
-    # logging window must have a complete IRQ. This catches whole-IRQ deletion.
-    engine = [item for item in records if item["phase"] in {"MS", "ME"}]
-    required_frames = set()
-    for first, last in zip(engine, engine[1:]):
-        if inside(first) and inside(last):
-            required_frames.update(range(first["frame"] + 1, last["frame"] + 1))
-    # The first IRQ of every window occurs after the lower-tick POST and
-    # before its same-tick PRE; requiring all in-window PRE frames includes
-    # those boundary IRQs even if every record of an IRQ was deleted.
-    required_frames.update(item["frame"] for item in phases["MS"] if inside(item))
-    if not required_frames.issubset(frames):
+    coverage = prefix_irq_coverage(records)
+    if coverage["missing_frames"]:
         errors.append("prefix sampled engine counters require missing IRQ(s)")
+    if coverage["unanchored_frames"]:
+        errors.append("prefix logged IRQ lacks an in-gate engine counter interval")
     for lower, upper in PREFIX_IRQ_TICK_RANGES:
         first = next((item for item in records if item["phase"] == "ME" and (item["attempt"], item["tick"]) == (2, lower)), None)
         last = next((item for item in records if item["phase"] == "MS" and (item["attempt"], item["tick"]) == (2, upper - 1)), None)
@@ -1700,6 +1730,10 @@ def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[s
     queue4 = ((0xFF8000, 0xF000, 320, 0x8000, 0), (0xFF8600, 0xC000, 40, 0x8001, 0), (0xFF8650, 0xC080, 40, 0x8001, 0), (0xFF86A0, 0xC100, 40, 0x8001, 0))
     positions = {id(item): index for index, item in enumerate(records)}
     summaries = []
+    # Only observed RR records enter this ledger. Unsampled boundary renders
+    # cannot be invented; their queues still receive the full exact DMA audit.
+    first_commits = {id(renderer): next((commit for commit in phases["VC"] if commit["cycle"] > renderer["cycle"]), None)
+                     for renderer in phases["RR"]}
     previous_counter = 0
     covered = set()
     irq_names = {"VE", "VA", "VC", "Q", "DS", "DE", "VP", "VS", "VO", "VK", "VX"}
@@ -1741,9 +1775,19 @@ def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[s
                 errors.append(f"prefix IRQ {frame} DMA issue mismatch")
         if (vp["commit_words"], vp["debug_words"], vp["depth"], vp["pending"], vx["debug_words"]) != (words, words, 0, 0, words):
             errors.append(f"prefix IRQ {frame} commit accounting mismatch")
+        fresh_renderer = [item for item in phases["RR"] if first_commits[id(item)] is vc]
         prior_renderer = [item for item in phases["RR"] if (item["attempt"], item["tick"]) == (vc["attempt"], vc["tick"]) and item["cycle"] < ve["cycle"]]
-        if len(prior_renderer) == 1 and vc["pending"] != prior_renderer[0]["pending"]:
-            errors.append(f"prefix IRQ {frame} does not commit the preceding renderer publication")
+        publication = "unsampled_renderer_identity"
+        if fresh_renderer:
+            # The engine may advance before the queue commits (RR181 to
+            # VC1634/tick182 in the preserved capture); bind by event order.
+            publication = "first_commit_of_sampled_renderer"
+            if any(vc["pending"] != item["pending"] for item in fresh_renderer):
+                errors.append(f"prefix IRQ {frame} does not consume the sampled renderer publication exactly once")
+        elif prior_renderer:
+            publication = "already_consumed_exact_empty"
+            if vc["pending"] != 0:
+                errors.append(f"prefix IRQ {frame} does not consume the sampled renderer publication exactly once")
         expected_order = [ve, va, vc, *local["Q"]]
         for start, end in zip(local["DS"], local["DE"]):
             expected_order.extend((start, end))
@@ -1753,7 +1797,7 @@ def _analyse_prefix_irqs(records: Sequence[Mapping[str, Any]], phases: Mapping[s
         if indices != list(range(indices[0], indices[-1] + 1)):
             errors.append(f"prefix IRQ {frame} contiguous phase grammar mismatch")
         try:
-            summaries.append({"frame": frame, "attempt": vc["attempt"], "tick": vc["tick"], "queue_depth": len(expected_queue), "words": words, "entry_to_rte": _span(ve, vx, f"prefix IRQ {frame}")})
+            summaries.append({"frame": frame, "attempt": vc["attempt"], "tick": vc["tick"], "queue_depth": len(expected_queue), "words": words, "renderer_publication_binding": publication, "entry_to_rte": _span(ve, vx, f"prefix IRQ {frame}")})
         except EvidenceFailure as error:
             errors.append(str(error))
     if covered != {index for index, item in enumerate(records) if item["phase"] in irq_names}:
@@ -2424,6 +2468,96 @@ def extended_pc_contract(rom: bytes, symbols: Mapping[str, int], *, profile: str
     contract["extended_addresses"] = dict(addresses)
     contract["extended_exact_windows"] = dict(windows)
     return contract
+
+
+def derive_prefix_reanalysis(root: Path) -> dict[str, Any]:
+    """Reparse one immutable prefix trace; never rerun or rewrite its capture."""
+    source_report = root / (PREFIX_CAPTURE_STEM + ".json")
+    source_trace = root / (PREFIX_CAPTURE_STEM + ".log")
+    source_collector = root / PREFIX_CAPTURE_COLLECTOR
+    for path, expected in ((source_report, PREFIX_CAPTURE_REPORT_SHA256),
+                           (source_trace, PREFIX_CAPTURE_TRACE_SHA256),
+                           (source_collector, PREFIX_CAPTURE_COLLECTOR_SHA256)):
+        if sha256_file(path) != expected:
+            raise EvidenceFailure("prefix immutable source hash drift")
+    capture = json.loads(source_report.read_text("utf-8"))
+    trace = source_trace.read_text("utf-8")
+    archived = root / "artifacts/archive/m5-high-water-96dec577-20261010/level-B03"
+    rom, sym = archived / "recursion94-debug.bin", archived / "recursion94-debug.sym"
+    if sha256_file(rom) != PROFILE_ROM_PINS["highwater"] or sha256_file(sym) != PROFILE_SYMBOL_PINS["highwater"]:
+        raise EvidenceFailure("prefix archived ROM/symbol mismatch")
+    symbols = parse_vasm_symbols(sym)
+    script = build_prefix_command_script(symbols, profile="highwater")
+    expected_original_errors = ["prefix sampled engine counters require missing IRQ(s)",
+                                "prefix IRQ 1640 does not commit the preceding renderer publication"]
+    if (capture.get("schema") != PREFIX_REPORT_SCHEMA or capture.get("command_script") != script or
+            capture.get("status") != "diagnostic_fail" or capture["analysis"]["errors"] != expected_original_errors or
+            capture["provenance"]["collector"]["sha256"] != PREFIX_CAPTURE_COLLECTOR_SHA256):
+        raise EvidenceFailure("prefix original capture schema/script/status mismatch")
+    delimiter = "----- CONSOLE TRANSCRIPT -----\n"
+    if trace.count(delimiter) != 1:
+        raise EvidenceFailure("prefix trace delimiter mismatch")
+    console = trace.split(delimiter, 1)[1]
+    reconstructed = _trace_text(script, console).replace(f"# {REPORT_SCHEMA}\n", f"# {PREFIX_REPORT_SCHEMA}\n", 1)
+    if (trace != reconstructed or _sha256_bytes(script.encode()) != capture["command_script_sha256"] or
+            _sha256_bytes(console.encode()) != capture["console_sha256"]):
+        raise EvidenceFailure("prefix trace reconstruction/console hash mismatch")
+    geometry = capture["console_geometry"]
+    raw = geometry["raw_screen_buffer"]
+    capacity = prefix_console_capacity(script)
+    if (capture["console_capacity"] != capacity or (geometry["width"], geometry["height"]) != (120, PREFIX_CONSOLE_ROWS) or
+            not 0 <= geometry["cursor_y"] < PREFIX_CONSOLE_ROWS - 1 or not 0 <= geometry["cursor_x"] < 120 or
+            len(raw) != 120 * (geometry["cursor_y"] + 1) or
+            _sha256_bytes(raw.encode("utf-16-le")) != geometry["raw_screen_buffer_utf16le_sha256"] or
+            [ord(char) for char in raw[-120:]] != geometry["current_row_utf16"] or
+            "\n".join(raw[offset:offset + 120].rstrip() for offset in range(0, len(raw), 120)).rstrip() + "\n" != console):
+        raise EvidenceFailure("prefix complete raw console/geometry derivation mismatch")
+    records = parse_prefix_markers(console)
+    if records != capture["records"] or _sha256_bytes(json.dumps(records, sort_keys=True, separators=(",", ":")).encode()) != capture["records_sha256"]:
+        raise EvidenceFailure("prefix exact independently parsed raw records mismatch")
+    pc = {**extended_pc_contract(rom.read_bytes(), symbols, profile="highwater"),
+          "prefix_projection_entry": symbols["GameplayBuildProjection"]}
+    if (capture["pc_contract"] != pc or prefix_console_contract_errors(console, script) or
+            prefix_command_policy_errors(script, symbols, profile="highwater")):
+        raise EvidenceFailure("prefix archived opcode/native console/command contract mismatch")
+    # The pinned capture embeds the route/reset reference authenticated during
+    # collection. Do not consult mutable current runtime reports or build paths.
+    route = capture["prefix_route"]
+    if (route["authoritative_steps"] != PREFIX_TOTAL_STEPS or route["schedule_sha256"] != _sha256_bytes(prefix_schedule()) or
+            route["input_stages"] != prefix_input_stages() or
+            any((route["sources"][key]["path"], route["sources"][key]["sha256"]) != pin for key, pin in PREFIX_RUNTIME_PINS.items())):
+        raise EvidenceFailure("prefix captured route reference mismatch")
+    analysis = analyse_prefix(records, route)
+    if analysis["protocol_status"] != "pass":
+        raise EvidenceFailure("prefix offline protocol analysis failed: " + "; ".join(analysis["errors"]))
+    for field in ("budget_errors", "budget_status", "phase_spans", "natural_resets", "marker_counts"):
+        if analysis[field] != capture["analysis"][field]:
+            raise EvidenceFailure("prefix offline repair changed original budget/timing facts: " + field)
+    return {
+        "schema": "r94-m5-b03-canonical-prefix-offline-reanalysis-v1",
+        "status": "diagnostic_pass" if analysis["status"] == "pass" else "diagnostic_fail",
+        "offline_reanalysis_status": "pass", "diagnostic_protocol_status": analysis["protocol_status"],
+        "cycle_blank_budget_status": analysis["budget_status"], "canonical": False, "diagnostic_only": True,
+        "derivation": "offline_reanalysis_no_emulator_rerun", "completed_utc": datetime.now(timezone.utc).isoformat(),
+        "source_capture": {"report": _file_record(source_report, root), "trace": _file_record(source_trace, root),
+                           "archived_collector": _file_record(source_collector, root), "original_status": capture["status"],
+                           "original_protocol_status": capture["diagnostic_protocol_status"],
+                           "original_analysis_errors": capture["analysis"]["errors"],
+                           "records_sha256": capture["records_sha256"], "console_sha256": capture["console_sha256"],
+                           "raw_console_utf16le_sha256": geometry["raw_screen_buffer_utf16le_sha256"]},
+        "provenance": {"archived_rom": _file_record(rom, root), "archived_symbols": _file_record(sym, root),
+                       "current_helper": _file_record(root / COLLECTOR_RELATIVE_PATH, root),
+                       "current_tests": _file_record(root / TEST_RELATIVE_PATH, root)},
+        "corrections": ["Anchor required IRQs directionally after an in-gate engine observation, including the trailing transition out of its gate; never infer the already-counted lower-bound frame as a logged IRQ.",
+                        "Each observed renderer publication binds to its first later commit by cycle order, even if the engine advances; a later same-identity commit without a new publication must be exact-empty."],
+        "limitations": ["Unlogged IRQs before each window's lower-bound POST are not observed or certified.",
+                        "Unsampled renderer identities retain exact queue/DMA proof but do not acquire invented RR markers; final RR241 has no subsequent IRQ in this capture.",
+                        "All original budget errors and raw phase/reset spans are unchanged. Protocol reanalysis success is not a cycle/blank budget pass or a full M5 pass."],
+        "read_only_contract": {"emulator_processes_started": 0, "debugger_commands_sent": 0, "guest_writes": 0,
+                               "source_capture_modified": False, "mutable_build_inputs_used": False,
+                               "records_reparsed_from_trace": True, "original_budget_errors_exactly_preserved": True},
+        "analysis": analysis,
+    }
 
 
 def derive_extended_baseline(root: Path) -> dict[str, Any]:
@@ -3991,6 +4125,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--indexed-compare", metavar="NEW_REPORT", help="write a pinned offline sprite-loop/indexed-CRC timing and raw-buffer comparison")
     parser.add_argument("--pool-compare", metavar="NEW_REPORT", help="write a pinned offline indexed-CRC/empty-pool timing and raw-buffer comparison")
     parser.add_argument("--highwater-compare", metavar="NEW_REPORT", help="write a pinned offline empty-pool/high-water timing and raw-buffer comparison")
+    parser.add_argument("--prefix-reanalyse", metavar="NEW_REPORT", help="write a new hash-bound offline prefix reanalysis; preserve the original failed capture and every timing failure")
     parser.add_argument(
         "--offline-reanalyse",
         action="store_true",
@@ -4017,6 +4152,22 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise SystemExit("console-helper arguments are incomplete")
         return _console_helper_main(args)
     root = Path(args.root).resolve()
+    if args.prefix_reanalyse:
+        if any((args.canonical_prefix, args.extended_overlay, args.ready_console_only, args.offline_reanalyse,
+                args.extended_baseline_reanalyse, args.lookup_compare, args.sprite_compare, args.indexed_compare,
+                args.pool_compare, args.highwater_compare)):
+            raise EvidenceFailure("prefix offline reanalysis cannot be combined with another mode")
+        output = Path(args.prefix_reanalyse)
+        if not output.is_absolute():
+            output = root / output
+        if output.exists():
+            raise EvidenceFailure("prefix reanalysis output already exists")
+        report = derive_prefix_reanalysis(root)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open("x", encoding="utf-8", newline="\n") as stream:
+            stream.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
+        print(f"Prefix offline reanalysis: protocol={report['diagnostic_protocol_status']}, budget={report['cycle_blank_budget_status']}; original capture unchanged")
+        return 0 if report["diagnostic_protocol_status"] == "pass" else 1
     if args.lookup_compare or args.sprite_compare or args.indexed_compare or args.pool_compare or args.highwater_compare:
         if sum(bool(value) for value in (args.lookup_compare, args.sprite_compare, args.indexed_compare, args.pool_compare, args.highwater_compare)) != 1:
             raise EvidenceFailure("choose exactly one isolated comparison")

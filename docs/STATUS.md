@@ -94,12 +94,18 @@
   --suite All --report artifacts/reports/host-tests-high-water-verified-20261010.json`.
   Its release gate remains false: save, full campaign replays, and live release
   evidence are unfinished. The new 1,681-step later-attempt timing diagnostic
-  has independent review and 55 focused native tests; its first live capture is
-  now has its first live capture. All 1,681 PRE/POST input proofs and both
+  has independent review and 55 focused native tests. Its first live capture
+  completes all 1,681 PRE/POST input proofs and both
   5,120-byte reset replay snapshots match; final attempt 2/tick 241 is physical
   frame 1,697. The stored report remains protocol FAIL and budget FAIL:
-  two IRQ-boundary/publication-consumption assumptions require separate offline
-  analyzer repair, and real timing overruns remain. Checkpoint 120 alone takes
+  two IRQ-boundary/publication-consumption assumptions are corrected only in
+  a separately derived offline report, and real timing overruns remain.
+  The independently reviewed correction passes 61/61 focused native tests;
+  `canonical-prefix-highwater-96dec577-offline-reanalysis-20261010.json`
+  records protocol PASS, all 30 observed IRQs anchored, and budget FAIL with
+  all 312 original budget errors and raw timing spans exactly unchanged.
+  Its SHA-256 is `ae164a352ddc145920a51d34f0ff89be53fb2c048a72e131b8b91bd9364f7814`.
+  No emulator rerun was used for that derivation. Checkpoint 120 alone takes
   91,960 CPU cycles with no intervening IRQ, above the 83,203 limit. Reset 2
   takes at least 258,196 cycles versus its 256,010 allowance. Original report
   and console are immutable at
@@ -249,9 +255,8 @@
 - **License limitation:** vasm 2.0f is usable here only for non-commercial
   purposes unless written permission is obtained; commercial exploitation
   requires permission or migration to the verified GNU Binutils path
-- **Next action:** optimize whole-empty projection and bounded gameplay scans
-  one measured cause at a time, preserving byte
-  parity and native remeasurement. Resolve both timing failures before
+- **Next action:** measure bounded renderer scans and CRC/projection hot paths, preserving
+  byte parity and native remeasurement. Resolve the remaining timing failures before
   rerunning objective HUD/SAT captures and budget-v3, independently review the
   visuals, run Windows All and `Milestone5`, then
   freeze M5 only if every required gate passes

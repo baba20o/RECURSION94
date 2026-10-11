@@ -229,8 +229,19 @@ were used. The immutable raw files are
 The stored protocol result is FAIL: its analyzer incorrectly requires IRQs
 that happened before the observed window and expects a renderer publication
 to be committed twice when two IRQs interrupt the same engine tick. Separate
-hash-bound offline reanalysis is pending; the captured report is not rewritten.
-These issues do not remove the observed budget failures:
+hash-bound offline reanalysis now passes the protocol checks; the captured
+report is not rewritten. The new artifact is
+`canonical-prefix-highwater-96dec577-offline-reanalysis-20261010.json` in the
+same directory, SHA-256
+`ae164a352ddc145920a51d34f0ff89be53fb2c048a72e131b8b91bd9364f7814`.
+It binds the original collector, raw console geometry, reconstructed script,
+independently reparsed records, and archived ROM/symbols without an emulator
+rerun. Directional engine-counter coverage requires exactly the 30 captured
+IRQs; deleting any complete IRQ fails. Renderer publications bind to their
+first later commit, including tick-advanced commits; a fabricated second
+commit fails. Independent review and 61/61 focused native tests pass.
+All 312 original budget failures, raw phase spans, and reset facts remain
+exactly unchanged. Neither protocol repair removes the observed timing failures:
 
 | Third-attempt checkpoint | Raw GameplayStep CPU cycles | Limit |
 |---|---:|---:|
