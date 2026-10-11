@@ -28,9 +28,18 @@
   sampled budgets. Tick59/61 rendering saves 6,460/6,462 cycles; total722 saves
   5,310. All 6,240 renderer bytes and sampled projection CRCs match the preceding
   image. Simulation/projection and the reset main interval are unchanged.
-  Natural multi-echo timing, current-ROM full replays, refreshed reviewed visual
-  pins, Windows All, and M5 aggregate evidence remain pending. This is a bounded
-  measured rendering gain, not a full M5 performance pass.
+  The natural 1,681-step prefix also passes protocol/input/replay and all four
+  projection CRC comparisons, but reports 70 budget violations. IRQ-free
+  third-attempt simulation at ticks60/120/180/240 is
+  97,060/91,962/91,870/95,740 against 83,203; reset2 remains 258,196 against
+  256,010. Final physical frame is 1,685 with token zero, while intermediate
+  cadence failures and five counted overruns remain. Its immutable report is
+  `canonical-prefix-renderer-hwm-e6778f90-attempt2-tick241-20261010.json`, SHA-256
+  `d1e86bebd1ddab8577c654ec18d01cd03375c5b8cc9e02c638fe5f35a1e93b40`.
+  Current-ROM full replays, Windows All, and M5 aggregate evidence remain
+  pending. This is a bounded measured rendering gain, not a full M5 performance
+  pass. CRC/projection optimization is now in progress; no new CRC ROM or
+  timing result is claimed yet.
 - **Preceding high-water ROMs:** all images are 1,048,576 bytes. Canonical Debug
   checksum/SHA-256: `$1A55` /
   `9b2122f405dc7c6a2692eea2250ac18acff3ded08804aa67ab72316cc1b86d34`;

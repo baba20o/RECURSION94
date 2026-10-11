@@ -31,7 +31,12 @@ three-actor checkpoint, ordinary-frame, and second-reset budget failures.
 The independently reviewed offline repair passes protocol checks with all
 30 observed IRQs anchored and all 312 original budget errors unchanged; the
 failed raw capture remains immutable. Profile and optimize the measured hot
-paths. Preserve raw projection/SAT/HUD parity without removing
+paths. The renderer-only follow-up saves 5,310–6,462 cycles in bounded samples
+with all 6,240 buffer bytes unchanged. Its natural prefix preserves exact input,
+replay, and projection CRCs, but still fails checkpoint, second-reset, and
+ordinary-frame budgets. Implement the reviewed bounded CRC/projection package,
+then remeasure all four IRQ-free checkpoint baselines and reset work; continue
+the separate ordinary-frame/blank repair. Preserve raw projection/SAT/HUD parity without removing
 required mechanics or reducing echo counts.
 The fresh native All-suite rerun passes 982/982 without skips after the reviewed
 source-pin, frozen-fixture, and project-local dependency repairs. The prefix

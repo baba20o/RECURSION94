@@ -244,9 +244,26 @@ Raw artifacts under `artifacts/diagnostics/m5-budget/`:
 - `reset-overlay-renderer-hwm-e6778f90-total719-total724-20261010.{json,log}`;
   report SHA-256 `b1ffcd6d09667845a27b367b33be87df45bab6b11c7539b4d495080c01c67357`.
 
-These bounded samples do not close the multi-echo simulation defect or the M5
-budget gate. The natural third-attempt prefix and pinned offline pair
-comparison remain the next evidence steps for this candidate.
+The candidate's natural prefix also completes all 1,681 input steps and both
+reset replay snapshots, with protocol PASS and exact parity at all four
+projection checkpoints. Its immutable report/log are
+`canonical-prefix-renderer-hwm-e6778f90-attempt2-tick241-20261010.{json,log}`;
+report SHA-256
+`d1e86bebd1ddab8577c654ec18d01cd03375c5b8cc9e02c638fe5f35a1e93b40`.
+All four GameplayStep intervals now contain no IRQ, directly measuring
+97,060 / 91,962 / 91,870 / 95,740 cycles at ticks 60 / 120 / 180 / 240.
+They still exceed the 83,203 simulation limit. Projection remains 52,890.
+The second-reset lower bound remains 258,196 versus 256,010. The final physical
+frame is 1,685 with zero queued tokens, but intermediate cadence/blank failures
+remain: 70 reported budget violations, a cumulative overrun counter of five,
+and a maximum raw main span of 152,732 at tick193. That whole-main span includes
+interrupt service; it is not a pure simulation or renderer cost.
+
+Thus the renderer improvement is measured, but neither the multi-echo
+simulation defect nor the M5 budget gate is closed. The pinned offline pair
+comparison and CRC/projection optimization are next; ordinary-frame/blank
+failures also require repair. The older late-entry detector limitation remains
+open, so its counter alone cannot certify all blank deadlines.
 
 ## Natural third-attempt prefix: timing failure
 
