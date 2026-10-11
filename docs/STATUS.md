@@ -24,9 +24,13 @@
   The three prior fixed-capacity source assertions now require the typed bound,
   capacity clamp, and zero exit. Images/maps are archived under
   `artifacts/archive/m5-renderer-hwm-e6778f90-20261010/`.
-  Native timing/raw-buffer parity, current-ROM replays, refreshed reviewed
-  visual pins, Windows All, and M5 aggregate evidence remain pending. No
-  performance gain or M5 pass is claimed from the builds alone.
+  The first regular and extended-reset native samples pass protocol and their
+  sampled budgets. Tick59/61 rendering saves 6,460/6,462 cycles; total722 saves
+  5,310. All 6,240 renderer bytes and sampled projection CRCs match the preceding
+  image. Simulation/projection and the reset main interval are unchanged.
+  Natural multi-echo timing, current-ROM full replays, refreshed reviewed visual
+  pins, Windows All, and M5 aggregate evidence remain pending. This is a bounded
+  measured rendering gain, not a full M5 performance pass.
 - **Preceding high-water ROMs:** all images are 1,048,576 bytes. Canonical Debug
   checksum/SHA-256: `$1A55` /
   `9b2122f405dc7c6a2692eea2250ac18acff3ded08804aa67ab72316cc1b86d34`;

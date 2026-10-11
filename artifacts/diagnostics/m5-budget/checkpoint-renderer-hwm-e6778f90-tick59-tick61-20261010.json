@@ -1,0 +1,1839 @@
+{
+  "analysis": {
+    "conclusion": "the repaired tick-60 projection uses only raw tail CRC, the renderer deterministically holds one checkpoint frame, frame 61 performs no DMA, frame 62 rebuilds 4 records/440 words, and the first next VBlank retains measured headroom with no overrun",
+    "dma_calls": {
+      "59": [
+        {
+          "commit_words": 320,
+          "cycle": 77836942,
+          "destination": 61440,
+          "frame": 59,
+          "phase": "DS",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "commit_words": 360,
+          "cycle": 77855296,
+          "destination": 49152,
+          "frame": 59,
+          "phase": "DS",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "commit_words": 400,
+          "cycle": 77861750,
+          "destination": 49280,
+          "frame": 59,
+          "phase": "DS",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "commit_words": 440,
+          "cycle": 77868190,
+          "destination": 49408,
+          "frame": 59,
+          "phase": "DS",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "60": [
+        {
+          "commit_words": 320,
+          "cycle": 78732978,
+          "destination": 61440,
+          "frame": 60,
+          "phase": "DS",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "commit_words": 360,
+          "cycle": 78751353,
+          "destination": 49152,
+          "frame": 60,
+          "phase": "DS",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "commit_words": 400,
+          "cycle": 78757807,
+          "destination": 49280,
+          "frame": 60,
+          "phase": "DS",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "commit_words": 440,
+          "cycle": 78764261,
+          "destination": 49408,
+          "frame": 60,
+          "phase": "DS",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "61": [],
+      "62": [
+        {
+          "commit_words": 320,
+          "cycle": 80525059,
+          "destination": 61440,
+          "frame": 62,
+          "phase": "DS",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "commit_words": 360,
+          "cycle": 80543434,
+          "destination": 49152,
+          "frame": 62,
+          "phase": "DS",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "commit_words": 400,
+          "cycle": 80549888,
+          "destination": 49280,
+          "frame": 62,
+          "phase": "DS",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "commit_words": 440,
+          "cycle": 80556342,
+          "destination": 49408,
+          "frame": 62,
+          "phase": "DS",
+          "source": 16746144,
+          "words": 40
+        }
+      ]
+    },
+    "errors": [],
+    "marker_counts": {
+      "CE": 1,
+      "CS": 1,
+      "DE": 12,
+      "DP": 4,
+      "DS": 12,
+      "EE": 1,
+      "ES": 1,
+      "ME": 3,
+      "MS": 3,
+      "PE": 1,
+      "PS": 1,
+      "PV": 1,
+      "Q": 16,
+      "RE": 0,
+      "RG": 3,
+      "RR": 3,
+      "RS": 0,
+      "TE": 1,
+      "TS": 1,
+      "VA": 4,
+      "VC": 4,
+      "VE": 4,
+      "VK": 4,
+      "VO": 0,
+      "VP": 4,
+      "VS": 4,
+      "VX": 4
+    },
+    "origin_hits": [],
+    "phase_spans": {
+      "campaign_projection": {
+        "delta_cpu_cycles_ceil": 52890,
+        "delta_cpu_cycles_exact": 52890,
+        "delta_master_clocks": 370230,
+        "end_cycle_master": 79367619,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 78997389
+      },
+      "campaign_raw_tail_crc": {
+        "delta_cpu_cycles_ceil": 12374,
+        "delta_cpu_cycles_exact": 12374,
+        "delta_master_clocks": 86618,
+        "end_cycle_master": 79366541,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79279923
+      },
+      "engine_projection": {
+        "delta_cpu_cycles_ceil": 37980,
+        "delta_cpu_cycles_exact": 37980,
+        "delta_master_clocks": 265860,
+        "end_cycle_master": 79264481,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 78998621
+      },
+      "first_next_vblank_phase": {
+        "actual_entry_relative_to_nominal_master_clocks": 5,
+        "actual_next_entry_cycle_master": 79618425,
+        "checkpoint_main_completed_before_nominal_entry": true,
+        "checkpoint_renderer_end_cycle_master": 79374311,
+        "headroom_before_nominal_master_clocks": 244109,
+        "headroom_cpu_cycles_floor": 34872,
+        "nominal_next_entry_cycle_master": 79618420,
+        "prior_entry_cycle_master": 78722380
+      },
+      "gameplay_tick59": {
+        "delta_cpu_cycles_ceil": 27884,
+        "delta_cpu_cycles_exact": 27884,
+        "delta_master_clocks": 195188,
+        "end_cycle_master": 78102298,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 77907110
+      },
+      "gameplay_tick60": {
+        "delta_cpu_cycles_ceil": 80828,
+        "delta_cpu_cycles_exact": 80828,
+        "delta_master_clocks": 565796,
+        "end_cycle_master": 79368977,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 78803181
+      },
+      "gameplay_tick61": {
+        "delta_cpu_cycles_ceil": 27884,
+        "delta_cpu_cycles_exact": 27884,
+        "delta_master_clocks": 195188,
+        "end_cycle_master": 79841207,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79646019
+      },
+      "main_tick59": {
+        "delta_cpu_cycles_ceil": 87348,
+        "delta_cpu_cycles_exact": 87348,
+        "delta_master_clocks": 611436,
+        "end_cycle_master": 78518546,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 77907110
+      },
+      "main_tick60": {
+        "delta_cpu_cycles_ceil": 81590,
+        "delta_cpu_cycles_exact": 81590,
+        "delta_master_clocks": 571130,
+        "end_cycle_master": 79374311,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 78803181
+      },
+      "main_tick61": {
+        "delta_cpu_cycles_ceil": 86972,
+        "delta_cpu_cycles_exact": 86972,
+        "delta_master_clocks": 608804,
+        "end_cycle_master": 80254823,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79646019
+      },
+      "renderer_tick59": {
+        "delta_cpu_cycles_ceil": 59138,
+        "delta_cpu_cycles_exact": 59138,
+        "delta_master_clocks": 413966,
+        "end_cycle_master": 78518546,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 78104580
+      },
+      "renderer_tick60_defer": {
+        "delta_cpu_cycles_ceil": 438,
+        "delta_cpu_cycles_exact": 438,
+        "delta_master_clocks": 3066,
+        "end_cycle_master": 79374311,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79371245
+      },
+      "renderer_tick61": {
+        "delta_cpu_cycles_ceil": 58764,
+        "delta_cpu_cycles_exact": 58764,
+        "delta_master_clocks": 411348,
+        "end_cycle_master": 80254823,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79843475
+      },
+      "vblank_entry_deltas": [
+        {
+          "delta_cpu_cycles_ceil": 128006,
+          "delta_cpu_cycles_exact": null,
+          "delta_master_clocks": 896036,
+          "end_cycle_master": 78722380,
+          "from_prior_frame": 58,
+          "master_remainder_mod_7": 1,
+          "relative_to_nominal_master_clocks": -4,
+          "start_cycle_master": 77826344,
+          "to_prior_frame": 59
+        },
+        {
+          "delta_cpu_cycles_ceil": 128007,
+          "delta_cpu_cycles_exact": null,
+          "delta_master_clocks": 896045,
+          "end_cycle_master": 79618425,
+          "from_prior_frame": 59,
+          "master_remainder_mod_7": 3,
+          "relative_to_nominal_master_clocks": 5,
+          "start_cycle_master": 78722380,
+          "to_prior_frame": 60
+        },
+        {
+          "delta_cpu_cycles_ceil": 128006,
+          "delta_cpu_cycles_exact": null,
+          "delta_master_clocks": 896036,
+          "end_cycle_master": 80514461,
+          "from_prior_frame": 60,
+          "master_remainder_mod_7": 1,
+          "relative_to_nominal_master_clocks": -4,
+          "start_cycle_master": 79618425,
+          "to_prior_frame": 61
+        }
+      ],
+      "vblank_entry_to_rte": {
+        "59": {
+          "delta_cpu_cycles_ceil": 9924,
+          "delta_cpu_cycles_exact": 9924,
+          "delta_master_clocks": 69468,
+          "end_cycle_master": 77895812,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 77826344
+        },
+        "60": {
+          "delta_cpu_cycles_ceil": 9929,
+          "delta_cpu_cycles_exact": 9929,
+          "delta_master_clocks": 69503,
+          "end_cycle_master": 78791883,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 78722380
+        },
+        "61": {
+          "delta_cpu_cycles_ceil": 2330,
+          "delta_cpu_cycles_exact": 2330,
+          "delta_master_clocks": 16310,
+          "end_cycle_master": 79634735,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 79618425
+        },
+        "62": {
+          "delta_cpu_cycles_ceil": 9929,
+          "delta_cpu_cycles_exact": 9929,
+          "delta_master_clocks": 69503,
+          "end_cycle_master": 80583964,
+          "master_remainder_mod_7": 0,
+          "start_cycle_master": 80514461
+        }
+      },
+      "vocabulary_tail_copy": {
+        "delta_cpu_cycles_ceil": 1982,
+        "delta_cpu_cycles_exact": 1982,
+        "delta_master_clocks": 13874,
+        "end_cycle_master": 79278859,
+        "master_remainder_mod_7": 0,
+        "start_cycle_master": 79264985
+      }
+    },
+    "projection_parity": {
+      "crc": 3440894069,
+      "debug_crc_frame61": 3440894069,
+      "debug_crc_frame62": 3440894069,
+      "header_length": 3894,
+      "header_version": 2,
+      "length": 3894,
+      "state_crc": 3440894069
+    },
+    "queue_records": {
+      "59": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 32768,
+          "frame": 59,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 32769,
+          "frame": 59,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 32769,
+          "frame": 59,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 32769,
+          "frame": 59,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "60": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 32768,
+          "frame": 60,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 32769,
+          "frame": 60,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 32769,
+          "frame": 60,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 32769,
+          "frame": 60,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "61": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 49152,
+          "frame": 61,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 49153,
+          "frame": 61,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 49153,
+          "frame": 61,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 49153,
+          "frame": 61,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ],
+      "62": [
+        {
+          "age": 0,
+          "destination": 61440,
+          "flags": 32768,
+          "frame": 62,
+          "index": 0,
+          "phase": "Q",
+          "source": 16744448,
+          "words": 320
+        },
+        {
+          "age": 0,
+          "destination": 49152,
+          "flags": 32769,
+          "frame": 62,
+          "index": 1,
+          "phase": "Q",
+          "source": 16745984,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49280,
+          "flags": 32769,
+          "frame": 62,
+          "index": 2,
+          "phase": "Q",
+          "source": 16746064,
+          "words": 40
+        },
+        {
+          "age": 0,
+          "destination": 49408,
+          "flags": 32769,
+          "frame": 62,
+          "index": 3,
+          "phase": "Q",
+          "source": 16746144,
+          "words": 40
+        }
+      ]
+    },
+    "status": "pass"
+  },
+  "bounds": {
+    "debugger_guest_writes": 0,
+    "input": "held Up; noncanonical after the canonical prefix",
+    "maximum_dma_calls": 16,
+    "maximum_vblanks": 4,
+    "post_ticks": [
+      59,
+      60,
+      61
+    ],
+    "pre_ticks": [
+      58,
+      59,
+      60
+    ],
+    "vblank_frames": [
+      59,
+      60,
+      61,
+      62
+    ]
+  },
+  "canonical": false,
+  "command_script": "breakpoint $2FA\nbreakpoint $2FE\nbreakpoint $6B64\nbreakpoint $6B68\nbreakpoint $2162\nbreakpoint $237A\nbreakpoint $56D2\nbreakpoint $56E6\nbreakpoint $6AFA\nbreakpoint $6BAA\nbreakpoint $8DA4\nbreakpoint $8F82\nbreakpoint $126A\nbreakpoint $1440\nbreakpoint $14E6\nbreakpoint $169A\nbreakpoint $16BC\nbreakpoint $16E0\nbreakpoint $171A\nbreakpoint $172C\nbreakpoint $173C\nbreakpoint $1850\ncommands 0\nif [$FF1410].w < $3A\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P MS %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF9800].b d0 sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 1\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3E\nprintf \"R94P ME %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 8\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P PS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w sr\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 9\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P PE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w\nprintf \"R94P PV %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF141A].l [$FF1418].w [$FF6004].w [$FF6006].w [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 4\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P ES %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 5\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P EE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 6\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P TS %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 7\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P TE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 2\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P CS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 3\nif [$FF1410].w < $3C\ncontinue\nelse\nif [$FF1410].w < $3D\nprintf \"R94P CE %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d1\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 10\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3E\nprintf \"R94P RG %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w [$FF9000].w [$FF9002].w [$FF16C8].w [$FF1420].w [$FF8324].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 11\nif [$FF1410].w < $3B\ncontinue\nelse\nif [$FF1410].w < $3E\nprintf \"R94P RR %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w d0 [$FF1420].w [$FF8324].w\ncontinue\nelse\ncontinue\nend\nend\nend\ncommands 15\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $1\nprintf \"R94P READY\\n\"\nelse\nif [$FFF010].l < $3A\ncontinue\nelse\nprintf \"R94P VE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FFF014].w\ncontinue\nend\nend\nend\nend\ncommands 16\nif [$FFF010].l < $3A\ncontinue\nelse\nprintf \"R94P VA %x %x %x %x\\n\" cycle [$FFF010].l [$FFF01C].w [$FFF008].l\ncontinue\nend\nend\ncommands 12\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VC %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF9004].l\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w\nprintf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w\ncontinue\nend\nend\ncommands 13\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P DS %x %x %x %x %x %x\\n\" cycle [$FFF010].l a0 d0 d1 [$FF9008].w\ncontinue\nend\nend\ncommands 14\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P DE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w d0 d1\ncontinue\nend\nend\ncommands 17\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VP %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w\ncontinue\nend\nend\ncommands 18\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VS %x %x %x %x %x\\n\" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w\ncontinue\nend\nend\ncommands 19\nprintf \"R94P VO %x %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l\ncontinue\nend\ncommands 20\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P VK %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w\ncontinue\nend\nend\ncommands 21\nif [$FFF018].w < $4\ncontinue\nelse\nif [$FFF010].l < $3B\ncontinue\nelse\nprintf \"R94P DP %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF141A].l [$FFF050].l [$FF1418].w [$FFF05C].w [$FF1420].w [$FFF056].w [$FF8324].w [$FF8322].w\nprintf \"R94P VX %x %x %x %x %x\\n\" cycle [$FFF010].l [$FFF008].l [$FFF032].w [$FFF014].w\nif [$FFF010].l < $3E\ncontinue\nelse\nprintf \"R94P COMPLETE\\n\"\nend\nend\nend\nend\ncontinue\n",
+  "command_script_sha256": "909cbcc34b96d997b6ce84a9a53d8b5af217d1fc0db7c0f3ec9682787c0ea602",
+  "completed_utc": "2026-10-11T02:26:20.563847+00:00",
+  "console_geometry": {
+    "current_row_utf16": [
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32,
+      32
+    ],
+    "cursor_x": 0,
+    "cursor_y": 395,
+    "height": 9001,
+    "raw_screen_buffer": "200: move #$2700, SR                                                                                                    > breakpoint $2FA                                                                                                       68K Breakpoint 0 set at $2FA                                                                                            > breakpoint $2FE                                                                                                       68K Breakpoint 1 set at $2FE                                                                                            > breakpoint $6B64                                                                                                      68K Breakpoint 2 set at $6B64                                                                                           > breakpoint $6B68                                                                                                      68K Breakpoint 3 set at $6B68                                                                                           > breakpoint $2162                                                                                                      68K Breakpoint 4 set at $2162                                                                                           > breakpoint $237A                                                                                                      68K Breakpoint 5 set at $237A                                                                                           > breakpoint $56D2                                                                                                      68K Breakpoint 6 set at $56D2                                                                                           > breakpoint $56E6                                                                                                      68K Breakpoint 7 set at $56E6                                                                                           > breakpoint $6AFA                                                                                                      68K Breakpoint 8 set at $6AFA                                                                                           > breakpoint $6BAA                                                                                                      68K Breakpoint 9 set at $6BAA                                                                                           > breakpoint $8DA4                                                                                                      68K Breakpoint 10 set at $8DA4                                                                                          > breakpoint $8F82                                                                                                      68K Breakpoint 11 set at $8F82                                                                                          > breakpoint $126A                                                                                                      68K Breakpoint 12 set at $126A                                                                                          > breakpoint $1440                                                                                                      68K Breakpoint 13 set at $1440                                                                                          > breakpoint $14E6                                                                                                      68K Breakpoint 14 set at $14E6                                                                                          > breakpoint $169A                                                                                                      68K Breakpoint 15 set at $169A                                                                                          > breakpoint $16BC                                                                                                      68K Breakpoint 16 set at $16BC                                                                                          > breakpoint $16E0                                                                                                      68K Breakpoint 17 set at $16E0                                                                                          > breakpoint $171A                                                                                                      68K Breakpoint 18 set at $171A                                                                                          > breakpoint $172C                                                                                                      68K Breakpoint 19 set at $172C                                                                                          > breakpoint $173C                                                                                                      68K Breakpoint 20 set at $173C                                                                                          > breakpoint $1850                                                                                                      68K Breakpoint 21 set at $1850                                                                                          > commands 0                                                                                                            >> if [$FF1410].w < $3A                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P MS %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF9800].b d0 sr                               >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 1                                                                                                            >> if [$FF1410].w < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3E                                                                                                >>>> printf \"R94P ME %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 sr                                              >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 8                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P PS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w sr                                     >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 9                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P PE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w                               >>>> printf \"R94P PV %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF141A].l [$FF1418].w [$FF6004].w [$FF6006].w [$FF1420].w                                                                                           >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 4                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P ES %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF1420].w                                           >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 5                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P EE %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d0 d1 [$FF1420].w                               >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 6                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P TS %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0                                                    >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 7                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P TE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0                                              >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 2                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P CS %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w a0 d0                                              >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 3                                                                                                            >> if [$FF1410].w < $3C                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3D                                                                                                >>>> printf \"R94P CE %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w d1                                                    >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 10                                                                                                           >> if [$FF1410].w < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3E                                                                                                >>>> printf \"R94P RG %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w [$FF9000].w [$FF9002].w [$FF16C8].w [$FF1420].w [$FF8324].w                                                                                  >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 11                                                                                                           >> if [$FF1410].w < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FF1410].w < $3E                                                                                                >>>> printf \"R94P RR %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FF900A].w d0 [$FF1420].w [$FF8324].w >>>> continue                                                                                                           >>>> else                                                                                                               >>>> continue                                                                                                           >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 15                                                                                                           >> if [$FFF018].w < $4                                                                                                  >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FFF010].l < $1                                                                                                 >>>> printf \"R94P READY\\n\"                                                                                              >>>> else                                                                                                               >>>> if [$FFF010].l < $3A                                                                                               >>>>> continue                                                                                                          >>>>> else                                                                                                              >>>>> printf \"R94P VE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w sr [$FFF014].w                                    >>>>> continue                                                                                                          >>>>> end                                                                                                               >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > commands 16                                                                                                           >> if [$FFF010].l < $3A                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P VA %x %x %x %x\\n\" cycle [$FFF010].l [$FFF01C].w [$FFF008].l                                            >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 12                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P VC %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF900A].w [$FF9000].w [$FF9002].w [$FF9004].l                                                                                                                       >>> printf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $0 [$FF9010].l [$FF9014].w [$FF9016].w [$FF9018].w [$FF901A].w   >>> printf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $1 [$FF901C].l [$FF9020].w [$FF9022].w [$FF9024].w [$FF9026].w   >>> printf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $2 [$FF9028].l [$FF902C].w [$FF902E].w [$FF9030].w [$FF9032].w   >>> printf \"R94P Q %x %x %x %x %x %x %x\\n\" [$FFF010].l $3 [$FF9034].l [$FF9038].w [$FF903A].w [$FF903C].w [$FF903E].w   >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 13                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P DS %x %x %x %x %x %x\\n\" cycle [$FFF010].l a0 d0 d1 [$FF9008].w                                         >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 14                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P DE %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w d0 d1                                               >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 17                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P VP %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF9008].w [$FFF028].w [$FFF02C].w [$FF900A].w              >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 18                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P VS %x %x %x %x %x\\n\" cycle [$FFF010].l d0 [$FFF01C].w [$FFF032].w                                      >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 19                                                                                                           >> printf \"R94P VO %x %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w [$FFF008].l                                 >> continue                                                                                                             >> end                                                                                                                  > commands 20                                                                                                           >> if [$FFF010].l < $3B                                                                                                 >>> continue                                                                                                            >>> else                                                                                                                >>> printf \"R94P VK %x %x %x %x %x\\n\" cycle [$FFF010].l d0 d1 [$FFF032].w                                               >>> continue                                                                                                            >>> end                                                                                                                 >> end                                                                                                                  > commands 21                                                                                                           >> if [$FFF018].w < $4                                                                                                  >>> continue                                                                                                            >>> else                                                                                                                >>> if [$FFF010].l < $3B                                                                                                >>>> continue                                                                                                           >>>> else                                                                                                               >>>> printf \"R94P DP %x %x %x %x %x %x %x %x %x %x %x\\n\" cycle [$FFF010].l [$FF1410].w [$FF141A].l [$FFF050].l [$FF1418].w [$FFF05C].w [$FF1420].w [$FFF056].w [$FF8324].w [$FF8322].w                                                          >>>> printf \"R94P VX %x %x %x %x %x\\n\" cycle [$FFF010].l [$FFF008].l [$FFF032].w [$FFF014].w                            >>>> if [$FFF010].l < $3E                                                                                               >>>>> continue                                                                                                          >>>>> else                                                                                                              >>>>> printf \"R94P COMPLETE\\n\"                                                                                          >>>>> end                                                                                                               >>>> end                                                                                                                >>> end                                                                                                                 >> end                                                                                                                  > continue                                                                                                              R94P READY                                                                                                              68K Breakpoint 15 hit                                                                                                   169A: movem.l d0-d7/a0-a6, -(a7)                                                                                        > continue                                                                                                              R94P VE 4a38928 3a 3a 2600 0                                                                                            R94P VA 4a38f48 3a e28 75                                                                                               R94P VC 4a3a800 3b 3a 1 4 4 1b8                                                                                         R94P Q 3b 0 ff8000 f000 140 8000 0                                                                                      R94P Q 3b 1 ff8600 c000 28 8001 0                                                                                       R94P Q 3b 2 ff8650 c080 28 8001 0                                                                                       R94P Q 3b 3 ff86a0 c100 28 8001 0                                                                                       R94P DS 4a3b28e 3b ff8000 f000 140 140                                                                                  R94P DE 4a3e8ce 3b 140 70000000 1ffe                                                                                    R94P DS 4a3fa40 3b ff8600 c000 28 168                                                                                   R94P DE 4a40bf8 3b 168 40000000 1ffe                                                                                    R94P DS 4a41376 3b ff8650 c080 28 190                                                                                   R94P DE 4a42520 3b 190 40800000 1ffe                                                                                    R94P DS 4a42c9e 3b ff86a0 c100 28 1b8                                                                                   R94P DE 4a43e48 3b 1b8 41000000 1ffe                                                                                    R94P VP 4a47d10 3b 1b8 1b8 0 0                                                                                          R94P VS 4a47e8a 3b 3208 e28 0                                                                                           R94P VK 4a47ff6 3b 8 8 0                                                                                                R94P DP 4a49884 3b 3a 97ded8b0 97ded8b0 f36 f36 1 1 1 0                                                                 R94P VX 4a49884 3b 76 0 1                                                                                               R94P MS 4a4c4a6 3b 3a 1 1 2500                                                                                          R94P ME 4a7bf1a 3b 3b 0 2504                                                                                            R94P RG 4a7c804 3b 3b 2700 0 0 0 3 1 1                                                                                  R94P RR 4ae1912 3b 3b 2704 1 0 1 1                                                                                      R94P VE 4b1354c 3b 3b 2600 0                                                                                            R94P VA 4b13b6c 3b e28 77                                                                                               R94P VC 4b15424 3c 3b 1 4 4 1b8                                                                                         R94P Q 3c 0 ff8000 f000 140 8000 0                                                                                      R94P Q 3c 1 ff8600 c000 28 8001 0                                                                                       R94P Q 3c 2 ff8650 c080 28 8001 0                                                                                       R94P Q 3c 3 ff86a0 c100 28 8001 0                                                                                       R94P DS 4b15eb2 3c ff8000 f000 140 140                                                                                  R94P DE 4b19507 3c 140 70000000 1ffe                                                                                    R94P DS 4b1a679 3c ff8600 c000 28 168                                                                                   R94P DE 4b1b831 3c 168 40000000 1ffe                                                                                    R94P DS 4b1bfaf 3c ff8650 c080 28 190                                                                                   R94P DE 4b1d167 3c 190 40800000 1ffe                                                                                    R94P DS 4b1d8e5 3c ff86a0 c100 28 1b8                                                                                   R94P DE 4b1ea8f 3c 1b8 41000000 1ffe                                                                                    R94P VP 4b22957 3c 1b8 1b8 0 0                                                                                          R94P VS 4b22ad1 3c 3208 e28 0                                                                                           R94P VK 4b22c3d 3c 8 8 0                                                                                                R94P DP 4b244cb 3c 3b 97ded8b0 97ded8b0 f36 f36 1 1 1 0                                                                 R94P VX 4b244cb 3c 78 0 1                                                                                               R94P MS 4b270ed 3c 3b 1 1 2500                                                                                          R94P PS 4b5678d 3c 3c 1 2500                                                                                            R94P ES 4b56c5d 3c 3c 1                                                                                                 R94P EE 4b97ae1 3c 3c 620e36 f59cabcc 2                                                                                 R94P TS 4b97cd9 3c 3c ff6e36                                                                                            R94P TE 4b9b30b 3c 3c ff6f36 620100                                                                                     R94P CS 4b9b733 3c 3c ff6e36 620100                                                                                     R94P CE 4bb098d 3c 3c 32e81f8a                                                                                          R94P PE 4bb0dc3 3c 3c ffff0f36 cd17e075 2                                                                               R94P PV 4bb0dc3 3c 3c ffff0f36 cd17e075 cd17e075 f36 2 f36 2                                                            R94P ME 4bb1311 3c 3c 0 2504                                                                                            R94P RG 4bb1bed 3c 3c 2700 0 0 0 3 2 1                                                                                  R94P RR 4bb27e7 3c 3c 2700 0 4 2 2                                                                                      R94P VE 4bee179 3c 3c 2600 0                                                                                            R94P VA 4bee799 3c e28 79                                                                                               R94P VC 4bf0051 3d 3c 0 0 0 0                                                                                           R94P Q 3d 0 ff8000 f000 140 c000 0                                                                                      R94P Q 3d 1 ff8600 c000 28 c001 0                                                                                       R94P Q 3d 2 ff8650 c080 28 c001 0                                                                                       R94P Q 3d 3 ff86a0 c100 28 c001 0                                                                                       R94P VP 4bf05bb 3d 0 0 0 0                                                                                              R94P VS 4bf0743 3d 320c e28 0                                                                                           R94P VK 4bf08a1 3d 8 8 0                                                                                                R94P DP 4bf212f 3d 3c cd17e075 cd17e075 f36 f36 2 2 2 4                                                                 R94P VX 4bf212f 3d 7a 0 1                                                                                               R94P MS 4bf4d43 3d 3c 1 1 2500                                                                                          R94P ME 4c247b7 3d 3d 0 2504                                                                                            R94P RG 4c25093 3d 3d 2700 0 0 0 3 2 2                                                                                  R94P RR 4c89767 3d 3d 2704 1 0 2 2                                                                                      R94P VE 4cc8d9d 3d 3d 2600 0                                                                                            R94P VA 4cc93bd 3d e28 7b                                                                                               R94P VC 4ccac75 3e 3d 1 4 4 1b8                                                                                         R94P Q 3e 0 ff8000 f000 140 8000 0                                                                                      R94P Q 3e 1 ff8600 c000 28 8001 0                                                                                       R94P Q 3e 2 ff8650 c080 28 8001 0                                                                                       R94P Q 3e 3 ff86a0 c100 28 8001 0                                                                                       R94P DS 4ccb703 3e ff8000 f000 140 140                                                                                  R94P DE 4cced58 3e 140 70000000 1ffe                                                                                    R94P DS 4ccfeca 3e ff8600 c000 28 168                                                                                   R94P DE 4cd1082 3e 168 40000000 1ffe                                                                                    R94P DS 4cd1800 3e ff8650 c080 28 190                                                                                   R94P DE 4cd29b8 3e 190 40800000 1ffe                                                                                    R94P DS 4cd3136 3e ff86a0 c100 28 1b8                                                                                   R94P DE 4cd42e0 3e 1b8 41000000 1ffe                                                                                    R94P VP 4cd81a8 3e 1b8 1b8 0 0                                                                                          R94P VS 4cd8322 3e 3208 e28 0                                                                                           R94P VK 4cd848e 3e 8 8 0                                                                                                R94P DP 4cd9d1c 3e 3d cd17e075 cd17e075 f36 f36 2 2 2 0                                                                 R94P VX 4cd9d1c 3e 7c 0 1                                                                                               R94P COMPLETE                                                                                                           68K Breakpoint 21 hit                                                                                                   1850: rte                                                                                                               > quit                                                                                                                  Saved SRAM to C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/session-data/saves/recursion94-debug\\save.sram                                                                                                                                                                                                                               ",
+    "raw_screen_buffer_utf16le_sha256": "c06411ead95650042bbc0ee2734b8a80bdbd7538d1af5e8601c353aaf827e4af",
+    "width": 120
+  },
+  "console_sha256": "1d96881a8bb775e15fcf4b04965d966496bd76fb9573d57a8a6c4663bafdf872",
+  "diagnostic_only": true,
+  "evidence_type": "blastem_native_debugger_b03_tick60_checkpoint_repair_phase",
+  "host_input": {
+    "input_injected_at_marker": "R94P READY",
+    "key": {
+      "extended": true,
+      "name": "Up",
+      "scan_code": 72,
+      "virtual_key": 38
+    },
+    "window": {
+      "class": "SDL_app",
+      "handle": 3675656,
+      "title": "BlastEm"
+    }
+  },
+  "limitations": [
+    "Noncanonical diagnostic only; it cannot satisfy the two-session budget gate.",
+    "Held Up diverges from the canonical B03 route after its canonical prefix.",
+    "Pinned BlastEm cycles are emulator evidence, not physical hardware timing.",
+    "Debugger stops do not advance the emulated master-cycle counter.",
+    "Projection CRC parity binds runtime return/state/header/debug mirrors; it does not dump the 3,894-byte projection during the measured interval."
+  ],
+  "pc_contract": {
+    "addresses": {
+      "campaign_projection_end": 27562,
+      "campaign_projection_start": 27386,
+      "dma_commit": 4714,
+      "dma_issue_end": 5350,
+      "dma_issue_start": 5184,
+      "engine_projection_end": 9082,
+      "engine_projection_start": 8546,
+      "gameplay_call": 762,
+      "gameplay_return": 766,
+      "raw_crc_end": 27496,
+      "raw_crc_start": 27492,
+      "renderer_end": 36738,
+      "renderer_start": 36260,
+      "tail_end": 22246,
+      "tail_start": 22226,
+      "vblank_ack": 5820,
+      "vblank_common": 5948,
+      "vblank_entry": 5786,
+      "vblank_origin": 5932,
+      "vblank_post_dma": 5856,
+      "vblank_rte": 6224,
+      "vblank_status": 5914
+    },
+    "exact_windows": {
+      "campaign_projection_return": {
+        "address": 27562,
+        "hex": "4E75",
+        "sha256": "1ceeabf0c6a5a30bad12cdac0e3ab015a7188a42e6aebb556aad00bb9cd693ad"
+      },
+      "crc_indexed_base_loop": {
+        "address": 7210,
+        "hex": "43F9000197EC74003418E05AB342E58A2431280042414841B58151C8FFEA",
+        "sha256": "e3b5a73fa375bede2c26ef2af07b6083bf9bcf85199077930d4552a747147eae"
+      },
+      "pool_empty_skip": {
+        "address": 9514,
+        "hex": "224B4A05660E3A033003C0FC0018D2C06000008C",
+        "sha256": "c4bebb903f0f52245a2b6ead9ac0cfeb6b6647d810287e9fc79f6c943baf79d1"
+      },
+      "pool_prior_current_count": {
+        "address": 9450,
+        "hex": "48E71E30244836002C021A29000212C112C03401534241F900FF1440D0C218108A0412C4",
+        "sha256": "f5adf89802c212548ac3c74114be7226262b3cee7893860892490068d156abec"
+      },
+      "raw_crc_call": {
+        "address": 27492,
+        "hex": "6100B08C46812801",
+        "sha256": "563b12982a593591ed46217bda60d31168e524bdc0f0deec4fe8b13d587aa9fe"
+      },
+      "raw_crc_return": {
+        "address": 27496,
+        "hex": "4681280123C400FF",
+        "sha256": "1a0370239aaf45578704ab89e059c3318cd9f2b81b47a874cad2da0f8852184c"
+      },
+      "renderer_checkpoint_gate": {
+        "address": 36358,
+        "hex": "303900FF1420B07900FF83246748363900FF832433C000FF8324343900FF16C80242000167304A7900FF900066284A7900FF900266204A4166085243B043661660060C400001660E33FC000400FF8322700460000128",
+        "sha256": "028835b95de5eccdea42b7868594ce290d40b09a22214cac115175e137692ba9"
+      },
+      "renderer_mask_start": {
+        "address": 36256,
+        "hex": "46FC2700",
+        "sha256": "906b9801f01356da4d2e4bcf683e5a425f21198ab7c0f98ca3031ba23490efa1"
+      },
+      "renderer_restore": {
+        "address": 36738,
+        "hex": "46C74CDF7CF84E75",
+        "sha256": "af9c9b785b1983aa49ea4c2a1ae228282d8de4bfe539ea94df74a1c1a10f59e3"
+      },
+      "vblank_origin": {
+        "address": 5932,
+        "hex": "0C79FFFF00FFF0326706527900FFF032",
+        "sha256": "f4eadfd25410d3b89c1e077235c2c50f7d8b7f02f75bc1f22828b42b75575430"
+      },
+      "vblank_rte": {
+        "address": 6224,
+        "hex": "4E73",
+        "sha256": "89f1e332d8c613ce01431df6e1eea8106760251f751d14880932c584673d29d0"
+      }
+    },
+    "raw_crc_target": {
+      "address": 7154,
+      "symbol": "Crc32UpdateRaw"
+    },
+    "rom_windows": {
+      "campaign_projection_end": {
+        "address": 27562,
+        "hex": "4E750000066600000444066608880CCC"
+      },
+      "campaign_projection_start": {
+        "address": 27386,
+        "hex": "48E71F3E0CB95239355600FF16006674"
+      },
+      "dma_commit": {
+        "address": 4714,
+        "hex": "427900FF900A427900FF9008427900FF"
+      },
+      "dma_issue_end": {
+        "address": 5350,
+        "hex": "4E750C79FFFF00FFF0446706527900FF"
+      },
+      "dma_issue_start": {
+        "address": 5184,
+        "hex": "3401024200FF0042930033C200C00004"
+      },
+      "engine_projection_end": {
+        "address": 9082,
+        "hex": "4E750C400E3667046000F85A48E71710"
+      },
+      "engine_projection_start": {
+        "address": 8546,
+        "hex": "48E71F3E0079000200FF140A43F900FF"
+      },
+      "gameplay_call": {
+        "address": 762,
+        "hex": "610037480C400008671A0C4000096710"
+      },
+      "gameplay_return": {
+        "address": 766,
+        "hex": "0C400008671A0C40000967104A40672C"
+      },
+      "raw_crc_end": {
+        "address": 27496,
+        "hex": "4681280123C400FF141A2204300341F9"
+      },
+      "raw_crc_start": {
+        "address": 27492,
+        "hex": "6100B08C4681280123C400FF141A2204"
+      },
+      "renderer_end": {
+        "address": 36738,
+        "hex": "46C74CDF7CF84E7523FCC000000000C0"
+      },
+      "renderer_start": {
+        "address": 36260,
+        "hex": "0CB95239345600FF8300660001D00C79"
+      },
+      "tail_end": {
+        "address": 22246,
+        "hex": "4E7548E71F3E3E0041F900FF16C87000"
+      },
+      "tail_start": {
+        "address": 22226,
+        "hex": "43F900FF1600323C003F20D951C9FFFC"
+      },
+      "vblank_ack": {
+        "address": 5820,
+        "hex": "6100F63452B900FFF01052B900FFF00C"
+      },
+      "vblank_common": {
+        "address": 5948,
+        "hex": "303900FF140833C000FFF048303900FF"
+      },
+      "vblank_entry": {
+        "address": 5786,
+        "hex": "48E7FFFE303900C000040C79000400FF"
+      },
+      "vblank_origin": {
+        "address": 5932,
+        "hex": "0C79FFFF00FFF0326706527900FFF032"
+      },
+      "vblank_post_dma": {
+        "address": 5856,
+        "hex": "203900FFF0100240001F662823FCC07C"
+      },
+      "vblank_rte": {
+        "address": 6224,
+        "hex": "4E736100001061000028610000766100"
+      },
+      "vblank_status": {
+        "address": 5914,
+        "hex": "323900FFF01C02410008671602400008"
+      }
+    },
+    "symbol_bindings": {
+      "campaign_projection_start": "GameplayBuildProjection",
+      "dma_commit": "DmaCommitPreparedQueue",
+      "dma_issue_start": "DmaIssueVramTransfer",
+      "engine_projection_start": "EngineBuildProjection",
+      "gameplay_call": "MainLoopGameplayStepCall",
+      "gameplay_return": "MainLoopPostGameplayStepCall",
+      "tail_start": "VocabularyBuildProjectionTail",
+      "vblank_entry": "VBlankInterrupt"
+    }
+  },
+  "provenance": {
+    "candidate_runtime_sources": {
+      "src/render/gameplay_renderer_hud.asm": {
+        "bytes": 19497,
+        "path": "src/render/gameplay_renderer_hud.asm",
+        "sha256": "7f1ce7352585ede094c39f45d7a8b73371ad857edea36c03fb88faf87fe9aa71"
+      },
+      "src/render/gameplay_renderer_sprites.asm": {
+        "bytes": 42906,
+        "path": "src/render/gameplay_renderer_sprites.asm",
+        "sha256": "4c8472074288c3ad25ea668edf5a648ae839e6a4dfeeecc537ea77b59b91ea4f"
+      }
+    },
+    "collector": {
+      "bytes": 96388,
+      "path": "tools/m5_budget_checkpoint_phase_diagnostic.py",
+      "sha256": "c2623aa8391e2b16642188e08b3824845a0a2f61229cb412731b19c1a872318c"
+    },
+    "default_config": {
+      "bytes": 10171,
+      "path": ".toolcache/blastem/default.cfg",
+      "sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e"
+    },
+    "emulator": {
+      "bytes": 12690147,
+      "path": ".toolcache/blastem/blastem.exe",
+      "sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_node": "732f5689d4381862da283c420b68f37ac320c1d8",
+      "version": "0.6.3-pre-732f5689d438"
+    },
+    "isolated_config": {
+      "detail": "isolated Genesis port 1 is explicitly gamepad3.1",
+      "path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/blastem/blastem.cfg",
+      "port_1_assignment": "gamepad3.1",
+      "session_isolation": {
+        "config_in_exe_dir": true,
+        "config_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/blastem/blastem.cfg",
+        "config_sha256": "9aa13b808a3b55e644be45304ee754b991532cd53cc4ddf21937bcf3f74f83a3",
+        "save_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/session-data/saves/$ROMNAME",
+        "screenshot_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/session-data/screenshots",
+        "status": "pass",
+        "vgm_path": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/session-data/vgm"
+      },
+      "sha256": "c9ef5171224e5dde602a1493a55965bc5df3f5580f57b8d8ab25c33c108c72d1",
+      "source_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "status": "pass"
+    },
+    "isolated_runtime": {
+      "bundled_override": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/blastem/blastem.cfg",
+      "default_config_sha256": "27cf0b11a6e551f4427608ee32cc94018f82f9c655ba6eb5a5e69ecf8b1aba4e",
+      "executable_sha256": "22b46b9476f5fe208455d7823bb403eb6e49c467296475bca300efabaf757803",
+      "source_directory": "C:/Projects/RECURSION94/.toolcache/blastem",
+      "status": "pass",
+      "temporary_copy_removed_after_session": true,
+      "temporary_directory": "C:/Users/GodLife/AppData/Local/Temp/recursion94-m5-checkpoint-phase-kdjgyu4i/blastem"
+    },
+    "native_console_helper": {
+      "bytes": 68124,
+      "entrypoint": "--console-helper",
+      "path": "tools/m5_budget_phase_diagnostic.py",
+      "sha256": "11862ce5ccb475762cc80c3333d4f1b03769e75ff992e9780e3e18ca603bdec5",
+      "staged_ready_marker": "R94P READY"
+    },
+    "rom": {
+      "bytes": 1048576,
+      "path": "build/level-B03/recursion94-debug.bin",
+      "sha256": "e6778f907da9f308cb587de695cdba5dc32371538e92ccd34676821428bf3c65"
+    },
+    "symbols": {
+      "bytes": 86908,
+      "path": "build/level-B03/recursion94-debug.sym",
+      "sha256": "a67cba2c05ca4b1920c51e00c4022b2d993c408b3c5b9899e511bfc0d90dc6f6"
+    },
+    "trace": {
+      "bytes": 15409,
+      "path": "artifacts/diagnostics/m5-budget/checkpoint-renderer-hwm-e6778f90-tick59-tick61-20261010.log",
+      "sha256": "e2b0152acbbe6d4b841380e507ca748ed5a66841338b9190be54e8c61baab453"
+    }
+  },
+  "read_only_contract": {
+    "allowed_commands": [
+      "breakpoint",
+      "commands",
+      "continue",
+      "else",
+      "end",
+      "if",
+      "printf"
+    ],
+    "command_policy_errors": [],
+    "console_contract_errors": [],
+    "guest_memory_writes": 0,
+    "guest_pc_writes": 0,
+    "guest_register_writes": 0,
+    "hardware_status_reads_by_debugger": 0
+  },
+  "records": [
+    {
+      "cycle": 77826344,
+      "frame": 58,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 58,
+      "token": 0
+    },
+    {
+      "cycle": 77827912,
+      "entry_status": 3624,
+      "frame": 58,
+      "phase": "VA",
+      "sequence": 117
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 77834240,
+      "frame": 59,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 58
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 32768,
+      "frame": 59,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 32769,
+      "frame": 59,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 32769,
+      "frame": 59,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 32769,
+      "frame": 59,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 320,
+      "cycle": 77836942,
+      "destination": 61440,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 77850830,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 77855296,
+      "destination": 49152,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 77859832,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 77861750,
+      "destination": 49280,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 77866272,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 77868190,
+      "destination": 49408,
+      "frame": 59,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 77872712,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 59,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 77888784,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 59,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 77889162,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 59,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 77889526,
+      "d0": 8,
+      "d1": 8,
+      "frame": 59,
+      "phase": "VK"
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 77895812,
+      "debug_checkpoint_count": 1,
+      "debug_crc": 2547964080,
+      "debug_length": 3894,
+      "frame": 59,
+      "phase": "DP",
+      "published_length": 3894,
+      "renderer_checkpoint_count": 1,
+      "renderer_result": 0,
+      "state_crc": 2547964080,
+      "tick": 58
+    },
+    {
+      "counter": 0,
+      "cycle": 77895812,
+      "frame": 59,
+      "phase": "VX",
+      "sequence": 118,
+      "token": 1
+    },
+    {
+      "cycle": 77907110,
+      "d0": 1,
+      "frame": 59,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 58
+    },
+    {
+      "cycle": 78102298,
+      "frame": 59,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 59
+    },
+    {
+      "build_depth": 0,
+      "campaign_flags": 3,
+      "checkpoint_count": 1,
+      "cycle": 78104580,
+      "frame": 59,
+      "pending": 0,
+      "phase": "RG",
+      "published_depth": 0,
+      "renderer_checkpoint_count": 1,
+      "sr": 9984,
+      "tick": 59
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 78518546,
+      "frame": 59,
+      "pending": 1,
+      "phase": "RR",
+      "renderer_checkpoint_count": 1,
+      "result": 0,
+      "sr": 9988,
+      "tick": 59
+    },
+    {
+      "cycle": 78722380,
+      "frame": 59,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 59,
+      "token": 0
+    },
+    {
+      "cycle": 78723948,
+      "entry_status": 3624,
+      "frame": 59,
+      "phase": "VA",
+      "sequence": 119
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 78730276,
+      "frame": 60,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 59
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 32768,
+      "frame": 60,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 32769,
+      "frame": 60,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 32769,
+      "frame": 60,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 32769,
+      "frame": 60,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 320,
+      "cycle": 78732978,
+      "destination": 61440,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 78746887,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 78751353,
+      "destination": 49152,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 78755889,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 78757807,
+      "destination": 49280,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 78762343,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78764261,
+      "destination": 49408,
+      "frame": 60,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78768783,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 60,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 78784855,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 60,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 78785233,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 60,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 78785597,
+      "d0": 8,
+      "d1": 8,
+      "frame": 60,
+      "phase": "VK"
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 78791883,
+      "debug_checkpoint_count": 1,
+      "debug_crc": 2547964080,
+      "debug_length": 3894,
+      "frame": 60,
+      "phase": "DP",
+      "published_length": 3894,
+      "renderer_checkpoint_count": 1,
+      "renderer_result": 0,
+      "state_crc": 2547964080,
+      "tick": 59
+    },
+    {
+      "counter": 0,
+      "cycle": 78791883,
+      "frame": 60,
+      "phase": "VX",
+      "sequence": 120,
+      "token": 1
+    },
+    {
+      "cycle": 78803181,
+      "d0": 1,
+      "frame": 60,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 59
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 78997389,
+      "frame": 60,
+      "phase": "PS",
+      "sr": 9472,
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 1,
+      "cycle": 78998621,
+      "frame": 60,
+      "phase": "ES",
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "crc": 4120685516,
+      "cycle": 79264481,
+      "frame": 60,
+      "length": 6426166,
+      "phase": "EE",
+      "tick": 60
+    },
+    {
+      "cycle": 79264985,
+      "destination": 16739894,
+      "frame": 60,
+      "phase": "TS",
+      "tick": 60
+    },
+    {
+      "cycle": 79278859,
+      "destination": 16740150,
+      "frame": 60,
+      "length": 6422784,
+      "phase": "TE",
+      "tick": 60
+    },
+    {
+      "cycle": 79279923,
+      "frame": 60,
+      "length": 6422784,
+      "phase": "CS",
+      "source": 16739894,
+      "tick": 60
+    },
+    {
+      "crc": 854073226,
+      "cycle": 79366541,
+      "frame": 60,
+      "phase": "CE",
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "crc": 3440894069,
+      "cycle": 79367619,
+      "frame": 60,
+      "length": 4294905654,
+      "phase": "PE",
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "cycle": 79367619,
+      "frame": 60,
+      "header_length": 3894,
+      "header_version": 2,
+      "phase": "PV",
+      "published_length": 3894,
+      "return_crc": 3440894069,
+      "return_length": 4294905654,
+      "state_crc": 3440894069,
+      "tick": 60
+    },
+    {
+      "cycle": 79368977,
+      "frame": 60,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 60
+    },
+    {
+      "build_depth": 0,
+      "campaign_flags": 3,
+      "checkpoint_count": 2,
+      "cycle": 79371245,
+      "frame": 60,
+      "pending": 0,
+      "phase": "RG",
+      "published_depth": 0,
+      "renderer_checkpoint_count": 1,
+      "sr": 9984,
+      "tick": 60
+    },
+    {
+      "checkpoint_count": 2,
+      "cycle": 79374311,
+      "frame": 60,
+      "pending": 0,
+      "phase": "RR",
+      "renderer_checkpoint_count": 2,
+      "result": 4,
+      "sr": 9984,
+      "tick": 60
+    },
+    {
+      "cycle": 79618425,
+      "frame": 60,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 60,
+      "token": 0
+    },
+    {
+      "cycle": 79619993,
+      "entry_status": 3624,
+      "frame": 60,
+      "phase": "VA",
+      "sequence": 121
+    },
+    {
+      "build_depth": 0,
+      "build_words": 0,
+      "cycle": 79626321,
+      "frame": 61,
+      "pending": 0,
+      "phase": "VC",
+      "published_depth": 0,
+      "tick": 60
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 49152,
+      "frame": 61,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 49153,
+      "frame": 61,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 49153,
+      "frame": 61,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 49153,
+      "frame": 61,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 0,
+      "cycle": 79627707,
+      "debug_words": 0,
+      "depth": 0,
+      "frame": 61,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 79628099,
+      "entry_status": 3624,
+      "exit_status": 12812,
+      "frame": 61,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 79628449,
+      "d0": 8,
+      "d1": 8,
+      "frame": 61,
+      "phase": "VK"
+    },
+    {
+      "checkpoint_count": 2,
+      "cycle": 79634735,
+      "debug_checkpoint_count": 2,
+      "debug_crc": 3440894069,
+      "debug_length": 3894,
+      "frame": 61,
+      "phase": "DP",
+      "published_length": 3894,
+      "renderer_checkpoint_count": 2,
+      "renderer_result": 4,
+      "state_crc": 3440894069,
+      "tick": 60
+    },
+    {
+      "counter": 0,
+      "cycle": 79634735,
+      "frame": 61,
+      "phase": "VX",
+      "sequence": 122,
+      "token": 1
+    },
+    {
+      "cycle": 79646019,
+      "d0": 1,
+      "frame": 61,
+      "input": 1,
+      "phase": "MS",
+      "sr": 9472,
+      "tick": 60
+    },
+    {
+      "cycle": 79841207,
+      "frame": 61,
+      "phase": "ME",
+      "result": 0,
+      "sr": 9476,
+      "tick": 61
+    },
+    {
+      "build_depth": 0,
+      "campaign_flags": 3,
+      "checkpoint_count": 2,
+      "cycle": 79843475,
+      "frame": 61,
+      "pending": 0,
+      "phase": "RG",
+      "published_depth": 0,
+      "renderer_checkpoint_count": 2,
+      "sr": 9984,
+      "tick": 61
+    },
+    {
+      "checkpoint_count": 2,
+      "cycle": 80254823,
+      "frame": 61,
+      "pending": 1,
+      "phase": "RR",
+      "renderer_checkpoint_count": 2,
+      "result": 0,
+      "sr": 9988,
+      "tick": 61
+    },
+    {
+      "cycle": 80514461,
+      "frame": 61,
+      "phase": "VE",
+      "sr": 9728,
+      "tick": 61,
+      "token": 0
+    },
+    {
+      "cycle": 80516029,
+      "entry_status": 3624,
+      "frame": 61,
+      "phase": "VA",
+      "sequence": 123
+    },
+    {
+      "build_depth": 4,
+      "build_words": 440,
+      "cycle": 80522357,
+      "frame": 62,
+      "pending": 1,
+      "phase": "VC",
+      "published_depth": 4,
+      "tick": 61
+    },
+    {
+      "age": 0,
+      "destination": 61440,
+      "flags": 32768,
+      "frame": 62,
+      "index": 0,
+      "phase": "Q",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "age": 0,
+      "destination": 49152,
+      "flags": 32769,
+      "frame": 62,
+      "index": 1,
+      "phase": "Q",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49280,
+      "flags": 32769,
+      "frame": 62,
+      "index": 2,
+      "phase": "Q",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "age": 0,
+      "destination": 49408,
+      "flags": 32769,
+      "frame": 62,
+      "index": 3,
+      "phase": "Q",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 320,
+      "cycle": 80525059,
+      "destination": 61440,
+      "frame": 62,
+      "phase": "DS",
+      "source": 16744448,
+      "words": 320
+    },
+    {
+      "commit_words": 320,
+      "cycle": 80538968,
+      "d0": 1879048192,
+      "d1": 8190,
+      "frame": 62,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 360,
+      "cycle": 80543434,
+      "destination": 49152,
+      "frame": 62,
+      "phase": "DS",
+      "source": 16745984,
+      "words": 40
+    },
+    {
+      "commit_words": 360,
+      "cycle": 80547970,
+      "d0": 1073741824,
+      "d1": 8190,
+      "frame": 62,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 400,
+      "cycle": 80549888,
+      "destination": 49280,
+      "frame": 62,
+      "phase": "DS",
+      "source": 16746064,
+      "words": 40
+    },
+    {
+      "commit_words": 400,
+      "cycle": 80554424,
+      "d0": 1082130432,
+      "d1": 8190,
+      "frame": 62,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 80556342,
+      "destination": 49408,
+      "frame": 62,
+      "phase": "DS",
+      "source": 16746144,
+      "words": 40
+    },
+    {
+      "commit_words": 440,
+      "cycle": 80560864,
+      "d0": 1090519040,
+      "d1": 8190,
+      "frame": 62,
+      "phase": "DE"
+    },
+    {
+      "commit_words": 440,
+      "cycle": 80576936,
+      "debug_words": 440,
+      "depth": 0,
+      "frame": 62,
+      "pending": 0,
+      "phase": "VP"
+    },
+    {
+      "counter": 0,
+      "cycle": 80577314,
+      "entry_status": 3624,
+      "exit_status": 12808,
+      "frame": 62,
+      "phase": "VS"
+    },
+    {
+      "counter": 0,
+      "cycle": 80577678,
+      "d0": 8,
+      "d1": 8,
+      "frame": 62,
+      "phase": "VK"
+    },
+    {
+      "checkpoint_count": 2,
+      "cycle": 80583964,
+      "debug_checkpoint_count": 2,
+      "debug_crc": 3440894069,
+      "debug_length": 3894,
+      "frame": 62,
+      "phase": "DP",
+      "published_length": 3894,
+      "renderer_checkpoint_count": 2,
+      "renderer_result": 0,
+      "state_crc": 3440894069,
+      "tick": 61
+    },
+    {
+      "counter": 0,
+      "cycle": 80583964,
+      "frame": 62,
+      "phase": "VX",
+      "sequence": 124,
+      "token": 1
+    }
+  ],
+  "records_sha256": "18dc6b0bef4ce79d00ac3264fb51eefb307eeec2cbc6a5cc1ede57b75109689e",
+  "rom_profile": "renderer_hwm",
+  "schema": "r94-m5-b03-budget-checkpoint-repair-phase-diagnostic-v2",
+  "started_utc": "2026-10-11T02:26:13.802876+00:00",
+  "status": "diagnostic_pass"
+}

@@ -218,6 +218,36 @@ This is a bounded sampled pass, not the canonical M5 cycle gate. Later
 three-actor checkpoints, projectile interactions, full budget/replay routes,
 and objective visual recapture remain required before M5 freeze.
 
+## Measured campaign renderer high-water repair
+
+B03 candidate `e6778f90` changes exactly seven read-only campaign scans: five
+SAT object pools, the door-feedback predicate, and the HUD device-status scan.
+Each uses its unsigned historical pool bound, clamps to capacity, and guards
+zero before DBF. Legacy renderer paths, actor ordering, and gameplay remain
+unchanged. Three builds/static checks and 73 focused native tests pass.
+
+The regular and extended-reset native diagnostics both pass protocol and their
+sampled budgets, using the separately reviewed `renderer_hwm` profile (65/65
+focused native tests). At ticks 59/61, renderer work falls from 65,598/65,226
+to 59,138/58,764 cycles: savings of 6,460/6,462. Tick60 simulation remains
+80,828 and projection 52,890. At total722 the masked renderer falls from
+71,428 to 66,118 cycles; whole main work falls from 107,448 to 102,138.
+The reset main interval itself is unchanged at 250,444 cycles. Reset cadence,
+all sampled projection CRCs, and all six exact renderer-buffer snapshots
+(6,240 bytes) match the preceding high-water candidate. Both runs use zero
+guest writes and no retries; native process cleanup is verified.
+
+Raw artifacts under `artifacts/diagnostics/m5-budget/`:
+
+- `checkpoint-renderer-hwm-e6778f90-tick59-tick61-20261010.{json,log}`;
+  report SHA-256 `6fc3cebc759f71ff8e9298177a8b6817f83fd41e8a05d461b85fc67fe50cad47`.
+- `reset-overlay-renderer-hwm-e6778f90-total719-total724-20261010.{json,log}`;
+  report SHA-256 `b1ffcd6d09667845a27b367b33be87df45bab6b11c7539b4d495080c01c67357`.
+
+These bounded samples do not close the multi-echo simulation defect or the M5
+budget gate. The natural third-attempt prefix and pinned offline pair
+comparison remain the next evidence steps for this candidate.
+
 ## Natural third-attempt prefix: timing failure
 
 The first high-water prefix capture naturally executes 1,681 authoritative
