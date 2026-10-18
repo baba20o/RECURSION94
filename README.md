@@ -46,6 +46,21 @@ build/recursion94-debug.bin
 build/recursion94-release.bin
 ```
 
+`build.ps1` defaults to Debug. Its Debug-only `-Level <ID>` option (for
+example `-Level B03`) writes a separate fixture ROM to
+`build/level-<ID>/recursion94-debug.bin`; the Release ROM always boots the
+campaign entry. `run.ps1` rebuilds the Debug ROM before launching the pinned
+BlastEm and returns without waiting; use `-Configuration Release` for the
+release ROM or `-NoBuild` to launch an existing ROM.
+
+`validate.ps1` defaults to `-Scope Release` (`Milestone1` through `Milestone5`
+select earlier gates). It first runs `tools/clean.ps1`, which deletes the whole
+`build/` directory, including `build/level-*` fixtures, and the generated
+content, art, CRC32 and Z80 driver outputs under `assets/generated/`. It then
+rebuilds Debug, Release and, for the Milestone5 and Release scopes, the B03
+Debug fixture. Copy any ROM you want to keep before validating. Reports are
+written under `artifacts/reports/`.
+
 ## Current truth
 
 This public repository is an unfinished development checkpoint, not a release.
@@ -64,9 +79,12 @@ from version control. Archived diagnostic evidence is retained where indicated;
 passing host tests alone do not establish a finished or performance-compliant
 game. Automated checks do not substitute for human play or listening review.
 
-`tools/validate.ps1` intentionally remains incomplete for the release scope
-until every campaign and quality gate passes and `docs/FINAL_REPORT.md` says
-`COMPLETE`.
+`tools/validate.ps1` intentionally remains incomplete for the release scope:
+its replay, save, hardware-budget, campaign, visual, audio and red-team gates
+are still reported as pending, so the default run cannot pass and exits
+nonzero (`INCOMPLETE`, or `FAIL` if any required gate fails).
+`docs/FINAL_REPORT.md` will say `COMPLETE` only after every contract gate
+passes.
 
 ## Controls
 
